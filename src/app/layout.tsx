@@ -17,6 +17,11 @@ export const metadata: Metadata = {
   description:
     "KEYRA helps protect you, your identity, and your digital life by making sure it is really you online. Safe, simple, secure.",
   metadataBase: new URL("https://keyra.ie"),
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
     title: "KEYRA — The Trust Layer of the Internet",
     description:

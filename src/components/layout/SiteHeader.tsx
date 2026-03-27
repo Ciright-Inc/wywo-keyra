@@ -17,14 +17,14 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-keyra-border/80 bg-keyra-bg/85 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-keyra-border/20 bg-keyra-bg/95 backdrop-blur-md">
       <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
           className="group shrink-0"
           aria-label="KEYRA home"
         >
-          <KeyraLogo variant="header" />
+          <KeyraLogo variant="header" showWordmark={false} />
         </Link>
         <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
           <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
@@ -60,13 +60,13 @@ export function SiteHeader() {
           <div className="flex items-center gap-2">
             <Link
               href="/#waitlist"
-              className="hidden rounded-full border border-keyra-border bg-keyra-surface px-4 py-2 text-sm font-medium text-keyra-ink shadow-sm transition hover:border-keyra-accent/30 hover:shadow sm:inline-flex"
+              className="hidden rounded-full border border-keyra-border/25 bg-keyra-surface px-4 py-2 text-sm font-medium text-keyra-ink transition hover:border-keyra-accent/35 sm:inline-flex"
             >
               Join the waitlist
             </Link>
             <Link
               href="/#get-started"
-              className="inline-flex rounded-full bg-keyra-accent px-3 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-[#17693a] sm:px-4"
+              className="inline-flex rounded-full bg-keyra-accent px-3 py-2 text-sm font-semibold text-keyra-surface transition hover:bg-keyra-muted sm:px-4"
             >
               Get protected
             </Link>

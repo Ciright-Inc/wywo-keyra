@@ -75,18 +75,6 @@ export default function AboutPage() {
   return (
     <div className="overflow-hidden">
       <section className="relative border-b border-keyra-border bg-keyra-surface">
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-keyra-irish-wash opacity-80"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-keyra-accent-soft/80 blur-3xl"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-keyra-warm/20 blur-3xl"
-          aria-hidden
-        />
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
           <div className="grid gap-12 lg:grid-cols-[1fr_minmax(0,340px)] lg:items-end lg:gap-16">
             <FadeIn>
@@ -103,20 +91,19 @@ export default function AboutPage() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/how-it-works"
-                  className="inline-flex rounded-full border border-keyra-border bg-keyra-bg px-5 py-2.5 text-sm font-semibold text-keyra-ink shadow-sm transition hover:border-keyra-accent/35"
+                  className="inline-flex rounded-full border border-keyra-border bg-keyra-bg px-5 py-2.5 text-sm font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
                 >
                   How it works
                 </Link>
                 <Link
                   href="/#get-started"
-                  className="inline-flex rounded-full bg-keyra-accent px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-[#17693a]"
+                  className="inline-flex rounded-full bg-keyra-accent px-5 py-2.5 text-sm font-semibold text-keyra-surface transition hover:bg-keyra-muted"
                 >
                   Get protected
                 </Link>
               </div>
             </FadeIn>
-            <FadeIn className="relative rounded-3xl border border-keyra-border bg-gradient-to-br from-keyra-accent-soft/90 to-keyra-bg p-8 shadow-sm lg:mb-1">
-              <div className="absolute inset-x-8 top-8 h-24 rounded-2xl bg-keyra-glow/25 blur-2xl" aria-hidden />
+            <FadeIn className="relative rounded-3xl border border-keyra-border bg-keyra-bg p-8 lg:mb-1">
               <div className="relative space-y-4 text-sm leading-relaxed text-keyra-muted">
                 <p className="font-medium text-keyra-ink">What we believe</p>
                 <ul className="space-y-3">
@@ -153,7 +140,7 @@ export default function AboutPage() {
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:gap-8">
           {sections.map((s, i) => (
             <FadeIn key={s.kicker} delay={i * 0.05}>
-              <article className="group relative flex h-full flex-col rounded-3xl border border-keyra-border bg-keyra-surface p-6 shadow-sm transition hover:border-keyra-accent/25 hover:shadow-md sm:p-8">
+              <article className="group relative flex h-full flex-col rounded-3xl border border-keyra-border bg-keyra-surface p-6 transition hover:border-keyra-accent/25 sm:p-8">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-keyra-accent-soft text-keyra-accent transition group-hover:scale-[1.02]">
                     {s.icon}
@@ -173,16 +160,16 @@ export default function AboutPage() {
           ))}
         </div>
 
-        <FadeIn className="mt-16 rounded-3xl border border-keyra-border bg-gradient-to-r from-keyra-accent via-keyra-accent/95 to-keyra-warm px-8 py-10 text-center text-white sm:px-12">
-          <p className="text-lg font-medium text-white/95">
+        <FadeIn className="mt-16 rounded-3xl border border-keyra-border bg-keyra-accent px-8 py-10 text-center text-keyra-surface sm:px-12">
+          <p className="text-lg font-medium text-keyra-surface/95">
             KEYRA — the trust layer of the internet
           </p>
-          <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-white/75">
+          <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-keyra-surface/75">
             Ready to see how enrolment, verification, and control fit together?
           </p>
           <Link
             href="/how-it-works"
-            className="mt-6 inline-flex rounded-full bg-white px-6 py-3 text-sm font-semibold text-keyra-ink shadow transition hover:bg-keyra-bg"
+            className="mt-6 inline-flex rounded-full bg-keyra-surface px-6 py-3 text-sm font-semibold text-keyra-ink transition hover:bg-keyra-bg"
           >
             Explore how KEYRA works
           </Link>

@@ -31,7 +31,7 @@ export function MobileNav() {
         {open ? (
           <motion.nav
             id="mobile-nav-panel"
-            className="absolute left-0 right-0 top-full z-40 border-b border-keyra-border bg-keyra-bg/95 px-4 py-4 shadow-lg backdrop-blur-md"
+            className="absolute left-0 right-0 top-full z-40 border-b border-keyra-border bg-keyra-bg/95 px-4 py-4 backdrop-blur-md"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}

@@ -6,7 +6,7 @@ export function HeroVisual() {
   return (
     <div className="relative mx-auto aspect-[4/3] w-full max-w-md sm:max-w-lg">
       <div
-        className="animate-keyra-pulse-soft absolute inset-[12%] rounded-[40%] bg-keyra-glow/25 blur-3xl"
+        className="animate-keyra-pulse-soft absolute inset-[12%] rounded-[40%] bg-keyra-accent/10 blur-3xl"
         aria-hidden
       />
       <motion.div
@@ -17,7 +17,7 @@ export function HeroVisual() {
         transition={{ duration: 0.9, delay: 0.2 }}
       />
       <motion.div
-        className="animate-keyra-float-delayed absolute bottom-[18%] left-[5%] h-20 w-20 rounded-full bg-keyra-warm/25 blur-2xl"
+        className="animate-keyra-float-delayed absolute bottom-[18%] left-[5%] h-20 w-20 rounded-full bg-keyra-muted/25 blur-2xl"
         aria-hidden
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -26,18 +26,18 @@ export function HeroVisual() {
 
       <svg
         viewBox="0 0 400 320"
-        className="relative z-10 h-full w-full drop-shadow-sm"
+        className="relative z-10 h-full w-full"
         role="img"
         aria-label="Calm illustration of someone using a device within a gentle protective glow"
       >
         <defs>
           <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#e6f4e9" />
-            <stop offset="100%" stopColor="#f3f8f2" />
+            <stop offset="0%" stopColor="#FEFEFE" />
+            <stop offset="100%" stopColor="#FEFEFE" />
           </linearGradient>
           <radialGradient id="shieldGlow" cx="50%" cy="45%" r="55%">
-            <stop offset="0%" stopColor="#8fd2a0" stopOpacity="0.35" />
-            <stop offset="70%" stopColor="#8fd2a0" stopOpacity="0" />
+            <stop offset="0%" stopColor="#061E32" stopOpacity="0.22" />
+            <stop offset="70%" stopColor="#061E32" stopOpacity="0" />
           </radialGradient>
         </defs>
         <ellipse cx="200" cy="170" rx="140" ry="100" fill="url(#heroGrad)" />
@@ -54,18 +54,18 @@ export function HeroVisual() {
             width="90"
             height="130"
             rx="12"
-            fill="#ffffff"
-            stroke="#d7e6d8"
+            fill="#FEFEFE"
+            stroke="#393E49"
             strokeWidth="2"
           />
-          <rect x="170" y="108" width="60" height="88" rx="6" fill="#1f8a4c" />
-          <circle cx="200" cy="208" r="4" fill="#d7e6d8" />
+          <rect x="170" y="108" width="60" height="88" rx="6" fill="#061E32" />
+          <circle cx="200" cy="208" r="4" fill="#393E49" />
         </motion.g>
 
         <motion.path
           d="M200 48 L248 72 L248 118 Q248 150 200 178 Q152 150 152 118 L152 72 Z"
           fill="none"
-          stroke="#1f8a4c"
+          stroke="#061E32"
           strokeWidth="2.5"
           strokeLinejoin="round"
           initial={{ pathLength: 0, opacity: 0 }}
@@ -75,7 +75,7 @@ export function HeroVisual() {
         <motion.path
           d="M180 108 L195 125 L225 88"
           fill="none"
-          stroke="#1f8a4c"
+          stroke="#061E32"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"

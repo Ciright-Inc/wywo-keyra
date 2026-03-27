@@ -1,21 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --keyra-bg: #f3f8f2;
-  --keyra-surface: #ffffff;
-  --keyra-ink: #163526;
-  --keyra-muted: #4e6559;
-  --keyra-accent: #1f8a4c;
-  --keyra-accent-soft: #e6f4e9;
-  --keyra-warm: #d88b39;
-  --keyra-border: #d7e6d8;
-  --keyra-glow: #8fd2a0;
-  --keyra-irish-stripe: linear-gradient(
-    90deg,
-    rgb(31 138 76 / 10%) 0%,
-    rgb(255 255 255 / 65%) 46%,
-    rgb(216 139 57 / 10%) 100%
-  );
+  --keyra-bg: #fefefe;
+  --keyra-surface: #fefefe;
+  --keyra-ink: #010413;
+  --keyra-muted: #393e49;
+  --keyra-accent: #061e32;
+  --keyra-accent-soft: #fefefe;
+  --keyra-border: #393e49;
 }
 
 @theme inline {
@@ -25,9 +17,7 @@
   --color-keyra-muted: var(--keyra-muted);
   --color-keyra-accent: var(--keyra-accent);
   --color-keyra-accent-soft: var(--keyra-accent-soft);
-  --color-keyra-warm: var(--keyra-warm);
   --color-keyra-border: var(--keyra-border);
-  --color-keyra-glow: var(--keyra-glow);
   --font-sans: var(--font-geist-sans);
 }
 
@@ -67,8 +57,4 @@ body {
 
 .animate-keyra-pulse-soft {
   animation: keyra-pulse-soft 8s ease-in-out infinite;
-}
-
-.bg-keyra-irish-wash {
-  background-image: var(--keyra-irish-stripe);
 }

@@ -1,33 +1,4 @@
-import type { SVGProps } from "react";
-
-export function KeyraMark({
-  className,
-  ...props
-}: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 32 32"
-      fill="none"
-      className={className}
-      aria-hidden
-      {...props}
-    >
-      <path
-        d="M16 6.5 23.5 10v6.7c0 4.1-3.2 7.6-7.5 9.1C11.7 24.3 8.5 20.8 8.5 16.7V10L16 6.5Z"
-        stroke="currentColor"
-        strokeWidth="1.35"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M12.5 16.2 14.8 18.5 19.4 12.8"
-        stroke="currentColor"
-        strokeWidth="1.85"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+import Image from "next/image";
 
 type KeyraLogoProps = {
   className?: string;
@@ -43,31 +14,38 @@ export function KeyraLogo({
   showWordmark = true,
   wordmarkClassName = "",
 }: KeyraLogoProps) {
-  const markSizes = {
-    header: "h-[1.15rem] w-[1.15rem]",
-    footer: "h-4 w-4",
-    inline: "h-6 w-6",
+  const logoSizes = {
+    header: { box: "h-16 w-32", px: 128 },
+    footer: { box: "h-14 w-28", px: 112 },
+    inline: { box: "h-16 w-32", px: 128 },
   } as const;
 
   const wordmarkSize =
     variant === "footer" ? "text-sm" : "text-lg";
 
-  const tile =
+  const tileClass =
     variant === "header" ? (
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-keyra-accent text-white shadow-sm transition-transform group-hover:scale-[1.02]">
-        <KeyraMark className={markSizes.header} />
-      </span>
+      "rounded-xl bg-keyra-accent transition-transform group-hover:scale-[1.02]"
     ) : variant === "footer" ? (
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-keyra-accent-soft text-keyra-accent">
-        <KeyraMark className={markSizes.footer} />
-      </span>
+      "rounded-lg bg-keyra-accent/8"
     ) : (
-      <KeyraMark className={`shrink-0 text-keyra-accent ${markSizes.inline}`} />
+      "rounded-xl bg-keyra-accent/8"
     );
 
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      {tile}
+      <span
+        className={`relative flex shrink-0 items-center justify-center overflow-hidden ${logoSizes[variant].box} ${tileClass}`}
+      >
+        <Image
+          src="/logo.png"
+          alt="KEYRA logo"
+          width={logoSizes[variant].px}
+          height={logoSizes[variant].px}
+          className="h-full w-full object-contain p-0.5"
+          priority={variant === "header"}
+        />
+      </span>
       {showWordmark ? (
         <span
           className={`${wordmarkSize} font-semibold tracking-tight text-keyra-ink ${wordmarkClassName}`}

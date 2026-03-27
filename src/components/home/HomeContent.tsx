@@ -39,7 +39,7 @@ function CtaButton({
     return (
       <Link
         href={href}
-        className={`${base} bg-keyra-accent text-white shadow-lg hover:bg-[#17693a]`}
+        className={`${base} bg-keyra-accent text-keyra-surface hover:bg-keyra-muted`}
       >
         {children}
       </Link>
@@ -48,7 +48,7 @@ function CtaButton({
   return (
     <Link
       href={href}
-      className={`${base} border border-keyra-border bg-keyra-surface text-keyra-ink shadow-sm hover:border-keyra-accent/40`}
+      className={`${base} border border-keyra-border/25 bg-keyra-surface text-keyra-ink hover:border-keyra-accent/35`}
     >
       {children}
     </Link>
@@ -58,11 +58,7 @@ function CtaButton({
 export function HomeContent() {
   return (
     <>
-      <SectionShell className="relative overflow-hidden pt-10 sm:pt-14">
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-keyra-irish-wash opacity-80"
-          aria-hidden
-        />
+      <SectionShell className="pt-10 sm:pt-14">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <motion.p
@@ -125,7 +121,7 @@ export function HomeContent() {
             ].map((text) => (
               <li
                 key={text}
-                className="flex gap-3 rounded-2xl border border-keyra-border bg-keyra-bg/60 px-5 py-4 text-keyra-ink"
+                className="flex gap-3 rounded-2xl border border-keyra-border/25 bg-keyra-bg px-5 py-4 text-keyra-ink"
               >
                 <span
                   className="mt-1 h-2 w-2 shrink-0 rounded-full bg-keyra-accent"
@@ -171,7 +167,7 @@ export function HomeContent() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: 0.45 }}
-                className="rounded-2xl border border-keyra-border bg-keyra-surface p-6 shadow-sm"
+                className="rounded-2xl border border-keyra-border/25 bg-keyra-surface p-6"
               >
                 <h3 className="text-lg font-semibold text-keyra-ink">
                   {c.title}
@@ -212,9 +208,9 @@ export function HomeContent() {
             ].map((s, i) => (
               <li
                 key={s.step}
-                className="relative rounded-2xl border border-keyra-border/80 bg-keyra-surface p-6"
+                className="relative rounded-2xl border border-keyra-border/25 bg-keyra-surface p-6"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-keyra-accent text-sm font-bold text-white">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-keyra-accent text-sm font-bold text-keyra-surface">
                   {i + 1}
                 </span>
                 <h3 className="mt-4 text-lg font-semibold text-keyra-ink">
@@ -259,7 +255,7 @@ export function HomeContent() {
             ].map((b) => (
               <div
                 key={b.title}
-                className="rounded-2xl border border-dashed border-keyra-border bg-keyra-surface/80 px-5 py-5"
+                className="rounded-2xl border border-keyra-border/20 bg-keyra-surface px-5 py-5"
               >
                 <h3 className="font-semibold text-keyra-ink">{b.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-keyra-muted">
@@ -288,7 +284,7 @@ export function HomeContent() {
                 <CtaButton href="/#get-started">Protect your family</CtaButton>
               </div>
             </div>
-            <div className="relative overflow-hidden rounded-3xl border border-keyra-border bg-gradient-to-br from-keyra-accent-soft to-keyra-bg p-10">
+            <div className="relative overflow-hidden rounded-3xl border border-keyra-border/25 bg-keyra-bg p-10">
               <div className="flex flex-wrap justify-center gap-4">
                 {[
                   "You",
@@ -297,7 +293,7 @@ export function HomeContent() {
                 ].map((label, i) => (
                   <motion.div
                     key={label}
-                    className="flex h-20 w-28 flex-col items-center justify-center rounded-2xl bg-white shadow-md"
+                    className="flex h-20 w-28 flex-col items-center justify-center rounded-2xl bg-keyra-surface"
                     initial={{ opacity: 0, scale: 0.96 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
@@ -342,7 +338,7 @@ export function HomeContent() {
             ].map((t) => (
               <li
                 key={t}
-                className="rounded-full border border-keyra-border bg-keyra-surface px-4 py-2 text-sm text-keyra-ink"
+                className="rounded-full border border-keyra-border/25 bg-keyra-surface px-4 py-2 text-sm text-keyra-ink"
               >
                 {t}
               </li>
@@ -351,7 +347,7 @@ export function HomeContent() {
         </FadeIn>
       </SectionShell>
 
-      <SectionShell className="border-y border-keyra-border bg-keyra-surface">
+      <SectionShell className="border-y border-keyra-border/20 bg-keyra-surface">
         <FadeIn>
           <h2 className="text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl">
             A better internet begins with trusted identity
@@ -369,25 +365,25 @@ export function HomeContent() {
         <FadeIn>
           <div
             id="waitlist"
-            className="scroll-mt-24 overflow-hidden rounded-3xl border border-keyra-border bg-gradient-to-r from-keyra-accent via-keyra-accent/95 to-keyra-warm px-6 py-14 text-center text-white sm:px-12"
+            className="scroll-mt-24 overflow-hidden rounded-3xl border border-keyra-border/20 bg-keyra-accent px-6 py-14 text-center text-keyra-surface sm:px-12"
           >
             <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
               Join the future of trusted identity
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-white/80">
+            <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-keyra-surface/80">
               Be among the first to experience a simpler, safer way to protect
               your digital life with KEYRA.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 href="/contact"
-                className="inline-flex rounded-full bg-white px-6 py-3 text-sm font-semibold text-keyra-ink shadow transition hover:bg-keyra-bg"
+                className="inline-flex rounded-full bg-keyra-surface px-6 py-3 text-sm font-semibold text-keyra-ink transition hover:bg-keyra-bg"
               >
                 Get started
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                className="inline-flex rounded-full border border-keyra-surface/30 px-6 py-3 text-sm font-semibold text-keyra-surface transition hover:bg-keyra-surface/10"
               >
                 Join the waitlist
               </Link>

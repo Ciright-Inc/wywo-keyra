@@ -60,8 +60,8 @@ const navGroups = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-keyra-border bg-keyra-surface">
-      <div className="border-b border-keyra-border bg-gradient-to-r from-keyra-accent-soft/75 via-keyra-surface to-keyra-warm/20">
+    <footer className="border-t border-keyra-border/20 bg-keyra-surface">
+      <div className="border-b border-keyra-border/20 bg-keyra-accent-soft">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
           <p className="text-sm font-medium uppercase tracking-[0.22em] text-keyra-accent">
             KEYRA Enterprise
@@ -85,7 +85,7 @@ export function SiteFooter() {
             </p>
           </div>
 
-          <div className="mt-8 rounded-2xl border border-keyra-border bg-keyra-surface/90 p-5 sm:p-6">
+          <div className="mt-8 rounded-2xl border border-keyra-border/25 bg-keyra-surface p-5 sm:p-6">
             <p className="text-sm leading-relaxed text-keyra-muted">
               A single person can engage your enterprise in different roles. An
               employee, then a customer. A provider, then an applicant. A media
@@ -99,7 +99,7 @@ export function SiteFooter() {
             {enterpriseCapabilities.map((capability) => (
               <article
                 key={capability.title}
-                className="rounded-2xl border border-keyra-border bg-keyra-surface p-5"
+                className="rounded-2xl border border-keyra-border/25 bg-keyra-surface p-5"
               >
                 <h3 className="text-sm font-semibold tracking-wide text-keyra-ink">
                   {capability.title}
@@ -114,25 +114,25 @@ export function SiteFooter() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/contact"
-              className="inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-white shadow transition hover:bg-[#17693a]"
+              className="inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-keyra-surface transition hover:bg-keyra-muted"
             >
               Explore KEYRA Enterprise
             </Link>
             <Link
               href="/contact"
-              className="inline-flex rounded-full border border-keyra-border bg-keyra-surface px-6 py-3 text-sm font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
+              className="inline-flex rounded-full border border-keyra-border/25 bg-keyra-surface px-6 py-3 text-sm font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
             >
               Deploy the SDK
             </Link>
             <Link
               href="/contact"
-              className="inline-flex rounded-full border border-keyra-border bg-keyra-surface px-6 py-3 text-sm font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
+              className="inline-flex rounded-full border border-keyra-border/25 bg-keyra-surface px-6 py-3 text-sm font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
             >
               Talk to Enterprise Team
             </Link>
             <Link
               href="/contact"
-              className="inline-flex rounded-full border border-keyra-border bg-keyra-surface px-6 py-3 text-sm font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
+              className="inline-flex rounded-full border border-keyra-border/25 bg-keyra-surface px-6 py-3 text-sm font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
             >
               See Enterprise Architecture
             </Link>
@@ -144,7 +144,7 @@ export function SiteFooter() {
         <div className="flex flex-col gap-10 lg:flex-row lg:justify-between">
           <div className="max-w-sm">
             <Link href="/" className="group inline-flex" aria-label="KEYRA home">
-              <KeyraLogo variant="footer" />
+              <KeyraLogo variant="footer" showWordmark={false} />
             </Link>
             <p className="mt-3 text-sm leading-relaxed text-keyra-muted">
               KEYRA Enterprise establishes a unified identity and trust layer
@@ -179,7 +179,7 @@ export function SiteFooter() {
           </nav>
         </div>
 
-        <p className="mt-10 border-t border-keyra-border pt-8 text-center text-xs text-keyra-muted">
+        <p className="mt-10 border-t border-keyra-border/20 pt-8 text-center text-xs text-keyra-muted">
           KEYRA Enterprise — the trust layer for every application, every role,
           every session.
         </p>

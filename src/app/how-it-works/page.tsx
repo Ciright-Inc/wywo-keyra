@@ -44,7 +44,7 @@ export default function HowItWorksPage() {
         <ol className="mt-14 space-y-10">
           {steps.map((s, i) => (
             <FadeIn key={s.title} delay={i * 0.05}>
-              <li className="rounded-2xl border border-keyra-border bg-keyra-surface p-6 shadow-sm">
+              <li className="rounded-2xl border border-keyra-border bg-keyra-surface p-6">
                 <span className="text-sm font-semibold uppercase tracking-wide text-keyra-accent">
                   Step {i + 1}
                 </span>
@@ -61,7 +61,7 @@ export default function HowItWorksPage() {
           <p className="font-medium text-keyra-ink">Ready to get protected?</p>
           <Link
             href="/#get-started"
-            className="mt-4 inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-white shadow hover:bg-[#17693a]"
+            className="mt-4 inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-keyra-surface hover:bg-keyra-muted"
           >
             Get started
           </Link>

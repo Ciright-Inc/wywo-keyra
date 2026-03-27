@@ -41,10 +41,6 @@ export default function TrustPage() {
     <div className="overflow-hidden">
       <section className="relative bg-keyra-bg">
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-keyra-irish-wash opacity-80"
-          aria-hidden
-        />
-        <div
           className="pointer-events-none absolute left-1/2 top-0 h-px w-[min(100%,64rem)] -translate-x-1/2 bg-gradient-to-r from-transparent via-keyra-border to-transparent"
           aria-hidden
         />
@@ -72,7 +68,7 @@ export default function TrustPage() {
             ].map((item) => (
               <div
                 key={item.label}
-                className="rounded-2xl border border-keyra-border bg-keyra-surface px-5 py-4 text-center shadow-sm"
+                className="rounded-2xl border border-keyra-border bg-keyra-surface px-5 py-4 text-center"
               >
                 <p className="text-lg font-semibold text-keyra-ink">
                   {item.label}
@@ -109,10 +105,10 @@ export default function TrustPage() {
           <div className="mt-12 space-y-4">
             {pillars.map((p, i) => (
               <FadeIn key={p.title} delay={i * 0.04}>
-                <div className="group relative overflow-hidden rounded-3xl border border-keyra-border bg-keyra-bg/40 p-1 transition hover:bg-keyra-surface hover:shadow-md">
+                <div className="group relative overflow-hidden rounded-3xl border border-keyra-border bg-keyra-bg/40 p-1 transition hover:bg-keyra-surface">
                   <div className="flex flex-col gap-5 rounded-[1.35rem] bg-keyra-surface p-6 sm:flex-row sm:items-start sm:gap-8 sm:p-8">
                     <div className="flex shrink-0 items-center gap-4 sm:flex-col sm:items-center sm:gap-3">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-keyra-accent text-lg font-bold text-white shadow-sm">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-keyra-accent text-lg font-bold text-keyra-surface">
                         {i + 1}
                       </span>
                       <span className="rounded-full bg-keyra-accent-soft px-3 py-1 text-xs font-semibold text-keyra-accent sm:text-center">
@@ -139,10 +135,10 @@ export default function TrustPage() {
         </div>
       </section>
 
-      <section className="border-t border-keyra-border bg-gradient-to-r from-keyra-accent-soft/65 via-keyra-surface to-keyra-warm/15">
+      <section className="border-t border-keyra-border bg-keyra-accent-soft">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
           <FadeIn>
-            <div className="flex flex-col items-start justify-between gap-8 rounded-3xl border border-keyra-border/80 bg-keyra-surface px-8 py-10 shadow-sm sm:flex-row sm:items-center sm:px-10">
+            <div className="flex flex-col items-start justify-between gap-8 rounded-3xl border border-keyra-border/80 bg-keyra-surface px-8 py-10 sm:flex-row sm:items-center sm:px-10">
               <div>
                 <p className="text-lg font-semibold text-keyra-ink">
                   Trust is built in, not bolted on
@@ -154,7 +150,7 @@ export default function TrustPage() {
               </div>
               <Link
                 href="/about"
-                className="inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-white shadow transition hover:bg-[#17693a]"
+                className="inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-keyra-surface transition hover:bg-keyra-muted"
               >
                 Read about KEYRA
               </Link>

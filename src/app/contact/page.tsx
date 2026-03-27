@@ -23,7 +23,7 @@ export default function ContactPage() {
           </div>
         </FadeIn>
 
-        <FadeIn className="mt-12 rounded-3xl border border-keyra-border bg-keyra-surface p-8 text-left shadow-sm sm:p-10">
+        <FadeIn className="mt-12 rounded-3xl border border-keyra-border bg-keyra-surface p-8 text-left sm:p-10">
           <form className="space-y-6" action="#" method="post">
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="sm:col-span-2">
@@ -39,7 +39,7 @@ export default function ContactPage() {
                   type="text"
                   autoComplete="name"
                   required
-                  className="w-full rounded-xl border border-keyra-border bg-white px-4 py-3 text-sm text-keyra-ink outline-none transition placeholder:text-keyra-muted/70 focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
+                  className="w-full rounded-xl border border-keyra-border bg-keyra-surface px-4 py-3 text-sm text-keyra-ink outline-none transition placeholder:text-keyra-muted/70 focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
                   placeholder="Your full name"
                 />
               </div>
@@ -57,7 +57,7 @@ export default function ContactPage() {
                   type="email"
                   autoComplete="email"
                   required
-                  className="w-full rounded-xl border border-keyra-border bg-white px-4 py-3 text-sm text-keyra-ink outline-none transition placeholder:text-keyra-muted/70 focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
+                  className="w-full rounded-xl border border-keyra-border bg-keyra-surface px-4 py-3 text-sm text-keyra-ink outline-none transition placeholder:text-keyra-muted/70 focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
                   placeholder="you@example.com"
                 />
               </div>
@@ -74,7 +74,7 @@ export default function ContactPage() {
                   name="phone"
                   type="tel"
                   autoComplete="tel"
-                  className="w-full rounded-xl border border-keyra-border bg-white px-4 py-3 text-sm text-keyra-ink outline-none transition placeholder:text-keyra-muted/70 focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
+                  className="w-full rounded-xl border border-keyra-border bg-keyra-surface px-4 py-3 text-sm text-keyra-ink outline-none transition placeholder:text-keyra-muted/70 focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
                   placeholder="+353 ..."
                 />
               </div>
@@ -91,7 +91,7 @@ export default function ContactPage() {
                   name="subject"
                   required
                   defaultValue=""
-                  className="w-full rounded-xl border border-keyra-border bg-white px-4 py-3 text-sm text-keyra-ink outline-none transition focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
+                  className="w-full rounded-xl border border-keyra-border bg-keyra-surface px-4 py-3 text-sm text-keyra-ink outline-none transition focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
                 >
                   <option value="" disabled>
                     Select a subject
@@ -116,7 +116,7 @@ export default function ContactPage() {
                   name="message"
                   rows={6}
                   required
-                  className="w-full resize-y rounded-xl border border-keyra-border bg-white px-4 py-3 text-sm text-keyra-ink outline-none transition placeholder:text-keyra-muted/70 focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
+                  className="w-full resize-y rounded-xl border border-keyra-border bg-keyra-surface px-4 py-3 text-sm text-keyra-ink outline-none transition placeholder:text-keyra-muted/70 focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
                   placeholder="Tell us how we can help..."
                 />
               </div>
@@ -134,7 +134,7 @@ export default function ContactPage() {
               </p>
               <button
                 type="submit"
-                className="inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-white shadow transition hover:bg-[#17693a]"
+                className="inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-keyra-surface transition hover:bg-keyra-muted"
               >
                 Send message
               </button>
