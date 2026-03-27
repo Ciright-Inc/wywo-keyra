@@ -44,7 +44,7 @@ export default function HowItWorksPage() {
         <ol className="mt-14 space-y-10">
           {steps.map((s, i) => (
             <FadeIn key={s.title} delay={i * 0.05}>
-              <li className="rounded-2xl border border-keyra-border bg-keyra-surface p-6">
+              <li className="rounded-2xl border border-keyra-border/20 bg-keyra-surface p-6">
                 <span className="text-sm font-semibold uppercase tracking-wide text-keyra-accent">
                   Step {i + 1}
                 </span>

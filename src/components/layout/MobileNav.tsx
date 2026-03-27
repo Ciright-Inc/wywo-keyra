@@ -20,7 +20,7 @@ export function MobileNav() {
     <div className="md:hidden">
       <button
         type="button"
-        className="inline-flex items-center justify-center rounded-lg border border-keyra-border bg-keyra-surface px-3 py-2 text-sm font-medium text-keyra-ink"
+        className="inline-flex items-center justify-center rounded-lg border border-keyra-border/20 bg-keyra-surface px-3 py-2 text-sm font-medium text-keyra-ink"
         aria-expanded={open}
         aria-controls="mobile-nav-panel"
         onClick={() => setOpen((o) => !o)}
@@ -31,7 +31,7 @@ export function MobileNav() {
         {open ? (
           <motion.nav
             id="mobile-nav-panel"
-            className="absolute left-0 right-0 top-full z-40 border-b border-keyra-border bg-keyra-bg/95 px-4 py-4 backdrop-blur-md"
+            className="absolute left-0 right-0 top-full z-40 border-b border-keyra-border/20 bg-keyra-bg/95 px-4 py-4 backdrop-blur-md"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}

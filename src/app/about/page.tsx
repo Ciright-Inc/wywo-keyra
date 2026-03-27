@@ -74,7 +74,7 @@ const sections = [
 export default function AboutPage() {
   return (
     <div className="overflow-hidden">
-      <section className="relative border-b border-keyra-border bg-keyra-surface">
+      <section className="relative border-b border-keyra-border/20 bg-keyra-surface">
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
           <div className="grid gap-12 lg:grid-cols-[1fr_minmax(0,340px)] lg:items-end lg:gap-16">
             <FadeIn>
@@ -91,7 +91,7 @@ export default function AboutPage() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/how-it-works"
-                  className="inline-flex rounded-full border border-keyra-border bg-keyra-bg px-5 py-2.5 text-sm font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
+                  className="inline-flex rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-sm font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
                 >
                   How it works
                 </Link>
@@ -103,7 +103,7 @@ export default function AboutPage() {
                 </Link>
               </div>
             </FadeIn>
-            <FadeIn className="relative rounded-3xl border border-keyra-border bg-keyra-bg p-8 lg:mb-1">
+            <FadeIn className="relative rounded-3xl border border-keyra-border/20 bg-keyra-bg p-8 lg:mb-1">
               <div className="relative space-y-4 text-sm leading-relaxed text-keyra-muted">
                 <p className="font-medium text-keyra-ink">What we believe</p>
                 <ul className="space-y-3">
@@ -140,7 +140,7 @@ export default function AboutPage() {
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:gap-8">
           {sections.map((s, i) => (
             <FadeIn key={s.kicker} delay={i * 0.05}>
-              <article className="group relative flex h-full flex-col rounded-3xl border border-keyra-border bg-keyra-surface p-6 transition hover:border-keyra-accent/25 sm:p-8">
+              <article className="group relative flex h-full flex-col rounded-3xl border border-keyra-border/20 bg-keyra-surface p-6 transition hover:border-keyra-accent/25 sm:p-8">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-keyra-accent-soft text-keyra-accent transition group-hover:scale-[1.02]">
                     {s.icon}
@@ -160,7 +160,7 @@ export default function AboutPage() {
           ))}
         </div>
 
-        <FadeIn className="mt-16 rounded-3xl border border-keyra-border bg-keyra-accent px-8 py-10 text-center text-keyra-surface sm:px-12">
+        <FadeIn className="mt-16 rounded-3xl border border-keyra-border/20 bg-keyra-accent px-8 py-10 text-center text-keyra-surface sm:px-12">
           <p className="text-lg font-medium text-keyra-surface/95">
             KEYRA — the trust layer of the internet
           </p>
