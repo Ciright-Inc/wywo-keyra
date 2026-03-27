@@ -61,7 +61,7 @@ export default function HowItWorksPage() {
           <p className="font-medium text-keyra-ink">Ready to get protected?</p>
           <Link
             href="/#get-started"
-            className="mt-4 inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-white shadow hover:bg-[#175a77]"
+            className="mt-4 inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-white shadow hover:bg-[#17693a]"
           >
             Get started
           </Link>

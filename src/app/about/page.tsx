@@ -76,6 +76,10 @@ export default function AboutPage() {
     <div className="overflow-hidden">
       <section className="relative border-b border-keyra-border bg-keyra-surface">
         <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-keyra-irish-wash opacity-80"
+          aria-hidden
+        />
+        <div
           className="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-keyra-accent-soft/80 blur-3xl"
           aria-hidden
         />
@@ -105,7 +109,7 @@ export default function AboutPage() {
                 </Link>
                 <Link
                   href="/#get-started"
-                  className="inline-flex rounded-full bg-keyra-accent px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-[#175a77]"
+                  className="inline-flex rounded-full bg-keyra-accent px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-[#17693a]"
                 >
                   Get protected
                 </Link>
@@ -169,7 +173,7 @@ export default function AboutPage() {
           ))}
         </div>
 
-        <FadeIn className="mt-16 rounded-3xl border border-keyra-border bg-keyra-ink px-8 py-10 text-center text-white sm:px-12">
+        <FadeIn className="mt-16 rounded-3xl border border-keyra-border bg-gradient-to-r from-keyra-accent via-keyra-accent/95 to-keyra-warm px-8 py-10 text-center text-white sm:px-12">
           <p className="text-lg font-medium text-white/95">
             KEYRA — the trust layer of the internet
           </p>

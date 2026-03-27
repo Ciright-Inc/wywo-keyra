@@ -66,7 +66,7 @@ export function SiteHeader() {
             </Link>
             <Link
               href="/#get-started"
-              className="inline-flex rounded-full bg-keyra-accent px-3 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-[#175a77] sm:px-4"
+              className="inline-flex rounded-full bg-keyra-accent px-3 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-[#17693a] sm:px-4"
             >
               Get protected
             </Link>

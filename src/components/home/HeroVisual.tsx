@@ -32,12 +32,12 @@ export function HeroVisual() {
       >
         <defs>
           <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#e3f0f5" />
-            <stop offset="100%" stopColor="#f7f5f2" />
+            <stop offset="0%" stopColor="#e6f4e9" />
+            <stop offset="100%" stopColor="#f3f8f2" />
           </linearGradient>
           <radialGradient id="shieldGlow" cx="50%" cy="45%" r="55%">
-            <stop offset="0%" stopColor="#8fbfd4" stopOpacity="0.35" />
-            <stop offset="70%" stopColor="#8fbfd4" stopOpacity="0" />
+            <stop offset="0%" stopColor="#8fd2a0" stopOpacity="0.35" />
+            <stop offset="70%" stopColor="#8fd2a0" stopOpacity="0" />
           </radialGradient>
         </defs>
         <ellipse cx="200" cy="170" rx="140" ry="100" fill="url(#heroGrad)" />
@@ -55,17 +55,17 @@ export function HeroVisual() {
             height="130"
             rx="12"
             fill="#ffffff"
-            stroke="#e8e6e1"
+            stroke="#d7e6d8"
             strokeWidth="2"
           />
-          <rect x="170" y="108" width="60" height="88" rx="6" fill="#1e6f8c" />
-          <circle cx="200" cy="208" r="4" fill="#e8e6e1" />
+          <rect x="170" y="108" width="60" height="88" rx="6" fill="#1f8a4c" />
+          <circle cx="200" cy="208" r="4" fill="#d7e6d8" />
         </motion.g>
 
         <motion.path
           d="M200 48 L248 72 L248 118 Q248 150 200 178 Q152 150 152 118 L152 72 Z"
           fill="none"
-          stroke="#1e6f8c"
+          stroke="#1f8a4c"
           strokeWidth="2.5"
           strokeLinejoin="round"
           initial={{ pathLength: 0, opacity: 0 }}
@@ -75,7 +75,7 @@ export function HeroVisual() {
         <motion.path
           d="M180 108 L195 125 L225 88"
           fill="none"
-          stroke="#1e6f8c"
+          stroke="#1f8a4c"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"

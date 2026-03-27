@@ -41,6 +41,10 @@ export default function TrustPage() {
     <div className="overflow-hidden">
       <section className="relative bg-keyra-bg">
         <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-keyra-irish-wash opacity-80"
+          aria-hidden
+        />
+        <div
           className="pointer-events-none absolute left-1/2 top-0 h-px w-[min(100%,64rem)] -translate-x-1/2 bg-gradient-to-r from-transparent via-keyra-border to-transparent"
           aria-hidden
         />
@@ -135,7 +139,7 @@ export default function TrustPage() {
         </div>
       </section>
 
-      <section className="border-t border-keyra-border bg-keyra-accent-soft/35">
+      <section className="border-t border-keyra-border bg-gradient-to-r from-keyra-accent-soft/65 via-keyra-surface to-keyra-warm/15">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
           <FadeIn>
             <div className="flex flex-col items-start justify-between gap-8 rounded-3xl border border-keyra-border/80 bg-keyra-surface px-8 py-10 shadow-sm sm:flex-row sm:items-center sm:px-10">
@@ -150,7 +154,7 @@ export default function TrustPage() {
               </div>
               <Link
                 href="/about"
-                className="inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-white shadow transition hover:bg-[#175a77]"
+                className="inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-white shadow transition hover:bg-[#17693a]"
               >
                 Read about KEYRA
               </Link>

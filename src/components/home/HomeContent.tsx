@@ -39,7 +39,7 @@ function CtaButton({
     return (
       <Link
         href={href}
-        className={`${base} bg-keyra-accent text-white shadow-lg hover:bg-[#175a77]`}
+        className={`${base} bg-keyra-accent text-white shadow-lg hover:bg-[#17693a]`}
       >
         {children}
       </Link>
@@ -58,7 +58,11 @@ function CtaButton({
 export function HomeContent() {
   return (
     <>
-      <SectionShell className="pt-10 sm:pt-14">
+      <SectionShell className="relative overflow-hidden pt-10 sm:pt-14">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-keyra-irish-wash opacity-80"
+          aria-hidden
+        />
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <motion.p
@@ -365,7 +369,7 @@ export function HomeContent() {
         <FadeIn>
           <div
             id="waitlist"
-            className="scroll-mt-24 overflow-hidden rounded-3xl bg-keyra-ink px-6 py-14 text-center text-white sm:px-12"
+            className="scroll-mt-24 overflow-hidden rounded-3xl border border-keyra-border bg-gradient-to-r from-keyra-accent via-keyra-accent/95 to-keyra-warm px-6 py-14 text-center text-white sm:px-12"
           >
             <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
               Join the future of trusted identity
