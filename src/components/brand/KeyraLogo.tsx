@@ -39,7 +39,7 @@ export function KeyraLogo({
       >
         <Image
           src="/logo.png"
-          alt="KEYRA logo"
+          alt="KERYA logo"
           width={logoSizes[variant].px}
           height={logoSizes[variant].px}
           className="h-full w-full object-contain p-0.5"

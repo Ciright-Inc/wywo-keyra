@@ -1,74 +1,55 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 import { MobileNav } from "./MobileNav";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
+import { Button } from "@/components/ui/Button";
 
 const nav = [
-  { href: "/about", label: "About" },
-  { href: "/how-it-works", label: "How It Works" },
-  { href: "/trust", label: "Trust" },
-  { href: "/contact", label: "Contact" },
+  { href: "/#product", label: "Product" },
+  { href: "/#families", label: "Families" },
+  { href: "/#how-it-works", label: "How it Works" },
+  { href: "/#get-started", label: "Get Started" },
 ];
 
 export function SiteHeader() {
-  const pathname = usePathname();
-
   return (
-    <header className="sticky top-0 z-50 border-b border-keyra-border/20 bg-keyra-bg/95 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-kerya-border bg-kerya-bg/90 backdrop-blur-md">
       <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
           className="group shrink-0"
-          aria-label="KEYRA home"
+          aria-label="KERYA home"
         >
           <KeyraLogo variant="header" showWordmark={false} />
         </Link>
         <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
           <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
-            {nav.map((item) => {
-              const active = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`relative rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                    active
-                      ? "text-keyra-accent"
-                      : "text-keyra-muted hover:text-keyra-ink"
-                  }`}
-                >
-                  {item.label}
-                  {active ? (
-                    <motion.span
-                      layoutId="nav-pill"
-                      className="absolute inset-0 -z-10 rounded-lg bg-keyra-accent-soft"
-                      transition={{
-                        type: "spring",
-                        stiffness: 380,
-                        damping: 30,
-                      }}
-                    />
-                  ) : null}
-                </Link>
-              );
-            })}
+            {nav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="relative rounded-lg px-3 py-2 text-sm font-medium text-kerya-text-2 transition-colors hover:text-kerya-text"
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
           <MobileNav />
           <div className="flex items-center gap-2">
             <Link
-              href="/#waitlist"
-              className="hidden rounded-full border border-keyra-border/25 bg-keyra-surface px-4 py-2 text-sm font-medium text-keyra-ink transition hover:border-keyra-accent/35 sm:inline-flex"
+              href="/#how-it-works"
+              className="hidden sm:inline-flex"
             >
-              Join the waitlist
+              <Button variant="secondary" className="h-10 px-4 text-[14px]">
+                How it works
+              </Button>
             </Link>
             <Link
               href="/#get-started"
-              className="inline-flex rounded-full bg-keyra-accent px-3 py-2 text-sm font-semibold text-keyra-surface transition hover:bg-keyra-muted sm:px-4"
+              className="inline-flex"
             >
-              Get protected
+              <Button className="h-10 px-4 text-[14px]">Get Protected</Button>
             </Link>
           </div>
         </div>

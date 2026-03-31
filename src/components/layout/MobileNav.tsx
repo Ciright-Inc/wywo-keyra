@@ -1,37 +1,37 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/Button";
 
 const links = [
-  { href: "/about", label: "About" },
-  { href: "/how-it-works", label: "How It Works" },
-  { href: "/trust", label: "Trust" },
-  { href: "/contact", label: "Contact" },
+  { href: "/#product", label: "Product" },
+  { href: "/#families", label: "Families" },
+  { href: "/#how-it-works", label: "How it Works" },
+  { href: "/#get-started", label: "Get Started" },
 ];
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
 
   return (
     <div className="md:hidden">
-      <button
+      <Button
         type="button"
-        className="inline-flex items-center justify-center rounded-lg border border-keyra-border/20 bg-keyra-surface px-3 py-2 text-sm font-medium text-keyra-ink"
+        variant="secondary"
+        className="h-10 px-4 text-[14px]"
         aria-expanded={open}
         aria-controls="mobile-nav-panel"
         onClick={() => setOpen((o) => !o)}
       >
         Menu
-      </button>
+      </Button>
       <AnimatePresence>
         {open ? (
           <motion.nav
             id="mobile-nav-panel"
-            className="absolute left-0 right-0 top-full z-40 border-b border-keyra-border/20 bg-keyra-bg/95 px-4 py-4 backdrop-blur-md"
+            className="absolute left-0 right-0 top-full z-40 border-b border-kerya-border bg-kerya-bg/95 px-4 py-4 backdrop-blur-md"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -44,11 +44,7 @@ export function MobileNav() {
                   <Link
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className={`block rounded-lg px-3 py-2 text-sm font-medium ${
-                      pathname === item.href
-                        ? "bg-keyra-accent-soft text-keyra-accent"
-                        : "text-keyra-ink hover:bg-keyra-surface"
-                    }`}
+                    className="block rounded-lg px-3 py-2 text-sm font-medium text-kerya-text hover:bg-kerya-surface"
                   >
                     {item.label}
                   </Link>

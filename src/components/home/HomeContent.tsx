@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/motion/FadeIn";
-import { HeroVisual } from "./HeroVisual";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { IconDevices, IconShieldCheck, IconSpark } from "@/components/ui/Icons";
 
 function SectionShell({
   id,
@@ -24,156 +26,160 @@ function SectionShell({
   );
 }
 
-function CtaButton({
-  href,
-  children,
-  variant = "primary",
-}: {
-  href: string;
-  children: React.ReactNode;
-  variant?: "primary" | "secondary";
-}) {
-  const base =
-    "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-keyra-accent";
-  if (variant === "primary") {
-    return (
-      <Link
-        href={href}
-        className={`${base} bg-keyra-accent text-keyra-surface hover:bg-keyra-muted`}
-      >
-        {children}
-      </Link>
-    );
-  }
-  return (
-    <Link
-      href={href}
-      className={`${base} border border-keyra-border/25 bg-keyra-surface text-keyra-ink hover:border-keyra-accent/35`}
-    >
-      {children}
-    </Link>
-  );
-}
-
 export function HomeContent() {
   return (
     <>
-      <SectionShell className="pt-10 sm:pt-14">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <div>
-            <motion.p
-              className="text-sm font-medium uppercase tracking-widest text-keyra-accent"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45 }}
-            >
-              KEYRA.ie
-            </motion.p>
+      <section className="relative min-h-[92vh] scroll-mt-24 overflow-hidden border-b border-kerya-border bg-kerya-bg px-4 py-20 sm:px-6 sm:py-24">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1800&q=80')",
+          }}
+          aria-hidden
+        />
+        <div className="absolute inset-0 bg-kerya-bg/85" aria-hidden />
+        <div className="relative mx-auto flex min-h-[72vh] max-w-6xl items-center">
+          <div className="max-w-2xl">
             <motion.h1
-              className="mt-3 text-4xl font-semibold leading-tight tracking-tight text-keyra-ink sm:text-5xl lg:text-[3.25rem]"
+              className="text-[56px] font-bold leading-[1.08] tracking-tight text-kerya-text sm:text-[64px]"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.05 }}
+              transition={{ duration: 0.55 }}
             >
-              The trust layer of the internet
+              Feel Protected Online
             </motion.h1>
             <motion.p
-              className="mt-5 max-w-xl text-lg leading-relaxed text-keyra-muted"
-              initial={{ opacity: 0, y: 16 }}
+              className="mt-6 text-[18px] leading-relaxed text-kerya-text-2 sm:text-[20px]"
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.12 }}
             >
-              KEYRA helps protect you, your identity, and your digital life by
-              making sure it is really you online. Safe, simple, secure.
+              Simple protection for you, your family, and everything that
+              matters.
             </motion.p>
             <motion.div
-              className="mt-8 flex flex-wrap gap-3"
-              initial={{ opacity: 0, y: 16 }}
+              className="mt-9 flex flex-wrap gap-3"
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2 }}
             >
-              <CtaButton href="/#get-started">Get protected</CtaButton>
-              <CtaButton href="/how-it-works" variant="secondary">
-                How KEYRA works
-              </CtaButton>
+              <Link href="/#get-started" className="inline-flex">
+                <Button size="lg">Get Protected</Button>
+              </Link>
+              <Link href="/#how-it-works" className="inline-flex">
+                <Button size="lg" variant="secondary">
+                  How it works
+                </Button>
+              </Link>
             </motion.div>
           </div>
-          <HeroVisual />
         </div>
-      </SectionShell>
+      </section>
 
-      <SectionShell className="bg-keyra-surface">
+      <SectionShell id="product" className="bg-kerya-surface">
         <FadeIn>
-          <h2 className="text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl">
-            Security, built around you
+          <h2 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
+            The internet wasn’t built to protect you
           </h2>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-keyra-muted">
-            KEYRA is designed for real people living real digital lives. From
-            logging in and managing accounts to protecting family access and
-            personal identity, KEYRA helps make the internet safer and simpler.
+          <p className="mt-5 max-w-3xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
+            Scams, impersonation, and fake accounts can make everyday life feel
+            uncertain. KERYA brings calm protection so you can move through the
+            digital world with more confidence.
           </p>
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-            {[
-              "Protects your identity",
-              "Helps prevent unauthorized access",
-              "Supports safer sign-in and account trust",
-              "Gives you more control over your digital presence",
-            ].map((text) => (
-              <li
-                key={text}
-                className="flex gap-3 rounded-2xl border border-keyra-border/25 bg-keyra-bg px-5 py-4 text-keyra-ink"
-              >
-                <span
-                  className="mt-1 h-2 w-2 shrink-0 rounded-full bg-keyra-accent"
-                  aria-hidden
-                />
-                <span className="text-sm leading-relaxed">{text}</span>
-              </li>
-            ))}
-          </ul>
         </FadeIn>
       </SectionShell>
 
       <SectionShell>
         <FadeIn>
-          <h2 className="text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl">
-            The internet should know it’s really you
+          <h2 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
+            KERYA makes protection simple
           </h2>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-keyra-muted">
-            Too much of today’s internet depends on passwords, guesswork, and
-            weak signals of trust. That leaves people exposed to fraud,
-            impersonation, and account misuse. KEYRA adds a stronger layer of
-            trust so your identity can be recognized and protected with more
-            confidence.
-          </p>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {[
               {
-                title: "Protect your identity",
-                body: "Help reduce impersonation and account misuse.",
+                title: "You are real",
+                body: "Identity verification that keeps your digital life truly yours.",
+                icon: <IconSpark className="h-5 w-5" />,
               },
               {
-                title: "Verify real access",
-                body: "Support trusted authentication when it matters most.",
+                title: "Your access is yours",
+                body: "Secure login designed to protect what only you should reach.",
+                icon: <IconShieldCheck className="h-5 w-5" />,
               },
               {
-                title: "Feel more in control",
-                body: "Manage your digital identity with greater confidence.",
+                title: "Your family is protected",
+                body: "Simple safety controls that help protect everyone at home.",
+                icon: <IconDevices className="h-5 w-5" />,
               },
-            ].map((c, i) => (
+            ].map((item, idx) => (
+              <motion.article
+                key={item.title}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.08, duration: 0.45 }}
+                className="kerya-card rounded-[var(--k-radius-card)] p-7"
+              >
+                <div className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-[rgb(11_31_42_/6%)] text-kerya-primary">
+                  {item.icon}
+                </div>
+                <h3 className="mt-5 text-[24px] font-semibold text-kerya-text">
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-[16px] leading-relaxed text-kerya-text-2">
+                  {item.body}
+                </p>
+              </motion.article>
+            ))}
+          </div>
+        </FadeIn>
+      </SectionShell>
+
+      <SectionShell id="how-it-works" className="bg-kerya-surface">
+        <FadeIn>
+          <h2 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
+            Protection in seconds
+          </h2>
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {[
+              {
+                title: "Download KERYA",
+                body: "Set up your protection in moments.",
+                ui: "App",
+              },
+              {
+                title: "Verify once",
+                body: "Confirm it is you with one simple step.",
+                ui: "ID",
+              },
+              {
+                title: "Stay protected everywhere",
+                body: "Enjoy calm, continuous protection across your digital life.",
+                ui: "Safe",
+              },
+            ].map((item, i) => (
               <motion.div
-                key={c.title}
+                key={item.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: 0.45 }}
-                className="rounded-2xl border border-keyra-border/25 bg-keyra-surface p-6"
+                className="kerya-card p-7"
               >
-                <h3 className="text-lg font-semibold text-keyra-ink">
-                  {c.title}
+                <div className="flex items-center justify-between">
+                  <span className="text-[14px] font-medium uppercase tracking-wider text-kerya-text-2">
+                    Step {i + 1}
+                  </span>
+                  <span className="rounded-full bg-kerya-primary px-3 py-1 text-[12px] font-semibold text-kerya-surface">
+                    {item.ui}
+                  </span>
+                </div>
+                <h3 className="mt-4 text-[24px] font-semibold text-kerya-text">
+                  {item.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-keyra-muted">
-                  {c.body}
+                <p className="mt-2 text-[16px] leading-relaxed text-kerya-text-2">
+                  {item.body}
                 </p>
               </motion.div>
             ))}
@@ -181,213 +187,44 @@ export function HomeContent() {
         </FadeIn>
       </SectionShell>
 
-      <SectionShell className="bg-keyra-accent-soft/40">
+      <SectionShell id="families">
         <FadeIn>
-          <h2 className="text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl">
-            Simple protection in three steps
+          <h2 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
+            Protection you don’t have to think about
           </h2>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-keyra-muted">
-            KEYRA is built to make identity protection feel straightforward. No
-            complexity. No heavy learning curve. Just a smarter way to help
-            protect the person behind the screen.
-          </p>
-          <ol className="mt-12 grid gap-8 md:grid-cols-3">
+          <ul className="mt-8 grid gap-4 sm:grid-cols-2">
             {[
-              {
-                step: "Enrol",
-                text: "Create your trusted identity with KEYRA.",
-              },
-              {
-                step: "Verify",
-                text: "Confirm it’s really you when you access important digital services.",
-              },
-              {
-                step: "Manage",
-                text: "Stay in control of your identity, access, and account trust over time.",
-              },
-            ].map((s, i) => (
-              <li
-                key={s.step}
-                className="relative rounded-2xl border border-keyra-border/25 bg-keyra-surface p-6"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-keyra-accent text-sm font-bold text-keyra-surface">
-                  {i + 1}
-                </span>
-                <h3 className="mt-4 text-lg font-semibold text-keyra-ink">
-                  {s.step}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-keyra-muted">
-                  {s.text}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </FadeIn>
-      </SectionShell>
-
-      <SectionShell>
-        <FadeIn>
-          <h2 className="text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl">
-            Why people will trust KEYRA
-          </h2>
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                title: "Made for everyday life",
-                body: "Built for normal people, not only technical experts.",
-              },
-              {
-                title: "Designed for peace of mind",
-                body: "A calmer, clearer approach to online protection.",
-              },
-              {
-                title: "Helps protect what matters",
-                body: "Your identity, your accounts, your access, your family.",
-              },
-              {
-                title: "Simple to use",
-                body: "Clear enrolment, clear verification, clear control.",
-              },
-              {
-                title: "Always centered on trust",
-                body: "The digital world works better when trust is built in.",
-              },
-            ].map((b) => (
-              <div
-                key={b.title}
-                className="rounded-2xl border border-keyra-border/20 bg-keyra-surface px-5 py-5"
-              >
-                <h3 className="font-semibold text-keyra-ink">{b.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-keyra-muted">
-                  {b.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </FadeIn>
-      </SectionShell>
-
-      <SectionShell className="bg-keyra-surface">
-        <FadeIn>
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
-            <div>
-              <h2 className="text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl">
-                Protection for you and the people you care about
-              </h2>
-              <p className="mt-4 text-lg leading-relaxed text-keyra-muted">
-                KEYRA is not just about one login or one moment. It is about
-                helping protect the people in your life across the digital
-                experiences that matter most. A safer internet starts with
-                trusted identity.
-              </p>
-              <div className="mt-8">
-                <CtaButton href="/#get-started">Protect your family</CtaButton>
-              </div>
-            </div>
-            <div className="relative overflow-hidden rounded-3xl border border-keyra-border/25 bg-keyra-bg p-10">
-              <div className="flex flex-wrap justify-center gap-4">
-                {[
-                  "You",
-                  "Household",
-                  "People you trust",
-                ].map((label, i) => (
-                  <motion.div
-                    key={label}
-                    className="flex h-20 w-28 flex-col items-center justify-center rounded-2xl bg-keyra-surface"
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                  >
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-keyra-accent-soft text-xs font-semibold text-keyra-accent">
-                      {label.slice(0, 1)}
-                    </span>
-                    <span className="mt-2 text-center text-xs font-medium text-keyra-muted">
-                      {label}
-                    </span>
-                  </motion.div>
-                ))}
-              </div>
-              <p className="mt-6 text-center text-sm text-keyra-muted">
-                Household-ready protection — evolving with family needs and app
-                downloads over time.
-              </p>
-            </div>
-          </div>
-        </FadeIn>
-      </SectionShell>
-
-      <SectionShell>
-        <FadeIn>
-          <h2 className="text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl">
-            Safe. Simple. Secure.
-          </h2>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-keyra-muted">
-            KEYRA is built to help people feel more confident online. Every
-            part of the experience should feel clear, respectful, and easy to
-            understand. Trust is not something people should have to guess. It
-            should be built in.
-          </p>
-          <ul className="mt-10 flex flex-wrap gap-2">
-            {[
-              "Clear identity enrolment",
-              "Secure authentication experience",
-              "User-first design",
-              "Privacy-respecting approach",
-              "Simple account management",
-            ].map((t) => (
-              <li
-                key={t}
-                className="rounded-full border border-keyra-border/25 bg-keyra-surface px-4 py-2 text-sm text-keyra-ink"
-              >
-                {t}
-              </li>
+              "No passwords to remember",
+              "No codes to chase",
+              "No stress",
+              "Always protected",
+            ].map((point) => (
+              <Card key={point} className="p-5">
+                <p className="text-[16px] text-kerya-text">{point}</p>
+              </Card>
             ))}
           </ul>
         </FadeIn>
       </SectionShell>
 
-      <SectionShell className="border-y border-keyra-border/20 bg-keyra-surface">
-        <FadeIn>
-          <h2 className="text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl">
-            A better internet begins with trusted identity
-          </h2>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-keyra-muted">
-            KEYRA is building a future where people can move through the
-            internet with more confidence, less friction, and stronger
-            protection. The goal is simple: a digital world where trust starts
-            with the individual.
-          </p>
-        </FadeIn>
-      </SectionShell>
-
       <SectionShell id="get-started" className="pb-24">
         <FadeIn>
-          <div
-            id="waitlist"
-            className="scroll-mt-24 overflow-hidden rounded-3xl border border-keyra-border/20 bg-keyra-accent px-6 py-14 text-center text-keyra-surface sm:px-12"
-          >
-            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              Join the future of trusted identity
+          <div className="overflow-hidden rounded-[var(--k-radius-sheet)] bg-kerya-primary px-6 py-14 text-center text-kerya-surface sm:px-12">
+            <h2 className="text-[36px] font-semibold tracking-tight sm:text-[44px]">
+              Protected by KERYA
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-keyra-surface/80">
-              Be among the first to experience a simpler, safer way to protect
-              your digital life with KEYRA.
+            <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-kerya-surface/80 sm:text-[18px]">
+              Protection that feels simple, human, and always there when it
+              matters.
             </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link
-                href="/contact"
-                className="inline-flex rounded-full bg-keyra-surface px-6 py-3 text-sm font-semibold text-keyra-ink transition hover:bg-keyra-bg"
-              >
-                Get started
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex rounded-full border border-keyra-surface/30 px-6 py-3 text-sm font-semibold text-keyra-surface transition hover:bg-keyra-surface/10"
-              >
-                Join the waitlist
-              </Link>
-            </div>
+            <Link
+              href="/contact"
+              className="mt-8 inline-flex"
+            >
+              <Button size="lg" variant="primary" className="bg-kerya-accent">
+                Start now
+              </Button>
+            </Link>
           </div>
         </FadeIn>
       </SectionShell>

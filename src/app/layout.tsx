@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { ToastProvider } from "@/components/ui/Toast";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "KEYRA — The Trust Layer of the Internet",
-    template: "%s | KEYRA",
+    default: "KERYA — Protected",
+    template: "%s | KERYA",
   },
   description:
-    "KEYRA helps protect you, your identity, and your digital life by making sure it is really you online. Safe, simple, secure.",
+    "KERYA makes protection simple for you, your family, and everything that matters.",
   metadataBase: new URL("https://keyra.ie"),
   icons: {
     icon: "/logo.png",
@@ -23,11 +24,11 @@ export const metadata: Metadata = {
     apple: "/logo.png",
   },
   openGraph: {
-    title: "KEYRA — The Trust Layer of the Internet",
+    title: "KERYA — Protected",
     description:
-      "Consumer-first identity protection: enrol, verify, and manage trusted access with clarity and confidence.",
+      "Simple, modern protection for individuals and families.",
     url: "https://keyra.ie",
-    siteName: "KEYRA",
+    siteName: "KERYA",
     locale: "en_IE",
     type: "website",
   },
@@ -39,11 +40,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-IE" className={`${geistSans.variable} h-full antialiased`}>
+    <html lang="en-IE" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <ToastProvider>
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </ToastProvider>
       </body>
     </html>
   );
