@@ -33,8 +33,7 @@ export function HomeContent() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1800&q=80')",
+            backgroundImage: "url('/image.png')",
           }}
           aria-hidden
         />
@@ -104,7 +103,7 @@ export function HomeContent() {
               },
               {
                 title: "Your access is yours",
-                body: "Secure login designed to protect what only you should reach.",
+                body: "Verified sign-in designed to protect what only you should reach.",
                 icon: <IconShieldCheck className="h-5 w-5" />,
               },
               {

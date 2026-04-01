@@ -2,7 +2,7 @@ import Image from "next/image";
 
 type KeyraLogoProps = {
   className?: string;
-  /** Header: white mark on accent tile. Footer: accent mark on soft tile. Inline: accent only, no tile. */
+  /** Logo image is in /public. */
   variant?: "header" | "footer" | "inline";
   showWordmark?: boolean;
   wordmarkClassName?: string;
@@ -15,42 +15,36 @@ export function KeyraLogo({
   wordmarkClassName = "",
 }: KeyraLogoProps) {
   const logoSizes = {
-    header: { box: "h-16 w-32", px: 128 },
-    footer: { box: "h-14 w-28", px: 112 },
-    inline: { box: "h-16 w-32", px: 128 },
+    header: { box: "h-16 w-[22rem] sm:h-16 sm:w-[26rem]", w: 640, h: 80 },
+    footer: { box: "h-14 w-[13rem] sm:h-14 sm:w-[15rem]", w: 340, h: 72 },
+    inline: { box: "h-14 w-[13rem] sm:h-14 sm:w-[15rem]", w: 340, h: 72 },
   } as const;
 
-  const wordmarkSize =
-    variant === "footer" ? "text-sm" : "text-lg";
-
-  const tileClass =
-    variant === "header" ? (
-      "rounded-xl bg-keyra-accent transition-transform group-hover:scale-[1.02]"
-    ) : variant === "footer" ? (
-      "rounded-lg bg-keyra-accent/8"
-    ) : (
-      "rounded-xl bg-keyra-accent/8"
-    );
+  const wordmarkSize = variant === "footer" ? "text-sm" : "text-lg";
+  const imageClass =
+    variant === "header"
+      ? "h-full w-full object-contain object-center scale-[1.55] origin-center"
+      : "h-full w-full object-contain object-center";
 
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <span
-        className={`relative flex shrink-0 items-center justify-center overflow-hidden ${logoSizes[variant].box} ${tileClass}`}
+        className={`relative flex shrink-0 items-center justify-center overflow-hidden ${logoSizes[variant].box}`}
       >
         <Image
-          src="/logo.png"
-          alt="KERYA logo"
-          width={logoSizes[variant].px}
-          height={logoSizes[variant].px}
-          className="h-full w-full object-contain p-0.5"
+          src="/kerya-logo.png"
+          alt="KERYA"
+          width={logoSizes[variant].w}
+          height={logoSizes[variant].h}
+          className={imageClass}
           priority={variant === "header"}
         />
       </span>
       {showWordmark ? (
         <span
-          className={`${wordmarkSize} font-semibold tracking-tight text-keyra-ink ${wordmarkClassName}`}
+          className={`${wordmarkSize} font-semibold tracking-tight text-kerya-text ${wordmarkClassName}`}
         >
-          KEYRA
+          KERYA
         </span>
       ) : null}
     </span>
