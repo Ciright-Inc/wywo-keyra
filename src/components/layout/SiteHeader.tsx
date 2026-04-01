@@ -29,7 +29,7 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative rounded-lg px-3 py-2 text-sm font-medium text-kerya-text-2 transition-colors hover:text-kerya-text"
+                className="relative whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-kerya-text-2 transition-colors hover:text-kerya-text"
               >
                 {item.label}
               </Link>
@@ -41,7 +41,7 @@ export function SiteHeader() {
               href="/#how-it-works"
               className="hidden sm:inline-flex"
             >
-              <Button variant="secondary" className="h-10 px-4 text-[14px]">
+              <Button variant="secondary" className="h-10 px-4 text-[14px] whitespace-nowrap">
                 How it works
               </Button>
             </Link>
@@ -49,7 +49,7 @@ export function SiteHeader() {
               href="/#get-started"
               className="inline-flex"
             >
-              <Button className="h-10 px-4 text-[14px]">Get Protected</Button>
+              <Button className="h-10 px-4 text-[14px] whitespace-nowrap">Get Protected</Button>
             </Link>
           </div>
         </div>
