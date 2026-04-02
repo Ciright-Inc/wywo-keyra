@@ -14,7 +14,7 @@ export default function TermsPage() {
           <h1 className="text-4xl font-semibold tracking-tight text-keyra-primary">
             Terms
           </h1>
-          <p className="mt-6 leading-relaxed text-keyra-muted">
+          <p className="mt-6 leading-relaxed text-keyra-ink">
             Formal terms of use will be published here before we open more
             widely. They will be written to be as readable as possible —
             consistent with how we approach the rest of KEYRA.

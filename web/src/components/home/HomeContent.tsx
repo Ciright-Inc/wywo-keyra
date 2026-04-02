@@ -209,7 +209,7 @@ export function HomeContent() {
               },
             ].map((item) => (
               <div key={item.title} className="kerya-card p-5 sm:p-6 md:p-7">
-                <span className="text-[14px] font-semibold text-kerya-accent">
+                <span className="text-[14px] font-semibold text-kerya-text-2">
                   Step {item.step}
                 </span>
                 <h3 className="mt-3 text-xl font-semibold text-kerya-primary sm:text-2xl">

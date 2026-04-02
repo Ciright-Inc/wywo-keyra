@@ -16,7 +16,7 @@ const base =
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-kerya-accent text-kerya-surface hover:opacity-95 active:opacity-90",
+    "bg-kerya-primary text-white hover:opacity-95 active:opacity-90",
   secondary:
     "bg-transparent text-kerya-primary border border-kerya-border hover:border-kerya-primary",
   ghost:

@@ -1,20 +1,19 @@
 @import "tailwindcss";
 
 /**
- * KEYRA — locked palette. Only these six hex values appear as literals.
- * All other colors: rgba() derived from exact sRGB of those hex values.
+ * KEYRA — locked palette. Literals: #0B1F2A #F7F9FA #1A1A1A #5A6B7A #FFFFFF.
+ * Filled primary actions: background #0B1F2A, text #FFFFFF (same as headings on surface).
  */
 :root {
   --keyra-blue: #0B1F2A;
   --keyra-bg: #F7F9FA;
   --keyra-text: #1A1A1A;
   --keyra-text-secondary: #5A6B7A;
-  --keyra-accent: #2FBF9F;
   --keyra-white: #FFFFFF;
 
-  /* Borders, fills, focus: rgba from rgb(11,31,42), rgb(47,191,159), rgb(26,26,26) */
+  /* Borders, focus: rgba from rgb(11,31,42) and rgb(26,26,26) */
   --keyra-border: rgba(11, 31, 42, 0.12);
-  --keyra-ring: rgba(47, 191, 159, 0.18);
+  --keyra-ring: rgba(11, 31, 42, 0.2);
   --keyra-shadow-card: 0 4px 12px rgba(26, 26, 26, 0.04);
   --keyra-shadow-hover: 0 6px 18px rgba(26, 26, 26, 0.06);
 
@@ -25,7 +24,6 @@
 
 @theme inline {
   --color-kerya-primary: var(--keyra-blue);
-  --color-kerya-accent: var(--keyra-accent);
   --color-kerya-bg: var(--keyra-bg);
   --color-kerya-surface: var(--keyra-white);
   --color-kerya-text: var(--keyra-text);
@@ -34,7 +32,6 @@
   --color-kerya-ring: var(--keyra-ring);
 
   --color-keyra-primary: var(--keyra-blue);
-  --color-keyra-accent: var(--keyra-accent);
   --color-keyra-bg: var(--keyra-bg);
   --color-keyra-surface: var(--keyra-white);
   --color-keyra-ink: var(--keyra-text);

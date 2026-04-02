@@ -47,7 +47,7 @@ export default function TrustPage() {
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
           <div className="mx-auto max-w-3xl text-center">
             <FadeIn>
-              <p className="text-[14px] font-semibold uppercase tracking-widest text-keyra-accent">
+              <p className="text-[14px] font-semibold uppercase tracking-widest text-keyra-muted">
                 Trust
               </p>
               <p className="mt-4 text-balance text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl md:text-[28px]">
@@ -100,7 +100,7 @@ export default function TrustPage() {
               </div>
               <Link
                 href="/contact"
-                className="inline-flex shrink-0 rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-[14px] font-semibold text-keyra-primary transition hover:border-keyra-accent/35"
+                className="inline-flex shrink-0 rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-[14px] font-semibold text-keyra-primary transition hover:border-keyra-primary/30"
               >
                 Questions? Contact us
               </Link>
@@ -116,7 +116,7 @@ export default function TrustPage() {
                       <span className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-keyra-primary bg-keyra-surface text-lg font-bold text-keyra-primary">
                         {i + 1}
                       </span>
-                      <span className="rounded-full border border-keyra-border bg-keyra-bg px-3 py-1 text-xs font-semibold text-keyra-accent sm:text-center">
+                      <span className="rounded-full border border-keyra-border bg-keyra-bg px-3 py-1 text-xs font-semibold text-keyra-muted sm:text-center">
                         {p.tag}
                       </span>
                     </div>
@@ -156,7 +156,7 @@ export default function TrustPage() {
               </div>
               <Link
                 href="/about"
-                className="inline-flex rounded-full bg-keyra-accent px-6 py-3 text-[16px] font-semibold text-keyra-surface transition hover:opacity-95"
+                className="inline-flex rounded-full bg-keyra-primary px-6 py-3 text-[16px] font-semibold text-white transition hover:opacity-95"
               >
                 About KEYRA
               </Link>

@@ -43,7 +43,7 @@ export function HeroVisual() {
           rx="148"
           ry="106"
           fill="none"
-          stroke="var(--keyra-accent)"
+          stroke="var(--keyra-text-secondary)"
           strokeWidth="2"
         />
 
@@ -68,7 +68,7 @@ export function HeroVisual() {
             width="60"
             height="88"
             rx="6"
-            fill="var(--keyra-blue)"
+            fill="var(--keyra-text)"
           />
           <circle cx="200" cy="208" r="4" fill="var(--keyra-text-secondary)" />
         </motion.g>
@@ -115,7 +115,7 @@ export function HeroVisual() {
         <motion.path
           d="M200 48 L248 72 L248 118 Q248 150 200 178 Q152 150 152 118 L152 72 Z"
           fill="none"
-          stroke="var(--keyra-accent)"
+          stroke="var(--keyra-text-secondary)"
           strokeWidth="2.5"
           strokeLinejoin="round"
           initial={{ pathLength: 0, opacity: 0 }}
@@ -125,7 +125,7 @@ export function HeroVisual() {
         <motion.path
           d="M180 108 L195 125 L225 88"
           fill="none"
-          stroke="var(--keyra-accent)"
+          stroke="var(--keyra-text-secondary)"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"

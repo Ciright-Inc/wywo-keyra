@@ -53,8 +53,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               transition={{ duration: 0.2 }}
               className={cn(
                 "rounded-[var(--keyra-radius-card)] border bg-kerya-surface p-4 shadow-[var(--keyra-shadow-card)]",
-                t.kind === "success" && "border-kerya-accent",
-                t.kind === "error" && "border-kerya-primary",
+                t.kind === "success" && "border-kerya-border",
+                t.kind === "error" && "border-kerya-border",
                 t.kind === "info" && "border-kerya-border",
               )}
             >

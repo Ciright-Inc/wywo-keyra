@@ -14,7 +14,7 @@ export default function PrivacyPage() {
           <h1 className="text-4xl font-semibold tracking-tight text-keyra-primary">
             Privacy
           </h1>
-          <p className="mt-6 leading-relaxed text-keyra-muted">
+          <p className="mt-6 leading-relaxed text-keyra-ink">
             KEYRA is built with privacy-respecting principles. A full policy will
             appear here before launch. In the meantime, our commitment is
             simple: collect only what helps protect your identity, explain it in

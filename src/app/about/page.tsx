@@ -18,7 +18,7 @@ const sections = [
         <path
           d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM5 20a7 7 0 1 1 14 0H18a6 6 0 0 0-12 0H5Z"
           fill="currentColor"
-          className="text-keyra-accent"
+          className="text-keyra-primary"
         />
       </svg>
     ),
@@ -34,7 +34,7 @@ const sections = [
           stroke="currentColor"
           strokeWidth="1.75"
           strokeLinejoin="round"
-          className="text-keyra-accent"
+          className="text-keyra-primary"
         />
       </svg>
     ),
@@ -48,7 +48,7 @@ const sections = [
         <path
           d="M4 11h4v9H4v-9Zm6-6h4v15h-4V5Zm6 3h4v12h-4V8Z"
           fill="currentColor"
-          className="text-keyra-accent"
+          className="text-keyra-primary"
         />
       </svg>
     ),
@@ -64,7 +64,7 @@ const sections = [
           stroke="currentColor"
           strokeWidth="1.75"
           strokeLinejoin="round"
-          className="text-keyra-accent"
+          className="text-keyra-primary"
         />
       </svg>
     ),
@@ -78,7 +78,7 @@ export default function AboutPage() {
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
           <div className="grid gap-12 lg:grid-cols-[1fr_minmax(0,340px)] lg:items-end lg:gap-16">
             <FadeIn>
-              <p className="text-[14px] font-semibold uppercase tracking-widest text-keyra-accent">
+              <p className="text-[14px] font-semibold uppercase tracking-widest text-keyra-muted">
                 About KEYRA
               </p>
               <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem] lg:text-5xl lg:leading-tight">
@@ -92,13 +92,13 @@ export default function AboutPage() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/how-it-works"
-                  className="inline-flex rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-[14px] font-semibold text-keyra-primary transition hover:border-keyra-accent/35"
+                  className="inline-flex rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-[14px] font-semibold text-keyra-primary transition hover:border-keyra-primary/30"
                 >
                   How it works
                 </Link>
                 <Link
                   href="/#get-started"
-                  className="inline-flex rounded-full bg-keyra-accent px-5 py-2.5 text-[14px] font-semibold text-keyra-surface transition hover:opacity-95"
+                  className="inline-flex rounded-full bg-keyra-primary px-5 py-2.5 text-[14px] font-semibold text-white transition hover:opacity-95"
                 >
                   Get protected
                 </Link>
@@ -109,15 +109,15 @@ export default function AboutPage() {
                 <p className="font-medium text-keyra-primary">What we believe</p>
                 <ul className="space-y-3">
                   <li className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-keyra-accent" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-keyra-primary" />
                     Protection should feel calm — never loud or frightening.
                   </li>
                   <li className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-keyra-accent" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-keyra-primary" />
                     Identity protection is for households, not only for experts.
                   </li>
                   <li className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-keyra-accent" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-keyra-primary" />
                     Clarity and respect build confidence over time.
                   </li>
                 </ul>
@@ -141,9 +141,9 @@ export default function AboutPage() {
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:gap-8">
           {sections.map((s, i) => (
             <FadeIn key={s.kicker} delay={i * 0.05}>
-              <article className="group relative flex h-full flex-col rounded-[16px] border border-keyra-border/20 bg-keyra-surface p-6 transition hover:border-keyra-accent/25 sm:p-8">
+              <article className="group relative flex h-full flex-col rounded-[16px] border border-keyra-border/20 bg-keyra-surface p-6 transition hover:border-keyra-primary/20 sm:p-8">
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-keyra-border bg-keyra-bg text-keyra-accent transition group-hover:scale-[1.02]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-keyra-border bg-keyra-bg text-keyra-primary transition group-hover:scale-[1.02]">
                     {s.icon}
                   </div>
                   <span className="rounded-full bg-keyra-bg px-3 py-1 text-xs font-semibold uppercase tracking-wide text-keyra-muted">
@@ -171,7 +171,7 @@ export default function AboutPage() {
           </p>
           <Link
             href="/how-it-works"
-            className="mt-6 inline-flex rounded-full bg-keyra-accent px-6 py-3 text-[16px] font-semibold text-keyra-surface transition hover:opacity-95"
+            className="mt-6 inline-flex rounded-full bg-keyra-primary px-6 py-3 text-[16px] font-semibold text-white transition hover:opacity-95"
           >
             How KEYRA works
           </Link>

@@ -46,7 +46,7 @@ export default function HowItWorksPage() {
           {steps.map((s, i) => (
             <FadeIn key={s.title} delay={i * 0.05}>
               <li className="kerya-card p-5 sm:p-6">
-                <span className="text-[14px] font-semibold uppercase tracking-wide text-kerya-accent">
+                <span className="text-[14px] font-semibold uppercase tracking-wide text-kerya-text-2">
                   Step {i + 1}
                 </span>
                 <h2 className="mt-2 text-xl font-semibold text-kerya-primary sm:text-2xl">

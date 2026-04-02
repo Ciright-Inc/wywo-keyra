@@ -35,7 +35,7 @@ export function Input({
         aria-describedby={describedBy}
         className={cn(
           "h-12 w-full rounded-[var(--keyra-radius-card)] border bg-kerya-surface px-4 text-[16px] text-kerya-text placeholder:text-kerya-text-2/70 transition duration-200 focus-visible:outline-none focus-visible:kerya-focus",
-          error ? "border-kerya-accent" : "border-kerya-border",
+          error ? "border-kerya-primary" : "border-kerya-border",
           className,
         )}
         {...props}
