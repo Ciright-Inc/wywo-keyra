@@ -18,7 +18,7 @@ export function SiteHeader() {
       <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:gap-3 sm:px-6">
         <Link
           href="/"
-          className="group shrink-0"
+          className="group flex h-16 shrink-0 items-center"
           aria-label="KEYRA home"
         >
           <KeyraLogo variant="header" showWordmark={false} />
