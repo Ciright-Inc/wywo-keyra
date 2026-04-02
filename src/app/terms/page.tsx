@@ -15,9 +15,9 @@ export default function TermsPage() {
             Terms
           </h1>
           <p className="mt-6 leading-relaxed text-keyra-muted">
-            Formal terms of use will be published here ahead of public enrolment.
-            They will be written to be as readable as possible — consistent with
-            how we approach the rest of KEYRA.
+            Formal terms of use will be published here before we open more
+            widely. They will be written to be as readable as possible —
+            consistent with how we approach the rest of KEYRA.
           </p>
         </FadeIn>
       </div>

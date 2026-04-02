@@ -12,11 +12,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "KERYA — Protected",
-    template: "%s | KERYA",
+    default: "KEYRA — Be Protected Online",
+    template: "%s | KEYRA",
   },
   description:
-    "KERYA makes protection simple for you, your family, and everything that matters.",
+    "KEYRA is global protection you can feel — calm, simple, and trusted for people, families, and businesses.",
   metadataBase: new URL("https://keyra.ie"),
   icons: {
     icon: "/logo.png",
@@ -24,11 +24,11 @@ export const metadata: Metadata = {
     apple: "/logo.png",
   },
   openGraph: {
-    title: "KERYA — Protected",
+    title: "KEYRA — Be Protected Online",
     description:
-      "Simple, modern protection for individuals and families.",
+      "Protection for identity, money, data, and digital life. Calm trust at every step.",
     url: "https://keyra.ie",
-    siteName: "KERYA",
+    siteName: "KEYRA",
     locale: "en_IE",
     type: "website",
   },

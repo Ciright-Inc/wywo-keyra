@@ -29,7 +29,7 @@ export default function VerifyPage() {
           Verify once
         </h1>
         <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-          This is a quick check to make sure it’s really you. After this, KERYA
+          This is a quick check to make sure it’s really you. After this, KEYRA
           can keep you protected with less effort.
         </p>
 
@@ -59,7 +59,7 @@ export default function VerifyPage() {
               What happens next
             </p>
             <p className="mt-3 text-[16px] leading-relaxed text-kerya-text">
-              Once you’re verified, KERYA can help keep your sign‑ins and access
+              Once you’re verified, KEYRA can help keep your sign‑ins and access
               calmer and more reliable.
             </p>
             <ul className="mt-6 space-y-3 text-[14px] text-kerya-text-2">

@@ -11,7 +11,7 @@ export default function OnboardingCompletePage() {
           You’re protected
         </h1>
         <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-          KERYA is now active. You don’t need to think about it — just enjoy the
+          KEYRA is now active. You don’t need to think about it — just enjoy the
           feeling of being protected.
         </p>
 

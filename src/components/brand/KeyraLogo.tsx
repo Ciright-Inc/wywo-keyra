@@ -33,7 +33,7 @@ export function KeyraLogo({
       >
         <Image
           src="/kerya-logo.png"
-          alt="KERYA"
+          alt="KEYRA"
           width={logoSizes[variant].w}
           height={logoSizes[variant].h}
           className={imageClass}
@@ -44,7 +44,7 @@ export function KeyraLogo({
         <span
           className={`${wordmarkSize} font-semibold tracking-tight text-kerya-text ${wordmarkClassName}`}
         >
-          KERYA
+          KEYRA
         </span>
       ) : null}
     </span>

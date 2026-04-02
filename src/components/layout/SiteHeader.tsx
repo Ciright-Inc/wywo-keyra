@@ -19,7 +19,7 @@ export function SiteHeader() {
         <Link
           href="/"
           className="group shrink-0"
-          aria-label="KERYA home"
+          aria-label="KEYRA home"
         >
           <KeyraLogo variant="header" showWordmark={false} />
         </Link>

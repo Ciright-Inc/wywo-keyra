@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  /* KERYA design tokens */
+  /* KEYRA design tokens (palette) */
   --k-primary: #0b1f2a;
   --k-accent: #2fbf9f;
   --k-bg: #f7f9fa;
@@ -20,6 +20,8 @@
 
   --k-shadow-card: 0px 4px 12px rgba(0, 0, 0, 0.04);
   --k-shadow-hover: 0px 6px 18px rgba(0, 0, 0, 0.06);
+
+  --k-accent-soft: rgb(47 191 159 / 12%);
 }
 
 @theme inline {
@@ -33,6 +35,17 @@
   --color-kerya-error: var(--k-error);
   --color-kerya-border: var(--k-border);
   --color-kerya-ring: var(--k-ring);
+
+  /* Legacy aliases (some pages use keyra-* class names) */
+  --color-keyra-primary: var(--k-primary);
+  --color-keyra-accent: var(--k-accent);
+  --color-keyra-bg: var(--k-bg);
+  --color-keyra-surface: var(--k-surface);
+  --color-keyra-ink: var(--k-text);
+  --color-keyra-muted: var(--k-text-2);
+  --color-keyra-border: var(--k-border);
+  --color-keyra-accent-soft: var(--k-accent-soft);
+  --color-kerya-accent-soft: var(--k-accent-soft);
 
   /* Typography */
   --font-sans: var(--font-inter);

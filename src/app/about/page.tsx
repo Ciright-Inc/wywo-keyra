@@ -5,14 +5,14 @@ import { FadeIn } from "@/components/motion/FadeIn";
 export const metadata: Metadata = {
   title: "About KEYRA",
   description:
-    "KEYRA exists to help make the internet safer, simpler, and more trusted for people everywhere.",
+    "Be Protected Online — KEYRA is a premium global protection brand: calm, simple, and centred on human trust.",
 };
 
 const sections = [
   {
     kicker: "Our mission",
     title: "You at the centre",
-    body: "We believe everyday people deserve a calm, clear way to be recognized online. KEYRA puts you at the centre: your identity, your control, your peace of mind.",
+    body: "Everyday people deserve a calm, clear way to stay protected online. KEYRA puts you at the centre: your identity, your control, your peace of mind.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
         <path
@@ -24,9 +24,9 @@ const sections = [
     ),
   },
   {
-    kicker: "Why trust matters",
+    kicker: "Why it matters",
     title: "Less guesswork online",
-    body: "When services are unsure who is on the other side, friction and risk grow. Stronger trust helps reduce impersonation, confusion, and account stress — without turning security into a maze.",
+    body: "When services are unsure who is on the other side, everyday life gets harder — not safer. KEYRA helps you verify with confidence, so you can move through digital life with fewer surprises.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
         <path
@@ -42,7 +42,7 @@ const sections = [
   {
     kicker: "Built for people",
     title: "Plain language, real life",
-    body: "KEYRA speaks plain language, respects privacy, and designs for household life — not only for experts or enterprises. The human behind the device always comes first.",
+    body: "We speak in plain language, respect privacy, and design for households — not only for specialists. The human behind the device always comes first.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
         <path
@@ -54,9 +54,9 @@ const sections = [
     ),
   },
   {
-    kicker: "A safer digital future",
+    kicker: "The future we care about",
     title: "Confidence for families",
-    body: "We are building toward a web where identity is verified with confidence, services feel reliable, and families can move through digital life with less worry.",
+    body: "We are building toward digital life where verification feels natural, services feel reliable, and families can stay protected without the noise.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
         <path
@@ -78,38 +78,39 @@ export default function AboutPage() {
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
           <div className="grid gap-12 lg:grid-cols-[1fr_minmax(0,340px)] lg:items-end lg:gap-16">
             <FadeIn>
-              <p className="text-sm font-medium uppercase tracking-widest text-keyra-accent">
+              <p className="text-[14px] font-semibold uppercase tracking-widest text-keyra-accent">
                 About KEYRA
               </p>
-              <h1 className="mt-3 text-4xl font-semibold tracking-tight text-keyra-ink sm:text-5xl lg:text-[2.75rem] lg:leading-tight">
-                Safer, simpler, more human online
+              <h1 className="mt-3 text-[36px] font-semibold tracking-tight text-keyra-ink sm:text-[44px] lg:text-[48px] lg:leading-tight">
+                Be Protected Online
               </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-keyra-muted">
-                KEYRA exists to help make the internet safer, simpler, and more
-                trusted for people everywhere.
+              <p className="mt-6 max-w-2xl text-[16px] leading-relaxed text-keyra-muted sm:text-[18px]">
+                KEYRA is a premium global protection brand — calm, simple, and
+                centred on trust. Protection for your identity, money, data, and
+                digital life.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/how-it-works"
-                  className="inline-flex rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-sm font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
+                  className="inline-flex rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-[14px] font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
                 >
                   How it works
                 </Link>
                 <Link
                   href="/#get-started"
-                  className="inline-flex rounded-full bg-keyra-accent px-5 py-2.5 text-sm font-semibold text-keyra-surface transition hover:bg-keyra-muted"
+                  className="inline-flex rounded-full bg-keyra-accent px-5 py-2.5 text-[14px] font-semibold text-keyra-surface transition hover:opacity-95"
                 >
                   Get protected
                 </Link>
               </div>
             </FadeIn>
-            <FadeIn className="relative rounded-3xl border border-keyra-border/20 bg-keyra-bg p-8 lg:mb-1">
-              <div className="relative space-y-4 text-sm leading-relaxed text-keyra-muted">
+            <FadeIn className="relative rounded-[16px] border border-keyra-border/20 bg-keyra-bg p-8 lg:mb-1">
+              <div className="relative space-y-4 text-[14px] leading-relaxed text-keyra-muted">
                 <p className="font-medium text-keyra-ink">What we believe</p>
                 <ul className="space-y-3">
                   <li className="flex gap-3">
                     <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-keyra-accent" />
-                    Trust should feel calm — never loud or frightening.
+                    Protection should feel calm — never loud or frightening.
                   </li>
                   <li className="flex gap-3">
                     <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-keyra-accent" />
@@ -128,10 +129,10 @@ export default function AboutPage() {
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
         <FadeIn>
-          <h2 className="max-w-xl text-2xl font-semibold tracking-tight text-keyra-ink sm:text-3xl">
+          <h2 className="max-w-xl text-[28px] font-semibold tracking-tight text-keyra-ink sm:text-[36px]">
             Our story, in four beats
           </h2>
-          <p className="mt-3 max-w-2xl text-keyra-muted">
+          <p className="mt-3 max-w-2xl text-[16px] text-keyra-muted">
             Each part of KEYRA comes back to one idea: the person behind the
             screen deserves to be seen, protected, and in control.
           </p>
@@ -140,7 +141,7 @@ export default function AboutPage() {
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:gap-8">
           {sections.map((s, i) => (
             <FadeIn key={s.kicker} delay={i * 0.05}>
-              <article className="group relative flex h-full flex-col rounded-3xl border border-keyra-border/20 bg-keyra-surface p-6 transition hover:border-keyra-accent/25 sm:p-8">
+              <article className="group relative flex h-full flex-col rounded-[16px] border border-keyra-border/20 bg-keyra-surface p-6 transition hover:border-keyra-accent/25 sm:p-8">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-keyra-accent-soft text-keyra-accent transition group-hover:scale-[1.02]">
                     {s.icon}
@@ -152,7 +153,7 @@ export default function AboutPage() {
                 <h3 className="mt-6 text-xl font-semibold text-keyra-ink">
                   {s.title}
                 </h3>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-keyra-muted">
+                <p className="mt-3 flex-1 text-[14px] leading-relaxed text-keyra-muted sm:text-[16px]">
                   {s.body}
                 </p>
               </article>
@@ -160,18 +161,19 @@ export default function AboutPage() {
           ))}
         </div>
 
-        <FadeIn className="mt-16 rounded-3xl border border-keyra-border/20 bg-keyra-accent px-8 py-10 text-center text-keyra-surface sm:px-12">
-          <p className="text-lg font-medium text-keyra-surface/95">
-            KEYRA — the trust layer of the internet
+        <FadeIn className="mt-16 rounded-[16px] border border-keyra-border/20 bg-keyra-bg px-8 py-10 text-center sm:px-12">
+          <p className="text-lg font-semibold text-keyra-ink">
+            Protection comes first
           </p>
-          <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-keyra-surface/75">
-            Ready to see how enrolment, verification, and control fit together?
+          <p className="mx-auto mt-2 max-w-lg text-[14px] leading-relaxed text-keyra-muted sm:text-[16px]">
+            Ready to see how joining, verification, and everyday control fit
+            together calmly?
           </p>
           <Link
             href="/how-it-works"
-            className="mt-6 inline-flex rounded-full bg-keyra-surface px-6 py-3 text-sm font-semibold text-keyra-ink transition hover:bg-keyra-bg"
+            className="mt-6 inline-flex rounded-full bg-keyra-accent px-6 py-3 text-[16px] font-semibold text-keyra-surface transition hover:opacity-95"
           >
-            Explore how KEYRA works
+            How KEYRA works
           </Link>
         </FadeIn>
       </section>

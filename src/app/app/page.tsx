@@ -15,7 +15,7 @@ export default function DashboardPage() {
             Protected
           </h1>
           <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-            KERYA is active. Your protection is on — quietly and consistently.
+            KEYRA is active. Your protection is on — quietly and consistently.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">

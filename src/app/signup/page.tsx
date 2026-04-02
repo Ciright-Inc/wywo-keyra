@@ -11,7 +11,7 @@ export default function SignupPage() {
           Create your account
         </h1>
         <p className="mt-3 text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-          Set up KERYA once. Feel protected every day.
+          Set up KEYRA once. Feel protected every day.
         </p>
 
         <Card className="mt-10 p-7">

@@ -15,7 +15,7 @@ export function SiteFooter() {
     <footer className="border-t border-kerya-border bg-kerya-surface">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
-          <Link href="/" className="group inline-flex" aria-label="KERYA home">
+          <Link href="/" className="group inline-flex" aria-label="KEYRA home">
             <KeyraLogo variant="footer" showWordmark={false} />
           </Link>
           <nav className="flex flex-wrap gap-x-6 gap-y-2" aria-label="Footer">
@@ -31,7 +31,7 @@ export function SiteFooter() {
           </nav>
         </div>
         <p className="mt-8 border-t border-kerya-border pt-6 text-xs text-kerya-text-2">
-          KERYA = Protected
+          KEYRA = Protection
         </p>
       </div>
     </footer>

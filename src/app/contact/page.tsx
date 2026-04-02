@@ -4,7 +4,7 @@ import { FadeIn } from "@/components/motion/FadeIn";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Questions about KEYRA, trusted identity, or getting started? Reach out and we will point you in the right direction.",
+    "Questions about KEYRA or getting protected? Reach out — we will respond in plain language, with protection first.",
 };
 
 export default function ContactPage() {
@@ -16,9 +16,12 @@ export default function ContactPage() {
             <h1 className="text-4xl font-semibold tracking-tight text-keyra-ink">
               We’re here to help
             </h1>
-            <p className="mt-6 text-lg leading-relaxed text-keyra-muted">
-              Questions about KEYRA, trusted identity, or getting started?
-              Share a few details and we will point you in the right direction.
+            <p className="mt-3 text-[18px] font-medium text-keyra-ink">
+              Be Protected Online
+            </p>
+            <p className="mt-4 text-lg leading-relaxed text-keyra-muted">
+              Questions about KEYRA or staying protected? Share a few details
+              and we will reply in calm, clear language.
             </p>
           </div>
         </FadeIn>
@@ -134,7 +137,7 @@ export default function ContactPage() {
               </p>
               <button
                 type="submit"
-                className="inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-keyra-surface transition hover:bg-keyra-muted"
+                className="inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-keyra-surface transition hover:opacity-95"
               >
                 Send message
               </button>

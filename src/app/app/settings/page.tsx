@@ -100,7 +100,7 @@ export default function SettingsPage() {
         }
       >
         <p className="text-[16px] leading-relaxed text-kerya-text-2">
-          KERYA keeps protection on in the background. You can verify when you
+          KEYRA keeps protection on in the background. You can verify when you
           want, review devices, and manage family protection — without digging
           through technical settings.
         </p>
