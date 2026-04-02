@@ -16,9 +16,10 @@ export function KeyraLogo({
 }: KeyraLogoProps) {
   const logoSizes = {
     header: {
-      box: "h-12 max-w-[min(100%,15rem)] w-[15rem] sm:h-14 sm:max-w-[min(100%,18rem)] sm:w-[18rem] md:h-[4.25rem] md:max-w-none md:w-[22rem]",
-      w: 640,
-      h: 112,
+      box:
+        "h-[3.75rem] w-[min(19rem,calc(100vw-10.5rem))] sm:h-16 sm:w-[22rem] md:h-[4.75rem] md:w-[26rem] lg:w-[28rem]",
+      w: 800,
+      h: 140,
     },
     footer: { box: "h-14 w-[13rem] sm:h-14 sm:w-[15rem]", w: 340, h: 72 },
     inline: { box: "h-14 w-[13rem] sm:h-14 sm:w-[15rem]", w: 340, h: 72 },
