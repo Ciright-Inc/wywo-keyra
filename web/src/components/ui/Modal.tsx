@@ -36,7 +36,7 @@ export function Modal({
             role="dialog"
             aria-modal="true"
             aria-label={title}
-            className="absolute left-1/2 top-1/2 w-[min(92vw,520px)] -translate-x-1/2 -translate-y-1/2 rounded-[var(--k-radius-sheet)] bg-kerya-surface p-6 shadow-[var(--k-shadow-hover)]"
+            className="absolute left-1/2 top-1/2 w-[min(92vw,520px)] -translate-x-1/2 -translate-y-1/2 rounded-[var(--keyra-radius-sheet)] bg-kerya-surface p-6 shadow-[var(--keyra-shadow-hover)]"
             initial={{ opacity: 0, y: 10, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.98 }}

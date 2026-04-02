@@ -36,15 +36,15 @@ export default function DashboardPage() {
             icon={<IconShieldCheck className="h-5 w-5" />}
           />
           <ul className="mt-6 space-y-3 text-[14px] text-kerya-text-2">
-            <li className="flex items-center justify-between rounded-[12px] bg-kerya-bg px-4 py-3">
+            <li className="flex items-center justify-between rounded-[var(--keyra-radius-card)] bg-kerya-bg px-4 py-3">
               <span>Verified on this device</span>
               <span>Today</span>
             </li>
-            <li className="flex items-center justify-between rounded-[12px] bg-kerya-bg px-4 py-3">
+            <li className="flex items-center justify-between rounded-[var(--keyra-radius-card)] bg-kerya-bg px-4 py-3">
               <span>New sign‑in protected</span>
               <span>Yesterday</span>
             </li>
-            <li className="flex items-center justify-between rounded-[12px] bg-kerya-bg px-4 py-3">
+            <li className="flex items-center justify-between rounded-[var(--keyra-radius-card)] bg-kerya-bg px-4 py-3">
               <span>Protection check completed</span>
               <span>This week</span>
             </li>
@@ -58,10 +58,10 @@ export default function DashboardPage() {
             icon={<IconDevices className="h-5 w-5" />}
           />
           <ul className="mt-6 space-y-3 text-[14px] text-kerya-text-2">
-            <li className="rounded-[12px] bg-kerya-bg px-4 py-3">
+            <li className="rounded-[var(--keyra-radius-card)] bg-kerya-bg px-4 py-3">
               iPhone • Active
             </li>
-            <li className="rounded-[12px] bg-kerya-bg px-4 py-3">
+            <li className="rounded-[var(--keyra-radius-card)] bg-kerya-bg px-4 py-3">
               MacBook • Active
             </li>
           </ul>

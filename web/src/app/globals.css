@@ -1,45 +1,30 @@
 @import "tailwindcss";
 
+/**
+ * KEYRA — locked palette. Only these six hex values appear as literals.
+ * All other colors: rgba() derived from exact sRGB of those hex values.
+ */
 :root {
-  /* KEYRA Global — official palette (only these six hex values) */
-  --keyra-blue: #0b1f2a;
-  --keyra-bg: #f7f9fa;
-  --keyra-text: #1a1a1a;
-  --keyra-text-secondary: #5a6b7a;
-  --keyra-accent: #2fbf9f;
-  --keyra-white: #ffffff;
+  --keyra-blue: #0B1F2A;
+  --keyra-bg: #F7F9FA;
+  --keyra-text: #1A1A1A;
+  --keyra-text-secondary: #5A6B7A;
+  --keyra-accent: #2FBF9F;
+  --keyra-white: #FFFFFF;
 
-  /* Derived — reference KEYRA variables only */
-  --keyra-border: color-mix(in srgb, var(--keyra-blue) 12%, transparent);
-  --keyra-ring: color-mix(in srgb, var(--keyra-accent) 18%, transparent);
-  --keyra-accent-soft: color-mix(in srgb, var(--keyra-accent) 12%, transparent);
-  --keyra-overlay: color-mix(in srgb, var(--keyra-blue) 25%, transparent);
-  --keyra-hover-border: color-mix(in srgb, var(--keyra-blue) 22%, transparent);
-  --keyra-hover-fill: color-mix(in srgb, var(--keyra-blue) 6%, transparent);
-  --keyra-shadow-card: 0 4px 12px
-    color-mix(in srgb, var(--keyra-text) 4%, transparent);
-  --keyra-shadow-hover: 0 6px 18px
-    color-mix(in srgb, var(--keyra-text) 6%, transparent);
+  /* Borders, fills, focus: rgba from rgb(11,31,42), rgb(47,191,159), rgb(26,26,26) */
+  --keyra-border: rgba(11, 31, 42, 0.12);
+  --keyra-ring: rgba(47, 191, 159, 0.18);
+  --keyra-accent-soft: rgba(47, 191, 159, 0.12);
+  --keyra-overlay: rgba(11, 31, 42, 0.25);
+  --keyra-hover-border: rgba(11, 31, 42, 0.22);
+  --keyra-hover-fill: rgba(11, 31, 42, 0.06);
+  --keyra-shadow-card: 0 4px 12px rgba(26, 26, 26, 0.04);
+  --keyra-shadow-hover: 0 6px 18px rgba(26, 26, 26, 0.06);
 
   --keyra-radius-card: 12px;
   --keyra-radius-sheet: 16px;
   --keyra-radius-pill: 999px;
-
-  /* Legacy aliases (existing components) */
-  --k-primary: var(--keyra-blue);
-  --k-accent: var(--keyra-accent);
-  --k-bg: var(--keyra-bg);
-  --k-surface: var(--keyra-white);
-  --k-text: var(--keyra-text);
-  --k-text-2: var(--keyra-text-secondary);
-  --k-border: var(--keyra-border);
-  --k-ring: var(--keyra-ring);
-  --k-shadow-card: var(--keyra-shadow-card);
-  --k-shadow-hover: var(--keyra-shadow-hover);
-  --k-accent-soft: var(--keyra-accent-soft);
-  --k-radius-card: var(--keyra-radius-card);
-  --k-radius-sheet: var(--keyra-radius-sheet);
-  --k-radius-pill: var(--keyra-radius-pill);
 }
 
 @theme inline {

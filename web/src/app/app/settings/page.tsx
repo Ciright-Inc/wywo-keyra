@@ -67,10 +67,10 @@ export default function SettingsPage() {
         <Card>
           <CardHeader title="Devices" description="Manage where you’re protected." />
           <ul className="mt-6 space-y-3 text-[14px] text-kerya-text-2">
-            <li className="rounded-[12px] bg-kerya-bg px-4 py-3">
+            <li className="rounded-[var(--keyra-radius-card)] bg-kerya-bg px-4 py-3">
               iPhone • Active
             </li>
-            <li className="rounded-[12px] bg-kerya-bg px-4 py-3">
+            <li className="rounded-[var(--keyra-radius-card)] bg-kerya-bg px-4 py-3">
               MacBook • Active
             </li>
           </ul>

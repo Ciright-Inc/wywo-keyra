@@ -38,7 +38,7 @@ function TrustBlock({
     <FadeIn>
       <div
         id={id}
-        className="kerya-card rounded-[var(--k-radius-card)] p-5 sm:p-7 md:p-8"
+        className="kerya-card rounded-[var(--keyra-radius-card)] p-5 sm:p-7 md:p-8"
       >
         <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-primary sm:text-4xl md:text-[2.75rem] md:leading-tight">
           {question}
@@ -226,7 +226,7 @@ export function HomeContent() {
 
       <SectionShell id="get-started" className="pb-24 sm:pb-32">
         <FadeIn>
-          <div className="overflow-hidden rounded-[var(--k-radius-sheet)] bg-kerya-primary px-4 py-12 text-center text-kerya-surface sm:px-10 sm:py-16 md:px-12 md:py-20">
+          <div className="overflow-hidden rounded-[var(--keyra-radius-sheet)] bg-kerya-primary px-4 py-12 text-center text-kerya-surface sm:px-10 sm:py-16 md:px-12 md:py-20">
             <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-surface sm:text-4xl md:text-[2.75rem]">
               Be Protected Online
             </h2>

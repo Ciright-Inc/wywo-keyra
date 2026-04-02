@@ -12,7 +12,7 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const base =
-  "inline-flex items-center justify-center select-none whitespace-nowrap rounded-[var(--k-radius-pill)] px-5 py-3 text-[16px] font-semibold transition duration-200 focus-visible:outline-none focus-visible:kerya-focus disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center justify-center select-none whitespace-nowrap rounded-[var(--keyra-radius-pill)] px-5 py-3 text-[16px] font-semibold transition duration-200 focus-visible:outline-none focus-visible:kerya-focus disabled:opacity-50 disabled:pointer-events-none";
 
 const variants: Record<Variant, string> = {
   primary:

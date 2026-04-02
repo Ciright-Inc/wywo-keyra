@@ -62,7 +62,7 @@ export default function FamilyPage() {
             {members.map((m) => (
               <li
                 key={m.name}
-                className="flex items-center justify-between rounded-[12px] bg-kerya-bg px-4 py-3"
+                className="flex items-center justify-between rounded-[var(--keyra-radius-card)] bg-kerya-bg px-4 py-3"
               >
                 <span className="text-[14px] font-medium text-kerya-text">
                   {m.name}
