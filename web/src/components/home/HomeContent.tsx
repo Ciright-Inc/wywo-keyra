@@ -20,7 +20,7 @@ function SectionShell({
   return (
     <section
       id={id}
-      className={`scroll-mt-32 px-4 py-20 sm:px-6 sm:py-24 ${className}`}
+      className={`scroll-mt-24 px-4 py-20 sm:px-6 sm:py-24 ${className}`}
     >
       <div className="mx-auto max-w-6xl">{children}</div>
     </section>
@@ -30,7 +30,7 @@ function SectionShell({
 export function HomeContent() {
   return (
     <>
-      <section className="relative min-h-[92vh] scroll-mt-32 overflow-hidden border-b border-kerya-border bg-kerya-bg px-4 py-20 sm:px-6 sm:py-24">
+      <section className="relative min-h-[92vh] scroll-mt-24 overflow-hidden border-b border-kerya-border bg-kerya-bg px-4 py-20 sm:px-6 sm:py-24">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/image.png')" }}
