@@ -32,7 +32,7 @@ export function KeyraLogo({
         className={`relative flex shrink-0 items-center justify-center overflow-hidden ${logoSizes[variant].box}`}
       >
         <Image
-          src="/kerya-logo.png"
+          src="/keyra-logo.png"
           alt="KEYRA"
           width={logoSizes[variant].w}
           height={logoSizes[variant].h}

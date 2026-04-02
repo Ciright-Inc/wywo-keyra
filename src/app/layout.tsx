@@ -19,9 +19,9 @@ export const metadata: Metadata = {
     "KEYRA is global protection you can feel — calm, simple, and trusted for people, families, and businesses.",
   metadataBase: new URL("https://keyra.ie"),
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/keyra-logo.png",
+    shortcut: "/keyra-logo.png",
+    apple: "/keyra-logo.png",
   },
   openGraph: {
     title: "KEYRA — Be Protected Online",

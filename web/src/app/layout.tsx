@@ -19,9 +19,9 @@ export const metadata: Metadata = {
     "KERYA makes protection simple for you, your family, and everything that matters.",
   metadataBase: new URL("https://keyra.ie"),
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/keyra-logo.png",
+    shortcut: "/keyra-logo.png",
+    apple: "/keyra-logo.png",
   },
   openGraph: {
     title: "KERYA — Protected",
