@@ -33,7 +33,7 @@ export default function HowItWorksPage() {
     <div className="bg-kerya-bg px-4 py-12 sm:px-6 sm:py-20 md:py-24">
       <div className="mx-auto max-w-3xl">
         <FadeIn>
-          <h1 className="text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem]">
+          <h1 className="text-balance text-3xl font-semibold tracking-tight text-kerya-primary sm:text-4xl md:text-[2.75rem]">
             How KEYRA works
           </h1>
           <p className="mt-6 text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
@@ -49,7 +49,7 @@ export default function HowItWorksPage() {
                 <span className="text-[14px] font-semibold uppercase tracking-wide text-kerya-accent">
                   Step {i + 1}
                 </span>
-                <h2 className="mt-2 text-xl font-semibold text-kerya-text sm:text-2xl">
+                <h2 className="mt-2 text-xl font-semibold text-kerya-primary sm:text-2xl">
                   {s.title}
                 </h2>
                 <p className="mt-3 text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px]">
@@ -61,7 +61,7 @@ export default function HowItWorksPage() {
         </ol>
 
         <FadeIn className="mt-12 text-center">
-          <p className="font-medium text-kerya-text">Ready to be protected?</p>
+          <p className="font-medium text-kerya-primary">Ready to be protected?</p>
           <Link href="/#get-started" className="mt-4 inline-flex">
             <Button>Get protected</Button>
           </Link>

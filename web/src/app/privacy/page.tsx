@@ -3,7 +3,7 @@ import { FadeIn } from "@/components/motion/FadeIn";
 
 export const metadata: Metadata = {
   title: "Privacy",
-  description: "KERYA privacy overview — respectful, clear, and user-first.",
+  description: "KEYRA privacy overview — respectful, clear, and user-first.",
 };
 
 export default function PrivacyPage() {
@@ -11,11 +11,11 @@ export default function PrivacyPage() {
     <div className="px-4 py-16 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-3xl">
         <FadeIn>
-          <h1 className="text-4xl font-semibold tracking-tight text-kerya-text">
+          <h1 className="text-4xl font-semibold tracking-tight text-keyra-primary">
             Privacy
           </h1>
-          <p className="mt-6 leading-relaxed text-kerya-text-2">
-            KERYA is built with privacy-respecting principles. A full policy will
+          <p className="mt-6 leading-relaxed text-keyra-muted">
+            KEYRA is built with privacy-respecting principles. A full policy will
             appear here before launch. In the meantime, our commitment is
             simple: collect only what helps protect your identity, explain it in
             plain language, and give you meaningful control.

@@ -23,12 +23,12 @@ export function CardHeader({
   return (
     <div className="flex items-start gap-4">
       {icon ? (
-        <div className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-kerya-bg text-kerya-primary">
+        <div className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-[color:var(--keyra-hover-fill)] text-kerya-primary">
           {icon}
         </div>
       ) : null}
       <div className="min-w-0">
-        <p className="text-[18px] font-semibold text-kerya-text">{title}</p>
+        <p className="text-[18px] font-semibold text-kerya-primary">{title}</p>
         {description ? (
           <p className="mt-1 text-[14px] leading-relaxed text-kerya-text-2">
             {description}

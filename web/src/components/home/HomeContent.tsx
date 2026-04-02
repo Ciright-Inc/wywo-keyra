@@ -40,7 +40,7 @@ function TrustBlock({
         id={id}
         className="kerya-card rounded-[var(--k-radius-card)] p-5 sm:p-7 md:p-8"
       >
-        <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem] md:leading-tight">
+        <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-primary sm:text-4xl md:text-[2.75rem] md:leading-tight">
           {question}
         </h2>
         <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
@@ -64,7 +64,7 @@ export function HomeContent() {
         <div className="relative mx-auto flex min-h-[60vh] w-full min-w-0 max-w-6xl items-center sm:min-h-[72vh]">
           <div className="w-full min-w-0 max-w-2xl">
             <motion.h1
-              className="text-balance text-4xl font-bold leading-[1.1] tracking-tight text-kerya-text sm:text-5xl md:text-6xl lg:text-[3.5rem] lg:leading-[1.08]"
+              className="text-balance text-4xl font-bold leading-[1.1] tracking-tight text-kerya-primary sm:text-5xl md:text-6xl lg:text-[3.5rem] lg:leading-[1.08]"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55 }}
@@ -104,7 +104,7 @@ export function HomeContent() {
           <p className="text-[14px] font-medium uppercase tracking-wider text-kerya-primary">
             Protection first
           </p>
-          <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem]">
+          <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-kerya-primary sm:text-4xl md:text-[2.75rem]">
             Simple protection for everyday life
           </h2>
           <p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
@@ -161,7 +161,7 @@ export function HomeContent() {
 
       <SectionShell id="reassurance" className="bg-kerya-surface">
         <FadeIn>
-          <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem]">
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-primary sm:text-4xl md:text-[2.75rem]">
             You’re protected
           </h2>
           <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
@@ -184,7 +184,7 @@ export function HomeContent() {
 
       <SectionShell id="how-it-works" className="bg-kerya-bg">
         <FadeIn>
-          <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem]">
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-primary sm:text-4xl md:text-[2.75rem]">
             Protection at every step
           </h2>
           <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
@@ -212,7 +212,7 @@ export function HomeContent() {
                 <span className="text-[14px] font-semibold text-kerya-accent">
                   Step {item.step}
                 </span>
-                <h3 className="mt-3 text-xl font-semibold text-kerya-text sm:text-2xl">
+                <h3 className="mt-3 text-xl font-semibold text-kerya-primary sm:text-2xl">
                   {item.title}
                 </h3>
                 <p className="mt-2 text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px]">
@@ -227,7 +227,7 @@ export function HomeContent() {
       <SectionShell id="get-started" className="pb-24 sm:pb-32">
         <FadeIn>
           <div className="overflow-hidden rounded-[var(--k-radius-sheet)] bg-kerya-primary px-4 py-12 text-center text-kerya-surface sm:px-10 sm:py-16 md:px-12 md:py-20">
-            <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl md:text-[2.75rem]">
+            <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-surface sm:text-4xl md:text-[2.75rem]">
               Be Protected Online
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-kerya-surface sm:text-[16px] md:text-[18px]">

@@ -54,11 +54,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               className={cn(
                 "rounded-[var(--k-radius-card)] border bg-kerya-surface p-4 shadow-[var(--k-shadow-card)]",
                 t.kind === "success" && "border-kerya-accent",
-                t.kind === "error" && "border-kerya-error",
+                t.kind === "error" && "border-kerya-primary",
                 t.kind === "info" && "border-kerya-border",
               )}
             >
-              <p className="text-[14px] font-semibold text-kerya-text">
+              <p className="text-[14px] font-semibold text-kerya-primary">
                 {t.title}
               </p>
               {t.message ? (

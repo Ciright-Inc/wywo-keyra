@@ -32,8 +32,8 @@ export function HeroVisual() {
       >
         <defs>
           <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="100%" stopColor="#FFFFFF" />
+            <stop offset="0%" stopColor="var(--keyra-white)" />
+            <stop offset="100%" stopColor="var(--keyra-white)" />
           </linearGradient>
         </defs>
         <ellipse cx="200" cy="170" rx="148" ry="106" fill="url(#heroGrad)" />
@@ -43,7 +43,7 @@ export function HeroVisual() {
           rx="148"
           ry="106"
           fill="none"
-          stroke="#2FBF9F"
+          stroke="var(--keyra-accent)"
           strokeWidth="2"
         />
 
@@ -58,12 +58,19 @@ export function HeroVisual() {
             width="90"
             height="130"
             rx="12"
-            fill="#FFFFFF"
-            stroke="#5A6B7A"
+            fill="var(--keyra-white)"
+            stroke="var(--keyra-text-secondary)"
             strokeWidth="2"
           />
-          <rect x="170" y="108" width="60" height="88" rx="6" fill="#0B1F2A" />
-          <circle cx="200" cy="208" r="4" fill="#5A6B7A" />
+          <rect
+            x="170"
+            y="108"
+            width="60"
+            height="88"
+            rx="6"
+            fill="var(--keyra-blue)"
+          />
+          <circle cx="200" cy="208" r="4" fill="var(--keyra-text-secondary)" />
         </motion.g>
 
         {/* Simple family marks */}
@@ -72,20 +79,34 @@ export function HeroVisual() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.25 }}
         >
-          <circle cx="110" cy="210" r="14" fill="#FFFFFF" stroke="#5A6B7A" strokeWidth="2" />
+          <circle
+            cx="110"
+            cy="210"
+            r="14"
+            fill="var(--keyra-white)"
+            stroke="var(--keyra-text-secondary)"
+            strokeWidth="2"
+          />
           <path
             d="M86 254c4-20 14-30 24-30s20 10 24 30"
             fill="none"
-            stroke="#5A6B7A"
+            stroke="var(--keyra-text-secondary)"
             strokeWidth="2"
             strokeLinecap="round"
           />
 
-          <circle cx="290" cy="212" r="10" fill="#FFFFFF" stroke="#5A6B7A" strokeWidth="2" />
+          <circle
+            cx="290"
+            cy="212"
+            r="10"
+            fill="var(--keyra-white)"
+            stroke="var(--keyra-text-secondary)"
+            strokeWidth="2"
+          />
           <path
             d="M272 244c3-14 10-21 18-21s15 7 18 21"
             fill="none"
-            stroke="#5A6B7A"
+            stroke="var(--keyra-text-secondary)"
             strokeWidth="2"
             strokeLinecap="round"
           />
@@ -94,7 +115,7 @@ export function HeroVisual() {
         <motion.path
           d="M200 48 L248 72 L248 118 Q248 150 200 178 Q152 150 152 118 L152 72 Z"
           fill="none"
-          stroke="#2FBF9F"
+          stroke="var(--keyra-accent)"
           strokeWidth="2.5"
           strokeLinejoin="round"
           initial={{ pathLength: 0, opacity: 0 }}
@@ -104,7 +125,7 @@ export function HeroVisual() {
         <motion.path
           d="M180 108 L195 125 L225 88"
           fill="none"
-          stroke="#2FBF9F"
+          stroke="var(--keyra-accent)"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"

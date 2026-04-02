@@ -7,11 +7,11 @@ export default function SignupPage() {
   return (
     <div className="bg-kerya-bg px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-[520px]">
-        <h1 className="text-[36px] font-bold tracking-tight text-kerya-text sm:text-[44px]">
+        <h1 className="text-[36px] font-bold tracking-tight text-kerya-primary sm:text-[44px]">
           Create your account
         </h1>
         <p className="mt-3 text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-          Set up KERYA once. Feel protected every day.
+          Set up KEYRA once. Feel protected every day.
         </p>
 
         <Card className="mt-10 p-7">

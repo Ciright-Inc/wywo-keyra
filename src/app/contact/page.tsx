@@ -13,10 +13,10 @@ export default function ContactPage() {
       <div className="mx-auto max-w-3xl">
         <FadeIn>
           <div className="text-center">
-            <h1 className="text-balance text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl">
+            <h1 className="text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl">
               We’re here to help
             </h1>
-            <p className="mt-3 text-[18px] font-medium text-keyra-ink">
+            <p className="mt-3 text-[18px] font-medium text-keyra-primary">
               Be Protected Online
             </p>
             <p className="mt-4 text-base leading-relaxed text-keyra-muted sm:text-lg">
@@ -32,7 +32,7 @@ export default function ContactPage() {
               <div className="sm:col-span-2">
                 <label
                   htmlFor="name"
-                  className="mb-2 block text-sm font-medium text-keyra-ink"
+                  className="mb-2 block text-sm font-medium text-keyra-primary"
                 >
                   Name
                 </label>
@@ -50,7 +50,7 @@ export default function ContactPage() {
               <div>
                 <label
                   htmlFor="email"
-                  className="mb-2 block text-sm font-medium text-keyra-ink"
+                  className="mb-2 block text-sm font-medium text-keyra-primary"
                 >
                   Email
                 </label>
@@ -68,7 +68,7 @@ export default function ContactPage() {
               <div>
                 <label
                   htmlFor="phone"
-                  className="mb-2 block text-sm font-medium text-keyra-ink"
+                  className="mb-2 block text-sm font-medium text-keyra-primary"
                 >
                   Phone number
                 </label>
@@ -85,7 +85,7 @@ export default function ContactPage() {
               <div className="sm:col-span-2">
                 <label
                   htmlFor="subject"
-                  className="mb-2 block text-sm font-medium text-keyra-ink"
+                  className="mb-2 block text-sm font-medium text-keyra-primary"
                 >
                   Subject
                 </label>
@@ -110,7 +110,7 @@ export default function ContactPage() {
               <div className="sm:col-span-2">
                 <label
                   htmlFor="message"
-                  className="mb-2 block text-sm font-medium text-keyra-ink"
+                  className="mb-2 block text-sm font-medium text-keyra-primary"
                 >
                   Message
                 </label>

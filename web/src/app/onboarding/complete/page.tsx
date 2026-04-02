@@ -7,11 +7,11 @@ export default function OnboardingCompletePage() {
   return (
     <div className="bg-kerya-bg px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-[720px]">
-        <h1 className="text-[36px] font-bold tracking-tight text-kerya-text sm:text-[44px]">
+        <h1 className="text-[36px] font-bold tracking-tight text-kerya-primary sm:text-[44px]">
           You’re protected
         </h1>
         <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-          KERYA is now active. You don’t need to think about it — just enjoy the
+          KEYRA is now active. You don’t need to think about it — just enjoy the
           feeling of being protected.
         </p>
 

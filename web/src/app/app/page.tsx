@@ -11,11 +11,11 @@ export default function DashboardPage() {
           <p className="text-[14px] font-medium uppercase tracking-wider text-kerya-text-2">
             Status
           </p>
-          <h1 className="mt-2 text-[36px] font-bold tracking-tight text-kerya-text sm:text-[44px]">
+          <h1 className="mt-2 text-[36px] font-bold tracking-tight text-kerya-primary sm:text-[44px]">
             Protected
           </h1>
           <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-            KERYA is active. Your protection is on — quietly and consistently.
+            KEYRA is active. Your protection is on — quietly and consistently.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">

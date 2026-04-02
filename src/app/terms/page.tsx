@@ -11,7 +11,7 @@ export default function TermsPage() {
     <div className="px-4 py-16 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-3xl">
         <FadeIn>
-          <h1 className="text-4xl font-semibold tracking-tight text-keyra-ink">
+          <h1 className="text-4xl font-semibold tracking-tight text-keyra-primary">
             Terms
           </h1>
           <p className="mt-6 leading-relaxed text-keyra-muted">

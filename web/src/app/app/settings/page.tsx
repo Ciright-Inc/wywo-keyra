@@ -13,7 +13,7 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <h1 className="text-[36px] font-bold tracking-tight text-kerya-text sm:text-[44px]">
+      <h1 className="text-[36px] font-bold tracking-tight text-kerya-primary sm:text-[44px]">
         Settings
       </h1>
       <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
@@ -100,7 +100,7 @@ export default function SettingsPage() {
         }
       >
         <p className="text-[16px] leading-relaxed text-kerya-text-2">
-          KERYA keeps protection on in the background. You can verify when you
+          KEYRA keeps protection on in the background. You can verify when you
           want, review devices, and manage family protection — without digging
           through technical settings.
         </p>

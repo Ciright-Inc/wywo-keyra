@@ -1,67 +1,93 @@
 @import "tailwindcss";
 
 :root {
-  /* KERYA design tokens */
-  --k-primary: #0b1f2a;
-  --k-accent: #2fbf9f;
-  --k-bg: #f7f9fa;
-  --k-surface: #ffffff;
-  --k-text: #1a1a1a;
-  --k-text-2: #5a6b7a;
-  --k-error: #e85d5d;
+  /* KEYRA Global — official palette (only these six hex values) */
+  --keyra-blue: #0b1f2a;
+  --keyra-bg: #f7f9fa;
+  --keyra-text: #1a1a1a;
+  --keyra-text-secondary: #5a6b7a;
+  --keyra-accent: #2fbf9f;
+  --keyra-white: #ffffff;
 
-  /* UI primitives (soft, calm depth) */
-  --k-border: rgb(11 31 42 / 12%);
-  --k-ring: rgb(47 191 159 / 18%);
+  /* Derived — reference KEYRA variables only */
+  --keyra-border: color-mix(in srgb, var(--keyra-blue) 12%, transparent);
+  --keyra-ring: color-mix(in srgb, var(--keyra-accent) 18%, transparent);
+  --keyra-accent-soft: color-mix(in srgb, var(--keyra-accent) 12%, transparent);
+  --keyra-overlay: color-mix(in srgb, var(--keyra-blue) 25%, transparent);
+  --keyra-hover-border: color-mix(in srgb, var(--keyra-blue) 22%, transparent);
+  --keyra-hover-fill: color-mix(in srgb, var(--keyra-blue) 6%, transparent);
+  --keyra-shadow-card: 0 4px 12px
+    color-mix(in srgb, var(--keyra-text) 4%, transparent);
+  --keyra-shadow-hover: 0 6px 18px
+    color-mix(in srgb, var(--keyra-text) 6%, transparent);
 
-  --k-radius-card: 12px;
-  --k-radius-sheet: 16px;
-  --k-radius-pill: 999px;
+  --keyra-radius-card: 12px;
+  --keyra-radius-sheet: 16px;
+  --keyra-radius-pill: 999px;
 
-  --k-shadow-card: 0px 4px 12px rgba(0, 0, 0, 0.04);
-  --k-shadow-hover: 0px 6px 18px rgba(0, 0, 0, 0.06);
+  /* Legacy aliases (existing components) */
+  --k-primary: var(--keyra-blue);
+  --k-accent: var(--keyra-accent);
+  --k-bg: var(--keyra-bg);
+  --k-surface: var(--keyra-white);
+  --k-text: var(--keyra-text);
+  --k-text-2: var(--keyra-text-secondary);
+  --k-border: var(--keyra-border);
+  --k-ring: var(--keyra-ring);
+  --k-shadow-card: var(--keyra-shadow-card);
+  --k-shadow-hover: var(--keyra-shadow-hover);
+  --k-accent-soft: var(--keyra-accent-soft);
+  --k-radius-card: var(--keyra-radius-card);
+  --k-radius-sheet: var(--keyra-radius-sheet);
+  --k-radius-pill: var(--keyra-radius-pill);
 }
 
 @theme inline {
-  /* Colors */
-  --color-kerya-primary: var(--k-primary);
-  --color-kerya-accent: var(--k-accent);
-  --color-kerya-bg: var(--k-bg);
-  --color-kerya-surface: var(--k-surface);
-  --color-kerya-text: var(--k-text);
-  --color-kerya-text-2: var(--k-text-2);
-  --color-kerya-error: var(--k-error);
-  --color-kerya-border: var(--k-border);
-  --color-kerya-ring: var(--k-ring);
+  --color-kerya-primary: var(--keyra-blue);
+  --color-kerya-accent: var(--keyra-accent);
+  --color-kerya-bg: var(--keyra-bg);
+  --color-kerya-surface: var(--keyra-white);
+  --color-kerya-text: var(--keyra-text);
+  --color-kerya-text-2: var(--keyra-text-secondary);
+  --color-kerya-border: var(--keyra-border);
+  --color-kerya-ring: var(--keyra-ring);
 
-  /* Typography */
+  --color-keyra-primary: var(--keyra-blue);
+  --color-keyra-accent: var(--keyra-accent);
+  --color-keyra-bg: var(--keyra-bg);
+  --color-keyra-surface: var(--keyra-white);
+  --color-keyra-ink: var(--keyra-text);
+  --color-keyra-muted: var(--keyra-text-secondary);
+  --color-keyra-border: var(--keyra-border);
+  --color-keyra-accent-soft: var(--keyra-accent-soft);
+  --color-kerya-accent-soft: var(--keyra-accent-soft);
+
   --font-sans: var(--font-inter);
 }
 
 body {
-  background: var(--k-bg);
-  color: var(--k-text);
+  background: var(--keyra-bg);
+  color: var(--keyra-text);
   font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, system-ui, sans-serif;
   overflow-x: clip;
 }
 
-/* Utilities */
 .kerya-card {
-  border-radius: var(--k-radius-card);
-  background: var(--k-surface);
-  border: 1px solid var(--k-border);
-  box-shadow: var(--k-shadow-card);
+  border-radius: var(--keyra-radius-card);
+  background: var(--keyra-white);
+  border: 1px solid var(--keyra-border);
+  box-shadow: var(--keyra-shadow-card);
 }
 
 .kerya-card:hover {
-  box-shadow: var(--k-shadow-hover);
+  box-shadow: var(--keyra-shadow-hover);
 }
 
 .kerya-focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px var(--k-ring);
+  box-shadow: 0 0 0 4px var(--keyra-ring);
 }
 
 @keyframes keyra-float {

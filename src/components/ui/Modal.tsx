@@ -29,7 +29,7 @@ export function Modal({
           <button
             type="button"
             aria-label="Close"
-            className="absolute inset-0 bg-[rgb(11_31_42_/25%)]"
+            className="absolute inset-0 bg-[color:var(--keyra-overlay)]"
             onClick={onClose}
           />
           <motion.div
@@ -43,7 +43,7 @@ export function Modal({
             transition={{ duration: 0.2 }}
           >
             {title ? (
-              <p className="text-[18px] font-semibold text-kerya-text">
+              <p className="text-[18px] font-semibold text-kerya-primary">
                 {title}
               </p>
             ) : null}

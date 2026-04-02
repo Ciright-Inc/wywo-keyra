@@ -6,18 +6,18 @@ export function HeroVisual() {
   return (
     <div className="relative mx-auto aspect-[4/3] w-full max-w-md sm:max-w-lg">
       <div
-        className="animate-keyra-pulse-soft absolute inset-[12%] rounded-[40%] bg-keyra-accent/10 blur-3xl"
+        className="animate-keyra-pulse-soft absolute inset-[12%] rounded-[40%] bg-kerya-bg"
         aria-hidden
       />
       <motion.div
-        className="animate-keyra-float absolute right-[8%] top-[10%] h-24 w-24 rounded-full bg-keyra-accent/20 blur-2xl"
+        className="animate-keyra-float absolute right-[8%] top-[10%] h-24 w-24 rounded-full bg-kerya-bg"
         aria-hidden
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.9, delay: 0.2 }}
       />
       <motion.div
-        className="animate-keyra-float-delayed absolute bottom-[18%] left-[5%] h-20 w-20 rounded-full bg-keyra-muted/25 blur-2xl"
+        className="animate-keyra-float-delayed absolute bottom-[18%] left-[5%] h-20 w-20 rounded-full bg-kerya-bg"
         aria-hidden
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -28,20 +28,24 @@ export function HeroVisual() {
         viewBox="0 0 400 320"
         className="relative z-10 h-full w-full"
         role="img"
-        aria-label="Calm illustration of someone using a device within a gentle protective glow"
+        aria-label="Calm illustration of a person and family protected"
       >
         <defs>
           <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FEFEFE" />
-            <stop offset="100%" stopColor="#FEFEFE" />
+            <stop offset="0%" stopColor="var(--keyra-white)" />
+            <stop offset="100%" stopColor="var(--keyra-white)" />
           </linearGradient>
-          <radialGradient id="shieldGlow" cx="50%" cy="45%" r="55%">
-            <stop offset="0%" stopColor="#061E32" stopOpacity="0.22" />
-            <stop offset="70%" stopColor="#061E32" stopOpacity="0" />
-          </radialGradient>
         </defs>
-        <ellipse cx="200" cy="170" rx="140" ry="100" fill="url(#heroGrad)" />
-        <ellipse cx="200" cy="155" rx="118" ry="88" fill="url(#shieldGlow)" />
+        <ellipse cx="200" cy="170" rx="148" ry="106" fill="url(#heroGrad)" />
+        <ellipse
+          cx="200"
+          cy="170"
+          rx="148"
+          ry="106"
+          fill="none"
+          stroke="var(--keyra-accent)"
+          strokeWidth="2"
+        />
 
         <motion.g
           initial={{ opacity: 0, y: 16 }}
@@ -54,18 +58,64 @@ export function HeroVisual() {
             width="90"
             height="130"
             rx="12"
-            fill="#FEFEFE"
-            stroke="#393E49"
+            fill="var(--keyra-white)"
+            stroke="var(--keyra-text-secondary)"
             strokeWidth="2"
           />
-          <rect x="170" y="108" width="60" height="88" rx="6" fill="#061E32" />
-          <circle cx="200" cy="208" r="4" fill="#393E49" />
+          <rect
+            x="170"
+            y="108"
+            width="60"
+            height="88"
+            rx="6"
+            fill="var(--keyra-blue)"
+          />
+          <circle cx="200" cy="208" r="4" fill="var(--keyra-text-secondary)" />
+        </motion.g>
+
+        {/* Simple family marks */}
+        <motion.g
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.25 }}
+        >
+          <circle
+            cx="110"
+            cy="210"
+            r="14"
+            fill="var(--keyra-white)"
+            stroke="var(--keyra-text-secondary)"
+            strokeWidth="2"
+          />
+          <path
+            d="M86 254c4-20 14-30 24-30s20 10 24 30"
+            fill="none"
+            stroke="var(--keyra-text-secondary)"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+
+          <circle
+            cx="290"
+            cy="212"
+            r="10"
+            fill="var(--keyra-white)"
+            stroke="var(--keyra-text-secondary)"
+            strokeWidth="2"
+          />
+          <path
+            d="M272 244c3-14 10-21 18-21s15 7 18 21"
+            fill="none"
+            stroke="var(--keyra-text-secondary)"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </motion.g>
 
         <motion.path
           d="M200 48 L248 72 L248 118 Q248 150 200 178 Q152 150 152 118 L152 72 Z"
           fill="none"
-          stroke="#061E32"
+          stroke="var(--keyra-accent)"
           strokeWidth="2.5"
           strokeLinejoin="round"
           initial={{ pathLength: 0, opacity: 0 }}
@@ -75,7 +125,7 @@ export function HeroVisual() {
         <motion.path
           d="M180 108 L195 125 L225 88"
           fill="none"
-          stroke="#061E32"
+          stroke="var(--keyra-accent)"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"

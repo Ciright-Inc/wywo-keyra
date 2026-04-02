@@ -27,7 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-full px-3 py-2 text-[13px] font-medium text-kerya-text-2 transition hover:bg-kerya-bg hover:text-kerya-text sm:px-4 sm:text-[14px]"
+                className="rounded-full px-3 py-2 text-[13px] font-medium text-kerya-primary transition hover:bg-kerya-bg hover:text-kerya-text-2 sm:px-4 sm:text-[14px]"
               >
                 {l.label}
               </Link>

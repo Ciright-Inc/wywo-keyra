@@ -50,10 +50,10 @@ export default function TrustPage() {
               <p className="text-[14px] font-semibold uppercase tracking-widest text-keyra-accent">
                 Trust
               </p>
-              <p className="mt-4 text-balance text-xl font-semibold tracking-tight text-keyra-ink sm:text-2xl md:text-[28px]">
+              <p className="mt-4 text-balance text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl md:text-[28px]">
                 Be Protected Online
               </p>
-              <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl md:text-[2.75rem]">
+              <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
                 Why KEYRA feels calm
               </h1>
               <p className="mt-6 text-[16px] leading-relaxed text-keyra-muted sm:text-[18px]">
@@ -75,7 +75,7 @@ export default function TrustPage() {
                 key={item.label}
                 className="rounded-[16px] border border-keyra-border/20 bg-keyra-surface px-5 py-4 text-center"
               >
-                <p className="text-lg font-semibold text-keyra-ink">
+                <p className="text-lg font-semibold text-keyra-primary">
                   {item.label}
                 </p>
                 <p className="mt-1 text-[14px] text-keyra-muted">{item.blurb}</p>
@@ -90,7 +90,7 @@ export default function TrustPage() {
           <FadeIn>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h2 className="text-balance text-2xl font-semibold tracking-tight text-keyra-ink sm:text-3xl md:text-[2.25rem]">
+                <h2 className="text-balance text-2xl font-semibold tracking-tight text-keyra-primary sm:text-3xl md:text-[2.25rem]">
                   What we hold ourselves to
                 </h2>
                 <p className="mt-2 max-w-xl text-[16px] text-keyra-muted">
@@ -100,7 +100,7 @@ export default function TrustPage() {
               </div>
               <Link
                 href="/contact"
-                className="inline-flex shrink-0 rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-[14px] font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
+                className="inline-flex shrink-0 rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-[14px] font-semibold text-keyra-primary transition hover:border-keyra-accent/35"
               >
                 Questions? Contact us
               </Link>
@@ -121,7 +121,7 @@ export default function TrustPage() {
                       </span>
                     </div>
                     <div className="min-w-0 flex-1 border-t border-keyra-border/20 pt-5 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0">
-                      <h3 className="text-xl font-semibold text-keyra-ink">
+                      <h3 className="text-xl font-semibold text-keyra-primary">
                         {p.title}
                       </h3>
                       <p className="mt-3 text-[14px] leading-relaxed text-keyra-muted sm:text-base">
@@ -145,7 +145,7 @@ export default function TrustPage() {
           <FadeIn>
             <div className="flex flex-col items-start justify-between gap-8 rounded-[16px] border border-keyra-border/20 bg-keyra-surface px-8 py-10 sm:flex-row sm:items-center sm:px-10">
               <div>
-                <p className="text-lg font-semibold text-keyra-ink">
+                <p className="text-lg font-semibold text-keyra-primary">
                   Protection is built in, not bolted on
                 </p>
                 <p className="mt-2 max-w-xl text-[14px] leading-relaxed text-keyra-muted sm:text-[16px]">

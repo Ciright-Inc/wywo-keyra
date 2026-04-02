@@ -29,7 +29,7 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-kerya-text-2 transition-colors hover:text-kerya-text"
+                className="relative whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-kerya-primary transition-colors hover:text-kerya-text-2"
               >
                 {item.label}
               </Link>

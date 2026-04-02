@@ -44,7 +44,7 @@ export function MobileNav() {
                   <Link
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className="block rounded-lg px-3 py-2 text-sm font-medium text-kerya-text hover:bg-kerya-surface"
+                    className="block rounded-lg px-3 py-2 text-sm font-medium text-kerya-primary hover:bg-kerya-surface"
                   >
                     {item.label}
                   </Link>

@@ -81,7 +81,7 @@ export default function AboutPage() {
               <p className="text-[14px] font-semibold uppercase tracking-widest text-keyra-accent">
                 About KEYRA
               </p>
-              <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl md:text-[2.75rem] lg:text-5xl lg:leading-tight">
+              <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem] lg:text-5xl lg:leading-tight">
                 Be Protected Online
               </h1>
               <p className="mt-6 max-w-2xl text-[16px] leading-relaxed text-keyra-muted sm:text-[18px]">
@@ -92,7 +92,7 @@ export default function AboutPage() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/how-it-works"
-                  className="inline-flex rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-[14px] font-semibold text-keyra-ink transition hover:border-keyra-accent/35"
+                  className="inline-flex rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-[14px] font-semibold text-keyra-primary transition hover:border-keyra-accent/35"
                 >
                   How it works
                 </Link>
@@ -106,7 +106,7 @@ export default function AboutPage() {
             </FadeIn>
             <FadeIn className="relative rounded-[16px] border border-keyra-border/20 bg-keyra-bg p-8 lg:mb-1">
               <div className="relative space-y-4 text-[14px] leading-relaxed text-keyra-muted">
-                <p className="font-medium text-keyra-ink">What we believe</p>
+                <p className="font-medium text-keyra-primary">What we believe</p>
                 <ul className="space-y-3">
                   <li className="flex gap-3">
                     <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-keyra-accent" />
@@ -129,7 +129,7 @@ export default function AboutPage() {
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
         <FadeIn>
-          <h2 className="max-w-xl text-[28px] font-semibold tracking-tight text-keyra-ink sm:text-[36px]">
+          <h2 className="max-w-xl text-balance text-2xl font-semibold tracking-tight text-keyra-primary sm:text-3xl md:text-[2.25rem]">
             Our story, in four beats
           </h2>
           <p className="mt-3 max-w-2xl text-[16px] text-keyra-muted">
@@ -150,7 +150,7 @@ export default function AboutPage() {
                     {s.kicker}
                   </span>
                 </div>
-                <h3 className="mt-6 text-xl font-semibold text-keyra-ink">
+                <h3 className="mt-6 text-xl font-semibold text-keyra-primary">
                   {s.title}
                 </h3>
                 <p className="mt-3 flex-1 text-[14px] leading-relaxed text-keyra-muted sm:text-[16px]">
@@ -162,7 +162,7 @@ export default function AboutPage() {
         </div>
 
         <FadeIn className="mt-16 rounded-[16px] border border-keyra-border/20 bg-keyra-bg px-8 py-10 text-center sm:px-12">
-          <p className="text-lg font-semibold text-keyra-ink">
+          <p className="text-lg font-semibold text-keyra-primary">
             Protection comes first
           </p>
           <p className="mx-auto mt-2 max-w-lg text-[14px] leading-relaxed text-keyra-muted sm:text-[16px]">

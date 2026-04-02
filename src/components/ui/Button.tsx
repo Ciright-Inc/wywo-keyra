@@ -18,8 +18,9 @@ const variants: Record<Variant, string> = {
   primary:
     "bg-kerya-accent text-kerya-surface hover:opacity-95 active:opacity-90",
   secondary:
-    "bg-transparent text-kerya-primary border border-kerya-border hover:border-[rgb(11_31_42_/22%)]",
-  ghost: "bg-transparent text-kerya-primary hover:bg-[rgb(11_31_42_/6%)]",
+    "bg-transparent text-kerya-primary border border-kerya-border hover:border-[color:var(--keyra-hover-border)]",
+  ghost:
+    "bg-transparent text-kerya-primary hover:bg-[color:var(--keyra-hover-fill)]",
 };
 
 const sizes: Record<Size, string> = {
