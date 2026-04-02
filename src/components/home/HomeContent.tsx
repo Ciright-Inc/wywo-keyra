@@ -226,16 +226,16 @@ export function HomeContent() {
 
       <SectionShell id="get-started" className="pb-24 sm:pb-32">
         <FadeIn>
-          <div className="overflow-hidden rounded-[var(--keyra-radius-sheet)] bg-kerya-primary px-4 py-12 text-center text-kerya-surface sm:px-10 sm:py-16 md:px-12 md:py-20">
-            <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-surface sm:text-4xl md:text-[2.75rem]">
+          <div className="overflow-hidden rounded-[var(--keyra-radius-sheet)] border border-kerya-border bg-kerya-surface px-4 py-12 text-center sm:px-10 sm:py-16 md:px-12 md:py-20">
+            <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-primary sm:text-4xl md:text-[2.75rem]">
               Be Protected Online
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-kerya-surface sm:text-[16px] md:text-[18px]">
+            <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
               KEYRA is a feeling of protection — premium, human, and always
               there when it matters.
             </p>
             <Link href="/contact" className="mt-8 inline-flex">
-              <Button size="lg" variant="primary" className="bg-kerya-accent">
+              <Button size="lg" variant="primary">
                 Start now
               </Button>
             </Link>

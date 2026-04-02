@@ -143,7 +143,7 @@ export default function AboutPage() {
             <FadeIn key={s.kicker} delay={i * 0.05}>
               <article className="group relative flex h-full flex-col rounded-[16px] border border-keyra-border/20 bg-keyra-surface p-6 transition hover:border-keyra-accent/25 sm:p-8">
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-keyra-accent-soft text-keyra-accent transition group-hover:scale-[1.02]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-keyra-border bg-keyra-bg text-keyra-accent transition group-hover:scale-[1.02]">
                     {s.icon}
                   </div>
                   <span className="rounded-full bg-keyra-bg px-3 py-1 text-xs font-semibold uppercase tracking-wide text-keyra-muted">

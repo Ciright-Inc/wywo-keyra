@@ -15,10 +15,6 @@
   /* Borders, fills, focus: rgba from rgb(11,31,42), rgb(47,191,159), rgb(26,26,26) */
   --keyra-border: rgba(11, 31, 42, 0.12);
   --keyra-ring: rgba(47, 191, 159, 0.18);
-  --keyra-accent-soft: rgba(47, 191, 159, 0.12);
-  --keyra-overlay: rgba(11, 31, 42, 0.25);
-  --keyra-hover-border: rgba(11, 31, 42, 0.22);
-  --keyra-hover-fill: rgba(11, 31, 42, 0.06);
   --keyra-shadow-card: 0 4px 12px rgba(26, 26, 26, 0.04);
   --keyra-shadow-hover: 0 6px 18px rgba(26, 26, 26, 0.06);
 
@@ -44,8 +40,6 @@
   --color-keyra-ink: var(--keyra-text);
   --color-keyra-muted: var(--keyra-text-secondary);
   --color-keyra-border: var(--keyra-border);
-  --color-keyra-accent-soft: var(--keyra-accent-soft);
-  --color-kerya-accent-soft: var(--keyra-accent-soft);
 
   --font-sans: var(--font-inter);
 }

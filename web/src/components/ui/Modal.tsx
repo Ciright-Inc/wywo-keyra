@@ -29,7 +29,7 @@ export function Modal({
           <button
             type="button"
             aria-label="Close"
-            className="absolute inset-0 bg-[color:var(--keyra-overlay)]"
+            className="absolute inset-0 bg-kerya-bg/90 backdrop-blur-sm"
             onClick={onClose}
           />
           <motion.div

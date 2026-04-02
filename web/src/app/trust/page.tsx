@@ -110,13 +110,13 @@ export default function TrustPage() {
           <div className="mt-12 space-y-4">
             {pillars.map((p, i) => (
               <FadeIn key={p.title} delay={i * 0.04}>
-                <div className="group relative overflow-hidden rounded-[16px] border border-keyra-border/20 bg-keyra-bg/40 p-1 transition hover:bg-keyra-surface">
+                <div className="group relative overflow-hidden rounded-[16px] border border-keyra-border/20 bg-keyra-bg p-1 transition hover:bg-keyra-surface">
                   <div className="flex flex-col gap-5 rounded-[14px] bg-keyra-surface p-6 sm:flex-row sm:items-start sm:gap-8 sm:p-8">
                     <div className="flex shrink-0 items-center gap-4 sm:flex-col sm:items-center sm:gap-3">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-keyra-accent text-lg font-bold text-keyra-surface">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-keyra-primary bg-keyra-surface text-lg font-bold text-keyra-primary">
                         {i + 1}
                       </span>
-                      <span className="rounded-full bg-keyra-accent-soft px-3 py-1 text-xs font-semibold text-keyra-accent sm:text-center">
+                      <span className="rounded-full border border-keyra-border bg-keyra-bg px-3 py-1 text-xs font-semibold text-keyra-accent sm:text-center">
                         {p.tag}
                       </span>
                     </div>
@@ -130,7 +130,7 @@ export default function TrustPage() {
                     </div>
                   </div>
                   <div
-                    className="pointer-events-none absolute bottom-0 left-0 h-1.5 w-0 bg-keyra-accent transition-all duration-300 group-hover:w-full"
+                    className="pointer-events-none absolute bottom-0 left-0 h-1.5 w-0 bg-keyra-primary transition-all duration-300 group-hover:w-full"
                     aria-hidden
                   />
                 </div>
@@ -140,7 +140,7 @@ export default function TrustPage() {
         </div>
       </section>
 
-      <section className="border-t border-keyra-border/20 bg-keyra-accent-soft">
+      <section className="border-t border-keyra-border/20 bg-keyra-bg">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
           <FadeIn>
             <div className="flex flex-col items-start justify-between gap-8 rounded-[16px] border border-keyra-border/20 bg-keyra-surface px-8 py-10 sm:flex-row sm:items-center sm:px-10">
