@@ -50,10 +50,10 @@ export default function TrustPage() {
               <p className="text-[14px] font-semibold uppercase tracking-widest text-keyra-accent">
                 Trust
               </p>
-              <p className="mt-4 text-[24px] font-semibold tracking-tight text-keyra-ink sm:text-[28px]">
+              <p className="mt-4 text-balance text-xl font-semibold tracking-tight text-keyra-ink sm:text-2xl md:text-[28px]">
                 Be Protected Online
               </p>
-              <h1 className="mt-3 text-[36px] font-semibold tracking-tight text-keyra-ink sm:text-[44px]">
+              <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl md:text-[2.75rem]">
                 Why KEYRA feels calm
               </h1>
               <p className="mt-6 text-[16px] leading-relaxed text-keyra-muted sm:text-[18px]">
@@ -90,7 +90,7 @@ export default function TrustPage() {
           <FadeIn>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h2 className="text-[28px] font-semibold tracking-tight text-keyra-ink sm:text-[36px]">
+                <h2 className="text-balance text-2xl font-semibold tracking-tight text-keyra-ink sm:text-3xl md:text-[2.25rem]">
                   What we hold ourselves to
                 </h2>
                 <p className="mt-2 max-w-xl text-[16px] text-keyra-muted">

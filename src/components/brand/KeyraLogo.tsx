@@ -17,7 +17,7 @@ export function KeyraLogo({
   const logoSizes = {
     header: {
       box:
-        "h-16 w-[min(21rem,calc(100vw-9.5rem))] sm:w-[24rem] md:w-[28rem] lg:w-[32rem]",
+        "h-16 w-full min-w-0 max-w-full sm:max-w-[24rem] md:max-w-[28rem] lg:max-w-[32rem]",
       w: 1000,
       h: 180,
     },
@@ -33,7 +33,7 @@ export function KeyraLogo({
 
   return (
     <span
-      className={`inline-flex items-center gap-2.5 ${variant === "header" ? "h-16" : ""} ${className}`}
+      className={`inline-flex items-center gap-2.5 ${variant === "header" ? "h-16 min-w-0 max-w-full" : ""} ${className}`}
     >
       <span
         className={`relative flex shrink-0 items-center justify-center ${variant === "header" ? "overflow-visible" : "overflow-hidden"} ${logoSizes[variant].box}`}

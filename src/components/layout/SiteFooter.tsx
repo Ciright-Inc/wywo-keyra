@@ -13,7 +13,7 @@ const links = [
 export function SiteFooter() {
   return (
     <footer className="border-t border-kerya-border bg-kerya-surface">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
           <Link href="/" className="group inline-flex" aria-label="KEYRA home">
             <KeyraLogo variant="footer" showWordmark={false} />

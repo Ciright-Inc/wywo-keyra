@@ -81,7 +81,7 @@ export default function AboutPage() {
               <p className="text-[14px] font-semibold uppercase tracking-widest text-keyra-accent">
                 About KEYRA
               </p>
-              <h1 className="mt-3 text-[36px] font-semibold tracking-tight text-keyra-ink sm:text-[44px] lg:text-[48px] lg:leading-tight">
+              <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl md:text-[2.75rem] lg:text-5xl lg:leading-tight">
                 Be Protected Online
               </h1>
               <p className="mt-6 max-w-2xl text-[16px] leading-relaxed text-keyra-muted sm:text-[18px]">
@@ -129,7 +129,7 @@ export default function AboutPage() {
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
         <FadeIn>
-          <h2 className="max-w-xl text-[28px] font-semibold tracking-tight text-keyra-ink sm:text-[36px]">
+          <h2 className="max-w-xl text-balance text-2xl font-semibold tracking-tight text-keyra-ink sm:text-3xl md:text-[2.25rem]">
             Our story, in four beats
           </h2>
           <p className="mt-3 max-w-2xl text-[16px] text-keyra-muted">

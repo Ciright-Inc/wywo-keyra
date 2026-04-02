@@ -5,8 +5,6 @@ import { motion } from "framer-motion";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { IconDevices, IconShieldCheck, IconSpark } from "@/components/ui/Icons";
-import { HeroVisual } from "@/components/home/HeroVisual";
 
 function SectionShell({
   id,
@@ -20,50 +18,76 @@ function SectionShell({
   return (
     <section
       id={id}
-      className={`scroll-mt-24 px-4 py-20 sm:px-6 sm:py-24 ${className}`}
+      className={`scroll-mt-24 px-4 py-16 sm:px-6 sm:py-24 lg:py-32 ${className}`}
     >
       <div className="mx-auto max-w-6xl">{children}</div>
     </section>
   );
 }
 
+function TrustBlock({
+  id,
+  question,
+  answer,
+}: {
+  id: string;
+  question: string;
+  answer: string;
+}) {
+  return (
+    <FadeIn>
+      <div
+        id={id}
+        className="kerya-card rounded-[var(--k-radius-card)] p-5 sm:p-7 md:p-8"
+      >
+        <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem] md:leading-tight">
+          {question}
+        </h2>
+        <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
+          {answer}
+        </p>
+      </div>
+    </FadeIn>
+  );
+}
+
 export function HomeContent() {
   return (
     <>
-      <section className="relative min-h-[92vh] scroll-mt-24 overflow-hidden border-b border-kerya-border bg-kerya-bg px-4 py-20 sm:px-6 sm:py-24">
+      <section className="relative min-h-[85vh] scroll-mt-24 overflow-hidden border-b border-kerya-border bg-kerya-bg px-4 py-20 sm:min-h-[92vh] sm:px-6 sm:py-28 lg:py-32">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/image.png')" }}
           aria-hidden
         />
         <div className="absolute inset-0 bg-kerya-bg/85" aria-hidden />
-        <div className="relative mx-auto grid min-h-[72vh] max-w-6xl items-center gap-12 lg:grid-cols-2">
-          <div className="max-w-2xl">
+        <div className="relative mx-auto flex min-h-[60vh] w-full min-w-0 max-w-6xl items-center sm:min-h-[72vh]">
+          <div className="w-full min-w-0 max-w-2xl">
             <motion.h1
-              className="text-[56px] font-bold leading-[1.08] tracking-tight text-kerya-text sm:text-[64px]"
+              className="text-balance text-4xl font-bold leading-[1.1] tracking-tight text-kerya-text sm:text-5xl md:text-6xl lg:text-[3.5rem] lg:leading-[1.08]"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55 }}
             >
-              Feel Protected Online
+              Be Protected Online
             </motion.h1>
             <motion.p
-              className="mt-6 text-[18px] leading-relaxed text-kerya-text-2 sm:text-[20px]"
+              className="mt-6 text-[16px] leading-relaxed text-kerya-text-2 sm:text-lg md:text-[20px]"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.12 }}
             >
-              Simple protection for you, your family, and everything that
-              matters.
+              Protection for your identity, money, data, and digital life. Calm,
+              trusted protection for people, families, and businesses.
             </motion.p>
             <motion.div
-              className="mt-9 flex flex-wrap gap-3"
+              className="mt-9 flex w-full min-w-0 flex-wrap gap-3"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2 }}
             >
               <Link href="/#get-started" className="inline-flex">
-                <Button size="lg">Get Protected</Button>
+                <Button size="lg">Get protected</Button>
               </Link>
               <Link href="/#how-it-works" className="inline-flex">
                 <Button size="lg" variant="secondary">
@@ -72,156 +96,145 @@ export function HomeContent() {
               </Link>
             </motion.div>
           </div>
-          <div className="mx-auto w-full max-w-lg lg:max-w-none">
-            <HeroVisual />
-          </div>
         </div>
       </section>
 
       <SectionShell id="product" className="bg-kerya-surface">
         <FadeIn>
-          <h2 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
-            The internet wasn’t built to protect you
+          <p className="text-[14px] font-medium uppercase tracking-wider text-kerya-primary">
+            Protection first
+          </p>
+          <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem]">
+            Simple protection for everyday life
           </h2>
-          <p className="mt-5 max-w-3xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-            Scams, impersonation, and fake accounts can make everyday life feel
-            uncertain. KERYA brings calm protection so you can move through the
-            digital world with more confidence.
+          <p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
+            KEYRA begins with protection. No jargon. No noise. Just clear,
+            human trust you can feel from the first moment.
           </p>
         </FadeIn>
       </SectionShell>
 
-      <SectionShell>
-        <FadeIn>
-          <h2 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
-            KERYA makes protection simple
-          </h2>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {[
-              {
-                title: "You are real",
-                body: "Identity verification that keeps your digital life truly yours.",
-                icon: <IconSpark className="h-5 w-5" />,
-              },
-              {
-                title: "Your access is yours",
-                body: "Verified sign-in designed to protect what only you should reach.",
-                icon: <IconShieldCheck className="h-5 w-5" />,
-              },
-              {
-                title: "Your family is protected",
-                body: "Simple safety controls that help protect everyone at home.",
-                icon: <IconDevices className="h-5 w-5" />,
-              },
-            ].map((item, idx) => (
-              <motion.article
-                key={item.title}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.08, duration: 0.45 }}
-                className="kerya-card rounded-[var(--k-radius-card)] p-7"
-              >
-                <div className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-kerya-bg text-kerya-primary">
-                  {item.icon}
-                </div>
-                <h3 className="mt-5 text-[24px] font-semibold text-kerya-text">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-[16px] leading-relaxed text-kerya-text-2">
-                  {item.body}
-                </p>
-              </motion.article>
-            ))}
-          </div>
-        </FadeIn>
+      <SectionShell id="families" className="bg-kerya-bg">
+        <div className="grid gap-8 lg:grid-cols-2">
+          <TrustBlock
+            id="family"
+            question="Is your family protected?"
+            answer="KEYRA helps keep the people you care about covered — quietly, clearly, and without complexity. Protection you can explain simply at the kitchen table."
+          />
+          <TrustBlock
+            id="customers"
+            question="Are your customers protected?"
+            answer="Give people a calm, premium experience they trust instantly. KEYRA is built so protection feels respectful, not corporate or intimidating."
+          />
+        </div>
       </SectionShell>
 
-      <SectionShell id="how-it-works" className="bg-kerya-surface">
-        <FadeIn>
-          <h2 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
-            Protection in seconds
-          </h2>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {[
-              {
-                title: "Get KERYA",
-                body: "Set up in moments.",
-                ui: "Get",
-              },
-              {
-                title: "Verify once",
-                body: "One simple check.",
-                ui: "Yes",
-              },
-              {
-                title: "Stay protected everywhere",
-                body: "Quiet protection that stays on.",
-                ui: "On",
-              },
-            ].map((item, i) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08, duration: 0.45 }}
-                className="kerya-card p-7"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-[14px] font-medium uppercase tracking-wider text-kerya-text-2">
-                    Step {i + 1}
-                  </span>
-                  <span className="rounded-full bg-kerya-primary px-3 py-1 text-[12px] font-semibold text-kerya-surface">
-                    {item.ui}
-                  </span>
-                </div>
-                <h3 className="mt-4 text-[24px] font-semibold text-kerya-text">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-[16px] leading-relaxed text-kerya-text-2">
-                  {item.body}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </FadeIn>
+      <SectionShell className="bg-kerya-surface">
+        <div className="grid gap-8 lg:grid-cols-2">
+          <TrustBlock
+            id="money"
+            question="Is your money protected?"
+            answer="Transactions and accounts deserve the same quiet confidence as a leading financial brand. KEYRA keeps protection present without drama."
+          />
+          <TrustBlock
+            id="identity"
+            question="Is your identity protected?"
+            answer="Verification without friction. You stay in control while KEYRA helps ensure it is really you when it matters."
+          />
+        </div>
       </SectionShell>
 
-      <SectionShell id="families">
+      <SectionShell className="bg-kerya-bg">
+        <div className="grid gap-8 lg:grid-cols-2">
+          <TrustBlock
+            id="data"
+            question="Is your data protected?"
+            answer="Your information is treated with care. Clear choices, plain language, and protection that stays on in the background."
+          />
+          <TrustBlock
+            id="business"
+            question="Is your business protected?"
+            answer="From teams to operations, KEYRA scales the same calm promise: protection first, simplicity always, trust at every step."
+          />
+        </div>
+      </SectionShell>
+
+      <SectionShell id="reassurance" className="bg-kerya-surface">
         <FadeIn>
-          <h2 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
-            Protection you don’t have to think about
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem]">
+            You’re protected
           </h2>
-          <ul className="mt-8 grid gap-4 sm:grid-cols-2">
+          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
+            Trusted protection at every step. Built to protect what matters most.
+          </p>
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2">
             {[
-              "No passwords to remember",
-              "No codes to chase",
-              "No stress",
-              "Always protected",
-            ].map((point) => (
-              <Card key={point} className="p-5">
-                <p className="text-[16px] text-kerya-text">{point}</p>
+              "Protection comes first",
+              "Calm protection, always on",
+              "Protection you can trust",
+              "Quietly protecting every connection",
+            ].map((line) => (
+              <Card key={line} className="p-6">
+                <p className="text-[16px] font-medium text-kerya-text">{line}</p>
               </Card>
             ))}
           </ul>
         </FadeIn>
       </SectionShell>
 
-      <SectionShell id="get-started" className="pb-24">
+      <SectionShell id="how-it-works" className="bg-kerya-bg">
         <FadeIn>
-          <div className="overflow-hidden rounded-[var(--k-radius-sheet)] bg-kerya-primary px-6 py-14 text-center text-kerya-surface sm:px-12">
-            <h2 className="text-[36px] font-semibold tracking-tight sm:text-[44px]">
-              Protected by KERYA
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem]">
+            Protection at every step
+          </h2>
+          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
+            Three calm steps. No technical language.
+          </p>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                step: "1",
+                title: "Get KEYRA",
+                body: "Set up in moments. Protection starts here.",
+              },
+              {
+                step: "2",
+                title: "Verify once",
+                body: "One simple check so we know it is really you.",
+              },
+              {
+                step: "3",
+                title: "Stay protected",
+                body: "KEYRA stays on — quietly, consistently, everywhere you need it.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="kerya-card p-5 sm:p-6 md:p-7">
+                <span className="text-[14px] font-semibold text-kerya-accent">
+                  Step {item.step}
+                </span>
+                <h3 className="mt-3 text-xl font-semibold text-kerya-text sm:text-2xl">
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px]">
+                  {item.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
+      </SectionShell>
+
+      <SectionShell id="get-started" className="pb-24 sm:pb-32">
+        <FadeIn>
+          <div className="overflow-hidden rounded-[var(--k-radius-sheet)] bg-kerya-primary px-4 py-12 text-center text-kerya-surface sm:px-10 sm:py-16 md:px-12 md:py-20">
+            <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl md:text-[2.75rem]">
+              Be Protected Online
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-kerya-surface sm:text-[18px]">
-              Protection that feels simple, human, and always there when it
-              matters.
+            <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-kerya-surface sm:text-[16px] md:text-[18px]">
+              KEYRA is a feeling of protection — premium, human, and always
+              there when it matters.
             </p>
-            <Link
-              href="/contact"
-              className="mt-8 inline-flex"
-            >
+            <Link href="/contact" className="mt-8 inline-flex">
               <Button size="lg" variant="primary" className="bg-kerya-accent">
                 Start now
               </Button>

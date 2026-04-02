@@ -18,7 +18,7 @@ function SectionShell({
   return (
     <section
       id={id}
-      className={`scroll-mt-24 px-4 py-24 sm:px-6 sm:py-32 ${className}`}
+      className={`scroll-mt-24 px-4 py-16 sm:px-6 sm:py-24 lg:py-32 ${className}`}
     >
       <div className="mx-auto max-w-6xl">{children}</div>
     </section>
@@ -36,11 +36,14 @@ function TrustBlock({
 }) {
   return (
     <FadeIn>
-      <div id={id} className="kerya-card rounded-[var(--k-radius-card)] p-8">
-        <h2 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
+      <div
+        id={id}
+        className="kerya-card rounded-[var(--k-radius-card)] p-5 sm:p-7 md:p-8"
+      >
+        <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem] md:leading-tight">
           {question}
         </h2>
-        <p className="mt-4 max-w-2xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
+        <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
           {answer}
         </p>
       </div>
@@ -51,17 +54,17 @@ function TrustBlock({
 export function HomeContent() {
   return (
     <>
-      <section className="relative min-h-[92vh] scroll-mt-24 overflow-hidden border-b border-kerya-border bg-kerya-bg px-4 py-24 sm:px-6 sm:py-32">
+      <section className="relative min-h-[85vh] scroll-mt-24 overflow-hidden border-b border-kerya-border bg-kerya-bg px-4 py-20 sm:min-h-[92vh] sm:px-6 sm:py-28 lg:py-32">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/image.png')" }}
           aria-hidden
         />
         <div className="absolute inset-0 bg-kerya-bg/85" aria-hidden />
-        <div className="relative mx-auto flex min-h-[72vh] max-w-6xl items-center">
-          <div className="max-w-2xl">
+        <div className="relative mx-auto flex min-h-[60vh] w-full min-w-0 max-w-6xl items-center sm:min-h-[72vh]">
+          <div className="w-full min-w-0 max-w-2xl">
             <motion.h1
-              className="text-[56px] font-bold leading-[1.08] tracking-tight text-kerya-text sm:text-[64px]"
+              className="text-balance text-4xl font-bold leading-[1.1] tracking-tight text-kerya-text sm:text-5xl md:text-6xl lg:text-[3.5rem] lg:leading-[1.08]"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55 }}
@@ -69,7 +72,7 @@ export function HomeContent() {
               Be Protected Online
             </motion.h1>
             <motion.p
-              className="mt-6 text-[18px] leading-relaxed text-kerya-text-2 sm:text-[20px]"
+              className="mt-6 text-[16px] leading-relaxed text-kerya-text-2 sm:text-lg md:text-[20px]"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.12 }}
@@ -78,7 +81,7 @@ export function HomeContent() {
               trusted protection for people, families, and businesses.
             </motion.p>
             <motion.div
-              className="mt-9 flex flex-wrap gap-3"
+              className="mt-9 flex w-full min-w-0 flex-wrap gap-3"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2 }}
@@ -101,10 +104,10 @@ export function HomeContent() {
           <p className="text-[14px] font-medium uppercase tracking-wider text-kerya-primary">
             Protection first
           </p>
-          <h2 className="mt-3 text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
+          <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem]">
             Simple protection for everyday life
           </h2>
-          <p className="mt-5 max-w-3xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
+          <p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
             KEYRA begins with protection. No jargon. No noise. Just clear,
             human trust you can feel from the first moment.
           </p>
@@ -158,10 +161,10 @@ export function HomeContent() {
 
       <SectionShell id="reassurance" className="bg-kerya-surface">
         <FadeIn>
-          <h2 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem]">
             You’re protected
           </h2>
-          <p className="mt-4 max-w-2xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
+          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
             Trusted protection at every step. Built to protect what matters most.
           </p>
           <ul className="mt-10 grid gap-4 sm:grid-cols-2">
@@ -181,13 +184,13 @@ export function HomeContent() {
 
       <SectionShell id="how-it-works" className="bg-kerya-bg">
         <FadeIn>
-          <h2 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem]">
             Protection at every step
           </h2>
-          <p className="mt-4 max-w-2xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
+          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px] md:text-[18px]">
             Three calm steps. No technical language.
           </p>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 step: "1",
@@ -205,14 +208,14 @@ export function HomeContent() {
                 body: "KEYRA stays on — quietly, consistently, everywhere you need it.",
               },
             ].map((item) => (
-              <div key={item.title} className="kerya-card p-7">
+              <div key={item.title} className="kerya-card p-5 sm:p-6 md:p-7">
                 <span className="text-[14px] font-semibold text-kerya-accent">
                   Step {item.step}
                 </span>
-                <h3 className="mt-3 text-[24px] font-semibold text-kerya-text">
+                <h3 className="mt-3 text-xl font-semibold text-kerya-text sm:text-2xl">
                   {item.title}
                 </h3>
-                <p className="mt-2 text-[16px] leading-relaxed text-kerya-text-2">
+                <p className="mt-2 text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px]">
                   {item.body}
                 </p>
               </div>
@@ -223,11 +226,11 @@ export function HomeContent() {
 
       <SectionShell id="get-started" className="pb-24 sm:pb-32">
         <FadeIn>
-          <div className="overflow-hidden rounded-[var(--k-radius-sheet)] bg-kerya-primary px-6 py-16 text-center text-kerya-surface sm:px-12 sm:py-20">
-            <h2 className="text-[36px] font-semibold tracking-tight sm:text-[44px]">
+          <div className="overflow-hidden rounded-[var(--k-radius-sheet)] bg-kerya-primary px-4 py-12 text-center text-kerya-surface sm:px-10 sm:py-16 md:px-12 md:py-20">
+            <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl md:text-[2.75rem]">
               Be Protected Online
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-kerya-surface sm:text-[18px]">
+            <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-kerya-surface sm:text-[16px] md:text-[18px]">
               KEYRA is a feeling of protection — premium, human, and always
               there when it matters.
             </p>

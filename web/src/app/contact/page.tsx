@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import { FadeIn } from "@/components/motion/FadeIn";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
 
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Questions about KERYA? We are here to help.",
+    "Questions about KEYRA or getting protected? Reach out — we will respond in plain language, with protection first.",
 };
 
 export default function ContactPage() {
@@ -15,50 +13,71 @@ export default function ContactPage() {
       <div className="mx-auto max-w-3xl">
         <FadeIn>
           <div className="text-center">
-            <h1 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
+            <h1 className="text-balance text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl">
               We’re here to help
             </h1>
-            <p className="mt-6 text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-              Questions about KERYA or getting started?
-              Share a few details and we will point you in the right direction.
+            <p className="mt-3 text-[18px] font-medium text-keyra-ink">
+              Be Protected Online
+            </p>
+            <p className="mt-4 text-base leading-relaxed text-keyra-muted sm:text-lg">
+              Questions about KEYRA or staying protected? Share a few details
+              and we will reply in calm, clear language.
             </p>
           </div>
         </FadeIn>
 
-        <FadeIn className="kerya-card mt-12 text-left sm:p-10">
+        <FadeIn className="mt-12 rounded-2xl border border-keyra-border/20 bg-keyra-surface p-5 text-left sm:rounded-3xl sm:p-8 md:p-10">
           <form className="space-y-6" action="#" method="post">
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <Input
+                <label
+                  htmlFor="name"
+                  className="mb-2 block text-sm font-medium text-keyra-ink"
+                >
+                  Name
+                </label>
+                <input
                   id="name"
                   name="name"
-                  label="Name"
                   type="text"
                   autoComplete="name"
                   required
+                  className="w-full rounded-xl border border-keyra-border/20 bg-keyra-surface px-4 py-3 text-sm text-keyra-ink outline-none transition placeholder:text-keyra-muted/70 focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
                   placeholder="Your full name"
                 />
               </div>
 
               <div>
-                <Input
+                <label
+                  htmlFor="email"
+                  className="mb-2 block text-sm font-medium text-keyra-ink"
+                >
+                  Email
+                </label>
+                <input
                   id="email"
                   name="email"
-                  label="Email"
                   type="email"
                   autoComplete="email"
                   required
+                  className="w-full rounded-xl border border-keyra-border/20 bg-keyra-surface px-4 py-3 text-sm text-keyra-ink outline-none transition placeholder:text-keyra-muted/70 focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
                   placeholder="you@example.com"
                 />
               </div>
 
               <div>
-                <Input
+                <label
+                  htmlFor="phone"
+                  className="mb-2 block text-sm font-medium text-keyra-ink"
+                >
+                  Phone number
+                </label>
+                <input
                   id="phone"
                   name="phone"
-                  label="Phone number"
                   type="tel"
                   autoComplete="tel"
+                  className="w-full rounded-xl border border-keyra-border/20 bg-keyra-surface px-4 py-3 text-sm text-keyra-ink outline-none transition placeholder:text-keyra-muted/70 focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
                   placeholder="+353 ..."
                 />
               </div>
@@ -66,7 +85,7 @@ export default function ContactPage() {
               <div className="sm:col-span-2">
                 <label
                   htmlFor="subject"
-                  className="mb-2 block text-sm font-medium text-kerya-text"
+                  className="mb-2 block text-sm font-medium text-keyra-ink"
                 >
                   Subject
                 </label>
@@ -75,7 +94,7 @@ export default function ContactPage() {
                   name="subject"
                   required
                   defaultValue=""
-                  className="h-12 w-full rounded-[var(--k-radius-card)] border border-kerya-border bg-kerya-surface px-4 text-[16px] text-kerya-text outline-none transition focus-visible:kerya-focus"
+                  className="w-full rounded-xl border border-keyra-border/20 bg-keyra-surface px-4 py-3 text-sm text-keyra-ink outline-none transition focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
                 >
                   <option value="" disabled>
                     Select a subject
@@ -91,7 +110,7 @@ export default function ContactPage() {
               <div className="sm:col-span-2">
                 <label
                   htmlFor="message"
-                  className="mb-2 block text-sm font-medium text-kerya-text"
+                  className="mb-2 block text-sm font-medium text-keyra-ink"
                 >
                   Message
                 </label>
@@ -100,25 +119,28 @@ export default function ContactPage() {
                   name="message"
                   rows={6}
                   required
-                  className="w-full resize-y rounded-[var(--k-radius-card)] border border-kerya-border bg-kerya-surface px-4 py-3 text-[16px] text-kerya-text outline-none transition placeholder:text-kerya-text-2 focus-visible:kerya-focus"
+                  className="w-full resize-y rounded-xl border border-keyra-border/20 bg-keyra-surface px-4 py-3 text-sm text-keyra-ink outline-none transition placeholder:text-keyra-muted/70 focus:border-keyra-accent focus:ring-2 focus:ring-keyra-accent/20"
                   placeholder="Tell us how we can help..."
                 />
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-kerya-border pt-5">
-              <p className="text-xs text-kerya-text-2">
+            <div className="flex flex-col gap-4 border-t border-keyra-border/20 pt-5 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-center text-xs text-keyra-muted sm:text-left">
                 Prefer email? Contact{" "}
                 <a
                   href="mailto:hello@keyra.ie"
-                  className="font-medium text-kerya-accent underline-offset-4 hover:underline"
+                  className="font-medium text-keyra-accent underline-offset-4 hover:underline"
                 >
                   hello@keyra.ie
                 </a>
               </p>
-              <Button type="submit">
+              <button
+                type="submit"
+                className="inline-flex w-full shrink-0 justify-center rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-keyra-surface transition hover:opacity-95 sm:w-auto"
+              >
                 Send message
-              </Button>
+              </button>
             </div>
           </form>
         </FadeIn>

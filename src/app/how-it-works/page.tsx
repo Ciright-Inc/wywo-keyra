@@ -30,10 +30,10 @@ const steps = [
 
 export default function HowItWorksPage() {
   return (
-    <div className="bg-kerya-bg px-4 py-16 sm:px-6 sm:py-24">
+    <div className="bg-kerya-bg px-4 py-12 sm:px-6 sm:py-20 md:py-24">
       <div className="mx-auto max-w-3xl">
         <FadeIn>
-          <h1 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
+          <h1 className="text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem]">
             How KEYRA works
           </h1>
           <p className="mt-6 text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
@@ -45,14 +45,14 @@ export default function HowItWorksPage() {
         <ol className="mt-12 space-y-6">
           {steps.map((s, i) => (
             <FadeIn key={s.title} delay={i * 0.05}>
-              <li className="kerya-card p-6">
+              <li className="kerya-card p-5 sm:p-6">
                 <span className="text-[14px] font-semibold uppercase tracking-wide text-kerya-accent">
                   Step {i + 1}
                 </span>
-                <h2 className="mt-2 text-[24px] font-semibold text-kerya-text">
+                <h2 className="mt-2 text-xl font-semibold text-kerya-text sm:text-2xl">
                   {s.title}
                 </h2>
-                <p className="mt-3 text-[16px] leading-relaxed text-kerya-text-2">
+                <p className="mt-3 text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px]">
                   {s.body}
                 </p>
               </li>

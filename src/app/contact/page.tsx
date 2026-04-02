@@ -13,20 +13,20 @@ export default function ContactPage() {
       <div className="mx-auto max-w-3xl">
         <FadeIn>
           <div className="text-center">
-            <h1 className="text-4xl font-semibold tracking-tight text-keyra-ink">
+            <h1 className="text-balance text-3xl font-semibold tracking-tight text-keyra-ink sm:text-4xl">
               We’re here to help
             </h1>
             <p className="mt-3 text-[18px] font-medium text-keyra-ink">
               Be Protected Online
             </p>
-            <p className="mt-4 text-lg leading-relaxed text-keyra-muted">
+            <p className="mt-4 text-base leading-relaxed text-keyra-muted sm:text-lg">
               Questions about KEYRA or staying protected? Share a few details
               and we will reply in calm, clear language.
             </p>
           </div>
         </FadeIn>
 
-        <FadeIn className="mt-12 rounded-3xl border border-keyra-border/20 bg-keyra-surface p-8 text-left sm:p-10">
+        <FadeIn className="mt-12 rounded-2xl border border-keyra-border/20 bg-keyra-surface p-5 text-left sm:rounded-3xl sm:p-8 md:p-10">
           <form className="space-y-6" action="#" method="post">
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="sm:col-span-2">
@@ -125,8 +125,8 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-keyra-border/20 pt-5">
-              <p className="text-xs text-keyra-muted">
+            <div className="flex flex-col gap-4 border-t border-keyra-border/20 pt-5 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-center text-xs text-keyra-muted sm:text-left">
                 Prefer email? Contact{" "}
                 <a
                   href="mailto:hello@keyra.ie"
@@ -137,7 +137,7 @@ export default function ContactPage() {
               </p>
               <button
                 type="submit"
-                className="inline-flex rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-keyra-surface transition hover:opacity-95"
+                className="inline-flex w-full shrink-0 justify-center rounded-full bg-keyra-accent px-6 py-3 text-sm font-semibold text-keyra-surface transition hover:opacity-95 sm:w-auto"
               >
                 Send message
               </button>

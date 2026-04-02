@@ -16,11 +16,11 @@ export function MobileNav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="md:hidden">
+    <div className="relative z-20 md:hidden">
       <Button
         type="button"
         variant="secondary"
-        className="h-10 px-4 text-[14px]"
+        className="h-10 shrink-0 px-3 text-[13px] sm:px-4 sm:text-sm"
         aria-expanded={open}
         aria-controls="mobile-nav-panel"
         onClick={() => setOpen((o) => !o)}

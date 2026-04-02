@@ -16,11 +16,11 @@ export function MobileNav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="md:hidden">
+    <div className="relative z-20 md:hidden">
       <Button
         type="button"
         variant="secondary"
-        className="h-10 px-4 text-[14px]"
+        className="h-10 shrink-0 px-3 text-[13px] sm:px-4 sm:text-sm"
         aria-expanded={open}
         aria-controls="mobile-nav-panel"
         onClick={() => setOpen((o) => !o)}
@@ -31,7 +31,7 @@ export function MobileNav() {
         {open ? (
           <motion.nav
             id="mobile-nav-panel"
-            className="absolute left-0 right-0 top-full z-40 border-b border-kerya-border bg-kerya-bg px-4 py-4"
+            className="absolute left-0 right-0 top-full z-40 border-b border-kerya-border bg-kerya-bg/95 px-4 py-4 backdrop-blur-md"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}

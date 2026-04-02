@@ -6,48 +6,53 @@ import { Button } from "@/components/ui/Button";
 export const metadata: Metadata = {
   title: "How It Works",
   description:
-    "Create your account, verify once, and stay protected everywhere.",
+    "Create your profile, verify once, and stay protected — explained in plain language, with protection always first.",
 };
 
 const steps = [
   {
-    title: "Create your account",
-    body: "Set up your profile in a clear, guided flow.",
+    title: "Create your profile",
+    body: "A guided, step-by-step flow. No jargon. Just clarity about what you are setting up and why it helps keep you protected.",
   },
   {
-    title: "Verify once",
-    body: "Confirm it is really you with one simple check.",
+    title: "Verify with confidence",
+    body: "When it matters, KEYRA helps confirm it is really you — calmly and clearly.",
   },
   {
-    title: "Stay protected everywhere",
-    body: "Keep protection active across your devices and family accounts.",
+    title: "Manage trusted access",
+    body: "You stay in charge. Review access and adjust settings in language that makes sense.",
+  },
+  {
+    title: "Stay protected over time",
+    body: "Protection does not stop after day one. KEYRA grows with you, your family, and your business — always with the person first.",
   },
 ];
 
 export default function HowItWorksPage() {
   return (
-    <div className="px-4 py-16 sm:px-6 sm:py-20">
+    <div className="bg-kerya-bg px-4 py-12 sm:px-6 sm:py-20 md:py-24">
       <div className="mx-auto max-w-3xl">
         <FadeIn>
-          <h1 className="text-[36px] font-semibold tracking-tight text-kerya-text sm:text-[44px]">
-            Protection in seconds
+          <h1 className="text-balance text-3xl font-semibold tracking-tight text-kerya-text sm:text-4xl md:text-[2.75rem]">
+            How KEYRA works
           </h1>
           <p className="mt-6 text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-            Every step is clear and calm. No technical language. No friction.
+            Be Protected Online — with a simple process, clear verification, and
+            calm protection you can trust at every step.
           </p>
         </FadeIn>
 
         <ol className="mt-12 space-y-6">
           {steps.map((s, i) => (
             <FadeIn key={s.title} delay={i * 0.05}>
-              <li className="kerya-card">
+              <li className="kerya-card p-5 sm:p-6">
                 <span className="text-[14px] font-semibold uppercase tracking-wide text-kerya-accent">
                   Step {i + 1}
                 </span>
-                <h2 className="mt-2 text-[24px] font-semibold text-kerya-text">
+                <h2 className="mt-2 text-xl font-semibold text-kerya-text sm:text-2xl">
                   {s.title}
                 </h2>
-                <p className="mt-2 text-[16px] leading-relaxed text-kerya-text-2">
+                <p className="mt-3 text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px]">
                   {s.body}
                 </p>
               </li>
@@ -56,7 +61,7 @@ export default function HowItWorksPage() {
         </ol>
 
         <FadeIn className="mt-12 text-center">
-          <p className="font-medium text-kerya-text">You are one step away.</p>
+          <p className="font-medium text-kerya-text">Ready to be protected?</p>
           <Link href="/#get-started" className="mt-4 inline-flex">
             <Button>Get protected</Button>
           </Link>
