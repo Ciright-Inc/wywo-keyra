@@ -15,11 +15,11 @@ const nav = [
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-kerya-border bg-kerya-bg">
-      <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <div className="relative mx-auto flex min-h-[4.5rem] h-20 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link
           href="/"
           className="group shrink-0"
-          aria-label="KERYA home"
+          aria-label="KEYRA home"
         >
           <KeyraLogo variant="header" showWordmark={false} />
         </Link>
