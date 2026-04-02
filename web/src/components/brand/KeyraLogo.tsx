@@ -17,9 +17,9 @@ export function KeyraLogo({
   const logoSizes = {
     header: {
       box:
-        "h-[3.75rem] w-[min(19rem,calc(100vw-10.5rem))] sm:h-16 sm:w-[22rem] md:h-[4.75rem] md:w-[26rem] lg:w-[28rem]",
-      w: 800,
-      h: 140,
+        "h-[4.5rem] w-[min(22rem,calc(100vw-9rem))] sm:h-20 sm:w-[26rem] md:h-[5.5rem] md:w-[30rem] lg:h-[5.75rem] lg:w-[34rem]",
+      w: 960,
+      h: 168,
     },
     footer: { box: "h-14 w-[13rem] sm:h-14 sm:w-[15rem]", w: 340, h: 72 },
     inline: { box: "h-14 w-[13rem] sm:h-14 sm:w-[15rem]", w: 340, h: 72 },
@@ -28,7 +28,7 @@ export function KeyraLogo({
   const wordmarkSize = variant === "footer" ? "text-sm" : "text-lg";
   const imageClass =
     variant === "header"
-      ? "h-full w-full object-contain object-left"
+      ? "h-full w-full origin-left scale-[1.22] object-contain object-left sm:scale-[1.12]"
       : "h-full w-full object-contain object-center";
 
   return (
