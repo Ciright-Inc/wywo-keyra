@@ -45,6 +45,7 @@ export function KeyraLogo({
           height={logoSizes[variant].h}
           className={imageClass}
           priority={variant === "header"}
+          unoptimized
         />
       </span>
       {showWordmark ? (
