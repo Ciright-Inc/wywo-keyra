@@ -53,6 +53,21 @@
     var state = randomVerifier() + randomVerifier();
     var body = { clientId: clientId, redirectUri: redirectUri, state: state };
 
+    var popupRef = null;
+    if (usePopup) {
+      popupRef = window.open("about:blank", "ciright-hosted-auth", "width=480,height=640");
+      if (!popupRef) {
+        throw new Error("Popup blocked — allow popups for this site, then try again.");
+      }
+      try {
+        popupRef.document.title = "Signing in…";
+        popupRef.document.body.innerHTML =
+          "<p style=\"font-family:system-ui;padding:1rem\">Starting hosted sign-in…</p>";
+      } catch (e) {
+        /* ignore */
+      }
+    }
+
     if (usePkce) {
       var verifier = randomVerifier();
       body.codeChallenge = await sha256Base64Url(verifier);
@@ -60,22 +75,33 @@
       sessionStorage.setItem("ciright_hosted_pkce_" + state, verifier);
     }
 
-    var startRes = await fetch(authBackendUrl + "/hosted-login/start", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    var startJson = await startRes.json().catch(function () {
-      return {};
-    });
+    var startRes;
+    var startJson;
+    try {
+      startRes = await fetch(authBackendUrl + "/hosted-login/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      startJson = await startRes.json().catch(function () {
+        return {};
+      });
+    } catch (err) {
+      if (popupRef) popupRef.close();
+      throw err;
+    }
     if (!startRes.ok) {
+      if (popupRef) popupRef.close();
       throw new Error(
         startJson.error_description || startJson.error || "hosted-login/start failed (" + startRes.status + ")",
       );
     }
 
     var hostedUrl = startJson.hostedUrl;
-    if (!hostedUrl) throw new Error("Missing hostedUrl from server");
+    if (!hostedUrl) {
+      if (popupRef) popupRef.close();
+      throw new Error("Missing hostedUrl from server");
+    }
 
     if (usePkce) {
       var v = sessionStorage.getItem("ciright_hosted_pkce_" + state);
@@ -83,6 +109,7 @@
     }
 
     if (usePopup) {
+      popupRef.location.href = hostedUrl;
       return new Promise(function (resolve, reject) {
         function onMsg(ev) {
           var d = ev.data;
@@ -94,8 +121,6 @@
           resolve({ access_token: tok, state: d.state, redirect_uri: d.redirect_uri });
         }
         window.addEventListener("message", onMsg);
-        var w = window.open(hostedUrl, "ciright-hosted-auth", "width=480,height=640");
-        if (!w) reject(new Error("Popup blocked"));
       });
     }
 
