@@ -12,10 +12,10 @@ const links = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-kerya-border bg-kerya-surface">
+    <footer className="border-t border-keyra-border bg-keyra-surface">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
-          <Link href="/" className="group inline-flex" aria-label="KEYRA home">
+          <Link href="/" className="group inline-flex" aria-label="Keyra home">
             <KeyraLogo variant="footer" showWordmark={false} />
           </Link>
           <nav className="flex flex-wrap gap-x-6 gap-y-2" aria-label="Footer">
@@ -23,15 +23,15 @@ export function SiteFooter() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-sm text-kerya-text-2 transition hover:text-kerya-primary"
+                className="text-sm text-keyra-text-2 transition hover:text-keyra-primary"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
         </div>
-        <p className="mt-8 border-t border-kerya-border pt-6 text-xs text-kerya-text-2">
-          KEYRA = Protection
+        <p className="mt-8 border-t border-keyra-border pt-6 text-xs text-keyra-text-2">
+          Keyra = Protection
         </p>
       </div>
     </footer>

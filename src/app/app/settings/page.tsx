@@ -13,10 +13,10 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <h1 className="text-[36px] font-bold tracking-tight text-kerya-primary sm:text-[44px]">
+      <h1 className="text-[36px] font-bold tracking-tight text-keyra-primary sm:text-[44px]">
         Settings
       </h1>
-      <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
+      <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-keyra-text-2 sm:text-[18px]">
         Calm, simple control. Nothing technical.
       </p>
 
@@ -50,7 +50,7 @@ export default function SettingsPage() {
 
         <Card>
           <CardHeader title="Protection" description="Keep it simple." />
-          <div className="mt-6 space-y-3 text-[14px] text-kerya-text-2">
+          <div className="mt-6 space-y-3 text-[14px] text-keyra-text-2">
             <p>Verification: On</p>
             <p>Device checks: On</p>
             <p>Family protection: On</p>
@@ -66,11 +66,11 @@ export default function SettingsPage() {
       <div className="mt-6 grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader title="Devices" description="Manage where you’re protected." />
-          <ul className="mt-6 space-y-3 text-[14px] text-kerya-text-2">
-            <li className="rounded-[var(--keyra-radius-card)] bg-kerya-bg px-4 py-3">
+          <ul className="mt-6 space-y-3 text-[14px] text-keyra-text-2">
+            <li className="rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3">
               iPhone • Active
             </li>
-            <li className="rounded-[var(--keyra-radius-card)] bg-kerya-bg px-4 py-3">
+            <li className="rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3">
               MacBook • Active
             </li>
           </ul>
@@ -80,7 +80,7 @@ export default function SettingsPage() {
             title="Notifications"
             description="Only what’s useful."
           />
-          <p className="mt-6 text-[14px] leading-relaxed text-kerya-text-2">
+          <p className="mt-6 text-[14px] leading-relaxed text-keyra-text-2">
             We keep notifications minimal. You’ll only hear from us when it
             matters.
           </p>
@@ -99,8 +99,8 @@ export default function SettingsPage() {
           </div>
         }
       >
-        <p className="text-[16px] leading-relaxed text-kerya-text-2">
-          KEYRA keeps protection on in the background. You can verify when you
+        <p className="text-[16px] leading-relaxed text-keyra-text-2">
+          Keyra keeps protection on in the background. You can verify when you
           want, review devices, and manage family protection — without digging
           through technical settings.
         </p>

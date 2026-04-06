@@ -25,10 +25,10 @@ export default function FamilyPage() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <h1 className="text-[36px] font-bold tracking-tight text-kerya-primary sm:text-[44px]">
+      <h1 className="text-[36px] font-bold tracking-tight text-keyra-primary sm:text-[44px]">
         Family
       </h1>
-      <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
+      <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-keyra-text-2 sm:text-[18px]">
         Simple protection for the people you care about.
       </p>
 
@@ -47,7 +47,7 @@ export default function FamilyPage() {
               placeholder="e.g. Alex"
             />
             <Button onClick={add}>Add</Button>
-            <p className="text-[14px] text-kerya-text-2">
+            <p className="text-[14px] text-keyra-text-2">
               You can remove or change this later.
             </p>
           </div>
@@ -62,12 +62,12 @@ export default function FamilyPage() {
             {members.map((m) => (
               <li
                 key={m.name}
-                className="flex items-center justify-between rounded-[var(--keyra-radius-card)] bg-kerya-bg px-4 py-3"
+                className="flex items-center justify-between rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3"
               >
-                <span className="text-[14px] font-medium text-kerya-text">
+                <span className="text-[14px] font-medium text-keyra-text">
                   {m.name}
                 </span>
-                <span className="text-[14px] text-kerya-text-2">{m.status}</span>
+                <span className="text-[14px] text-keyra-text-2">{m.status}</span>
               </li>
             ))}
           </ul>

@@ -17,11 +17,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "KERYA — Protected",
-    template: "%s | KERYA",
+    default: "Keyra — Protected",
+    template: "%s | Keyra",
   },
   description:
-    "KERYA makes protection simple for you, your family, and everything that matters.",
+    "Keyra makes protection simple for you, your family, and everything that matters.",
   metadataBase: new URL("https://keyra.ie"),
   icons: {
     icon: "/keyra-logo.png",
@@ -29,11 +29,11 @@ export const metadata: Metadata = {
     apple: "/keyra-logo.png",
   },
   openGraph: {
-    title: "KERYA — Protected",
+    title: "Keyra — Protected",
     description:
       "Simple, modern protection for individuals and families.",
     url: "https://keyra.ie",
-    siteName: "KERYA",
+    siteName: "Keyra",
     locale: "en_IE",
     type: "website",
   },

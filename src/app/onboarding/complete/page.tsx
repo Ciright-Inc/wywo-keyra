@@ -5,13 +5,13 @@ import { IconShieldCheck } from "@/components/ui/Icons";
 
 export default function OnboardingCompletePage() {
   return (
-    <div className="bg-kerya-bg px-4 py-16 sm:px-6">
+    <div className="bg-keyra-bg px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-[720px]">
-        <h1 className="text-[36px] font-bold tracking-tight text-kerya-primary sm:text-[44px]">
+        <h1 className="text-[36px] font-bold tracking-tight text-keyra-primary sm:text-[44px]">
           You’re protected
         </h1>
-        <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-          KEYRA is now active. You don’t need to think about it — just enjoy the
+        <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-keyra-text-2 sm:text-[18px]">
+          Keyra is now active. You don’t need to think about it — just enjoy the
           feeling of being protected.
         </p>
 

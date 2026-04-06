@@ -5,13 +5,13 @@ import { Input } from "@/components/ui/Input";
 
 export default function SignupPage() {
   return (
-    <div className="bg-kerya-bg px-4 py-16 sm:px-6">
+    <div className="bg-keyra-bg px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-[520px]">
-        <h1 className="text-[36px] font-bold tracking-tight text-kerya-primary sm:text-[44px]">
+        <h1 className="text-[36px] font-bold tracking-tight text-keyra-primary sm:text-[44px]">
           Create your account
         </h1>
-        <p className="mt-3 text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-          Set up KEYRA once. Feel protected every day.
+        <p className="mt-3 text-[16px] leading-relaxed text-keyra-text-2 sm:text-[18px]">
+          Set up Keyra once. Feel protected every day.
         </p>
 
         <Card className="mt-10 p-7">
@@ -38,13 +38,13 @@ export default function SignupPage() {
               <Link href="/onboarding/verify" className="block">
                 <Button className="w-full">Continue</Button>
               </Link>
-              <p className="mt-3 text-center text-[14px] text-kerya-text-2">
+              <p className="mt-3 text-center text-[14px] text-keyra-text-2">
                 By continuing, you agree to our{" "}
-                <Link href="/terms" className="text-kerya-primary underline">
+                <Link href="/terms" className="text-keyra-primary underline">
                   Terms
                 </Link>{" "}
                 and{" "}
-                <Link href="/privacy" className="text-kerya-primary underline">
+                <Link href="/privacy" className="text-keyra-primary underline">
                   Privacy
                 </Link>
                 .

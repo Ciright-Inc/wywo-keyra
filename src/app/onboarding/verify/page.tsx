@@ -23,13 +23,13 @@ export default function VerifyPage() {
   }
 
   return (
-    <div className="bg-kerya-bg px-4 py-16 sm:px-6">
+    <div className="bg-keyra-bg px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-[720px]">
-        <h1 className="text-[36px] font-bold tracking-tight text-kerya-primary sm:text-[44px]">
+        <h1 className="text-[36px] font-bold tracking-tight text-keyra-primary sm:text-[44px]">
           Verify once
         </h1>
-        <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
-          This is a quick check to make sure it’s really you. After this, KEYRA
+        <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-keyra-text-2 sm:text-[18px]">
+          This is a quick check to make sure it’s really you. After this, Keyra
           can keep you protected with less effort.
         </p>
 
@@ -48,21 +48,21 @@ export default function VerifyPage() {
               >
                 {busy ? "Verifying…" : "Verify now"}
               </Button>
-              <p className="mt-3 text-center text-[14px] text-kerya-text-2">
+              <p className="mt-3 text-center text-[14px] text-keyra-text-2">
                 You can review and change this later in Settings.
               </p>
             </div>
           </Card>
 
           <Card className="p-7">
-            <p className="text-[14px] font-medium uppercase tracking-wider text-kerya-text-2">
+            <p className="text-[14px] font-medium uppercase tracking-wider text-keyra-text-2">
               What happens next
             </p>
-            <p className="mt-3 text-[16px] leading-relaxed text-kerya-text">
-              Once you’re verified, KEYRA can help keep your sign‑ins and access
+            <p className="mt-3 text-[16px] leading-relaxed text-keyra-text">
+              Once you’re verified, Keyra can help keep your sign‑ins and access
               calmer and more reliable.
             </p>
-            <ul className="mt-6 space-y-3 text-[14px] text-kerya-text-2">
+            <ul className="mt-6 space-y-3 text-[14px] text-keyra-text-2">
               <li>Less stress during important moments</li>
               <li>Clear, simple protection you can trust</li>
               <li>Confidence for you and your family</li>

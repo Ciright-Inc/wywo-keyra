@@ -12,15 +12,15 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const base =
-  "inline-flex items-center justify-center select-none whitespace-nowrap rounded-[var(--keyra-radius-pill)] px-5 py-3 text-[16px] font-semibold transition duration-200 focus-visible:outline-none focus-visible:kerya-focus disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center justify-center select-none whitespace-nowrap rounded-[var(--keyra-radius-pill)] px-5 py-3 text-[16px] font-semibold transition duration-200 focus-visible:outline-none focus-visible:keyra-focus disabled:opacity-50 disabled:pointer-events-none";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-kerya-primary text-white hover:opacity-95 active:opacity-90",
+    "bg-keyra-primary text-white hover:opacity-95 active:opacity-90",
   secondary:
-    "bg-transparent text-kerya-primary border border-kerya-border hover:border-kerya-primary",
+    "bg-transparent text-keyra-primary border border-keyra-border hover:border-keyra-primary",
   ghost:
-    "bg-transparent text-kerya-primary hover:bg-kerya-bg",
+    "bg-transparent text-keyra-primary hover:bg-keyra-bg",
 };
 
 const sizes: Record<Size, string> = {

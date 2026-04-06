@@ -31,7 +31,7 @@ export function MobileNav() {
         {open ? (
           <motion.nav
             id="mobile-nav-panel"
-            className="absolute left-0 right-0 top-full z-40 border-b border-kerya-border bg-kerya-bg/95 px-4 py-4 backdrop-blur-md"
+            className="absolute left-0 right-0 top-full z-40 border-b border-keyra-border bg-keyra-bg/95 px-4 py-4 backdrop-blur-md"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -44,7 +44,7 @@ export function MobileNav() {
                   <Link
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className="block rounded-lg px-3 py-2 text-sm font-medium text-kerya-primary hover:bg-kerya-surface"
+                    className="block rounded-lg px-3 py-2 text-sm font-medium text-keyra-primary hover:bg-keyra-surface"
                   >
                     {item.label}
                   </Link>

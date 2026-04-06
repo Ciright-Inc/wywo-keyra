@@ -16,7 +16,7 @@ const steps = [
   },
   {
     title: "Verify with confidence",
-    body: "When it matters, KEYRA helps confirm it is really you — calmly and clearly.",
+    body: "When it matters, Keyra helps confirm it is really you — calmly and clearly.",
   },
   {
     title: "Manage trusted access",
@@ -24,19 +24,19 @@ const steps = [
   },
   {
     title: "Stay protected over time",
-    body: "Protection does not stop after day one. KEYRA grows with you, your family, and your business — always with the person first.",
+    body: "Protection does not stop after day one. Keyra grows with you, your family, and your business — always with the person first.",
   },
 ];
 
 export default function HowItWorksPage() {
   return (
-    <div className="bg-kerya-bg px-4 py-12 sm:px-6 sm:py-20 md:py-24">
+    <div className="bg-keyra-bg px-4 py-12 sm:px-6 sm:py-20 md:py-24">
       <div className="mx-auto max-w-3xl">
         <FadeIn>
-          <h1 className="text-balance text-3xl font-semibold tracking-tight text-kerya-primary sm:text-4xl md:text-[2.75rem]">
-            How KEYRA works
+          <h1 className="text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
+            How Keyra works
           </h1>
-          <p className="mt-6 text-[16px] leading-relaxed text-kerya-text-2 sm:text-[18px]">
+          <p className="mt-6 text-[16px] leading-relaxed text-keyra-text-2 sm:text-[18px]">
             Be Protected Online — with a simple process, clear verification, and
             calm protection you can trust at every step.
           </p>
@@ -45,14 +45,14 @@ export default function HowItWorksPage() {
         <ol className="mt-12 space-y-6">
           {steps.map((s, i) => (
             <FadeIn key={s.title} delay={i * 0.05}>
-              <li className="kerya-card p-5 sm:p-6">
-                <span className="text-[14px] font-semibold uppercase tracking-wide text-kerya-text-2">
+              <li className="keyra-card p-5 sm:p-6">
+                <span className="text-[14px] font-semibold uppercase tracking-wide text-keyra-text-2">
                   Step {i + 1}
                 </span>
-                <h2 className="mt-2 text-xl font-semibold text-kerya-primary sm:text-2xl">
+                <h2 className="mt-2 text-xl font-semibold text-keyra-primary sm:text-2xl">
                   {s.title}
                 </h2>
-                <p className="mt-3 text-[15px] leading-relaxed text-kerya-text-2 sm:text-[16px]">
+                <p className="mt-3 text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px]">
                   {s.body}
                 </p>
               </li>
@@ -61,7 +61,7 @@ export default function HowItWorksPage() {
         </ol>
 
         <FadeIn className="mt-12 text-center">
-          <p className="font-medium text-kerya-primary">Ready to be protected?</p>
+          <p className="font-medium text-keyra-primary">Ready to be protected?</p>
           <Link href="/#get-started" className="mt-4 inline-flex">
             <Button>Get protected</Button>
           </Link>

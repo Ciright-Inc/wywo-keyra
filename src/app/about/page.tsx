@@ -3,16 +3,16 @@ import Link from "next/link";
 import { FadeIn } from "@/components/motion/FadeIn";
 
 export const metadata: Metadata = {
-  title: "About KEYRA",
+  title: "About Keyra",
   description:
-    "Be Protected Online — KEYRA is a premium global protection brand: calm, simple, and centred on human trust.",
+    "Be Protected Online — Keyra is a premium global protection brand: calm, simple, and centred on human trust.",
 };
 
 const sections = [
   {
     kicker: "Our mission",
     title: "You at the centre",
-    body: "Everyday people deserve a calm, clear way to stay protected online. KEYRA puts you at the centre: your identity, your control, your peace of mind.",
+    body: "Everyday people deserve a calm, clear way to stay protected online. Keyra puts you at the centre: your identity, your control, your peace of mind.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
         <path
@@ -26,7 +26,7 @@ const sections = [
   {
     kicker: "Why it matters",
     title: "Less guesswork online",
-    body: "When services are unsure who is on the other side, everyday life gets harder — not safer. KEYRA helps you verify with confidence, so you can move through digital life with fewer surprises.",
+    body: "When services are unsure who is on the other side, everyday life gets harder — not safer. Keyra helps you verify with confidence, so you can move through digital life with fewer surprises.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
         <path
@@ -79,13 +79,13 @@ export default function AboutPage() {
           <div className="grid gap-12 lg:grid-cols-[1fr_minmax(0,340px)] lg:items-end lg:gap-16">
             <FadeIn>
               <p className="text-[14px] font-semibold uppercase tracking-widest text-keyra-muted">
-                About KEYRA
+                About Keyra
               </p>
               <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem] lg:text-5xl lg:leading-tight">
                 Be Protected Online
               </h1>
               <p className="mt-6 max-w-2xl text-[16px] leading-relaxed text-keyra-muted sm:text-[18px]">
-                KEYRA is a premium global protection brand — calm, simple, and
+                Keyra is a premium global protection brand — calm, simple, and
                 centred on trust. Protection for your identity, money, data, and
                 digital life.
               </p>
@@ -133,7 +133,7 @@ export default function AboutPage() {
             Our story, in four beats
           </h2>
           <p className="mt-3 max-w-2xl text-[16px] text-keyra-muted">
-            Each part of KEYRA comes back to one idea: the person behind the
+            Each part of Keyra comes back to one idea: the person behind the
             screen deserves to be seen, protected, and in control.
           </p>
         </FadeIn>
@@ -173,7 +173,7 @@ export default function AboutPage() {
             href="/how-it-works"
             className="mt-6 inline-flex rounded-full bg-keyra-primary px-6 py-3 text-[16px] font-semibold text-white transition hover:opacity-95"
           >
-            How KEYRA works
+            How Keyra works
           </Link>
         </FadeIn>
       </section>

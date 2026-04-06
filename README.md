@@ -1,5 +1,16 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Keyra customer domain (hosted passwordless login)
+
+**Only `keyra.ie` for Keyra.** Auth is **simsecure-auth-backend** (no `auth.keyra.ie`).
+
+1. **DNS** — `keyra.ie` → Keyra Next app.
+2. **Keyra build env** — `NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL` = simsecure-auth-backend public URL (e.g. `https://auth.ciright.pro`).
+3. **simsecure-auth-backend** — `HOSTED_LOGIN_PUBLIC_URL=https://keyra.ie`; add `https://keyra.ie` to `CORS_ALLOWED_ORIGINS` as needed.
+5. **Static script** — `public/ciright-hosted-auth.js` at `https://keyra.ie/ciright-hosted-auth.js`.
+
+The `web/` subfolder is a duplicate layout; use whichever root you standardize on.
+
 ## Getting Started
 
 First, run the development server:

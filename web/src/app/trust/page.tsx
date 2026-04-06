@@ -5,7 +5,7 @@ import { FadeIn } from "@/components/motion/FadeIn";
 export const metadata: Metadata = {
   title: "Trust",
   description:
-    "Be Protected Online — how KEYRA earns trust through calm design, protection first, and respect for you.",
+    "Be Protected Online — how Keyra earns trust through calm design, protection first, and respect for you.",
 };
 
 const pillars = [
@@ -16,7 +16,7 @@ const pillars = [
   },
   {
     title: "Protection first",
-    body: "Protection exists to serve people — not the other way around. KEYRA keeps your control, dignity, and everyday ease at the centre.",
+    body: "Protection exists to serve people — not the other way around. Keyra keeps your control, dignity, and everyday ease at the centre.",
     tag: "People",
   },
   {
@@ -54,7 +54,7 @@ export default function TrustPage() {
                 Be Protected Online
               </p>
               <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
-                Why KEYRA feels calm
+                Why Keyra feels calm
               </h1>
               <p className="mt-6 text-[16px] leading-relaxed text-keyra-muted sm:text-[18px]">
                 Trust is not a slogan. It is a set of choices — about design,
@@ -94,7 +94,7 @@ export default function TrustPage() {
                   What we hold ourselves to
                 </h2>
                 <p className="mt-2 max-w-xl text-[16px] text-keyra-muted">
-                  Five principles guide how KEYRA shows up — in product, in
+                  Five principles guide how Keyra shows up — in product, in
                   words, and in how we treat your identity.
                 </p>
               </div>
@@ -150,7 +150,7 @@ export default function TrustPage() {
                 </p>
                 <p className="mt-2 max-w-xl text-[14px] leading-relaxed text-keyra-muted sm:text-[16px]">
                   The same care you see here carries through when you join,
-                  verify once, and use KEYRA day to day — always with protection
+                  verify once, and use Keyra day to day — always with protection
                   first.
                 </p>
               </div>
@@ -158,7 +158,7 @@ export default function TrustPage() {
                 href="/about"
                 className="inline-flex rounded-full bg-keyra-primary px-6 py-3 text-[16px] font-semibold text-white transition hover:opacity-95"
               >
-                About KEYRA
+                About Keyra
               </Link>
             </div>
           </FadeIn>

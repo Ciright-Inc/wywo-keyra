@@ -4,7 +4,7 @@ import { FadeIn } from "@/components/motion/FadeIn";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Questions about KEYRA or getting protected? Reach out — we will respond in plain language, with protection first.",
+    "Questions about Keyra or getting protected? Reach out — we will respond in plain language, with protection first.",
 };
 
 export default function ContactPage() {
@@ -20,7 +20,7 @@ export default function ContactPage() {
               Be Protected Online
             </p>
             <p className="mt-4 text-base leading-relaxed text-keyra-ink sm:text-lg">
-              Questions about KEYRA or staying protected? Share a few details
+              Questions about Keyra or staying protected? Share a few details
               and we will reply in calm, clear language.
             </p>
           </div>

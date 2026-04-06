@@ -6,18 +6,18 @@ export function HeroVisual() {
   return (
     <div className="relative mx-auto aspect-[4/3] w-full max-w-md sm:max-w-lg">
       <div
-        className="animate-keyra-pulse-soft absolute inset-[12%] rounded-[40%] bg-kerya-bg"
+        className="animate-keyra-pulse-soft absolute inset-[12%] rounded-[40%] bg-keyra-bg"
         aria-hidden
       />
       <motion.div
-        className="animate-keyra-float absolute right-[8%] top-[10%] h-24 w-24 rounded-full bg-kerya-bg"
+        className="animate-keyra-float absolute right-[8%] top-[10%] h-24 w-24 rounded-full bg-keyra-bg"
         aria-hidden
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.9, delay: 0.2 }}
       />
       <motion.div
-        className="animate-keyra-float-delayed absolute bottom-[18%] left-[5%] h-20 w-20 rounded-full bg-kerya-bg"
+        className="animate-keyra-float-delayed absolute bottom-[18%] left-[5%] h-20 w-20 rounded-full bg-keyra-bg"
         aria-hidden
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}

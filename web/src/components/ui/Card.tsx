@@ -8,7 +8,7 @@ export function Card({
   className?: string;
   children: ReactNode;
 }) {
-  return <div className={cn("kerya-card p-6", className)}>{children}</div>;
+  return <div className={cn("keyra-card p-6", className)}>{children}</div>;
 }
 
 export function CardHeader({
@@ -23,14 +23,14 @@ export function CardHeader({
   return (
     <div className="flex items-start gap-4">
       {icon ? (
-        <div className="flex h-11 w-11 items-center justify-center rounded-[var(--keyra-radius-card)] bg-kerya-bg text-kerya-primary">
+        <div className="flex h-11 w-11 items-center justify-center rounded-[var(--keyra-radius-card)] bg-keyra-bg text-keyra-primary">
           {icon}
         </div>
       ) : null}
       <div className="min-w-0">
-        <p className="text-[18px] font-semibold text-kerya-primary">{title}</p>
+        <p className="text-[18px] font-semibold text-keyra-primary">{title}</p>
         {description ? (
-          <p className="mt-1 text-[14px] leading-relaxed text-kerya-text-2">
+          <p className="mt-1 text-[14px] leading-relaxed text-keyra-text-2">
             {description}
           </p>
         ) : null}

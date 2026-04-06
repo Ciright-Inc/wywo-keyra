@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /**
- * KEYRA — locked palette. Literals: #0B1F2A #F7F9FA #1A1A1A #5A6B7A #FFFFFF.
+ * Keyra — locked palette. Literals: #0B1F2A #F7F9FA #1A1A1A #5A6B7A #FFFFFF.
  * Filled primary actions: background #0B1F2A, text #FFFFFF (same as headings on surface).
  */
 :root {
@@ -23,13 +23,13 @@
 }
 
 @theme inline {
-  --color-kerya-primary: var(--keyra-blue);
-  --color-kerya-bg: var(--keyra-bg);
-  --color-kerya-surface: var(--keyra-white);
-  --color-kerya-text: var(--keyra-text);
-  --color-kerya-text-2: var(--keyra-text-secondary);
-  --color-kerya-border: var(--keyra-border);
-  --color-kerya-ring: var(--keyra-ring);
+  --color-keyra-primary: var(--keyra-blue);
+  --color-keyra-bg: var(--keyra-bg);
+  --color-keyra-surface: var(--keyra-white);
+  --color-keyra-text: var(--keyra-text);
+  --color-keyra-text-2: var(--keyra-text-secondary);
+  --color-keyra-border: var(--keyra-border);
+  --color-keyra-ring: var(--keyra-ring);
 
   --color-keyra-primary: var(--keyra-blue);
   --color-keyra-bg: var(--keyra-bg);
@@ -49,18 +49,18 @@ body {
   overflow-x: clip;
 }
 
-.kerya-card {
+.keyra-card {
   border-radius: var(--keyra-radius-card);
   background: var(--keyra-white);
   border: 1px solid var(--keyra-border);
   box-shadow: var(--keyra-shadow-card);
 }
 
-.kerya-card:hover {
+.keyra-card:hover {
   box-shadow: var(--keyra-shadow-hover);
 }
 
-.kerya-focus {
+.keyra-focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
   box-shadow: 0 0 0 4px var(--keyra-ring);

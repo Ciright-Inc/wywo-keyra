@@ -14,12 +14,12 @@ const nav = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-kerya-border bg-kerya-bg/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-keyra-border bg-keyra-bg/90 backdrop-blur-md">
       <div className="relative mx-auto flex h-16 w-full min-w-0 max-w-6xl items-center gap-2 px-3 sm:gap-3 sm:px-6">
         <Link
           href="/"
           className="group flex h-16 min-w-0 flex-1 items-center py-1"
-          aria-label="KEYRA home"
+          aria-label="Keyra home"
         >
           <KeyraLogo variant="header" showWordmark={false} />
         </Link>
@@ -29,7 +29,7 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-kerya-primary transition-colors hover:text-kerya-text-2"
+                className="relative whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-keyra-primary transition-colors hover:text-keyra-text-2"
               >
                 {item.label}
               </Link>

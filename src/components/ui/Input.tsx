@@ -24,7 +24,7 @@ export function Input({
       {label ? (
         <label
           htmlFor={id}
-          className="block text-[14px] font-medium text-kerya-text"
+          className="block text-[14px] font-medium text-keyra-text"
         >
           {label}
         </label>
@@ -34,8 +34,8 @@ export function Input({
         aria-invalid={Boolean(error) || undefined}
         aria-describedby={describedBy}
         className={cn(
-          "h-12 w-full rounded-[var(--keyra-radius-card)] border bg-kerya-surface px-4 text-[16px] text-kerya-text placeholder:text-kerya-text-2/70 transition duration-200 focus-visible:outline-none focus-visible:kerya-focus",
-          error ? "border-kerya-primary" : "border-kerya-border",
+          "h-12 w-full rounded-[var(--keyra-radius-card)] border bg-keyra-surface px-4 text-[16px] text-keyra-text placeholder:text-keyra-text-2/70 transition duration-200 focus-visible:outline-none focus-visible:keyra-focus",
+          error ? "border-keyra-primary" : "border-keyra-border",
           className,
         )}
         {...props}
@@ -45,7 +45,7 @@ export function Input({
           id={describedBy}
           className={cn(
             "text-[14px] leading-relaxed",
-            error ? "font-medium text-kerya-primary" : "text-kerya-text-2",
+            error ? "font-medium text-keyra-primary" : "text-keyra-text-2",
           )}
         >
           {error ?? hint}
