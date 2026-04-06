@@ -46,6 +46,7 @@ function HostedLoginInner() {
     const json = (await res.json().catch(() => ({}))) as {
       error?: string;
       error_description?: string;
+      access_token?: string;
       id_token?: string;
       state?: string;
       redirect_uri?: string;
@@ -55,17 +56,17 @@ function HostedLoginInner() {
       setPhase("error");
       return;
     }
-    if (typeof json.id_token === "string" && json.id_token.length > 0) {
-      console.log("[hosted-login] id_token (access bearer for your app):", json.id_token);
+    const accessTok = json.access_token || json.id_token;
+    if (typeof accessTok === "string" && accessTok.length > 0) {
+      console.log("[hosted-login] access_token (Bearer for your app):", accessTok);
     }
-    const idToken = json.id_token;
     const state = json.state;
     const redirectUri = json.redirect_uri;
     if (window.opener) {
       window.opener.postMessage(
         {
           source: "ciright-hosted-auth",
-          id_token: idToken,
+          access_token: accessTok,
           state,
           redirect_uri: redirectUri,
         },
@@ -76,7 +77,7 @@ function HostedLoginInner() {
     }
     if (redirectUri) {
       const url = new URL(redirectUri);
-      url.hash = `id_token=${encodeURIComponent(idToken || "")}&state=${encodeURIComponent(state || "")}`;
+      url.hash = `access_token=${encodeURIComponent(accessTok || "")}&state=${encodeURIComponent(state || "")}`;
       window.location.replace(url.toString());
     }
   }, []);
@@ -199,7 +200,7 @@ function HostedLoginInner() {
             return;
           }
           if (typeof claimJson.access_token === "string" && claimJson.access_token.length > 0) {
-            console.log("[hosted-login] access_token (IPification, after mobile verify):", claimJson.access_token);
+            console.log("[hosted-login] access_token (after mobile verify):", claimJson.access_token);
           }
           setPhase("completing");
           await completeAndFinish(challengeId, cv);

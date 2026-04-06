@@ -1,6 +1,7 @@
 /**
  * Ciright hosted passwordless sign-in — minimal browser integration.
  * @see POST /hosted-login/start on the auth backend
+ * Popup mode resolves with { access_token, state, redirect_uri }.
  */
 (function (global) {
   function normalizeBase(url) {
@@ -89,7 +90,8 @@
           if (d.state !== state) return;
           window.removeEventListener("message", onMsg);
           if (usePkce) sessionStorage.removeItem("ciright_hosted_pkce_" + state);
-          resolve({ id_token: d.id_token, state: d.state, redirect_uri: d.redirect_uri });
+          var tok = d.access_token || d.id_token;
+          resolve({ access_token: tok, state: d.state, redirect_uri: d.redirect_uri });
         }
         window.addEventListener("message", onMsg);
         var w = window.open(hostedUrl, "ciright-hosted-auth", "width=480,height=640");
