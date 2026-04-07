@@ -57,38 +57,16 @@ function DeviceVerifyInner() {
     }
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleRealFormSubmit(_e: FormEvent<HTMLFormElement>) {
+    if (!phone.trim() || !linkId) return;
+    setSubmitting(true);
+  }
+
+  function handleMockFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const cleaned = phone.trim();
     if (!cleaned || !linkId) return;
-
-    if (MOCK) {
-      void handleMockVerify();
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/verify-device/ipification-authorize", {
-        method: "POST",
-        cache: "no-store",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: cleaned, linkId }),
-      });
-      const body = (await res.json().catch(() => ({}))) as { authorizeUrl?: string; error?: string };
-      if (!res.ok || typeof body.authorizeUrl !== "string" || !body.authorizeUrl) {
-        console.error(
-          body.error ||
-            "Phone verification is not configured (set IPIFICATION_* or NEXT_PUBLIC_IPIFICATION_CLIENT_ID / REDIRECT_URI on Keyra).",
-        );
-        setSubmitting(false);
-        return;
-      }
-      window.location.href = body.authorizeUrl;
-    } catch (e) {
-      console.error(e);
-      setSubmitting(false);
-    }
+    void handleMockVerify();
   }
 
   async function tryAutoLinkFromExistingMobileSession(currentLinkId: string, currentReturnUrl: string | null) {
@@ -198,12 +176,18 @@ function DeviceVerifyInner() {
         ) : linkStatus === "approved" || linkStatus === "claimed" ? (
           <div className="verify-device-msg ok">This desktop session is already linked. You can return to your computer.</div>
         ) : (
-          <form onSubmit={handleSubmit}>
+          <form
+            method="POST"
+            action="/api/verify-device/ipification-authorize"
+            onSubmit={MOCK ? handleMockFormSubmit : handleRealFormSubmit}
+          >
+            <input type="hidden" name="linkId" value={linkId} />
             <label htmlFor="device-link-phone" style={{ display: "block", fontSize: "0.85rem", marginBottom: "0.35rem" }}>
               Mobile number
             </label>
             <input
               id="device-link-phone"
+              name="phone"
               type="tel"
               className="verify-device-input"
               value={phone}
@@ -213,6 +197,7 @@ function DeviceVerifyInner() {
               }}
               placeholder="E.164 e.g. 353871234567"
               autoComplete="tel"
+              required
             />
             <button
               type="submit"

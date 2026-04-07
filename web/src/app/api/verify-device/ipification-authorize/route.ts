@@ -34,26 +34,63 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "invalid_json" }, { status: 400, headers: noStore });
+  const contentType = req.headers.get("content-type") || "";
+  const wantsJson = contentType.includes("application/json");
+
+  let phone = "";
+  let linkId = "";
+
+  if (wantsJson) {
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "invalid_json" }, { status: 400, headers: noStore });
+    }
+    phone = typeof (body as { phone?: string }).phone === "string" ? (body as { phone: string }).phone.trim() : "";
+    linkId =
+      typeof (body as { linkId?: string }).linkId === "string" ? (body as { linkId: string }).linkId.trim() : "";
+  } else {
+    try {
+      const form = await req.formData();
+      phone = String(form.get("phone") ?? "").trim();
+      linkId = String(form.get("linkId") ?? "").trim();
+    } catch {
+      return new NextResponse("Bad form body", { status: 400, headers: { "Content-Type": "text/plain", ...noStore } });
+    }
   }
-  const phone = typeof (body as { phone?: string }).phone === "string" ? (body as { phone: string }).phone.trim() : "";
-  const linkId =
-    typeof (body as { linkId?: string }).linkId === "string" ? (body as { linkId: string }).linkId.trim() : "";
+
   if (!phone || !linkId) {
-    return NextResponse.json({ error: "phone_and_linkId_required" }, { status: 400, headers: noStore });
+    if (wantsJson) {
+      return NextResponse.json({ error: "phone_and_linkId_required" }, { status: 400, headers: noStore });
+    }
+    return new NextResponse("Phone and link are required.", { status: 400, headers: { "Content-Type": "text/plain", ...noStore } });
   }
 
   const cfg = resolveIpificationOAuthConfig();
   if (!cfg) {
-    return NextResponse.json({ error: "ipification_not_configured" }, { status: 503, headers: noStore });
+    if (wantsJson) {
+      return NextResponse.json({ error: "ipification_not_configured" }, { status: 503, headers: noStore });
+    }
+    return new NextResponse("Phone verification is not configured on this server.", {
+      status: 503,
+      headers: { "Content-Type": "text/plain", ...noStore },
+    });
   }
 
   const authorizeUrl = buildIpificationAuthUrlFromConfig(cfg, { phone, linkId });
   const host = hostnameFromBaseUrl(cfg.baseUrl);
+
+  if (!wantsJson) {
+    return NextResponse.redirect(authorizeUrl, {
+      status: 303,
+      headers: {
+        ...noStore,
+        "X-Keyra-Ipification-Host": host,
+      },
+    });
+  }
+
   return NextResponse.json(
     { authorizeUrl },
     {
