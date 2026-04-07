@@ -71,6 +71,7 @@ function DeviceVerifyInner() {
     try {
       const res = await fetch("/api/verify-device/ipification-authorize", {
         method: "POST",
+        cache: "no-store",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: cleaned, linkId }),
       });

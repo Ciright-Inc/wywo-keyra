@@ -9,6 +9,20 @@ const nextConfig: NextConfig = {
   experimental: {
     turbopackFileSystemCacheForBuild: false,
   },
+  /** Prevent CDN/browser from serving an old /verify-device document that references pre-fix JS (client inlined prod IPification). */
+  async headers() {
+    return [
+      {
+        source: "/verify-device",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "private, no-cache, no-store, max-age=0, must-revalidate",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
