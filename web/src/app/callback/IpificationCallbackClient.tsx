@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState, Suspense } from "react";
 import { decodeIpificationState } from "@/lib/ipificationState";
 import { ensureApiOriginUrl } from "@/lib/ensureApiOriginUrl";
 
@@ -9,29 +8,82 @@ function authBackendBase(): string {
   return ensureApiOriginUrl(process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL || "");
 }
 
+/**
+ * IPification / Keycloak may return ?code=&state= (query) or #code=&state= (fragment).
+ * Failures use ?error=&error_description= instead of code.
+ */
+function readOAuthFromBrowser(): {
+  code: string;
+  state: string;
+  error: string;
+  errorDescription: string;
+} {
+  if (typeof window === "undefined") {
+    return { code: "", state: "", error: "", errorDescription: "" };
+  }
+  const q = new URLSearchParams(window.location.search);
+  let code = q.get("code") ?? "";
+  let state = q.get("state") ?? "";
+  let error = q.get("error") ?? "";
+  let errorDescription = q.get("error_description") ?? "";
+
+  const rawHash = window.location.hash.replace(/^#/, "");
+  if (rawHash) {
+    const hq = new URLSearchParams(rawHash);
+    if (!code) code = hq.get("code") ?? "";
+    if (!state) state = hq.get("state") ?? "";
+    if (!error) error = hq.get("error") ?? "";
+    if (!errorDescription) errorDescription = hq.get("error_description") ?? "";
+  }
+
+  if (errorDescription) {
+    try {
+      errorDescription = decodeURIComponent(errorDescription.replace(/\+/g, " "));
+    } catch {
+      /* keep raw */
+    }
+  }
+  return { code, state, error, errorDescription };
+}
+
 function IpificationCallbackInner() {
-  const searchParams = useSearchParams();
   const hasCalledBackendRef = useRef(false);
   const [message, setMessage] = useState("Completing verification…");
-
-  const code = searchParams.get("code") ?? "";
-  const state = searchParams.get("state") ?? "";
-  const parsedState = useMemo(() => decodeIpificationState(state), [state]);
 
   useEffect(() => {
     if (hasCalledBackendRef.current) return;
 
-    if (!code) {
-      setMessage("Missing authorization code. Close this tab and scan the QR again.");
+    const { code, state, error, errorDescription } = readOAuthFromBrowser();
+
+    if (error) {
+      hasCalledBackendRef.current = true;
+      setMessage(
+        errorDescription ||
+          error ||
+          "Phone verification was cancelled or failed. Close this tab and start again from your app.",
+      );
       return;
     }
+
+    if (!code) {
+      hasCalledBackendRef.current = true;
+      setMessage(
+        "No code received from IPification. Please try login again. " +
+          "If this keeps happening, confirm the redirect URL is exactly https://keyra.ie/callback in IPification and on the auth server (IPIFICATION_REDIRECT_URI).",
+      );
+      return;
+    }
+
+    const parsedState = decodeIpificationState(state);
     if (!parsedState?.phone) {
+      hasCalledBackendRef.current = true;
       setMessage("Invalid verification state. Try again from the verify page.");
       return;
     }
 
     const base = authBackendBase();
     if (!base) {
+      hasCalledBackendRef.current = true;
       setMessage("Auth service URL is not configured on Keyra.");
       return;
     }
@@ -117,7 +169,7 @@ function IpificationCallbackInner() {
         setMessage("Network error while contacting the auth service.");
       }
     })();
-  }, [code, parsedState]);
+  }, []);
 
   return (
     <main className="verify-device-root">

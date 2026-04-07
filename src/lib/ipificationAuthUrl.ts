@@ -89,6 +89,7 @@ export function buildIpificationAuthUrlFromConfig(
     scope: "openid ip:phone_verify",
     state,
     login_hint: loginHint || "999123456789",
+    response_mode: "query",
   });
 
   return `${String(cfg.baseUrl).replace(/\/+$/, "")}/auth/realms/ipification/protocol/openid-connect/auth?${params.toString()}`;
