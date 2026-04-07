@@ -36,7 +36,10 @@ type BuildArgs = { phone: string; linkId?: string; returnUrl?: string };
 export function buildIpificationAuthUrl({ phone, linkId, returnUrl }: BuildArgs): string | null {
   const clientId = process.env.NEXT_PUBLIC_IPIFICATION_CLIENT_ID;
   const redirectUri = process.env.NEXT_PUBLIC_IPIFICATION_REDIRECT_URI;
-  const baseUrl = process.env.NEXT_PUBLIC_IPIFICATION_BASE_URL ?? "https://api.ipification.com";
+  // Default stage so /verify-device works if NEXT_PUBLIC_* was missing at `next build` (Railway must expose
+  // build-time vars for NEXT_PUBLIC). Production: set NEXT_PUBLIC_IPIFICATION_BASE_URL=https://api.ipification.com
+  const baseUrl =
+    process.env.NEXT_PUBLIC_IPIFICATION_BASE_URL?.trim() || "https://api.stage.ipification.com";
 
   if (!clientId || !redirectUri) return null;
 
