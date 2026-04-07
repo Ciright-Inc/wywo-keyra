@@ -12,7 +12,9 @@ const MOCK =
   /^(1|true|yes)$/i.test(String(process.env.NEXT_PUBLIC_ENABLE_LOCAL_MOCK_VERIFY ?? "").trim()) ||
   process.env.NEXT_PUBLIC_ENABLE_LOCAL_MOCK_VERIFY === "1";
 
-function DeviceVerifyInner() {
+type Props = { authorizePostAction: string };
+
+function DeviceVerifyInner({ authorizePostAction }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [phone, setPhone] = useState("");
@@ -55,11 +57,6 @@ function DeviceVerifyInner() {
     } finally {
       setMockSubmitting(false);
     }
-  }
-
-  function handleRealFormSubmit(_e: FormEvent<HTMLFormElement>) {
-    if (!phone.trim() || !linkId) return;
-    setSubmitting(true);
   }
 
   function handleMockFormSubmit(event: FormEvent<HTMLFormElement>) {
@@ -178,8 +175,8 @@ function DeviceVerifyInner() {
         ) : (
           <form
             method="POST"
-            action="/api/verify-device/ipification-authorize"
-            onSubmit={MOCK ? handleMockFormSubmit : handleRealFormSubmit}
+            action={authorizePostAction}
+            onSubmit={MOCK ? handleMockFormSubmit : undefined}
           >
             <input type="hidden" name="linkId" value={linkId} />
             <label htmlFor="device-link-phone" style={{ display: "block", fontSize: "0.85rem", marginBottom: "0.35rem" }}>
@@ -230,7 +227,7 @@ function DeviceVerifyInner() {
   );
 }
 
-export default function DeviceVerifyClient() {
+export default function DeviceVerifyClient({ authorizePostAction }: Props) {
   return (
     <Suspense
       fallback={
@@ -239,7 +236,7 @@ export default function DeviceVerifyClient() {
         </main>
       }
     >
-      <DeviceVerifyInner />
+      <DeviceVerifyInner authorizePostAction={authorizePostAction} />
     </Suspense>
   );
 }
