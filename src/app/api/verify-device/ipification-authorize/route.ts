@@ -20,9 +20,9 @@ export async function GET() {
   const raw = typeof process !== "undefined" ? process.env["IPIFICATION_BASE_URL"] : "";
   return NextResponse.json(
     {
-      ipificationBaseEnvPresent: Boolean(String(raw ?? "").trim()),
-      authorizeApiHostname: cfg ? hostnameFromBaseUrl(cfg.baseUrl) : null,
-      oauthConfigured: Boolean(cfg),
+      phoneVerifyBaseEnvPresent: Boolean(String(raw ?? "").trim()),
+      phoneVerifyApiHostname: cfg ? hostnameFromBaseUrl(cfg.baseUrl) : null,
+      phoneVerifyConfigured: Boolean(cfg),
       deployCommit:
         process.env["RAILWAY_GIT_COMMIT_SHA"] ||
         process.env["SOURCE_VERSION"] ||
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
   const cfg = resolveIpificationOAuthConfig();
   if (!cfg) {
     if (wantsJson) {
-      return NextResponse.json({ error: "ipification_not_configured" }, { status: 503, headers: noStore });
+      return NextResponse.json({ error: "phone_verify_not_configured" }, { status: 503, headers: noStore });
     }
     return new NextResponse("Phone verification is not configured on this server.", {
       status: 503,
@@ -86,7 +86,7 @@ export async function POST(req: Request) {
       status: 303,
       headers: {
         ...noStore,
-        "X-Keyra-Ipification-Host": host,
+        "X-Keyra-Phone-Verify-Host": host,
       },
     });
   }
@@ -96,7 +96,7 @@ export async function POST(req: Request) {
     {
       headers: {
         ...noStore,
-        "X-Keyra-Ipification-Host": host,
+        "X-Keyra-Phone-Verify-Host": host,
       },
     },
   );

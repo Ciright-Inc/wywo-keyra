@@ -11,9 +11,9 @@ export default async function VerifyDevicePage() {
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "";
   const keyraOrigin = host ? `${proto}://${host}` : "";
 
-  /** Same IPification env as token exchange (auth backend). Avoids duplicate IPIFICATION_* on Keyra for hosted QR. */
+  /** Authorize step runs on simsecure-auth (same server env as token exchange). Neutral path for customer-facing flows. */
   const authorizePostAction = authBase
-    ? `${authBase}/auth/ipification/browser-start`
+    ? `${authBase}/auth/phone-verify/browser-start`
     : keyraOrigin
       ? `${keyraOrigin}/api/verify-device/ipification-authorize`
       : "/api/verify-device/ipification-authorize";
