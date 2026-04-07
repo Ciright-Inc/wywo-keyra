@@ -9,7 +9,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 3. **simsecure-auth-backend** — `HOSTED_LOGIN_PUBLIC_URL=https://keyra.ie`; add `https://keyra.ie` to `CORS_ALLOWED_ORIGINS` as needed.
 5. **Static script** — `public/ciright-hosted-auth.js` at `https://keyra.ie/ciright-hosted-auth.js`.
 
-The `web/` subfolder is a duplicate layout; use whichever root you standardize on.
+The `web/` subfolder mirrors `src/` for the same Next app. **Railway / Railpack** runs `npm run build` from the repo root: `@/*` maps to `./src/*`, so new routes and `src/lib/*` modules must exist under **`src/`** as well as `web/` (or only under `src/` once you drop the duplicate).
 
 ## Getting Started
 
