@@ -3,7 +3,6 @@
 import { FormEvent, useEffect, useRef, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ensureApiOriginUrl } from "@/lib/ensureApiOriginUrl";
-import { buildIpificationAuthUrl } from "@/lib/ipificationAuthUrl";
 
 function authBackendBase(): string {
   return ensureApiOriginUrl(process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL || "");
@@ -58,7 +57,7 @@ function DeviceVerifyInner() {
     }
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const cleaned = phone.trim();
     if (!cleaned || !linkId) return;
@@ -68,15 +67,24 @@ function DeviceVerifyInner() {
       return;
     }
 
-    const authorizeUrl = buildIpificationAuthUrl({ phone: cleaned, linkId });
-    if (!authorizeUrl) {
-      console.error("Phone verification is not configured (NEXT_PUBLIC_IPIFICATION_*).");
-      return;
-    }
     setSubmitting(true);
     try {
-      window.location.href = authorizeUrl;
-    } catch {
+      const res = await fetch("/api/verify-device/ipification-authorize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: cleaned, linkId }),
+      });
+      const body = (await res.json().catch(() => ({}))) as { authorizeUrl?: string; error?: string };
+      if (!res.ok || typeof body.authorizeUrl !== "string" || !body.authorizeUrl) {
+        console.error(
+          body.error || "Phone verification is not configured (IPIFICATION_* or NEXT_PUBLIC_IPIFICATION_* on server).",
+        );
+        setSubmitting(false);
+        return;
+      }
+      window.location.href = body.authorizeUrl;
+    } catch (e) {
+      console.error(e);
       setSubmitting(false);
     }
   }

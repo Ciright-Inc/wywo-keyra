@@ -1,6 +1,7 @@
 /**
  * Build OIDC authorize URL for mobile network phone verification (same contract as get-started).
- * Requires NEXT_PUBLIC_IPIFICATION_* at build time.
+ * Server: set IPIFICATION_* (runtime) or NEXT_PUBLIC_IPIFICATION_* (build). Prefer IPIFICATION_BASE_URL on the server
+ * so stage/prod can be switched without rebuilding.
  */
 
 export type IpificationStatePayload = {
@@ -33,15 +34,32 @@ export function decodeIpificationState(rawState: string): IpificationStatePayloa
 
 type BuildArgs = { phone: string; linkId?: string; returnUrl?: string };
 
-export function buildIpificationAuthUrl({ phone, linkId, returnUrl }: BuildArgs): string | null {
-  const clientId = process.env.NEXT_PUBLIC_IPIFICATION_CLIENT_ID;
-  const redirectUri = process.env.NEXT_PUBLIC_IPIFICATION_REDIRECT_URI;
-  // Default stage (see src/lib/ipificationAuthUrl.ts). Prod: set NEXT_PUBLIC_IPIFICATION_BASE_URL at build.
+/** OAuth client settings from env (server sees IPIFICATION_* and NEXT_PUBLIC_*; browser bundle only sees NEXT_PUBLIC_*). */
+export function resolveIpificationOAuthConfig(): {
+  baseUrl: string;
+  clientId: string;
+  redirectUri: string;
+} | null {
   const baseUrl =
-    process.env.NEXT_PUBLIC_IPIFICATION_BASE_URL?.trim() || "https://api.stage.ipification.com";
-
+    process.env.IPIFICATION_BASE_URL?.trim() ||
+    process.env.NEXT_PUBLIC_IPIFICATION_BASE_URL?.trim() ||
+    "https://api.stage.ipification.com";
+  const clientId =
+    process.env.IPIFICATION_CLIENT_ID?.trim() ||
+    process.env.NEXT_PUBLIC_IPIFICATION_CLIENT_ID?.trim() ||
+    "";
+  const redirectUri =
+    process.env.IPIFICATION_REDIRECT_URI?.trim() ||
+    process.env.NEXT_PUBLIC_IPIFICATION_REDIRECT_URI?.trim() ||
+    "";
   if (!clientId || !redirectUri) return null;
+  return { baseUrl, clientId, redirectUri };
+}
 
+export function buildIpificationAuthUrlFromConfig(
+  cfg: { baseUrl: string; clientId: string; redirectUri: string },
+  { phone, linkId, returnUrl }: BuildArgs,
+): string {
   const nonce =
     typeof crypto !== "undefined" && crypto.randomUUID
       ? crypto.randomUUID()
@@ -57,12 +75,18 @@ export function buildIpificationAuthUrl({ phone, linkId, returnUrl }: BuildArgs)
 
   const params = new URLSearchParams({
     response_type: "code",
-    client_id: clientId,
-    redirect_uri: redirectUri,
+    client_id: cfg.clientId,
+    redirect_uri: cfg.redirectUri,
     scope: "openid ip:phone_verify",
     state,
     login_hint: loginHint || "999123456789",
   });
 
-  return `${String(baseUrl).replace(/\/+$/, "")}/auth/realms/ipification/protocol/openid-connect/auth?${params.toString()}`;
+  return `${String(cfg.baseUrl).replace(/\/+$/, "")}/auth/realms/ipification/protocol/openid-connect/auth?${params.toString()}`;
+}
+
+export function buildIpificationAuthUrl(args: BuildArgs): string | null {
+  const cfg = resolveIpificationOAuthConfig();
+  if (!cfg) return null;
+  return buildIpificationAuthUrlFromConfig(cfg, args);
 }
