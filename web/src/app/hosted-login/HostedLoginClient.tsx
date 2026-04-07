@@ -114,7 +114,10 @@ function HostedLoginInner() {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ hostedChallengeId: challengeId }),
+          body: JSON.stringify({
+            hostedChallengeId: challengeId,
+            verifyDeviceBase: typeof window !== "undefined" ? window.location.origin : "",
+          }),
         });
         const linkJson = (await lr.json()) as {
           error?: string;
