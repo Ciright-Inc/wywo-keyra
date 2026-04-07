@@ -6,6 +6,8 @@ const links = [
   { href: "/#families", label: "Families" },
   { href: "/#how-it-works", label: "How it Works" },
   { href: "/#get-started", label: "Get Started" },
+  { href: "/faq", label: "FAQ" },
+  { href: "/contact", label: "Contact us" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },
 ];
