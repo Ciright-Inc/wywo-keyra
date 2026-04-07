@@ -6,6 +6,10 @@ import type { NextConfig } from "next";
  * build-time Turbopack FS cache (false helps layered CI avoid stale module graphs).
  */
 const nextConfig: NextConfig = {
+  /** Monorepo / multiple lockfiles: always treat this app directory as the Turbopack root (avoids wrong chunk graph in CI). */
+  turbopack: {
+    root: process.cwd(),
+  },
   experimental: {
     turbopackFileSystemCacheForBuild: false,
   },
