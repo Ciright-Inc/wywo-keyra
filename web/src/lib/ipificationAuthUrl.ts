@@ -39,20 +39,27 @@ export function decodeIpificationState(rawState: string): IpificationStatePayloa
 
 type BuildArgs = { phone: string; linkId?: string; returnUrl?: string };
 
+function env(name: string): string | undefined {
+  // Bracket access so Next/Turbopack does not substitute at build time; Railway runtime vars must apply.
+  if (typeof process === "undefined" || !process.env) return undefined;
+  const v = process.env[name];
+  return typeof v === "string" ? v : undefined;
+}
+
 /** OAuth client settings from env (server: set IPIFICATION_* on Keyra for base URL + optional client/redirect). */
 export function resolveIpificationOAuthConfig(): {
   baseUrl: string;
   clientId: string;
   redirectUri: string;
 } | null {
-  const baseUrl = process.env.IPIFICATION_BASE_URL?.trim() || "https://api.stage.ipification.com";
+  const baseUrl = env("IPIFICATION_BASE_URL")?.trim() || "https://api.stage.ipification.com";
   const clientId =
-    process.env.IPIFICATION_CLIENT_ID?.trim() ||
-    process.env.NEXT_PUBLIC_IPIFICATION_CLIENT_ID?.trim() ||
+    env("IPIFICATION_CLIENT_ID")?.trim() ||
+    env("NEXT_PUBLIC_IPIFICATION_CLIENT_ID")?.trim() ||
     "";
   const redirectUri =
-    process.env.IPIFICATION_REDIRECT_URI?.trim() ||
-    process.env.NEXT_PUBLIC_IPIFICATION_REDIRECT_URI?.trim() ||
+    env("IPIFICATION_REDIRECT_URI")?.trim() ||
+    env("NEXT_PUBLIC_IPIFICATION_REDIRECT_URI")?.trim() ||
     "";
   if (!clientId || !redirectUri) return null;
   return { baseUrl, clientId, redirectUri };
