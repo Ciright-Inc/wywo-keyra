@@ -179,6 +179,9 @@ function DeviceVerifyInner({ authorizePostAction }: Props) {
             onSubmit={MOCK ? handleMockFormSubmit : undefined}
           >
             <input type="hidden" name="linkId" value={linkId} />
+            {returnUrl && /^https?:\/\//i.test(returnUrl) ? (
+              <input type="hidden" name="returnUrl" value={returnUrl} />
+            ) : null}
             <label htmlFor="device-link-phone" style={{ display: "block", fontSize: "0.85rem", marginBottom: "0.35rem" }}>
               Mobile number
             </label>
