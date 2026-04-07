@@ -7,6 +7,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 1. **DNS** — `keyra.ie` → Keyra Next app.
 2. **Keyra build env** — `NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL` = simsecure-auth-backend public URL (e.g. `https://auth.ciright.pro`).
 3. **simsecure-auth-backend** — `HOSTED_LOGIN_PUBLIC_URL=https://keyra.ie`; add `https://keyra.ie` to `CORS_ALLOWED_ORIGINS` as needed.
+4. **IPification (network phone verify)** — Register **Ciright-owned URLs only** on the shared OAuth client (customers do **not** add their sites to IPification). Set `IPIFICATION_REDIRECT_URI` on the auth server to the Keyra bridge, e.g. `https://keyra.ie/api/ipification/oidc-return` (same string in IPification). That endpoint forwards OAuth `code` to `/callback`. Per-customer “return to my app” URLs are validated in the **developer portal** (project callback / hosted redirect URIs), not in IPification.
 5. **Static script** — `public/ciright-hosted-auth.js` at `https://keyra.ie/ciright-hosted-auth.js`.
 
 The `web/` subfolder mirrors `src/` for the same Next app. **Railway / Railpack** runs `npm run build` from the repo root: `@/*` maps to `./src/*`, so new routes and `src/lib/*` modules must exist under **`src/`** as well as `web/` (or only under `src/` once you drop the duplicate).

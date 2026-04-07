@@ -2,6 +2,9 @@
  * Ciright hosted passwordless sign-in — minimal browser integration.
  * @see POST /hosted-login/start on the auth backend
  * Popup mode resolves with { access_token, state, redirect_uri }.
+ *
+ * redirectUri is YOUR app URL where the user returns after sign-in (must match developer portal).
+ * Phone network verification uses Ciright-hosted Keyra URLs + auth server IPIFICATION_* — customers do not register those in IPification.
  */
 (function (global) {
   function normalizeBase(url) {
