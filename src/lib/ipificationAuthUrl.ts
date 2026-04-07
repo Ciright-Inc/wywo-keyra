@@ -1,7 +1,12 @@
 /**
  * Build OIDC authorize URL for mobile network phone verification (same contract as get-started).
- * Server: set IPIFICATION_* (runtime) or NEXT_PUBLIC_IPIFICATION_* (build). Prefer IPIFICATION_BASE_URL on the server
- * so stage/prod can be switched without rebuilding.
+ *
+ * Base URL uses only IPIFICATION_BASE_URL (server/runtime). We intentionally do not read
+ * NEXT_PUBLIC_IPIFICATION_BASE_URL for the host: it is easy to leave set to prod in Railway and it is
+ * available at runtime on the server too, which blocked stage. Default is stage; for prod Keyra set
+ * IPIFICATION_BASE_URL=https://api.ipification.com.
+ *
+ * Client id / redirect: IPIFICATION_* first, then NEXT_PUBLIC_*.
  */
 
 export type IpificationStatePayload = {
@@ -34,16 +39,13 @@ export function decodeIpificationState(rawState: string): IpificationStatePayloa
 
 type BuildArgs = { phone: string; linkId?: string; returnUrl?: string };
 
-/** OAuth client settings from env (server sees IPIFICATION_* and NEXT_PUBLIC_*; browser bundle only sees NEXT_PUBLIC_*). */
+/** OAuth client settings from env (server: set IPIFICATION_* on Keyra for base URL + optional client/redirect). */
 export function resolveIpificationOAuthConfig(): {
   baseUrl: string;
   clientId: string;
   redirectUri: string;
 } | null {
-  const baseUrl =
-    process.env.IPIFICATION_BASE_URL?.trim() ||
-    process.env.NEXT_PUBLIC_IPIFICATION_BASE_URL?.trim() ||
-    "https://api.stage.ipification.com";
+  const baseUrl = process.env.IPIFICATION_BASE_URL?.trim() || "https://api.stage.ipification.com";
   const clientId =
     process.env.IPIFICATION_CLIENT_ID?.trim() ||
     process.env.NEXT_PUBLIC_IPIFICATION_CLIENT_ID?.trim() ||

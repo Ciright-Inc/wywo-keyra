@@ -77,7 +77,8 @@ function DeviceVerifyInner() {
       const body = (await res.json().catch(() => ({}))) as { authorizeUrl?: string; error?: string };
       if (!res.ok || typeof body.authorizeUrl !== "string" || !body.authorizeUrl) {
         console.error(
-          body.error || "Phone verification is not configured (IPIFICATION_* or NEXT_PUBLIC_IPIFICATION_* on server).",
+          body.error ||
+            "Phone verification is not configured (set IPIFICATION_* or NEXT_PUBLIC_IPIFICATION_CLIENT_ID / REDIRECT_URI on Keyra).",
         );
         setSubmitting(false);
         return;
