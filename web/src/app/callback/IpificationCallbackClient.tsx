@@ -69,7 +69,8 @@ function IpificationCallbackInner() {
       hasCalledBackendRef.current = true;
       setMessage(
         "No code received from IPification. Please try login again. " +
-          "If this keeps happening, confirm the redirect URL is exactly https://keyra.ie/callback in IPification and on the auth server (IPIFICATION_REDIRECT_URI).",
+          "Set IPIFICATION_REDIRECT_URI and the IPification client redirect to https://keyra.ie/api/ipification/oidc-return " +
+          "(handles POST form_post); that route forwards to /callback. Legacy GET-only: https://keyra.ie/callback.",
       );
       return;
     }
