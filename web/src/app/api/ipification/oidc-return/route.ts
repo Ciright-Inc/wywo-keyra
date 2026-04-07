@@ -42,22 +42,31 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const merged = new URLSearchParams();
-  const ct = req.headers.get("content-type") || "";
+  const ct = (req.headers.get("content-type") || "").toLowerCase();
   try {
-    if (ct.includes("application/x-www-form-urlencoded")) {
-      const raw = await req.text();
-      new URLSearchParams(raw).forEach((v, k) => merged.set(k, v));
-    } else {
+    if (ct.includes("multipart/form-data")) {
       const fd = await req.formData();
       fd.forEach((v, k) => {
         if (typeof v === "string") merged.set(k, v);
       });
+    } else {
+      const raw = await req.text();
+      if (raw) {
+        new URLSearchParams(raw).forEach((v, k) => merged.set(k, v));
+      }
     }
-  } catch {
+  } catch (err) {
+    console.warn("[oidc-return] body parse error", err);
     return new NextResponse("Invalid callback body", { status: 400 });
   }
   const out = pickForwarded(merged);
   if (!out.get("code") && !out.get("error")) {
+    console.warn(
+      "[oidc-return] missing code/error; content-type:",
+      ct || "(none)",
+      "keys:",
+      [...merged.keys()].join(",") || "(empty body)",
+    );
     return new NextResponse("Missing OAuth code or error from IPification", { status: 400 });
   }
   return redirectToCallback(req, out);
