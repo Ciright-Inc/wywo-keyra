@@ -20,17 +20,26 @@ export function SiteFooter() {
           <Link href="/" className="group inline-flex" aria-label="Keyra home">
             <KeyraLogo variant="footer" showWordmark={false} />
           </Link>
-          <nav className="flex flex-wrap gap-x-6 gap-y-2" aria-label="Footer">
-            {links.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="text-sm text-keyra-text-2 transition hover:text-keyra-primary"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <div className="flex w-full flex-col items-start gap-4 md:w-auto md:items-end">
+            <nav className="flex flex-wrap gap-x-6 gap-y-2" aria-label="Footer">
+              {links.map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className="text-sm text-keyra-text-2 transition hover:text-keyra-primary"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+            <div className="flex items-center justify-end">
+              <elevenlabs-convai
+                agent-id="agent_4401kbnjtddpfsc9b97n73asggc1"
+                variant="tiny"
+                dismissible="true"
+              />
+            </div>
+          </div>
         </div>
         <p className="mt-8 border-t border-keyra-border pt-6 text-xs text-keyra-text-2">
           Be Protected Online.

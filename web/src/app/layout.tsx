@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -50,6 +51,10 @@ export default function RootLayout({
         <ToastProvider>
           <SiteHeader />
           <main className="min-w-0 flex-1">{children}</main>
+          <Script
+            src="https://unpkg.com/@elevenlabs/convai-widget-embed"
+            strategy="lazyOnload"
+          />
           <SiteFooter />
         </ToastProvider>
       </body>
