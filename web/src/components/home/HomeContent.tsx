@@ -25,220 +25,343 @@ function SectionShell({
   );
 }
 
-function TrustBlock({
-  id,
-  question,
-  answer,
+function SignalDot({
+  style,
+  delay = "0s",
+  size = 6,
 }: {
-  id: string;
-  question: string;
-  answer: string;
+  style: React.CSSProperties;
+  delay?: string;
+  size?: number;
 }) {
   return (
-    <FadeIn>
-      <div
-        id={id}
-        className="keyra-card rounded-[var(--keyra-radius-card)] p-5 sm:p-7 md:p-8"
-      >
-        <h2 className="text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem] md:leading-tight">
-          {question}
-        </h2>
-        <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px] md:text-[18px]">
-          {answer}
-        </p>
-      </div>
-    </FadeIn>
+    <span
+      className="animate-keyra-signal absolute rounded-full"
+      style={{
+        width: size,
+        height: size,
+        background:
+          "radial-gradient(circle at 30% 30%, rgba(102,227,255,1), rgba(102,227,255,0.12) 55%, rgba(102,227,255,0) 70%)",
+        boxShadow:
+          "0 0 20px rgba(102,227,255,0.28), 0 0 48px rgba(108,124,255,0.14)",
+        animationDelay: delay,
+        ...style,
+      }}
+      aria-hidden
+    />
   );
 }
 
 export function HomeContent() {
   return (
     <>
-      <section className="relative min-h-[85vh] scroll-mt-24 overflow-hidden border-b border-keyra-border bg-keyra-bg px-4 py-20 sm:min-h-[92vh] sm:px-6 sm:py-28 lg:py-32">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/image.png')" }}
-          aria-hidden
-        />
-        <div className="absolute inset-0 bg-keyra-bg/85" aria-hidden />
-        <div className="relative mx-auto flex min-h-[60vh] w-full min-w-0 max-w-6xl items-center sm:min-h-[72vh]">
+      <section className="relative min-h-[92vh] scroll-mt-24 overflow-hidden border-b border-keyra-border bg-keyra-bg px-4 py-20 sm:px-6 sm:py-28 lg:py-32">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-75"
+            style={{ backgroundImage: "url('/image.png')" }}
+          />
+          <div className="absolute inset-0 bg-keyra-bg/55" />
+          <div className="absolute inset-0 opacity-70">
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(1200px 700px at 20% 15%, rgba(102,227,255,0.12), transparent 55%), radial-gradient(900px 540px at 80% 25%, rgba(108,124,255,0.10), transparent 55%), radial-gradient(950px 640px at 55% 85%, rgba(102,227,255,0.08), transparent 60%)",
+              }}
+            />
+            <div className="animate-keyra-drift absolute inset-0 opacity-65">
+              <div className="absolute inset-0 opacity-70 [mask-image:radial-gradient(60%_55%_at_52%_40%,#000,transparent)]">
+                <div className="absolute left-[-10%] top-[14%] h-[1px] w-[120%] bg-gradient-to-r from-transparent via-[rgba(234,240,246,0.22)] to-transparent" />
+                <div className="absolute left-[-10%] top-[34%] h-[1px] w-[120%] bg-gradient-to-r from-transparent via-[rgba(234,240,246,0.16)] to-transparent" />
+                <div className="absolute left-[-10%] top-[54%] h-[1px] w-[120%] bg-gradient-to-r from-transparent via-[rgba(234,240,246,0.12)] to-transparent" />
+              </div>
+            </div>
+          </div>
+          <SignalDot style={{ left: "14%", top: "28%" }} delay="0.1s" />
+          <SignalDot style={{ left: "26%", top: "42%" }} delay="1.1s" size={7} />
+          <SignalDot style={{ left: "38%", top: "31%" }} delay="0.7s" />
+          <SignalDot style={{ left: "49%", top: "52%" }} delay="1.8s" size={8} />
+          <SignalDot style={{ left: "57%", top: "34%" }} delay="0.3s" />
+          <SignalDot style={{ left: "66%", top: "46%" }} delay="1.4s" size={7} />
+          <SignalDot style={{ left: "78%", top: "33%" }} delay="0.9s" />
+          <SignalDot style={{ left: "84%", top: "55%" }} delay="2.1s" size={8} />
+          <SignalDot style={{ left: "31%", top: "62%" }} delay="2.6s" />
+          <SignalDot style={{ left: "62%", top: "68%" }} delay="1.9s" size={7} />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-keyra-bg" />
+        </div>
+
+        <div className="relative mx-auto flex min-h-[70vh] w-full min-w-0 max-w-6xl items-center">
           <div className="w-full min-w-0 max-w-2xl">
             <motion.h1
-              className="text-balance text-4xl font-bold leading-[1.1] tracking-tight text-keyra-primary sm:text-5xl md:text-6xl lg:text-[3.5rem] lg:leading-[1.08]"
+              className="text-balance text-5xl font-semibold leading-[1.06] tracking-tight text-keyra-primary sm:text-6xl md:text-[4.25rem]"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55 }}
             >
-              Be Protected Online
+              Be Protected Online.
             </motion.h1>
             <motion.p
-              className="mt-6 text-[16px] leading-relaxed text-keyra-text-2 sm:text-lg md:text-[20px]"
+              className="mt-6 text-balance text-[16px] leading-relaxed text-keyra-text-2 sm:text-lg md:text-[20px]"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.12 }}
             >
-              Protection for your identity, money, data, and digital life. Calm,
-              trusted protection for people, families, and businesses.
+              The identity trust layer of the internet — for people, businesses,
+              and nations.
             </motion.p>
+
             <motion.div
               className="mt-9 flex w-full min-w-0 flex-wrap gap-3"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2 }}
             >
-              <Link href="/#get-started" className="inline-flex">
-                <Button size="lg">Get protected</Button>
+              <Link href="/signup" className="inline-flex">
+                <Button size="lg">Protect Your Identity</Button>
               </Link>
-              <Link href="/#how-it-works" className="inline-flex">
+              <Link href="/contact" className="inline-flex">
                 <Button size="lg" variant="secondary">
-                  How it works
+                  Secure Your Organization
+                </Button>
+              </Link>
+              <Link href="/contact" className="inline-flex">
+                <Button size="lg" variant="ghost">
+                  Partner with Keyra
                 </Button>
               </Link>
             </motion.div>
+
+            <motion.p
+              className="mt-10 text-sm text-keyra-text-2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.28 }}
+            >
+              A global standard that feels human.{" "}
+              <span className="text-keyra-primary">Be Protected Online.</span>
+            </motion.p>
           </div>
         </div>
       </section>
 
-      <SectionShell id="product" className="bg-keyra-surface">
+      <SectionShell id="problem" className="bg-keyra-bg">
         <FadeIn>
-          <p className="text-[14px] font-medium uppercase tracking-wider text-keyra-primary">
-            Protection first
+          <p className="text-[14px] font-medium uppercase tracking-wider text-keyra-text-2">
+            The problem
           </p>
           <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
-            Simple protection for everyday life
+            The internet was built without identity.
           </h2>
           <p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px] md:text-[18px]">
-            Keyra begins with protection. No jargon. No noise. Just clear,
-            human trust you can feel from the first moment.
+            We do not know who is real. Fraud, scams, impersonation, and AI
+            deception thrive in that gap. Trust is broken — and it doesn’t have
+            to be.
           </p>
-        </FadeIn>
-      </SectionShell>
 
-      <SectionShell id="families" className="bg-keyra-bg">
-        <div className="grid gap-8 lg:grid-cols-2">
-          <TrustBlock
-            id="family"
-            question="Is your family protected?"
-            answer="Keyra helps keep the people you care about covered — quietly, clearly, and without complexity. Protection you can explain simply at the kitchen table."
-          />
-          <TrustBlock
-            id="customers"
-            question="Are your customers protected?"
-            answer="Give people a calm, premium experience they trust instantly. Keyra is built so protection feels respectful, not corporate or intimidating."
-          />
-        </div>
-      </SectionShell>
-
-      <SectionShell className="bg-keyra-surface">
-        <div className="grid gap-8 lg:grid-cols-2">
-          <TrustBlock
-            id="money"
-            question="Is your money protected?"
-            answer="Transactions and accounts deserve the same quiet confidence as a leading financial brand. Keyra keeps protection present without drama."
-          />
-          <TrustBlock
-            id="identity"
-            question="Is your identity protected?"
-            answer="Verification without friction. You stay in control while Keyra helps ensure it is really you when it matters."
-          />
-        </div>
-      </SectionShell>
-
-      <SectionShell className="bg-keyra-bg">
-        <div className="grid gap-8 lg:grid-cols-2">
-          <TrustBlock
-            id="data"
-            question="Is your data protected?"
-            answer="Your information is treated with care. Clear choices, plain language, and protection that stays on in the background."
-          />
-          <TrustBlock
-            id="business"
-            question="Is your business protected?"
-            answer="From teams to operations, Keyra scales the same calm promise: protection first, simplicity always, trust at every step."
-          />
-        </div>
-      </SectionShell>
-
-      <SectionShell id="reassurance" className="bg-keyra-surface">
-        <FadeIn>
-          <h2 className="text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
-            You’re protected
-          </h2>
-          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px] md:text-[18px]">
-            Trusted protection at every step. Built to protect what matters most.
-          </p>
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
             {[
-              "Protection comes first",
-              "Calm protection, always on",
-              "Protection you can trust",
-              "Quietly protecting every connection",
+              "We don’t know who is real.",
+              "Impersonation is easy.",
+              "Trust is broken.",
+              "The world needs a standard.",
             ].map((line) => (
               <Card key={line} className="p-6">
                 <p className="text-[16px] font-medium text-keyra-text">{line}</p>
               </Card>
             ))}
-          </ul>
+          </div>
+
+          <p className="mt-10 text-[15px] leading-relaxed text-keyra-text-2">
+            <span className="text-keyra-primary">Be Protected Online.</span>
+          </p>
         </FadeIn>
       </SectionShell>
 
-      <SectionShell id="how-it-works" className="bg-keyra-bg">
+      <SectionShell id="missing-layer" className="bg-[var(--keyra-surface)]">
         <FadeIn>
-          <h2 className="text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
-            Protection at every step
-          </h2>
-          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px] md:text-[18px]">
-            Three calm steps. No technical language.
+          <p className="text-[14px] font-medium uppercase tracking-wider text-keyra-text-2">
+            The shift
           </p>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
+            The missing layer.
+          </h2>
+          <p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px] md:text-[18px]">
+            Keyra brings identity to the network. Verified humans. Verified
+            organizations. Verified systems. Protection that works quietly in
+            the background — so trust feels immediate.
+          </p>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              {
-                step: "1",
-                title: "Get Keyra",
-                body: "Set up in moments. Protection starts here.",
-              },
-              {
-                step: "2",
-                title: "Verify once",
-                body: "One simple check so we know it is really you.",
-              },
-              {
-                step: "3",
-                title: "Stay protected",
-                body: "Keyra stays on — quietly, consistently, everywhere you need it.",
-              },
-            ].map((item) => (
-              <div key={item.title} className="keyra-card p-5 sm:p-6 md:p-7">
-                <span className="text-[14px] font-semibold text-keyra-text-2">
-                  Step {item.step}
-                </span>
-                <h3 className="mt-3 text-xl font-semibold text-keyra-primary sm:text-2xl">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px]">
-                  {item.body}
-                </p>
-              </div>
+              "You are either verified. Or you are not.",
+              "Trust should not be a guess.",
+              "Identity should be certain.",
+            ].map((line) => (
+              <Card key={line} className="p-6">
+                <p className="text-[16px] font-medium text-keyra-text">{line}</p>
+              </Card>
             ))}
           </div>
+
+          <p className="mt-10 text-[15px] leading-relaxed text-keyra-text-2">
+            <span className="text-keyra-primary">Be Protected Online.</span>{" "}
+            Verification that feels calm. Protection that feels certain.
+          </p>
         </FadeIn>
       </SectionShell>
 
-      <SectionShell id="get-started" className="pb-24 sm:pb-32">
+      <SectionShell id="for" className="bg-keyra-bg">
         <FadeIn>
-          <div className="overflow-hidden rounded-[var(--keyra-radius-sheet)] border border-keyra-border bg-keyra-surface px-4 py-12 text-center sm:px-10 sm:py-16 md:px-12 md:py-20">
-            <h2 className="text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
-              Be Protected Online
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px] md:text-[18px]">
-              Keyra is a feeling of protection — premium, human, and always
-              there when it matters.
+          <p className="text-[14px] font-medium uppercase tracking-wider text-keyra-text-2">
+            Who it’s for
+          </p>
+          <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
+            Built for everyone who needs trust.
+          </h2>
+          <p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px] md:text-[18px]">
+            Individuals. Families. Businesses. Governments. One calm standard:
+            <span className="text-keyra-primary"> Be Protected Online.</span>
+          </p>
+        </FadeIn>
+
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
+          {[
+            {
+              title: "Individuals",
+              headline: "Know who you are connecting with.",
+              body: "Your identity should protect you — everywhere you go online.",
+              href: "/signup",
+              cta: "Protect Your Identity",
+            },
+            {
+              title: "Families",
+              headline: "Protect those who don’t see the risks.",
+              body: "Peace of mind for the people you care about most.",
+              href: "/app/family",
+              cta: "Protect Your Family",
+            },
+            {
+              title: "Businesses",
+              headline: "Build trust with every customer interaction.",
+              body: "Reduce fraud. Increase confidence. Protect your brand.",
+              href: "/contact",
+              cta: "Secure Your Organization",
+            },
+            {
+              title: "Governments",
+              headline: "Establish sovereign digital identity.",
+              body: "Infrastructure that supports citizens, institutions, and national resilience.",
+              href: "/contact",
+              cta: "Partner with Keyra",
+            },
+          ].map((item) => (
+            <FadeIn key={item.title}>
+              <div className="keyra-card p-7 sm:p-8">
+                <p className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">
+                  {item.title}
+                </p>
+                <h3 className="mt-3 text-balance text-2xl font-semibold tracking-tight text-keyra-primary">
+                  {item.headline}
+                </h3>
+                <p className="mt-3 text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px]">
+                  {item.body}
+                </p>
+                <Link href={item.href} className="mt-6 inline-flex">
+                  <Button variant="secondary">{item.cta}</Button>
+                </Link>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </SectionShell>
+
+      <SectionShell id="confidence" className="bg-[var(--keyra-surface)]">
+        <FadeIn>
+          <p className="text-[14px] font-medium uppercase tracking-wider text-keyra-text-2">
+            Confidence
+          </p>
+          <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
+            Certainty feels different.
+          </h2>
+          <p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px] md:text-[18px]">
+            You don’t need to question every interaction. You don’t need to
+            wonder what’s real. With Keyra, you know.
+          </p>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              "Trust becomes a standard.",
+              "Protection becomes expected.",
+              "Verification becomes normal.",
+            ].map((line) => (
+              <Card key={line} className="p-6">
+                <p className="text-[16px] font-medium text-keyra-text">{line}</p>
+              </Card>
+            ))}
+          </div>
+          <p className="mt-10 text-[15px] leading-relaxed text-keyra-text-2">
+            <span className="text-keyra-primary">Be Protected Online.</span>
+          </p>
+        </FadeIn>
+      </SectionShell>
+
+      <SectionShell id="global" className="bg-keyra-bg">
+        <FadeIn>
+          <p className="text-[14px] font-medium uppercase tracking-wider text-keyra-text-2">
+            Global
+          </p>
+          <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
+            Built in Ireland. Designed for the world.
+          </h2>
+          <p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px] md:text-[18px]">
+            Keyra is an Ireland-based trust institution for the digital age —
+            built to serve individuals, enterprises, and nations without
+            compromise.
+          </p>
+          <p className="mt-6 text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px]">
+            Global trust needs global standards.{" "}
+            <span className="text-keyra-primary">Be Protected Online.</span>
+          </p>
+        </FadeIn>
+      </SectionShell>
+
+      <SectionShell id="get-protected" className="pb-24 sm:pb-32">
+        <FadeIn>
+          <div className="overflow-hidden rounded-[var(--keyra-radius-sheet)] border border-keyra-border bg-[var(--keyra-surface-2)] px-4 py-12 text-center sm:px-10 sm:py-16 md:px-12 md:py-20">
+            <p className="text-[14px] font-medium uppercase tracking-wider text-keyra-text-2">
+              Final impression
             </p>
-            <Link href="/contact" className="mt-8 inline-flex">
-              <Button size="lg" variant="primary">
-                Start now
-              </Button>
-            </Link>
+            <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
+              The internet needs identity.
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px] md:text-[18px]">
+              The next era of the internet is verified. The next era of safety
+              is built-in. The next era of trust is Keyra.
+            </p>
+            <div className="mx-auto mt-10 max-w-xl rounded-[var(--keyra-radius-card)] border border-keyra-border bg-[rgba(255,255,255,0.03)] px-5 py-6">
+              <p className="text-lg font-semibold text-keyra-primary">
+                Be Protected Online.
+              </p>
+              <p className="mt-2 text-sm text-keyra-text-2">
+                Keyra is infrastructure for trust.
+              </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Link href="/signup" className="inline-flex">
+                  <Button size="lg">Protect Your Identity</Button>
+                </Link>
+                <Link href="/contact" className="inline-flex">
+                  <Button size="lg" variant="secondary">
+                    Secure Your Organization
+                  </Button>
+                </Link>
+                <Link href="/contact" className="inline-flex">
+                  <Button size="lg" variant="ghost">
+                    Partner with Keyra
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
         </FadeIn>
       </SectionShell>

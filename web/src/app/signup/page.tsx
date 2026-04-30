@@ -8,10 +8,11 @@ export default function SignupPage() {
     <div className="bg-keyra-bg px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-[520px]">
         <h1 className="text-[36px] font-bold tracking-tight text-keyra-primary sm:text-[44px]">
-          Create your account
+          Protect your identity
         </h1>
         <p className="mt-3 text-[16px] leading-relaxed text-keyra-text-2 sm:text-[18px]">
-          Set up Keyra once. Feel protected every day.
+          <span className="text-keyra-primary">Be Protected Online.</span> Start
+          with a simple step.
         </p>
 
         <Card className="mt-10 p-7">

@@ -16,30 +16,31 @@ export function KeyraLogo({
 }: KeyraLogoProps) {
   const logoSizes = {
     header: {
-      box:
-        "h-16 w-full min-w-0 max-w-full sm:max-w-[24rem] md:max-w-[28rem] lg:max-w-[32rem]",
-      w: 1000,
-      h: 180,
+      box: "h-14 w-[340px] sm:h-14 sm:w-[410px] md:h-16 md:w-[480px] lg:w-[520px]",
+      w: 1320,
+      h: 520,
     },
-    footer: { box: "h-14 w-[13rem] sm:h-14 sm:w-[15rem]", w: 340, h: 72 },
-    inline: { box: "h-14 w-[13rem] sm:h-14 sm:w-[15rem]", w: 340, h: 72 },
+    footer: { box: "h-14 w-[320px] sm:h-14 sm:w-[360px]", w: 1320, h: 520 },
+    inline: { box: "h-14 w-[320px] sm:h-14 sm:w-[360px]", w: 1320, h: 520 },
   } as const;
 
   const wordmarkSize = variant === "footer" ? "text-sm" : "text-lg";
   const imageClass =
     variant === "header"
-      ? "h-full w-full origin-left scale-[1.32] object-contain object-left sm:scale-[1.22] md:scale-[1.14] lg:scale-[1.08]"
-      : "h-full w-full object-contain object-center";
+      ? "h-full w-full origin-left scale-[2.10] object-contain object-left [filter:drop-shadow(0_1px_18px_rgba(255,255,255,0.36))]"
+      : variant === "footer"
+        ? "h-full w-full origin-left scale-[1.95] object-contain object-left [filter:drop-shadow(0_1px_18px_rgba(255,255,255,0.32))]"
+        : "h-full w-full origin-left scale-[1.80] object-contain object-left [filter:drop-shadow(0_1px_16px_rgba(255,255,255,0.30))]";
 
   return (
     <span
       className={`inline-flex items-center gap-2.5 ${variant === "header" ? "h-16 min-w-0 max-w-full" : ""} ${className}`}
     >
       <span
-        className={`relative flex shrink-0 items-center justify-center ${variant === "header" ? "overflow-visible" : "overflow-hidden"} ${logoSizes[variant].box}`}
+        className={`relative flex shrink-0 items-center justify-start overflow-visible ${logoSizes[variant].box}`}
       >
         <Image
-          src="/keyra-logo.png"
+          src="/logo.png"
           alt="Keyra"
           width={logoSizes[variant].w}
           height={logoSizes[variant].h}

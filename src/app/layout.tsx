@@ -21,17 +21,17 @@ export const metadata: Metadata = {
     template: "%s | Keyra",
   },
   description:
-    "Keyra is global protection you can feel — calm, simple, and trusted for people, families, and businesses.",
+    "Be Protected Online. The identity trust layer of the internet — for people, businesses, and nations.",
   metadataBase: new URL("https://keyra.ie"),
   icons: {
-    icon: "/keyra-logo.png",
-    shortcut: "/keyra-logo.png",
-    apple: "/keyra-logo.png",
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
   },
   openGraph: {
     title: "Keyra — Be Protected Online",
     description:
-      "Protection for identity, money, data, and digital life. Calm trust at every step.",
+      "Be Protected Online. The identity trust layer of the internet — for people, businesses, and nations.",
     url: "https://keyra.ie",
     siteName: "Keyra",
     locale: "en_IE",

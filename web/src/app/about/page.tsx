@@ -5,14 +5,14 @@ import { FadeIn } from "@/components/motion/FadeIn";
 export const metadata: Metadata = {
   title: "About Keyra",
   description:
-    "Be Protected Online — Keyra is a premium global protection brand: calm, simple, and centred on human trust.",
+    "Be Protected Online. Keyra is the identity trust layer of the internet — built in Ireland, designed for the world.",
 };
 
 const sections = [
   {
     kicker: "Our mission",
-    title: "You at the centre",
-    body: "Everyday people deserve a calm, clear way to stay protected online. Keyra puts you at the centre: your identity, your control, your peace of mind.",
+    title: "Protection as a standard",
+    body: "Keyra exists so protection online is not optional, confusing, or reserved for experts. The standard is simple: Be Protected Online.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
         <path
@@ -25,8 +25,8 @@ const sections = [
   },
   {
     kicker: "Why it matters",
-    title: "Less guesswork online",
-    body: "When services are unsure who is on the other side, everyday life gets harder — not safer. Keyra helps you verify with confidence, so you can move through digital life with fewer surprises.",
+    title: "Trust without guessing",
+    body: "The internet was built without identity. When we don’t know who is real, trust breaks down. Keyra restores certainty — quietly, consistently, and globally.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
         <path
@@ -40,9 +40,9 @@ const sections = [
     ),
   },
   {
-    kicker: "Built for people",
-    title: "Plain language, real life",
-    body: "We speak in plain language, respect privacy, and design for households — not only for specialists. The human behind the device always comes first.",
+    kicker: "Built for everyone",
+    title: "People, families, institutions",
+    body: "Keyra speaks to individuals, families, businesses, and governments in plain language. It is infrastructure for trust — designed to feel human.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
         <path
@@ -55,8 +55,8 @@ const sections = [
   },
   {
     kicker: "The future we care about",
-    title: "Confidence for families",
-    body: "We are building toward digital life where verification feels natural, services feel reliable, and families can stay protected without the noise.",
+    title: "A safer internet by default",
+    body: "We are building toward a world where verification feels normal, services feel reliable, and protection is simply expected.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
         <path
@@ -82,25 +82,25 @@ export default function AboutPage() {
                 About Keyra
               </p>
               <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem] lg:text-5xl lg:leading-tight">
-                Be Protected Online
+                Be Protected Online.
               </h1>
               <p className="mt-6 max-w-2xl text-[16px] leading-relaxed text-keyra-muted sm:text-[18px]">
-                Keyra is a premium global protection brand — calm, simple, and
-                centred on trust. Protection for your identity, money, data, and
-                digital life.
+                Keyra is the identity trust layer of the internet — for people,
+                businesses, and nations. Built in Ireland. Designed for the
+                world.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/how-it-works"
+                  href="/trust"
                   className="inline-flex rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-[14px] font-semibold text-keyra-primary transition hover:border-keyra-primary/30"
                 >
-                  How it works
+                  Trust principles
                 </Link>
                 <Link
-                  href="/#get-started"
-                  className="inline-flex rounded-full bg-keyra-primary px-5 py-2.5 text-[14px] font-semibold text-white transition hover:opacity-95"
+                  href="/#get-protected"
+                  className="inline-flex rounded-full border border-keyra-border/20 bg-[rgba(255,255,255,0.03)] px-5 py-2.5 text-[14px] font-semibold text-keyra-primary transition hover:border-keyra-primary/30"
                 >
-                  Get protected
+                  Be Protected Online
                 </Link>
               </div>
             </FadeIn>
@@ -110,15 +110,15 @@ export default function AboutPage() {
                 <ul className="space-y-3">
                   <li className="flex gap-3">
                     <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-keyra-primary" />
-                    Protection should feel calm — never loud or frightening.
+                    Protection should feel calm — never loud.
                   </li>
                   <li className="flex gap-3">
                     <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-keyra-primary" />
-                    Identity protection is for households, not only for experts.
+                    Trust should be a standard, not a guess.
                   </li>
                   <li className="flex gap-3">
                     <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-keyra-primary" />
-                    Clarity and respect build confidence over time.
+                    You are either verified. Or you are not.
                   </li>
                 </ul>
               </div>
@@ -130,11 +130,11 @@ export default function AboutPage() {
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
         <FadeIn>
           <h2 className="max-w-xl text-balance text-2xl font-semibold tracking-tight text-keyra-primary sm:text-3xl md:text-[2.25rem]">
-            Our story, in four beats
+            A trust institution for the digital age
           </h2>
           <p className="mt-3 max-w-2xl text-[16px] text-keyra-muted">
-            Each part of Keyra comes back to one idea: the person behind the
-            screen deserves to be seen, protected, and in control.
+            Keyra is built to protect people and institutions online — with
+            certainty that scales from individuals to nations.
           </p>
         </FadeIn>
 
@@ -162,18 +162,16 @@ export default function AboutPage() {
         </div>
 
         <FadeIn className="mt-16 rounded-[16px] border border-keyra-border/20 bg-keyra-bg px-8 py-10 text-center sm:px-12">
-          <p className="text-lg font-semibold text-keyra-primary">
-            Protection comes first
-          </p>
+          <p className="text-lg font-semibold text-keyra-primary">Be Protected Online.</p>
           <p className="mx-auto mt-2 max-w-lg text-[14px] leading-relaxed text-keyra-muted sm:text-[16px]">
-            Ready to see how joining, verification, and everyday control fit
-            together calmly?
+            Start with the homepage — the problem, the shift, and who Keyra is
+            for.
           </p>
           <Link
-            href="/how-it-works"
-            className="mt-6 inline-flex rounded-full bg-keyra-primary px-6 py-3 text-[16px] font-semibold text-white transition hover:opacity-95"
+            href="/"
+            className="mt-6 inline-flex rounded-full border border-keyra-border/20 bg-[rgba(255,255,255,0.03)] px-6 py-3 text-[16px] font-semibold text-keyra-primary transition hover:border-keyra-primary/30"
           >
-            How Keyra works
+            Return to homepage
           </Link>
         </FadeIn>
       </section>

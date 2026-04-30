@@ -6,10 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 
 const links = [
-  { href: "/#product", label: "Product" },
-  { href: "/#families", label: "Families" },
-  { href: "/#how-it-works", label: "How it Works" },
-  { href: "/#get-started", label: "Get Started" },
+  { href: "/#problem", label: "Why identity" },
+  { href: "/#missing-layer", label: "The shift" },
+  { href: "/#for", label: "Who it's for" },
+  { href: "/#global", label: "Global" },
+  { href: "/#get-protected", label: "Be Protected Online" },
 ];
 
 export function MobileNav() {

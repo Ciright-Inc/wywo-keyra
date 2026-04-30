@@ -25,8 +25,8 @@ export default function VerifyNowPage() {
           Verify with one tap
         </h1>
         <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-keyra-text-2 sm:text-[18px]">
-          When it matters, verification should feel calm. Tap once and you’re
-          done.
+          <span className="text-keyra-primary">Be Protected Online.</span> When
+          it matters, verification should feel calm. Tap once and you’re done.
         </p>
 
         <Card className="mt-10 p-7">

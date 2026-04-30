@@ -1,21 +1,34 @@
 @import "tailwindcss";
 
 /**
- * Keyra — locked palette. Literals: #0B1F2A #F7F9FA #1A1A1A #5A6B7A #FFFFFF.
- * Filled primary actions: background #0B1F2A, text #FFFFFF (same as headings on surface).
+ * Keyra — global trust theme (dark).
+ * Calm, institutional, non-technical. Subtle glow accents.
  */
 :root {
-  --keyra-blue: #0B1F2A;
-  --keyra-bg: #F7F9FA;
-  --keyra-text: #1A1A1A;
-  --keyra-text-secondary: #5A6B7A;
+  --keyra-bg: #050A12;
+  --keyra-surface: #0B1220;
+  --keyra-surface-2: #0E1728;
+  --keyra-text: #EAF0F6;
+  --keyra-text-secondary: rgba(234, 240, 246, 0.72);
   --keyra-white: #FFFFFF;
 
+  /* Accent: “trust signal” glow */
+  --keyra-accent: #66E3FF;
+  --keyra-accent-2: #6C7CFF;
+
+  /* Primary: used for headings & key text */
+  --keyra-primary: var(--keyra-text);
+
+  /* Primary actions */
+  --keyra-action: rgba(102, 227, 255, 0.16);
+  --keyra-action-border: rgba(102, 227, 255, 0.35);
+  --keyra-action-text: var(--keyra-text);
+
   /* Borders, focus: rgba from rgb(11,31,42) and rgb(26,26,26) */
-  --keyra-border: rgba(11, 31, 42, 0.12);
-  --keyra-ring: rgba(11, 31, 42, 0.2);
-  --keyra-shadow-card: 0 4px 12px rgba(26, 26, 26, 0.04);
-  --keyra-shadow-hover: 0 6px 18px rgba(26, 26, 26, 0.06);
+  --keyra-border: rgba(255, 255, 255, 0.12);
+  --keyra-ring: rgba(102, 227, 255, 0.18);
+  --keyra-shadow-card: 0 12px 40px rgba(0, 0, 0, 0.35);
+  --keyra-shadow-hover: 0 16px 55px rgba(0, 0, 0, 0.45);
 
   --keyra-radius-card: 12px;
   --keyra-radius-sheet: 16px;
@@ -23,17 +36,16 @@
 }
 
 @theme inline {
-  --color-keyra-primary: var(--keyra-blue);
+  --color-keyra-primary: var(--keyra-primary);
   --color-keyra-bg: var(--keyra-bg);
-  --color-keyra-surface: var(--keyra-white);
+  --color-keyra-surface: var(--keyra-surface);
   --color-keyra-text: var(--keyra-text);
   --color-keyra-text-2: var(--keyra-text-secondary);
   --color-keyra-border: var(--keyra-border);
   --color-keyra-ring: var(--keyra-ring);
 
-  --color-keyra-primary: var(--keyra-blue);
   --color-keyra-bg: var(--keyra-bg);
-  --color-keyra-surface: var(--keyra-white);
+  --color-keyra-surface: var(--keyra-surface);
   --color-keyra-ink: var(--keyra-text);
   --color-keyra-muted: var(--keyra-text-secondary);
   --color-keyra-border: var(--keyra-border);
@@ -51,9 +63,14 @@ body {
 
 .keyra-card {
   border-radius: var(--keyra-radius-card);
-  background: var(--keyra-white);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.03)
+  );
   border: 1px solid var(--keyra-border);
   box-shadow: var(--keyra-shadow-card);
+  backdrop-filter: blur(10px);
 }
 
 .keyra-card:hover {
@@ -96,4 +113,34 @@ body {
 
 .animate-keyra-pulse-soft {
   animation: keyra-pulse-soft 8s ease-in-out infinite;
+}
+
+@keyframes keyra-signal {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes keyra-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(10px, -12px);
+  }
+}
+
+.animate-keyra-signal {
+  animation: keyra-signal 4.5s ease-in-out infinite;
+}
+
+.animate-keyra-drift {
+  animation: keyra-drift 18s ease-in-out infinite;
 }

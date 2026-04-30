@@ -6,33 +6,33 @@ import { Button } from "@/components/ui/Button";
 export const metadata: Metadata = {
   title: "FAQ",
   description:
-    "Answers about Keyra — protection, verification, families, and getting started in plain language.",
+    "Be Protected Online. Plain-language answers about Keyra as the identity trust layer of the internet.",
 };
 
 const faqs = [
   {
     q: "What is Keyra?",
-    a: "Keyra helps you stay protected online with calm, clear verification and control over who can use your identity — without noisy jargon.",
+    a: "Keyra is the identity trust layer of the internet. It helps people, businesses, and nations know who is real — so you can be protected online.",
   },
   {
-    q: "How do I get started?",
-    a: "Create your profile, follow the guided steps, and verify when it matters. You can explore the homepage sections or jump to Get Started anytime.",
+    q: "What does “Be Protected Online.” mean?",
+    a: "It is a reassurance and a standard. Keyra exists so protection and trust online feel certain — not like a constant guess.",
   },
   {
     q: "Is Keyra for families and businesses?",
-    a: "Yes. Keyra is designed for individuals, families, and teams who want trustworthy protection and simple language at every step.",
+    a: "Yes. Keyra is built for individuals, families, businesses, and governments — one calm standard across every audience.",
   },
   {
-    q: "How does verification work?",
-    a: "When an action needs to be sure it is really you, Keyra uses secure verification flows — explained clearly before you continue.",
+    q: "Does Keyra feel technical?",
+    a: "No. Keyra is designed to feel like infrastructure: calm, simple, and always present when certainty matters.",
   },
   {
     q: "What data does Keyra collect?",
-    a: "We follow privacy-first principles: collect only what helps protect you, explain it plainly, and give you meaningful control. See our Privacy page for more.",
+    a: "Keyra is built around restraint: collect only what helps protect you, explain it in plain language, and give you meaningful control. See Privacy for more.",
   },
   {
     q: "Who can I contact for help?",
-    a: "Use our Contact page to send a message, or email hello@keyra.ie — we reply in calm, clear language.",
+    a: "Use our Contact page. We respond in calm, clear language.",
   },
 ];
 
@@ -45,7 +45,9 @@ export default function FaqPage() {
             Frequently asked questions
           </h1>
           <p className="mt-6 text-[16px] leading-relaxed text-keyra-text-2 sm:text-[18px]">
-            Quick answers in plain language. If you need more detail, we are happy to help — see{" "}
+            <span className="text-keyra-primary">Be Protected Online.</span>{" "}
+            Quick answers in plain language. If you need more detail, we are
+            happy to help — see{" "}
             <Link href="/contact" className="font-medium text-keyra-primary underline-offset-4 hover:underline">
               Contact us
             </Link>

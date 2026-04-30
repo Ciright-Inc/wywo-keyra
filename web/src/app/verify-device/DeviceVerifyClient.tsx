@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState, Suspense } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ensureApiOriginUrl } from "@/lib/ensureApiOriginUrl";
 
@@ -66,7 +66,7 @@ function DeviceVerifyInner({ authorizePostAction }: Props) {
     void handleMockVerify();
   }
 
-  async function tryAutoLinkFromExistingMobileSession(currentLinkId: string, currentReturnUrl: string | null) {
+  const tryAutoLinkFromExistingMobileSession = useCallback(async (currentLinkId: string, currentReturnUrl: string | null) => {
     setCheckingExistingSession(true);
     try {
       const base = authBackendBase();
@@ -93,7 +93,7 @@ function DeviceVerifyInner({ authorizePostAction }: Props) {
     } finally {
       setCheckingExistingSession(false);
     }
-  }
+  }, [router]);
 
   useEffect(() => {
     if (!linkId) return;
@@ -135,7 +135,7 @@ function DeviceVerifyInner({ authorizePostAction }: Props) {
     if (!linkId || linkStatus !== "pending" || hasAttemptedAutoLinkRef.current) return;
     hasAttemptedAutoLinkRef.current = true;
     void tryAutoLinkFromExistingMobileSession(linkId, returnUrl);
-  }, [linkId, linkStatus, returnUrl, router]);
+  }, [linkId, linkStatus, returnUrl, tryAutoLinkFromExistingMobileSession]);
 
   useEffect(() => {
     const reset = () => setSubmitting(false);

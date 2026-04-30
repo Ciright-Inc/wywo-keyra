@@ -48,44 +48,31 @@ function readOAuthFromBrowser(): {
 
 function IpificationCallbackInner() {
   const hasCalledBackendRef = useRef(false);
-  const [message, setMessage] = useState("Completing verification…");
+  const { code, state, error, errorDescription } = readOAuthFromBrowser();
+  const parsedState = decodeIpificationState(state);
+  const base = authBackendBase();
+
+  const initialMessage =
+    error
+      ? errorDescription ||
+        error ||
+        "Phone verification was cancelled or failed. Close this tab and start again from your app."
+      : !code
+        ? "No code received from IPification. Please try login again. " +
+          "Set IPIFICATION_REDIRECT_URI and the IPification client redirect to https://keyra.ie/api/ipification/oidc-return " +
+          "(handles POST form_post); that route forwards to /callback. Legacy GET-only: https://keyra.ie/callback."
+        : !parsedState?.phone
+          ? "Invalid verification state. Try again from the verify page."
+          : !base
+            ? "Auth service URL is not configured on Keyra."
+            : "Completing verification…";
+
+  const [message, setMessage] = useState(initialMessage);
 
   useEffect(() => {
     if (hasCalledBackendRef.current) return;
-
-    const { code, state, error, errorDescription } = readOAuthFromBrowser();
-
-    if (error) {
+    if (error || !code || !parsedState?.phone || !base) {
       hasCalledBackendRef.current = true;
-      setMessage(
-        errorDescription ||
-          error ||
-          "Phone verification was cancelled or failed. Close this tab and start again from your app.",
-      );
-      return;
-    }
-
-    if (!code) {
-      hasCalledBackendRef.current = true;
-      setMessage(
-        "No code received from IPification. Please try login again. " +
-          "Set IPIFICATION_REDIRECT_URI and the IPification client redirect to https://keyra.ie/api/ipification/oidc-return " +
-          "(handles POST form_post); that route forwards to /callback. Legacy GET-only: https://keyra.ie/callback.",
-      );
-      return;
-    }
-
-    const parsedState = decodeIpificationState(state);
-    if (!parsedState?.phone) {
-      hasCalledBackendRef.current = true;
-      setMessage("Invalid verification state. Try again from the verify page.");
-      return;
-    }
-
-    const base = authBackendBase();
-    if (!base) {
-      hasCalledBackendRef.current = true;
-      setMessage("Auth service URL is not configured on Keyra.");
       return;
     }
 
@@ -170,7 +157,7 @@ function IpificationCallbackInner() {
         setMessage("Network error while contacting the auth service.");
       }
     })();
-  }, []);
+  }, [base, code, error, parsedState?.linkId, parsedState?.phone, parsedState?.returnUrl]);
 
   return (
     <main className="verify-device-root">

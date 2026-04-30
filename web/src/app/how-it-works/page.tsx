@@ -6,25 +6,25 @@ import { Button } from "@/components/ui/Button";
 export const metadata: Metadata = {
   title: "How It Works",
   description:
-    "Create your profile, verify once, and stay protected — explained in plain language, with protection always first.",
+    "Be Protected Online. How Keyra establishes identity trust in plain language.",
 };
 
 const steps = [
   {
-    title: "Create your profile",
-    body: "A guided, step-by-step flow. No jargon. Just clarity about what you are setting up and why it helps keep you protected.",
+    title: "Start with a simple step",
+    body: "Keyra begins calmly. You choose what you need, in plain language, with clarity at every step.",
   },
   {
-    title: "Verify with confidence",
-    body: "When it matters, Keyra helps confirm it is really you — calmly and clearly.",
+    title: "Verification when it matters",
+    body: "When a moment needs certainty, Keyra confirms who is real — without drama.",
   },
   {
-    title: "Manage trusted access",
-    body: "You stay in charge. Review access and adjust settings in language that makes sense.",
+    title: "Trust becomes a standard",
+    body: "Verified people and entities create calmer interactions — for individuals, organizations, and institutions.",
   },
   {
-    title: "Stay protected over time",
-    body: "Protection does not stop after day one. Keyra grows with you, your family, and your business — always with the person first.",
+    title: "Protection stays on",
+    body: "Keyra is designed for long-term certainty. Protection remains consistent as life and risk change.",
   },
 ];
 
@@ -37,8 +37,9 @@ export default function HowItWorksPage() {
             How Keyra works
           </h1>
           <p className="mt-6 text-[16px] leading-relaxed text-keyra-text-2 sm:text-[18px]">
-            Be Protected Online — with a simple process, clear verification, and
-            calm protection you can trust at every step.
+            <span className="text-keyra-primary">Be Protected Online.</span> A
+            calm shift from guessing to knowing — for people, businesses, and
+            nations.
           </p>
         </FadeIn>
 
@@ -61,9 +62,9 @@ export default function HowItWorksPage() {
         </ol>
 
         <FadeIn className="mt-12 text-center">
-          <p className="font-medium text-keyra-primary">Ready to be protected?</p>
-          <Link href="/#get-started" className="mt-4 inline-flex">
-            <Button>Get protected</Button>
+          <p className="font-medium text-keyra-primary">Be Protected Online.</p>
+          <Link href="/#get-protected" className="mt-4 inline-flex">
+            <Button>Protect Your Identity</Button>
           </Link>
         </FadeIn>
       </div>

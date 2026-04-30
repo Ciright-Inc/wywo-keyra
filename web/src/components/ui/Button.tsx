@@ -16,11 +16,11 @@ const base =
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-keyra-primary text-white hover:opacity-95 active:opacity-90",
+    "bg-[var(--keyra-action)] text-[var(--keyra-action-text)] border border-[var(--keyra-action-border)] hover:border-[rgba(102,227,255,0.55)] hover:bg-[rgba(102,227,255,0.20)] active:bg-[rgba(102,227,255,0.14)]",
   secondary:
     "bg-transparent text-keyra-primary border border-keyra-border hover:border-keyra-primary",
   ghost:
-    "bg-transparent text-keyra-primary hover:bg-keyra-bg",
+    "bg-[rgba(255,255,255,0.04)] text-keyra-primary border border-keyra-border hover:border-[rgba(102,227,255,0.40)] hover:bg-[rgba(255,255,255,0.06)]",
 };
 
 const sizes: Record<Size, string> = {

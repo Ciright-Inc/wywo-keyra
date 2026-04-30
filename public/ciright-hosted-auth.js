@@ -66,7 +66,7 @@
         popupRef.document.title = "Signing in…";
         popupRef.document.body.innerHTML =
           "<p style=\"font-family:system-ui;padding:1rem\">Starting hosted sign-in…</p>";
-      } catch (e) {
+      } catch {
         /* ignore */
       }
     }
@@ -113,7 +113,7 @@
 
     if (usePopup) {
       popupRef.location.href = hostedUrl;
-      return new Promise(function (resolve, reject) {
+      return new Promise(function (resolve) {
         function onMsg(ev) {
           var d = ev.data;
           if (!d || d.source !== "ciright-hosted-auth") return;

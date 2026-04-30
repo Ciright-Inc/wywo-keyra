@@ -228,7 +228,8 @@ function HostedLoginInner() {
   if (phase === "error") {
     return (
       <main className="hosted-login-root">
-        <h1>Sign in</h1>
+        <h1>Be Protected Online.</h1>
+        <p className="hosted-login-muted">Sign in</p>
         <p className="hosted-login-error">{error}</p>
       </main>
     );
@@ -237,7 +238,8 @@ function HostedLoginInner() {
   if (phase === "loading" || phase === "completing") {
     return (
       <main className="hosted-login-root">
-        <h1>{meta?.projectName || "Sign in"}</h1>
+        <h1>Be Protected Online.</h1>
+        <p className="hosted-login-muted">{meta?.projectName || "Sign in"}</p>
         <p className="hosted-login-muted">
           {phase === "completing" ? "Finishing sign-in…" : "Preparing secure login…"}
         </p>
@@ -249,8 +251,11 @@ function HostedLoginInner() {
 
   return (
     <main className="hosted-login-root">
-      <h1>{meta?.projectName || "Sign in"}</h1>
-      <p className="hosted-login-sub">Scan with your phone to verify, then you&apos;ll return to your app.</p>
+      <h1>Be Protected Online.</h1>
+      <p className="hosted-login-sub">
+        {meta?.projectName ? `${meta.projectName} • ` : ""}
+        Scan with your phone to verify, then you&apos;ll return to your app.
+      </p>
       <p className="hosted-login-hint">
         Your phone must be on the <strong>same Wi‑Fi</strong> as this computer. Some cameras don&apos;t offer to open{" "}
         <code className="hosted-login-code">http://</code> links — use the link below if scan does nothing.

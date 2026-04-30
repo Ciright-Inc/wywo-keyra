@@ -17,21 +17,21 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Keyra — Protected",
+    default: "Keyra — Be Protected Online",
     template: "%s | Keyra",
   },
   description:
-    "Keyra makes protection simple for you, your family, and everything that matters.",
+    "Be Protected Online. The identity trust layer of the internet — for people, businesses, and nations.",
   metadataBase: new URL("https://keyra.ie"),
   icons: {
-    icon: "/keyra-logo.png",
-    shortcut: "/keyra-logo.png",
-    apple: "/keyra-logo.png",
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
   },
   openGraph: {
-    title: "Keyra — Protected",
+    title: "Keyra — Be Protected Online",
     description:
-      "Simple, modern protection for individuals and families.",
+      "Be Protected Online. The identity trust layer of the internet — for people, businesses, and nations.",
     url: "https://keyra.ie",
     siteName: "Keyra",
     locale: "en_IE",
