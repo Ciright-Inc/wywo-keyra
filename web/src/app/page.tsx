@@ -1,5 +1,10 @@
 import { HomeContent } from "@/components/home/HomeContent";
+import { KeyraRegistrationProvider } from "@/components/registration/KeyraRegistrationProvider";
 
 export default function Home() {
-  return <HomeContent />;
+  return (
+    <KeyraRegistrationProvider>
+      <HomeContent />
+    </KeyraRegistrationProvider>
+  );
 }

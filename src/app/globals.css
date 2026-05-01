@@ -43,6 +43,7 @@
   --color-keyra-text-2: var(--keyra-text-secondary);
   --color-keyra-border: var(--keyra-border);
   --color-keyra-ring: var(--keyra-ring);
+  --color-keyra-accent: var(--keyra-accent);
 
   --color-keyra-bg: var(--keyra-bg);
   --color-keyra-surface: var(--keyra-surface);
@@ -143,4 +144,15 @@ body {
 
 .animate-keyra-drift {
   animation: keyra-drift 18s ease-in-out infinite;
+}
+
+/* ElevenLabs ConvAI widget: keep below sticky header (z-50) to avoid covering nav */
+elevenlabs-convai {
+  z-index: 40 !important;
+  /* Force the launcher away from the header area */
+  position: fixed !important;
+  right: 18px !important;
+  bottom: 18px !important;
+  left: auto !important;
+  top: auto !important;
 }

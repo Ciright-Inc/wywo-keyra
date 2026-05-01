@@ -21,6 +21,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           >
             {[
               { href: "/app", label: "Overview" },
+              { href: "/app/profile", label: "Profile" },
               { href: "/app/family", label: "Family" },
               { href: "/app/settings", label: "Settings" },
             ].map((l) => (

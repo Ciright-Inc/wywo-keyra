@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/motion/FadeIn";
+import { HomeRegistrationCTAs } from "@/components/registration/HomeRegistrationCTAs";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
@@ -112,24 +113,12 @@ export function HomeContent() {
             </motion.p>
 
             <motion.div
-              className="mt-9 flex w-full min-w-0 flex-wrap gap-3"
+              className="mt-9 w-full min-w-0 max-w-3xl"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2 }}
             >
-              <Link href="/signup" className="inline-flex">
-                <Button size="lg">Protect Your Identity</Button>
-              </Link>
-              <Link href="/contact" className="inline-flex">
-                <Button size="lg" variant="secondary">
-                  Secure Your Organization
-                </Button>
-              </Link>
-              <Link href="/contact" className="inline-flex">
-                <Button size="lg" variant="ghost">
-                  Partner with Keyra
-                </Button>
-              </Link>
+              <HomeRegistrationCTAs />
             </motion.div>
 
             <motion.p
@@ -345,20 +334,8 @@ export function HomeContent() {
               <p className="mt-2 text-sm text-keyra-text-2">
                 Keyra is infrastructure for trust.
               </p>
-              <div className="mt-6 flex flex-wrap justify-center gap-3">
-                <Link href="/signup" className="inline-flex">
-                  <Button size="lg">Protect Your Identity</Button>
-                </Link>
-                <Link href="/contact" className="inline-flex">
-                  <Button size="lg" variant="secondary">
-                    Secure Your Organization
-                  </Button>
-                </Link>
-                <Link href="/contact" className="inline-flex">
-                  <Button size="lg" variant="ghost">
-                    Partner with Keyra
-                  </Button>
-                </Link>
+              <div className="mx-auto mt-8 max-w-3xl text-left">
+                <HomeRegistrationCTAs />
               </div>
             </div>
           </div>

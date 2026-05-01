@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
+import { useKeyraSession } from "@/contexts/KeyraSessionContext";
+import { useRouter } from "next/navigation";
 
 const links = [
   { href: "/#problem", label: "Why identity" },
@@ -15,9 +17,11 @@ const links = [
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  const { user, logout } = useKeyraSession();
+  const router = useRouter();
 
   return (
-    <div className="relative z-20 md:hidden">
+    <div className="relative z-20 lg:hidden">
       <Button
         type="button"
         variant="secondary"
@@ -32,7 +36,7 @@ export function MobileNav() {
         {open ? (
           <motion.nav
             id="mobile-nav-panel"
-            className="absolute left-0 right-0 top-full z-40 border-b border-keyra-border bg-keyra-bg/95 px-4 py-4 backdrop-blur-md"
+            className="absolute left-0 right-0 top-full z-[60] border-b border-keyra-border bg-keyra-bg/95 px-4 py-4 shadow-lg backdrop-blur-md"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -51,6 +55,43 @@ export function MobileNav() {
                   </Link>
                 </li>
               ))}
+              {!user ? (
+                <li>
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className="block rounded-lg px-3 py-2 text-sm font-medium text-keyra-accent hover:bg-keyra-surface"
+                  >
+                    Sign in
+                  </Link>
+                </li>
+              ) : null}
+              {user ? (
+                <>
+                  <li>
+                    <Link
+                      href="/app/profile"
+                      onClick={() => setOpen(false)}
+                      className="block rounded-lg px-3 py-2 text-sm font-medium text-keyra-primary hover:bg-keyra-surface"
+                    >
+                      Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      className="block w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-keyra-primary hover:bg-keyra-surface"
+                      onClick={async () => {
+                        await logout();
+                        setOpen(false);
+                        router.refresh();
+                      }}
+                    >
+                      Log out
+                    </button>
+                  </li>
+                </>
+              ) : null}
             </ul>
           </motion.nav>
         ) : null}
