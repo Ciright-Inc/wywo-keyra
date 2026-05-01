@@ -41,9 +41,6 @@ export function SiteFooter() {
             </div>
           </div>
         </div>
-        <p className="mt-8 border-t border-keyra-border pt-6 text-xs text-keyra-text-2">
-          Be Protected Online.
-        </p>
       </div>
     </footer>
   );

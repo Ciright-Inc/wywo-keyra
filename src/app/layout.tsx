@@ -51,6 +51,11 @@ export default function RootLayout({
         <ToastProvider>
           <SiteHeader />
           <main className="min-w-0 flex-1">{children}</main>
+          <div className="border-t border-keyra-border bg-keyra-bg">
+            <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+              <p className="text-xs text-keyra-text-2">Be Protected Online.</p>
+            </div>
+          </div>
           <Script
             src="https://unpkg.com/@elevenlabs/convai-widget-embed"
             strategy="lazyOnload"
