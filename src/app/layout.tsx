@@ -32,9 +32,9 @@ export const metadata: Metadata = {
     "Be Protected Online. The identity trust layer of the internet — for people, businesses, and nations.",
   metadataBase: new URL("https://keyra.ie"),
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/kerya-logo.png",
+    shortcut: "/kerya-logo.png",
+    apple: "/kerya-logo.png",
   },
   openGraph: {
     title: "Keyra — Be Protected Online",
@@ -78,7 +78,7 @@ export default async function RootLayout({
           </div>
           <Script
             src="https://unpkg.com/@elevenlabs/convai-widget-embed"
-            strategy="lazyOnload"
+            strategy="afterInteractive"
           />
           <SiteFooter />
         </ToastProvider>

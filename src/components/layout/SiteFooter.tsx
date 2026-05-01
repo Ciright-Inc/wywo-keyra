@@ -32,13 +32,6 @@ export function SiteFooter() {
                 </Link>
               ))}
             </nav>
-            <div className="flex items-center justify-end">
-              <elevenlabs-convai
-                agent-id="agent_4401kbnjtddpfsc9b97n73asggc1"
-                variant="tiny"
-                dismissible="true"
-              />
-            </div>
           </div>
         </div>
       </div>
