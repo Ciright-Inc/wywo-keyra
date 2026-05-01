@@ -17,7 +17,7 @@ export function SiteHeader() {
   const { user } = useKeyraSession();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-keyra-border bg-keyra-bg/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-keyra-border bg-keyra-bg/90 backdrop-blur-md">
       <div className="relative mx-auto grid h-16 w-full min-w-0 max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-3 sm:gap-6 sm:px-6">
         <Link
           href="/"

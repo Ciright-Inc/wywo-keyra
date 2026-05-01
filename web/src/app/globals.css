@@ -146,13 +146,18 @@ body {
   animation: keyra-drift 18s ease-in-out infinite;
 }
 
-/* ElevenLabs ConvAI widget: keep below sticky header (z-50) to avoid covering nav */
-elevenlabs-convai {
-  z-index: 40 !important;
-  /* Force the launcher away from the header area */
-  position: fixed !important;
-  right: 18px !important;
-  bottom: 18px !important;
-  left: auto !important;
-  top: auto !important;
+/*
+ * ElevenLabs ConvAI: keep launcher above sticky header (z-50) so it is never
+ * clipped and remains clickable. Pointer-events must not be blocked by parents.
+ */
+.keyra-convai-root,
+.keyra-convai-root elevenlabs-convai {
+  z-index: 2147483000 !important;
+  position: relative !important;
+}
+
+/* Ensure the ElevenLabs agent is always above all header elements */
+.elevenlabs-convai {
+  z-index: 2147483000 !important;
+  position: relative !important;
 }
