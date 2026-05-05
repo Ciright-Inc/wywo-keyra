@@ -15,7 +15,7 @@ import { postCirightAgentSessionInBrowser } from "@/lib/cirightAgentSessionClien
 /**
  * ElevenLabs ConvAI widget — matches `index (1).html`: `<elevenlabs-convai>` +
  * `@elevenlabs/convai-widget-embed`, floating variant, and `dynamic-variables`
- * (`mobile_number`, `user_id`, …). Logged-in users get phone + Ciright-driven `source`.
+ * (`mobile_number`, `user_id`, …). **Only rendered after sign-in.** Ciright sets `source`
  *
  * @see https://elevenlabs.io/docs/agents-platform/customization/widget
  */
@@ -171,6 +171,7 @@ export function ElevenLabsHomeAgent() {
 
   /** Mirror static HTML: setAttribute so the custom element sees latest context. */
   useLayoutEffect(() => {
+    if (!user || !convaiMounted) return;
     const el =
       widgetHostRef.current ??
       (typeof document !== "undefined"
@@ -182,10 +183,10 @@ export function ElevenLabsHomeAgent() {
     } catch {
       /* ignore */
     }
-  }, [convaiMounted, dynamicVariablesJson]);
+  }, [user, convaiMounted, dynamicVariablesJson]);
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== "development" || typeof window === "undefined") {
+    if (!user || process.env.NODE_ENV !== "development" || typeof window === "undefined") {
       return;
     }
     try {
@@ -197,9 +198,9 @@ export function ElevenLabsHomeAgent() {
     } catch {
       /* ignore */
     }
-  }, [dynamicVariables]);
+  }, [user, dynamicVariables]);
 
-  if (!convaiMounted) return null;
+  if (!convaiMounted || !user) return null;
 
   return (
     <elevenlabs-convai
