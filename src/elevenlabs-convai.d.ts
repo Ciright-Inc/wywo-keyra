@@ -13,6 +13,12 @@ declare module "react" {
         dismissible?: string;
         "server-location"?: string;
         "dynamic-variables"?: string;
+        "action-text"?: string;
+        "start-call-text"?: string;
+        "end-call-text"?: string;
+        "expand-text"?: string;
+        "listening-text"?: string;
+        "speaking-text"?: string;
         "override-language"?: string;
         "override-prompt"?: string;
         "override-first-message"?: string;
