@@ -92,6 +92,7 @@ export function ElevenLabsHomeAgent() {
       dynamicVariables: {
         employee_id: "",
         phone_number: phoneE164.trim(),
+        is_widget: "1",
       },
     });
   }, [user?.phoneE164, convaiMounted, agentId]);
@@ -100,6 +101,7 @@ export function ElevenLabsHomeAgent() {
     return {
       employee_id: "",
       phone_number: user?.phoneE164?.trim() ?? "",
+      is_widget: "1",
     };
   }, [user?.phoneE164]);
 
