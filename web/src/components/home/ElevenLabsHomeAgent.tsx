@@ -5,17 +5,15 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState,
   useSyncExternalStore,
 } from "react";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { resolveElevenLabsAgentId } from "@/lib/elevenLabsAgentConfig";
-import { postCirightAgentSessionInBrowser } from "@/lib/cirightAgentSessionClient";
 
 /**
  * ElevenLabs ConvAI widget — matches `index (1).html`: `<elevenlabs-convai>` +
  * `@elevenlabs/convai-widget-embed`, floating variant, and `dynamic-variables`
- * (`mobile_number`, `user_id`, …). **Only rendered after sign-in.** Ciright sets `source`
+ * (`user_id`, `phone_number`). **Only rendered after sign-in.**
  *
  * @see https://elevenlabs.io/docs/agents-platform/customization/widget
  */
@@ -53,7 +51,7 @@ type ElevenLabsSessionPayload = {
   dynamicVariables: Record<string, string>;
 };
 
-type DevIntentKind = "ciright-on-page-load" | "ciright-after-response";
+type DevIntentKind = "on-page-load";
 
 function devPostElevenLabsIntent(kind: DevIntentKind, payload: ElevenLabsSessionPayload) {
   if (process.env.NODE_ENV !== "development") return;
@@ -64,7 +62,7 @@ function devPostElevenLabsIntent(kind: DevIntentKind, payload: ElevenLabsSession
     body: JSON.stringify({
       kind,
       ...payload,
-      inspect_mobile_number: payload.dynamicVariables.mobile_number,
+      inspect_phone_number: payload.dynamicVariables.phone_number,
       inspect_user_id: payload.dynamicVariables.user_id,
       inspect_userId: payload.userId,
       at: new Date().toISOString(),
@@ -76,11 +74,6 @@ export function ElevenLabsHomeAgent() {
   const { user } = useKeyraSession();
   const agentId = useMemo(() => resolveElevenLabsAgentId(), []);
 
-  /** Ciright outcome tied to the E.164 it was fetched for (avoids clearing success on React effect cleanup / Strict Mode). */
-  const [cirightGate, setCirightGate] = useState<{
-    phoneE164: string;
-    dataStatus: boolean;
-  } | null>(null);
   const widgetHostRef = useRef<HTMLElement | null>(null);
 
   /** Client-only: avoids custom-element SSR mismatch without `setState` in an effect. */
@@ -90,79 +83,25 @@ export function ElevenLabsHomeAgent() {
     () => false,
   );
 
-  /** Ciright on load: updates `source` in dynamic vars once the API returns (phone is already on the widget). */
   useEffect(() => {
     const phoneE164 = user?.phoneE164?.trim();
-    if (!phoneE164 || !convaiMounted) {
-      return () => {
-        setCirightGate(null);
-      };
-    }
-
-    let cancelled = false;
-    /** Dev-only; fires before Ciright finishes — `source` is always empty here by design. */
-    devPostElevenLabsIntent("ciright-on-page-load", {
+    if (!phoneE164 || !convaiMounted) return;
+    devPostElevenLabsIntent("on-page-load", {
       agentId,
       userId: phoneE164,
       dynamicVariables: {
-        mobile_number: phoneE164.trim(),
-        user_id: phoneE164.trim(),
-        user_name: user?.displayName?.trim() || "User",
-        source: "",
-        phone: phoneE164.trim(),
+        user_id: "user_123",
         phone_number: phoneE164.trim(),
       },
     });
-    void postCirightAgentSessionInBrowser(phoneE164).then((result) => {
-      if (cancelled) return;
-      if (result.ok) {
-        setCirightGate({ phoneE164, dataStatus: result.dataStatus });
-        devPostElevenLabsIntent("ciright-after-response", {
-          agentId,
-          userId: phoneE164,
-          dynamicVariables: {
-            mobile_number: phoneE164.trim(),
-            user_id: phoneE164.trim(),
-            user_name: user?.displayName?.trim() || "User",
-            source: result.dataStatus === true ? "react_widget" : "",
-            phone: phoneE164.trim(),
-            phone_number: phoneE164.trim(),
-          },
-        });
-      } else {
-        setCirightGate({ phoneE164, dataStatus: false });
-        if (process.env.NODE_ENV === "development") {
-          console.warn("[ciright-agent-session]", result.message);
-        }
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-    // Ciright keys only off phoneE164; displayName is for dev echo payloads only.
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- omit user.displayName to avoid redundant m3435622 calls
   }, [user?.phoneE164, convaiMounted, agentId]);
 
   const dynamicVariables = useMemo(() => {
-    const phone = user?.phoneE164?.trim() ?? "";
-    const userName = user
-      ? user.displayName?.trim() || "User"
-      : "";
-    const source =
-      user &&
-      cirightGate?.phoneE164 === phone &&
-      cirightGate.dataStatus === true
-        ? "react_widget"
-        : "";
     return {
-      mobile_number: phone,
-      user_id: phone,
-      user_name: userName,
-      source,
-      phone,
-      phone_number: phone,
+      user_id: "user_123",
+      phone_number: user?.phoneE164?.trim() ?? "",
     };
-  }, [user, cirightGate]);
+  }, [user?.phoneE164]);
 
   const dynamicVariablesJson = useMemo(
     () => JSON.stringify(dynamicVariables),
