@@ -13,7 +13,7 @@ import { resolveElevenLabsAgentId } from "@/lib/elevenLabsAgentConfig";
 /**
  * ElevenLabs ConvAI widget — matches `index (1).html`: `<elevenlabs-convai>` +
  * `@elevenlabs/convai-widget-embed`, floating variant, and `dynamic-variables`
- * (`user_id`, `phone_number`). **Only rendered after sign-in.**
+ * (`employee_id`, `phone_number`). **Only rendered after sign-in.**
  *
  * @see https://elevenlabs.io/docs/agents-platform/customization/widget
  */
@@ -63,7 +63,7 @@ function devPostElevenLabsIntent(kind: DevIntentKind, payload: ElevenLabsSession
       kind,
       ...payload,
       inspect_phone_number: payload.dynamicVariables.phone_number,
-      inspect_user_id: payload.dynamicVariables.user_id,
+      inspect_employee_id: payload.dynamicVariables.employee_id,
       inspect_userId: payload.userId,
       at: new Date().toISOString(),
     }),
@@ -90,7 +90,7 @@ export function ElevenLabsHomeAgent() {
       agentId,
       userId: phoneE164,
       dynamicVariables: {
-        user_id: "user_123",
+        employee_id: "",
         phone_number: phoneE164.trim(),
       },
     });
@@ -98,7 +98,7 @@ export function ElevenLabsHomeAgent() {
 
   const dynamicVariables = useMemo(() => {
     return {
-      user_id: "user_123",
+      employee_id: "",
       phone_number: user?.phoneE164?.trim() ?? "",
     };
   }, [user?.phoneE164]);
