@@ -5,20 +5,23 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
+  useState,
   useSyncExternalStore,
 } from "react";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { resolveElevenLabsAgentId } from "@/lib/elevenLabsAgentConfig";
 
 /**
- * ElevenLabs ConvAI widget — matches `index (1).html`: `<elevenlabs-convai>` +
- * `@elevenlabs/convai-widget-embed`, floating variant, and `dynamic-variables`
- * (`employee_id`, `phone_number`). **Only rendered after sign-in.**
+ * ElevenLabs ConvAI widget — `<elevenlabs-convai>` + embed script.
+ * The embed script loads **only after sign-in** so anonymous visits are not blocked by unpkg.
  *
  * @see https://elevenlabs.io/docs/agents-platform/customization/widget
  */
 
 export const KEYRA_ELEVENLABS_CONVAI_WIDGET_ID = "keyra-elevenlabs-convai";
+
+const ELEVENLABS_EMBED_SCRIPT_ID = "keyra-elevenlabs-convai-embed-script";
+const ELEVENLABS_EMBED_SRC = "https://unpkg.com/@elevenlabs/convai-widget-embed";
 
 /** Same as the demo “Start” button: open / start the floating widget if the embed exposes an API. */
 export function openKeyraElevenLabsConvai() {
@@ -73,6 +76,7 @@ function devPostElevenLabsIntent(kind: DevIntentKind, payload: ElevenLabsSession
 export function ElevenLabsHomeAgent() {
   const { user } = useKeyraSession();
   const agentId = useMemo(() => resolveElevenLabsAgentId(), []);
+  const [embedReady, setEmbedReady] = useState(false);
 
   const widgetHostRef = useRef<HTMLElement | null>(null);
 
@@ -84,8 +88,47 @@ export function ElevenLabsHomeAgent() {
   );
 
   useEffect(() => {
+    if (!user) {
+      setEmbedReady(false);
+      return;
+    }
+
+    const existing =
+      (document.getElementById(ELEVENLABS_EMBED_SCRIPT_ID) as HTMLScriptElement | null) ??
+      (document.querySelector(
+        `script[src*="convai-widget-embed"]`,
+      ) as HTMLScriptElement | null);
+
+    if (existing) {
+      if (!existing.id) existing.id = ELEVENLABS_EMBED_SCRIPT_ID;
+      if (existing.dataset.loaded === "true") {
+        setEmbedReady(true);
+        return;
+      }
+      const done = () => {
+        existing.dataset.loaded = "true";
+        setEmbedReady(true);
+      };
+      existing.addEventListener("load", done, { once: true });
+      existing.addEventListener("error", done, { once: true });
+      return;
+    }
+
+    const s = document.createElement("script");
+    s.id = ELEVENLABS_EMBED_SCRIPT_ID;
+    s.async = true;
+    s.src = ELEVENLABS_EMBED_SRC;
+    s.onload = () => {
+      s.dataset.loaded = "true";
+      setEmbedReady(true);
+    };
+    s.onerror = () => setEmbedReady(true);
+    document.body.appendChild(s);
+  }, [user]);
+
+  useEffect(() => {
     const phoneE164 = user?.phoneE164?.trim();
-    if (!phoneE164 || !convaiMounted) return;
+    if (!phoneE164 || !convaiMounted || !embedReady) return;
     devPostElevenLabsIntent("on-page-load", {
       agentId,
       userId: phoneE164,
@@ -95,7 +138,7 @@ export function ElevenLabsHomeAgent() {
         is_widget: "1",
       },
     });
-  }, [user?.phoneE164, convaiMounted, agentId]);
+  }, [user?.phoneE164, convaiMounted, embedReady, agentId]);
 
   const dynamicVariables = useMemo(() => {
     return {
@@ -112,7 +155,7 @@ export function ElevenLabsHomeAgent() {
 
   /** Mirror static HTML: setAttribute so the custom element sees latest context. */
   useLayoutEffect(() => {
-    if (!user || !convaiMounted) return;
+    if (!user || !convaiMounted || !embedReady) return;
     const el =
       widgetHostRef.current ??
       (typeof document !== "undefined"
@@ -124,7 +167,7 @@ export function ElevenLabsHomeAgent() {
     } catch {
       /* ignore */
     }
-  }, [user, convaiMounted, dynamicVariablesJson]);
+  }, [user, convaiMounted, embedReady, dynamicVariablesJson]);
 
   useEffect(() => {
     if (!user || process.env.NODE_ENV !== "development" || typeof window === "undefined") {
@@ -141,7 +184,7 @@ export function ElevenLabsHomeAgent() {
     }
   }, [user, dynamicVariables]);
 
-  if (!convaiMounted || !user) return null;
+  if (!convaiMounted || !user || !embedReady) return null;
 
   return (
     <elevenlabs-convai

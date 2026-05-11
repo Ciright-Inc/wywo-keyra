@@ -41,7 +41,7 @@ export function KeyraLogo({
 
   return (
     <span
-      className={`items-center gap-2.5 ${variant === "header" ? "flex h-[4.5rem] min-h-0 w-full max-w-full justify-start overflow-hidden sm:h-20 lg:inline-flex lg:h-16 lg:w-auto" : "inline-flex"} ${className}`}
+      className={`items-center gap-2.5 ${variant === "header" ? "flex h-[4.5rem] min-h-0 w-full max-w-full justify-start overflow-hidden sm:h-20 lg:inline-flex lg:h-14 lg:w-auto" : "inline-flex"} ${className}`}
     >
       <span
         className={`relative flex min-w-0 shrink items-center justify-start overflow-hidden rounded-sm ${logoSizes[variant].box}`}

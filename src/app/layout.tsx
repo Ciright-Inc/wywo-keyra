@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { HeaderNoSSR } from "@/components/layout/HeaderNoSSR";
@@ -78,10 +77,6 @@ export default async function RootLayout({
               <p className="text-xs text-keyra-text-2">Be Protected Online.</p>
             </div>
           </div>
-          <Script
-            src="https://unpkg.com/@elevenlabs/convai-widget-embed"
-            strategy="afterInteractive"
-          />
           <SiteFooter />
         </ToastProvider>
       </body>

@@ -18,10 +18,10 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-[200] border-b border-keyra-border bg-keyra-bg/90 backdrop-blur-md">
-      <div className="relative mx-auto grid w-full min-w-0 max-w-7xl grid-cols-1 gap-y-2 px-3 py-2 sm:px-6 lg:h-16 lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-6 lg:gap-y-0 lg:py-0">
+      <div className="relative mx-auto grid w-full min-w-0 max-w-7xl grid-cols-1 gap-y-1 px-3 py-1.5 sm:px-6 lg:h-14 lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-5 lg:gap-y-0 lg:py-0">
         <Link
           href="/"
-          className="relative z-0 flex w-full min-w-0 items-center justify-start overflow-visible py-0.5 lg:col-start-1 lg:row-start-1 lg:h-16 lg:w-auto lg:max-w-none lg:py-1 lg:pr-3"
+          className="relative z-0 flex w-full min-w-0 items-center justify-start overflow-visible py-0.5 lg:col-start-1 lg:row-start-1 lg:h-14 lg:w-auto lg:max-w-none lg:py-0.5 lg:pr-3"
           aria-label="Keyra home"
         >
           <KeyraLogo variant="header" showWordmark={false} />
@@ -45,7 +45,7 @@ export function SiteHeader() {
           </div>
         </nav>
 
-        <div className="relative z-10 flex w-full min-w-0 shrink-0 flex-wrap items-center justify-between gap-x-2 gap-y-1.5 py-0.5 sm:flex-nowrap sm:justify-between lg:col-start-3 lg:row-start-1 lg:w-auto lg:flex-nowrap lg:justify-end lg:gap-2 lg:py-1 lg:pl-4 xl:gap-4 xl:pl-6">
+        <div className="relative z-10 flex w-full min-w-0 shrink-0 flex-wrap items-center justify-between gap-x-2 gap-y-1 py-0.5 sm:flex-nowrap sm:justify-between lg:col-start-3 lg:row-start-1 lg:w-auto lg:flex-nowrap lg:justify-end lg:gap-2 lg:py-0.5 lg:pl-3 xl:gap-3 xl:pl-5">
           <MobileNav />
           <AccountMenu />
 

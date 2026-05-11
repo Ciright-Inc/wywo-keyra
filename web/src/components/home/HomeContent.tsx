@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/motion/FadeIn";
+import { KeyraHomeGlobe } from "@/components/home/KeyraHomeGlobe";
 import { HomeRegistrationCTAs } from "@/components/registration/HomeRegistrationCTAs";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -56,7 +57,7 @@ function SignalDot({
 export function HomeContent() {
   return (
     <>
-      <section className="relative min-h-[92vh] scroll-mt-44 overflow-hidden border-b border-keyra-border bg-keyra-bg px-4 py-20 sm:px-6 sm:py-28 lg:scroll-mt-24 lg:py-32">
+      <section className="relative min-h-[min(88vh,56rem)] scroll-mt-44 overflow-hidden border-b border-keyra-border bg-keyra-bg px-4 py-12 sm:px-6 sm:py-16 lg:scroll-mt-24 lg:py-20">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
           <div
             className="absolute inset-0 bg-cover bg-center opacity-75"
@@ -92,7 +93,7 @@ export function HomeContent() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-keyra-bg" />
         </div>
 
-        <div className="relative mx-auto flex min-h-[70vh] w-full min-w-0 max-w-6xl items-center">
+        <div className="relative mx-auto grid min-h-0 w-full min-w-0 max-w-6xl grid-cols-1 items-center gap-8 py-4 sm:min-h-[52vh] lg:grid-cols-[minmax(0,1.05fr)_minmax(240px,0.95fr)] lg:min-h-[54vh] lg:gap-10 lg:py-0">
           <div className="w-full min-w-0 max-w-2xl">
             <h1 className="text-balance text-4xl font-semibold leading-[1.06] tracking-tight text-keyra-primary sm:text-5xl md:text-6xl lg:text-[4.25rem]">
               <motion.span
@@ -105,7 +106,7 @@ export function HomeContent() {
               </motion.span>
             </h1>
             <motion.p
-              className="mt-6 text-balance text-[16px] leading-relaxed text-keyra-text-2 sm:text-lg md:text-[20px]"
+              className="mt-5 text-balance text-[16px] leading-relaxed text-keyra-text-2 sm:text-lg md:text-[20px]"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.12 }}
@@ -115,7 +116,7 @@ export function HomeContent() {
             </motion.p>
 
             <motion.div
-              className="mt-9 w-full min-w-0 max-w-3xl"
+              className="mt-7 w-full min-w-0 max-w-3xl"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2 }}
@@ -124,13 +125,30 @@ export function HomeContent() {
             </motion.div>
 
             <motion.p
-              className="mt-10 text-sm text-keyra-text-2"
+              className="mt-8 text-sm text-keyra-text-2"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.28 }}
             >
               A global standard that feels human. <span className="text-keyra-primary">Be Protected Online.</span>
             </motion.p>
+          </div>
+
+          <div className="pointer-events-auto relative flex w-full max-w-[min(100%,380px)] justify-center justify-self-center lg:max-w-[420px] lg:justify-self-end">
+            <div
+              className="pointer-events-none absolute -inset-3 rounded-full opacity-90 blur-md sm:-inset-4"
+              style={{
+                background:
+                  "radial-gradient(circle at 35% 25%, rgba(102,227,255,0.22), transparent 58%), radial-gradient(circle at 70% 80%, rgba(108,124,255,0.12), transparent 55%)",
+              }}
+              aria-hidden
+            />
+            <div
+              className="relative aspect-square w-full max-w-[320px] overflow-hidden rounded-full shadow-[0_24px_80px_rgba(0,0,0,0.35)] sm:max-w-[380px] lg:max-w-none"
+              suppressHydrationWarning
+            >
+              <KeyraHomeGlobe className="block h-full w-full touch-pan-y" />
+            </div>
           </div>
         </div>
       </section>
