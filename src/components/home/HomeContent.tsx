@@ -19,7 +19,7 @@ function SectionShell({
   return (
     <section
       id={id}
-      className={`scroll-mt-24 px-4 py-16 sm:px-6 sm:py-24 lg:py-32 ${className}`}
+      className={`scroll-mt-44 px-4 py-16 sm:px-6 sm:py-24 lg:scroll-mt-24 lg:py-32 ${className}`}
     >
       <div className="mx-auto max-w-6xl">{children}</div>
     </section>
@@ -56,7 +56,7 @@ function SignalDot({
 export function HomeContent() {
   return (
     <>
-      <section className="relative min-h-[92vh] scroll-mt-24 overflow-hidden border-b border-keyra-border bg-keyra-bg px-4 py-20 sm:px-6 sm:py-28 lg:py-32">
+      <section className="relative min-h-[92vh] scroll-mt-44 overflow-hidden border-b border-keyra-border bg-keyra-bg px-4 py-20 sm:px-6 sm:py-28 lg:scroll-mt-24 lg:py-32">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
           <div
             className="absolute inset-0 bg-cover bg-center opacity-75"
@@ -94,14 +94,16 @@ export function HomeContent() {
 
         <div className="relative mx-auto flex min-h-[70vh] w-full min-w-0 max-w-6xl items-center">
           <div className="w-full min-w-0 max-w-2xl">
-            <motion.h1
-              className="text-balance text-5xl font-semibold leading-[1.06] tracking-tight text-keyra-primary sm:text-6xl md:text-[4.25rem]"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55 }}
-            >
-              Be Protected Online.
-            </motion.h1>
+            <h1 className="text-balance text-4xl font-semibold leading-[1.06] tracking-tight text-keyra-primary sm:text-5xl md:text-6xl lg:text-[4.25rem]">
+              <motion.span
+                className="inline-block"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55 }}
+              >
+                Be Protected Online.
+              </motion.span>
+            </h1>
             <motion.p
               className="mt-6 text-balance text-[16px] leading-relaxed text-keyra-text-2 sm:text-lg md:text-[20px]"
               initial={{ opacity: 0, y: 14 }}

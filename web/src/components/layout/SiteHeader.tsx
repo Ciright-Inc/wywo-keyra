@@ -17,27 +17,27 @@ export function SiteHeader() {
   const { user } = useKeyraSession();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-keyra-border bg-keyra-bg/90 backdrop-blur-md">
-      <div className="relative mx-auto grid h-16 w-full min-w-0 max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-3 sm:gap-6 sm:px-6">
+    <header className="sticky top-0 z-[200] border-b border-keyra-border bg-keyra-bg/90 backdrop-blur-md">
+      <div className="relative mx-auto grid w-full min-w-0 max-w-7xl grid-cols-1 gap-y-2 px-3 py-2 sm:px-6 lg:h-16 lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-6 lg:gap-y-0 lg:py-0">
         <Link
           href="/"
-          className="flex h-16 shrink-0 items-center py-1 pr-2 sm:pr-3"
+          className="relative z-0 flex w-full min-w-0 items-center justify-start overflow-visible py-0.5 lg:col-start-1 lg:row-start-1 lg:h-16 lg:w-auto lg:max-w-none lg:py-1 lg:pr-3"
           aria-label="Keyra home"
         >
           <KeyraLogo variant="header" showWordmark={false} />
         </Link>
 
         <nav
-          className="relative hidden min-h-0 min-w-0 lg:flex lg:items-center lg:justify-center mr-4"
+          className="relative hidden min-h-0 min-w-0 lg:col-start-2 lg:row-start-1 lg:flex lg:items-center lg:justify-center lg:mr-4"
           aria-label="Primary"
-          style={{ lineHeight: '1.5' }}
+          style={{ lineHeight: "1.5" }}
         >
           <div className="flex max-w-full flex-nowrap items-center justify-center gap-2 overflow-visible whitespace-nowrap px-2">
             {nav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative shrink-0 whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-colors hover:bg-[rgba(255,255,255,0.05)] hover:text-keyra-primary lg:px-4 flex items-center justify-center min-w-fit"
+                className="relative flex min-w-fit shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-colors hover:bg-[rgba(255,255,255,0.05)] hover:text-keyra-primary lg:px-4"
               >
                 {item.label}
               </Link>
@@ -45,19 +45,19 @@ export function SiteHeader() {
           </div>
         </nav>
 
-        <div className="relative flex shrink-0 items-center justify-end gap-3 py-1 pl-4 sm:gap-4 sm:pl-6">
+        <div className="relative z-10 flex w-full min-w-0 shrink-0 flex-wrap items-center justify-between gap-x-2 gap-y-1.5 py-0.5 sm:flex-nowrap sm:justify-between lg:col-start-3 lg:row-start-1 lg:w-auto lg:flex-nowrap lg:justify-end lg:gap-2 lg:py-1 lg:pl-4 xl:gap-4 xl:pl-6">
           <MobileNav />
           <AccountMenu />
 
           <div
-            className="flex shrink-0 flex-row flex-nowrap items-stretch rounded-[var(--keyra-radius-pill)] border border-[rgba(102,227,255,0.38)] bg-[rgba(11,18,32,0.92)] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md"
+            className="flex min-w-0 shrink-0 flex-row flex-nowrap items-stretch rounded-[var(--keyra-radius-pill)] border border-[rgba(102,227,255,0.38)] bg-[rgba(11,18,32,0.92)] p-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md sm:p-1"
             aria-label="Sign in and get protected"
           >
             {!user ? (
               <>
                 <Link
                   href="/login"
-                  className="flex shrink-0 items-center whitespace-nowrap px-3 py-2 text-sm font-semibold leading-none text-keyra-accent transition hover:bg-[rgba(102,227,255,0.09)] hover:text-keyra-primary"
+                  className="flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-xs font-semibold leading-none text-keyra-accent transition hover:bg-[rgba(102,227,255,0.09)] hover:text-keyra-primary sm:px-3 sm:text-sm"
                 >
                   Sign in
                 </Link>
@@ -67,9 +67,10 @@ export function SiteHeader() {
                 />
               </>
             ) : null}
-            <Link href="/#get-protected" className="inline-flex shrink-0">
-              <span className="flex items-center whitespace-nowrap rounded-[var(--keyra-radius-pill)] bg-[rgba(102,227,255,0.14)] px-3 py-2 text-sm font-semibold leading-none text-keyra-primary ring-1 ring-[rgba(102,227,255,0.42)] transition hover:bg-[rgba(102,227,255,0.22)]">
-                Be Protected Online
+            <Link href="/#get-protected" className="inline-flex min-w-0 shrink-0">
+              <span className="flex items-center whitespace-nowrap rounded-[var(--keyra-radius-pill)] bg-[rgba(102,227,255,0.14)] px-2 py-2 text-xs font-semibold leading-none text-keyra-primary ring-1 ring-[rgba(102,227,255,0.42)] transition hover:bg-[rgba(102,227,255,0.22)] sm:px-3 sm:text-sm">
+                <span className="sm:hidden">Get protected</span>
+                <span className="hidden sm:inline">Be Protected Online</span>
               </span>
             </Link>
           </div>

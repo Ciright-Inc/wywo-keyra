@@ -54,6 +54,10 @@
   --font-sans: var(--font-inter);
 }
 
+html {
+  overflow-x: clip;
+}
+
 body {
   background: var(--keyra-bg);
   color: var(--keyra-text);
