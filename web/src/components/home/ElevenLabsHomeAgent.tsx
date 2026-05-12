@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  startTransition,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -89,7 +90,9 @@ export function ElevenLabsHomeAgent() {
 
   useEffect(() => {
     if (!user) {
-      setEmbedReady(false);
+      startTransition(() => {
+        setEmbedReady(false);
+      });
       return;
     }
 
@@ -102,12 +105,16 @@ export function ElevenLabsHomeAgent() {
     if (existing) {
       if (!existing.id) existing.id = ELEVENLABS_EMBED_SCRIPT_ID;
       if (existing.dataset.loaded === "true") {
-        setEmbedReady(true);
+        startTransition(() => {
+          setEmbedReady(true);
+        });
         return;
       }
       const done = () => {
         existing.dataset.loaded = "true";
-        setEmbedReady(true);
+        startTransition(() => {
+          setEmbedReady(true);
+        });
       };
       existing.addEventListener("load", done, { once: true });
       existing.addEventListener("error", done, { once: true });
@@ -120,9 +127,14 @@ export function ElevenLabsHomeAgent() {
     s.src = ELEVENLABS_EMBED_SRC;
     s.onload = () => {
       s.dataset.loaded = "true";
-      setEmbedReady(true);
+      startTransition(() => {
+        setEmbedReady(true);
+      });
     };
-    s.onerror = () => setEmbedReady(true);
+    s.onerror = () =>
+      startTransition(() => {
+        setEmbedReady(true);
+      });
     document.body.appendChild(s);
   }, [user]);
 

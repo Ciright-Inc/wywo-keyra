@@ -23,6 +23,13 @@
 # misc
 .DS_Store
 *.pem
+*.db
+
+# Local Node.js binary bundles (never commit)
+node-v*/
+
+# Accidental duplicate exports
+index (*).html
 
 # debug
 npm-debug.log*

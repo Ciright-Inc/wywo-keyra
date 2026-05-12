@@ -6,6 +6,7 @@ const links = [
   { href: "/#missing-layer", label: "The shift" },
   { href: "/#for", label: "Who it's for" },
   { href: "/#global", label: "Global" },
+  { href: "/global-deployment", label: "Global Deployment" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact us" },
   { href: "/privacy", label: "Privacy" },

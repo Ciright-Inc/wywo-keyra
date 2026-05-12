@@ -122,13 +122,15 @@ function PhotorealEarth() {
         const p = latLonToVec3(lat, lon, EARTH_RADIUS * 1.012);
         return (
           <mesh key={i} position={p}>
-            <sphereGeometry args={[0.02, 12, 12]} />
+            <sphereGeometry args={[0.01, 12, 12]} />
             <meshStandardMaterial
               color="#031208"
               emissive="#22ff88"
               emissiveIntensity={2.4}
               roughness={0.35}
               metalness={0}
+              transparent
+              opacity={0.5}
             />
           </mesh>
         );

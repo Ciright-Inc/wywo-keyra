@@ -331,6 +331,11 @@ export function HomeContent() {
             Global trust needs global standards.{" "}
             <span className="text-keyra-primary">Be Protected Online.</span>
           </p>
+          <div className="mt-8">
+            <Link href="/global-deployment" className="inline-flex">
+              <Button variant="secondary">View Global Deployment</Button>
+            </Link>
+          </div>
         </FadeIn>
       </SectionShell>
 

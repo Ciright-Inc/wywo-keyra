@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum DeploymentStatus {
+  IDENTIFIED
+  INSTITUTIONAL_AWARENESS
+  TVIP
+  OPERATIONAL
+}
+
+enum TargetType {
+  COUNTRY
+  TELCO
+}
+
+enum ServerEnvironment {
+  PROD
+  STAGE
+  TEST
+}
+
+enum VerificationMethod {
+  EMAIL_OTP
+  SSO
+  INVITE_ONLY
+}
+
+enum EmployeeType {
+  TYPE_1
+}
+
+enum RequestVerificationStatus {
+  PENDING
+  VERIFIED
+  FAILED
+}
+
+enum RequestApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum StatusHistoryTargetType {
+  REGION
+  COUNTRY
+  TELCO
+  SERVER_NODE
+}
+
+/** Mirrors institutional roles from the deployment doctrine (v1). */
+enum DeploymentAdminRole {
+  GLOBAL_ADMIN
+  REGIONAL_ADMIN
+  COUNTRY_ADMIN
+  TELCO_ADMIN
+  COMPLIANCE_REVIEWER
+  READ_ONLY
+}
+
+model AdminUser {
+  id           String               @id @default(cuid())
+  email        String               @unique
+  displayName  String?
+  passwordHash String
+  role         DeploymentAdminRole
+  /** JSON: { "regionIds"?: string[], "countryIds"?: string[], "telcoIds"?: string[] } */
+  scopeJson    Json?
+  isActive     Boolean              @default(true)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+}
+
+model Region {
+  id             String   @id @default(cuid())
+  continentCode  String
+  subregionCode  String
+  name           String
+  slug           String   @unique
+  mapKey         String
+  sortOrder      Int      @default(0)
+  isPublished    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  countries CountryDeployment[]
+}
+
+model CountryDeployment {
+  id                      String            @id @default(cuid())
+  regionId                String
+  region                  Region            @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  name                    String
+  iso2                    String
+  iso3                    String
+  flagAssetKey            String
+  population              Int?
+  populationDisplay       String?
+  countrySubdomain        String
+  officialReferenceDomain String?
+  status                  DeploymentStatus
+  statusNote              String?
+  sourceLabel             String?
+  sourceUrl               String?
+  sourceVerifiedAt        DateTime?
+  sortOrder               Int               @default(0)
+  isPublished             Boolean           @default(false)
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+
+  telcos TelcoDeployment[]
+
+  @@unique([countrySubdomain])
+  @@index([regionId])
+  @@index([iso2])
+}
+
+model TelcoDeployment {
+  id                 String            @id @default(cuid())
+  countryId          String
+  country            CountryDeployment @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  name               String
+  slug               String
+  subscribers        Int?
+  subscribersDisplay String?
+  telcoSubdomain     String
+  officialDomain     String?
+  status             DeploymentStatus
+  statusNote         String?
+  sourceLabel        String?
+  sourceUrl          String?
+  sourceVerifiedAt   DateTime?
+  sortOrder          Int               @default(0)
+  isPublished        Boolean           @default(false)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  @@unique([countryId, slug])
+  @@index([countryId])
+}
+
+model ServerNode {
+  id              String            @id @default(cuid())
+  targetType      TargetType
+  targetId        String
+  fqdn            String
+  environment     ServerEnvironment
+  healthcheckUrl  String?
+  status          DeploymentStatus
+  lastHeartbeatAt DateTime?
+  metadataJson    Json?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([targetType, targetId])
+}
+
+model AccessDomainRule {
+  id                   String             @id @default(cuid())
+  targetType           TargetType
+  targetId             String
+  allowedEmailDomain   String
+  verificationMethod   VerificationMethod @default(EMAIL_OTP)
+  isActive             Boolean            @default(true)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([targetType, targetId])
+}
+
+model ServerAccessRequest {
+  id                     String                    @id @default(cuid())
+  targetType             TargetType
+  targetId               String
+  workEmail              String
+  employeeType           EmployeeType              @default(TYPE_1)
+  requestReason          String?
+  verificationStatus     RequestVerificationStatus @default(PENDING)
+  verificationTokenHash  String?
+  verificationExpiresAt  DateTime?
+  approvalStatus         RequestApprovalStatus     @default(PENDING)
+  approvedBy             String?
+  approvedAt             DateTime?
+  rejectedBy             String?
+  rejectedAt             DateTime?
+  rejectionReason        String?
+  auditRef               String?
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @updatedAt
+
+  @@index([targetType, targetId])
+  @@index([workEmail])
+}
+
+model StatusHistory {
+  id             String                   @id @default(cuid())
+  targetType     StatusHistoryTargetType
+  targetId       String
+  previousStatus DeploymentStatus?
+  nextStatus     DeploymentStatus
+  changedBy      String
+  changedAt      DateTime                 @default(now())
+  reason         String?
+
+  @@index([targetType, targetId])
+}
+
+model AuditEvent {
+  id          String   @id @default(cuid())
+  actorId     String?
+  actorRole   String?
+  entityType  String
+  entityId    String
+  action      String
+  payloadJson Json?
+  createdAt   DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
