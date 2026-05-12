@@ -20,6 +20,8 @@ Copy `.env.example` to `.env` and set:
 | `KEYRA_ADMIN_ACTOR_ID` / `KEYRA_ADMIN_ACTOR_ROLE` | Optional labels on audit and status history rows. |
 | `MANDRILL_API_KEY` + `MANDRILL_FROM_EMAIL` | Optional; required in production to send server access verification emails. |
 | `NEXT_PUBLIC_KEYRA_SITE_URL` | Optional; used in verification email links (defaults to `https://keyra.ie`). |
+| `KEYRA_ADMIN_HOST` | Optional; admin hostname only (e.g. `admin.keyra.ie`). When set, `/admin/*` and `/api/admin/*` on any other host redirect here (307). Omit on localhost. |
+| `KEYRA_ADMIN_PUBLIC_ORIGIN` | Optional; full origin for that redirect (e.g. `https://admin.keyra.ie`). Defaults to `https://$KEYRA_ADMIN_HOST` in production, `http://$KEYRA_ADMIN_HOST` otherwise. |
 
 ### Admin sign-in
 
@@ -91,6 +93,8 @@ npm run db:seed
 - [ ] Postgres plugin (or external Postgres) and `DATABASE_URL` on the Keyra service
 - [ ] `KEYRA_ADMIN_JWT_SECRET` (≥32 characters) for production
 - [ ] `NEXT_PUBLIC_KEYRA_SITE_URL` (e.g. `https://www.keyra.ie`)
+- [ ] Custom domain **`admin.keyra.ie`** (or your chosen admin host) on the same Keyra service as `www.keyra.ie`
+- [ ] `KEYRA_ADMIN_HOST=admin.keyra.ie` and `KEYRA_ADMIN_PUBLIC_ORIGIN=https://admin.keyra.ie` so the main site stops serving admin paths and sends staff to the admin host
 - [ ] Optional: `KEYRA_ADMIN_TOKEN`, Mandrill vars, `SEED_ADMIN_PASSWORD` for seeding
 
 ## Development
