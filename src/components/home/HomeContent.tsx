@@ -4,6 +4,10 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { KeyraHomeGlobe } from "@/components/home/KeyraHomeGlobe";
+import {
+  KeyraGlobeLiveActivityPanel,
+  KeyraGlobeLiveStatPanel,
+} from "@/components/home/KeyraGlobeLivePanels";
 import { HomeRegistrationCTAs } from "@/components/registration/HomeRegistrationCTAs";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -134,20 +138,29 @@ export function HomeContent() {
             </motion.p>
           </div>
 
-          <div className="pointer-events-auto relative flex w-full max-w-[min(100%,380px)] justify-center justify-self-center lg:max-w-[420px] lg:justify-self-end">
+          <div className="pointer-events-auto relative flex w-full max-w-[min(100%,580px)] justify-center justify-self-center lg:max-w-[580px] lg:justify-self-end">
             <div
-              className="pointer-events-none absolute -inset-3 rounded-full opacity-90 blur-md sm:-inset-4"
-              style={{
-                background:
-                  "radial-gradient(circle at 35% 25%, rgba(102,227,255,0.22), transparent 58%), radial-gradient(circle at 70% 80%, rgba(108,124,255,0.12), transparent 55%)",
-              }}
-              aria-hidden
-            />
-            <div
-              className="relative aspect-square w-full max-w-[320px] overflow-hidden rounded-full shadow-[0_24px_80px_rgba(0,0,0,0.35)] sm:max-w-[380px] lg:max-w-none"
+              className="keyra-globe-stage relative box-border flex w-full flex-col gap-3 lg:block lg:min-h-[min(500px,62vw)] lg:px-3 lg:pb-7 lg:pt-5"
               suppressHydrationWarning
             >
-              <KeyraHomeGlobe className="block h-full w-full touch-pan-y" />
+              <KeyraGlobeLiveStatPanel />
+              <div className="relative order-2 mx-auto w-full max-w-[320px] sm:max-w-[380px] lg:absolute lg:left-1/2 lg:top-1/2 lg:max-w-[460px] lg:-translate-x-1/2 lg:-translate-y-1/2">
+                <div
+                  className="pointer-events-none absolute -inset-3 rounded-full opacity-90 blur-md sm:-inset-4"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 35% 25%, rgba(102,227,255,0.22), transparent 58%), radial-gradient(circle at 70% 80%, rgba(108,124,255,0.12), transparent 55%)",
+                  }}
+                  aria-hidden
+                />
+                <div
+                  className="relative mx-auto aspect-square w-full overflow-hidden rounded-full shadow-[0_24px_80px_rgba(0,0,0,0.35)] lg:aspect-auto lg:h-[460px] lg:w-[min(100%-24px,460px)] lg:max-w-[460px]"
+                  suppressHydrationWarning
+                >
+                  <KeyraHomeGlobe className="block h-full w-full touch-pan-y" />
+                </div>
+              </div>
+              <KeyraGlobeLiveActivityPanel />
             </div>
           </div>
         </div>
