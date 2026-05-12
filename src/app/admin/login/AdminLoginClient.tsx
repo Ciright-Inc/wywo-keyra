@@ -81,9 +81,9 @@ export function AdminLoginClient() {
         </label>
 
         <p className="text-xs text-keyra-text-2">
-          Seeded accounts (after <code className="text-keyra-primary">npm run db:seed</code>) use{" "}
-          <code className="text-keyra-primary">SEED_ADMIN_PASSWORD</code> or the default documented in{" "}
-          <code className="text-keyra-primary">DEPLOYMENTS.md</code>.
+          Email: <span className="text-keyra-primary">global@seed.keyra</span>
+          <br />
+          Password: <span className="text-keyra-primary">ChangeMeSeed!123</span>
         </p>
 
         <div className="border-t border-keyra-border pt-4">
