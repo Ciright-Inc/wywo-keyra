@@ -6,6 +6,9 @@ import { GlobalDeploymentView } from "@/components/global-deployment/GlobalDeplo
 import { LoadingSkeleton } from "@/components/global-deployment/LoadingSkeleton";
 import { getPublicDeploymentTree } from "@/lib/deployments/publicTree";
 
+/** Reads DB via unstable_cache; avoid build-time static generation without a database. */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Global deployment",
   description:
