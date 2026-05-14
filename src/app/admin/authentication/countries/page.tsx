@@ -29,6 +29,7 @@ export default function AdminAuthCountriesPage() {
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [catalogToolsOpen, setCatalogToolsOpen] = useState(false);
 
   const load = useCallback(async () => {
     setError(null);
@@ -56,6 +57,15 @@ export default function AdminAuthCountriesPage() {
   useEffect(() => {
     load().catch((e) => setError(e instanceof Error ? e.message : "Load failed"));
   }, [load]);
+
+  useEffect(() => {
+    if (!catalogToolsOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setCatalogToolsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [catalogToolsOpen]);
 
   function patchRow(id: string, patch: Partial<AuthenticationCountry>) {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
@@ -320,6 +330,7 @@ export default function AdminAuthCountriesPage() {
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Create failed");
       setDraft({ countryName: "", iso2: "", region: "", percentageWeight: 5, displayPriority: 0 });
+      setCatalogToolsOpen(false);
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Create failed");
@@ -332,18 +343,36 @@ export default function AdminAuthCountriesPage() {
     .filter((r) => r.active && r.authenticationEnabled)
     .reduce((s, r) => s + Math.max(0, r.percentageWeight), 0);
 
+  const filterSummary = useMemo(() => {
+    const bits: string[] = [];
+    if (q.trim()) bits.push(`Search: "${q.trim()}"`);
+    if (region) bits.push(`Region: ${region}`);
+    if (subRegion) bits.push(`Sub: ${subRegion}`);
+    if (activeFilter === "true") bits.push("Active only");
+    if (activeFilter === "false") bits.push("Inactive only");
+    if (authFilter === "true") bits.push("Auth feed on");
+    if (authFilter === "false") bits.push("Auth feed off");
+    if (weightMin.trim()) bits.push(`Wt min ${weightMin}`);
+    if (weightMax.trim()) bits.push(`Wt max ${weightMax}`);
+    bits.push(`Sort: ${sortBy}`);
+    return bits.join(" · ");
+  }, [q, region, subRegion, activeFilter, authFilter, weightMin, weightMax, sortBy]);
+
   return (
-    <div className="space-y-6 text-keyra-primary">
+    <div className="flex flex-col gap-4 text-keyra-primary">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Authentication countries</h1>
-        <p className="mt-2 max-w-3xl text-sm text-keyra-text-2">
-          <code className="rounded bg-keyra-bg px-1 py-0.5 text-xs">npm start</code> runs migrations then the deploy catalog seed (includes world countries). Manual only:{" "}
-          <code className="rounded bg-keyra-bg px-1 py-0.5 text-xs">npm run db:seed:world-countries</code>{" "}
-          (re-runnable; preserves weights unless <code className="rounded bg-keyra-bg px-1 py-0.5 text-xs">RESET_AUTH_COUNTRY_WEIGHTS=1</code>
-          ). Feed uses only rows that are <strong>active</strong> and <strong>authentication enabled</strong>; weights normalize to 100% at
-          generation. Raw weight sum (eligible):{" "}
-          <span className="font-medium text-keyra-primary">{activeSum.toFixed(2)}</span> · Rows:{" "}
-          <span className="font-medium">{rows.length}</span>
+        <p className="mt-1 text-xs text-keyra-text-2">
+          <span className="font-medium text-keyra-primary">{rows.length}</span> rows · Eligible weight sum{" "}
+          <span className="font-medium text-keyra-primary">{activeSum.toFixed(2)}</span>. Open{" "}
+          <button
+            type="button"
+            className="text-keyra-accent underline underline-offset-2 hover:text-keyra-primary"
+            onClick={() => setCatalogToolsOpen(true)}
+          >
+            Catalog tools
+          </button>{" "}
+          for search, filters, bulk actions, and adding a country.
         </p>
       </div>
 
@@ -351,183 +380,17 @@ export default function AdminAuthCountriesPage() {
         <p className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">{error}</p>
       ) : null}
 
-      <div className="rounded-xl border border-keyra-border bg-keyra-surface/40 px-4 py-4 text-sm sm:px-5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end">
-          <label className="flex min-w-0 flex-1 flex-col gap-1 text-keyra-text-2 lg:min-w-[12rem]">
-            Search
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-              <input
-                className="min-h-9 min-w-0 flex-1 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary sm:min-w-[12rem]"
-                value={qInput}
-                onChange={(e) => setQInput(e.target.value)}
-                placeholder="Name, ISO, region…"
-                disabled={busy}
-              />
-            <Button type="button" variant="secondary" className="h-9 shrink-0 px-3 py-1.5 text-xs font-semibold sm:min-w-[8rem]" disabled={busy} onClick={() => setQ(qInput)}>
-                Apply search
-              </Button>
-            </div>
-          </label>
-          <label className="flex flex-col gap-1 text-keyra-text-2">
-            Region (exact)
-            <input
-              className="min-h-9 min-w-[8rem] rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-              value={region}
-              onChange={(e) => setRegion(e.target.value)}
-              disabled={busy}
-              placeholder="e.g. Europe"
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-keyra-text-2">
-            Sub-region (exact)
-            <input
-              className="min-h-9 min-w-[10rem] rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-              value={subRegion}
-              onChange={(e) => setSubRegion(e.target.value)}
-              disabled={busy}
-              placeholder="e.g. Northern Europe"
-            />
-          </label>
-        </div>
-        <div className="mt-3 flex flex-wrap items-end gap-3 border-t border-keyra-border/50 pt-3">
-          <label className="flex flex-col gap-1 text-keyra-text-2">
-            Active
-            <select
-              className="min-h-9 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-              value={activeFilter}
-              onChange={(e) => setActiveFilter(e.target.value as "" | "true" | "false")}
-              disabled={busy}
-            >
-              <option value="">All</option>
-              <option value="true">Active</option>
-              <option value="false">Inactive</option>
-            </select>
-          </label>
-          <label className="flex flex-col gap-1 text-keyra-text-2">
-            Auth feed
-            <select
-              className="min-h-9 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-              value={authFilter}
-              onChange={(e) => setAuthFilter(e.target.value as "" | "true" | "false")}
-              disabled={busy}
-            >
-              <option value="">All</option>
-              <option value="true">Enabled</option>
-              <option value="false">Disabled</option>
-            </select>
-          </label>
-          <label className="flex flex-col gap-1 text-keyra-text-2">
-            Wt min
-            <input
-              className="min-h-9 w-20 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-              value={weightMin}
-              onChange={(e) => setWeightMin(e.target.value)}
-              disabled={busy}
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-keyra-text-2">
-            Wt max
-            <input
-              className="min-h-9 w-20 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-              value={weightMax}
-              onChange={(e) => setWeightMax(e.target.value)}
-              disabled={busy}
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-keyra-text-2">
-            Sort
-            <select
-              className="min-h-9 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortKey)}
-              disabled={busy}
-            >
-              <option value="name">Name</option>
-              <option value="iso2">ISO-2</option>
-              <option value="priority">Display priority</option>
-              <option value="weight">Weight (desc)</option>
-              <option value="updated">Updated (desc)</option>
-            </select>
-          </label>
-        </div>
+      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-keyra-border bg-keyra-surface/50 px-3 py-2.5 sm:px-4">
+        <Button type="button" variant="secondary" className="h-9 shrink-0 px-4 py-1.5 text-xs font-semibold" onClick={() => setCatalogToolsOpen(true)}>
+          Catalog tools…
+        </Button>
+        <p className="min-w-0 flex-1 text-[11px] leading-snug text-keyra-text-2 sm:text-xs">{filterSummary}</p>
+        <span className="shrink-0 text-[11px] text-keyra-text-2 sm:text-xs">
+          Selected: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
+        </span>
       </div>
 
-      <div className="rounded-xl border border-keyra-border bg-keyra-surface/40 px-4 py-3 text-sm sm:px-5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-2">
-          <span className="shrink-0 text-keyra-text-2">
-            Selected: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
-          </span>
-          <span className="hidden h-6 w-px shrink-0 bg-keyra-border sm:block" aria-hidden />
-          <div className="flex flex-wrap items-center gap-2">
-            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetActive(true)}>
-              Set active
-            </Button>
-            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetActive(false)}>
-              Set inactive
-            </Button>
-            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetAuthEnabled(true)}>
-              Auth enabled
-            </Button>
-            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetAuthEnabled(false)}>
-              Auth disabled
-            </Button>
-          </div>
-          <span className="hidden h-6 w-px shrink-0 bg-keyra-border sm:block" aria-hidden />
-          <div className="flex flex-wrap items-center gap-2">
-            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetSelectedWeight(5)}>
-              Weight = 5
-            </Button>
-            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={normalizeSelectedActiveWeights}>
-              Normalize weights
-            </Button>
-            <Button type="button" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSave()}>
-              Bulk save
-            </Button>
-            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy} onClick={() => void resetAllWeights()}>
-              Reset all weights to 5
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      <div className="rounded-xl border border-keyra-border bg-keyra-surface/60 px-4 py-4 sm:px-5">
-        <p className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">Add country</p>
-        <p className="mt-1 text-xs text-keyra-text-2">ISO-2 must be unique. Default weight 5.</p>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <input
-            className="rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-sm"
-            placeholder="Country name"
-            value={draft.countryName}
-            onChange={(e) => setDraft((d) => ({ ...d, countryName: e.target.value }))}
-          />
-          <input
-            className="rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-sm"
-            placeholder="ISO2"
-            value={draft.iso2}
-            onChange={(e) => setDraft((d) => ({ ...d, iso2: e.target.value }))}
-          />
-          <input
-            className="rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-sm"
-            placeholder="Region (continent)"
-            value={draft.region}
-            onChange={(e) => setDraft((d) => ({ ...d, region: e.target.value }))}
-          />
-          <label className="flex items-center gap-2 text-sm text-keyra-text-2">
-            Weight
-            <input
-              type="number"
-              className="w-24 rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-sm text-keyra-primary"
-              value={draft.percentageWeight}
-              onChange={(e) => setDraft((d) => ({ ...d, percentageWeight: Number(e.target.value) }))}
-            />
-          </label>
-          <Button type="button" disabled={busy} onClick={() => void addRow()}>
-            Add
-          </Button>
-        </div>
-      </div>
-
-      <div className="max-h-[70vh] overflow-auto rounded-xl border border-keyra-border bg-keyra-surface/30 shadow-sm">
+      <div className="max-h-[min(85vh,calc(100dvh-11rem))] min-h-[240px] overflow-auto rounded-xl border border-keyra-border bg-keyra-surface/30 shadow-sm">
         <table className="min-w-[1200px] w-full border-collapse text-left text-xs">
           <thead className="sticky top-0 z-10 border-b border-keyra-border bg-keyra-bg/95 backdrop-blur-sm text-[10px] uppercase tracking-wider text-keyra-text-2">
             <tr>
@@ -573,6 +436,234 @@ export default function AdminAuthCountriesPage() {
           </p>
         ) : null}
       </div>
+
+      {catalogToolsOpen ? (
+        <div
+          className="fixed inset-0 z-[250] flex items-start justify-center overflow-y-auto bg-black/55 p-4 pb-10 pt-16 backdrop-blur-[2px] sm:items-center sm:pt-4"
+          role="presentation"
+          onClick={() => setCatalogToolsOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal
+            aria-labelledby="catalog-tools-title"
+            className="w-full max-w-2xl rounded-xl border border-keyra-border bg-keyra-surface p-5 shadow-xl sm:p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3 border-b border-keyra-border pb-4">
+              <div>
+                <h2 id="catalog-tools-title" className="text-lg font-semibold text-keyra-primary">
+                  Catalog tools
+                </h2>
+                <p className="mt-1 text-xs text-keyra-text-2">Search, filters, bulk actions, and add country. Press Escape to close.</p>
+              </div>
+              <button
+                type="button"
+                className="rounded-md border border-keyra-border px-3 py-1.5 text-xs font-semibold text-keyra-primary hover:bg-keyra-bg"
+                onClick={() => setCatalogToolsOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="mt-5 max-h-[min(70vh,32rem)] space-y-6 overflow-y-auto pr-1 text-sm">
+              <section>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">Search & filters</h3>
+                <div className="mt-3 space-y-3 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
+                  <label className="flex flex-col gap-1 text-keyra-text-2">
+                    Search
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                      <input
+                        className="min-h-9 min-w-0 flex-1 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+                        value={qInput}
+                        onChange={(e) => setQInput(e.target.value)}
+                        placeholder="Name, ISO, region…"
+                        disabled={busy}
+                      />
+                      <Button type="button" variant="secondary" className="h-9 shrink-0 px-3 py-1.5 text-xs font-semibold" disabled={busy} onClick={() => setQ(qInput)}>
+                        Apply search
+                      </Button>
+                    </div>
+                  </label>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <label className="flex flex-col gap-1 text-keyra-text-2">
+                      Region (exact)
+                      <input
+                        className="min-h-9 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+                        value={region}
+                        onChange={(e) => setRegion(e.target.value)}
+                        disabled={busy}
+                        placeholder="e.g. Europe"
+                      />
+                    </label>
+                    <label className="flex flex-col gap-1 text-keyra-text-2">
+                      Sub-region (exact)
+                      <input
+                        className="min-h-9 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+                        value={subRegion}
+                        onChange={(e) => setSubRegion(e.target.value)}
+                        disabled={busy}
+                        placeholder="e.g. Northern Europe"
+                      />
+                    </label>
+                  </div>
+                  <div className="flex flex-wrap items-end gap-3 border-t border-keyra-border/50 pt-3">
+                    <label className="flex flex-col gap-1 text-keyra-text-2">
+                      Active
+                      <select
+                        className="min-h-9 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+                        value={activeFilter}
+                        onChange={(e) => setActiveFilter(e.target.value as "" | "true" | "false")}
+                        disabled={busy}
+                      >
+                        <option value="">All</option>
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                      </select>
+                    </label>
+                    <label className="flex flex-col gap-1 text-keyra-text-2">
+                      Auth feed
+                      <select
+                        className="min-h-9 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+                        value={authFilter}
+                        onChange={(e) => setAuthFilter(e.target.value as "" | "true" | "false")}
+                        disabled={busy}
+                      >
+                        <option value="">All</option>
+                        <option value="true">Enabled</option>
+                        <option value="false">Disabled</option>
+                      </select>
+                    </label>
+                    <label className="flex flex-col gap-1 text-keyra-text-2">
+                      Wt min
+                      <input
+                        className="min-h-9 w-20 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+                        value={weightMin}
+                        onChange={(e) => setWeightMin(e.target.value)}
+                        disabled={busy}
+                      />
+                    </label>
+                    <label className="flex flex-col gap-1 text-keyra-text-2">
+                      Wt max
+                      <input
+                        className="min-h-9 w-20 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+                        value={weightMax}
+                        onChange={(e) => setWeightMax(e.target.value)}
+                        disabled={busy}
+                      />
+                    </label>
+                    <label className="flex flex-col gap-1 text-keyra-text-2">
+                      Sort
+                      <select
+                        className="min-h-9 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value as SortKey)}
+                        disabled={busy}
+                      >
+                        <option value="name">Name</option>
+                        <option value="iso2">ISO-2</option>
+                        <option value="priority">Display priority</option>
+                        <option value="weight">Weight (desc)</option>
+                        <option value="updated">Updated (desc)</option>
+                      </select>
+                    </label>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">Bulk actions</h3>
+                <p className="mt-2 text-xs text-keyra-text-2">
+                  Selected in table: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
+                </p>
+                <div className="mt-3 flex flex-col gap-3 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
+                  <div className="flex flex-wrap gap-2">
+                    <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetActive(true)}>
+                      Set active
+                    </Button>
+                    <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetActive(false)}>
+                      Set inactive
+                    </Button>
+                    <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetAuthEnabled(true)}>
+                      Auth enabled
+                    </Button>
+                    <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetAuthEnabled(false)}>
+                      Auth disabled
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap gap-2 border-t border-keyra-border/50 pt-3">
+                    <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetSelectedWeight(5)}>
+                      Weight = 5
+                    </Button>
+                    <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={normalizeSelectedActiveWeights}>
+                      Normalize weights
+                    </Button>
+                    <Button type="button" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSave()}>
+                      Bulk save
+                    </Button>
+                    <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy} onClick={() => void resetAllWeights()}>
+                      Reset all weights to 5
+                    </Button>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">Add country</h3>
+                <p className="mt-1 text-xs text-keyra-text-2">ISO-2 must be unique. Default weight 5.</p>
+                <div className="mt-3 grid gap-3 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4 sm:grid-cols-2">
+                  <input
+                    className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm"
+                    placeholder="Country name"
+                    value={draft.countryName}
+                    onChange={(e) => setDraft((d) => ({ ...d, countryName: e.target.value }))}
+                  />
+                  <input
+                    className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm"
+                    placeholder="ISO2"
+                    value={draft.iso2}
+                    onChange={(e) => setDraft((d) => ({ ...d, iso2: e.target.value }))}
+                  />
+                  <input
+                    className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm"
+                    placeholder="Region (continent)"
+                    value={draft.region}
+                    onChange={(e) => setDraft((d) => ({ ...d, region: e.target.value }))}
+                  />
+                  <label className="flex items-center gap-2 text-sm text-keyra-text-2">
+                    Weight
+                    <input
+                      type="number"
+                      className="w-24 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary"
+                      value={draft.percentageWeight}
+                      onChange={(e) => setDraft((d) => ({ ...d, percentageWeight: Number(e.target.value) }))}
+                    />
+                  </label>
+                  <Button type="button" disabled={busy} onClick={() => void addRow()}>
+                    Add country
+                  </Button>
+                </div>
+              </section>
+
+              <section className="rounded-lg border border-keyra-border/80 bg-keyra-bg/30 p-4 text-xs leading-relaxed text-keyra-text-2">
+                <p className="font-semibold text-keyra-primary">Data & seeding</p>
+                <p className="mt-2">
+                  <code className="rounded bg-keyra-bg px-1 py-0.5">npm start</code> runs migrations then the deploy catalog seed (world countries). Manual:{" "}
+                  <code className="rounded bg-keyra-bg px-1 py-0.5">npm run db:seed:world-countries</code>. Re-runnable; preserves weights unless{" "}
+                  <code className="rounded bg-keyra-bg px-1 py-0.5">RESET_AUTH_COUNTRY_WEIGHTS=1</code>. The feed uses rows that are{" "}
+                  <strong>active</strong> and <strong>authentication enabled</strong>; weights normalize at generation.
+                </p>
+              </section>
+            </div>
+
+            <div className="mt-5 flex justify-end border-t border-keyra-border pt-4">
+              <Button type="button" variant="secondary" className="h-9 px-4 text-xs font-semibold" onClick={() => setCatalogToolsOpen(false)}>
+                Done
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
