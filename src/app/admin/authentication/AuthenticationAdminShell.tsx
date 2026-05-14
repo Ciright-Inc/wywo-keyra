@@ -14,9 +14,10 @@ export function AuthenticationAdminShell({ children }: { children: ReactNode }) 
   const pathname = usePathname();
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <div className="flex flex-col gap-8 lg:flex-row">
-        <aside className="shrink-0 lg:w-64">
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:py-10">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+        {/* Sticky below site header (lg:h-14); main column scrolls with the page. */}
+        <aside className="shrink-0 lg:sticky lg:top-14 lg:z-[90] lg:w-64 lg:self-start">
           <p className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">
             Latest authentications
           </p>
@@ -45,7 +46,7 @@ export function AuthenticationAdminShell({ children }: { children: ReactNode }) 
             ← Deployments admin
           </Link>
         </aside>
-        <div className="min-w-0 flex-1 overflow-x-auto">{children}</div>
+        <div className="min-w-0 flex-1 overflow-x-auto lg:min-h-0">{children}</div>
       </div>
     </div>
   );
