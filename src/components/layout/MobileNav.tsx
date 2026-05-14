@@ -12,6 +12,7 @@ const links = [
   { href: "/#missing-layer", label: "The shift" },
   { href: "/#for", label: "Who it's for" },
   { href: "/#global", label: "Global" },
+  { href: "/developers", label: "Developers" },
   { href: "/#get-protected", label: "Be Protected Online" },
 ];
 

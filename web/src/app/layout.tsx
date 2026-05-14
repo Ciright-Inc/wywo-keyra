@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import "./globals.css";
 import { HeaderNoSSR } from "@/components/layout/HeaderNoSSR";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -10,6 +10,7 @@ import {
   parseSession,
   type KeyraSessionUser,
 } from "@/lib/keyraSessionCookie";
+import { LANE_HEADER, parseKeyraDesignLaneHeader } from "@/lib/keyraDesignLane";
 import { ToastProvider } from "@/components/ui/Toast";
 import { ElevenLabsHomeAgent } from "@/components/home/ElevenLabsHomeAgent";
 
@@ -56,9 +57,13 @@ export default async function RootLayout({
   const raw = jar.get(KEYRA_SESSION_COOKIE)?.value;
   const initialUser: KeyraSessionUser | null = raw ? parseSession(raw) : null;
 
+  const hdrs = await headers();
+  const designLane = parseKeyraDesignLaneHeader(hdrs.get(LANE_HEADER));
+
   return (
     <html
       lang="en-IE"
+      data-keyra-lane={designLane}
       className={`${inter.variable} h-full antialiased`}
       suppressHydrationWarning
     >

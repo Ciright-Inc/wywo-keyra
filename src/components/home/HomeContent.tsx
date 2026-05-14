@@ -24,7 +24,7 @@ function SectionShell({
   return (
     <section
       id={id}
-      className={`scroll-mt-44 px-4 py-16 sm:px-6 sm:py-24 lg:scroll-mt-24 lg:py-32 ${className}`}
+      className={`scroll-mt-44 px-[var(--keyra-space-section-x)] py-[var(--keyra-space-section-y)] lg:scroll-mt-24 ${className}`}
     >
       <div className="mx-auto max-w-6xl">{children}</div>
     </section>
@@ -47,9 +47,8 @@ function SignalDot({
         width: size,
         height: size,
         background:
-          "radial-gradient(circle at 30% 30%, rgba(102,227,255,1), rgba(102,227,255,0.12) 55%, rgba(102,227,255,0) 70%)",
-        boxShadow:
-          "0 0 20px rgba(102,227,255,0.28), 0 0 48px rgba(108,124,255,0.14)",
+          "radial-gradient(circle at 30% 30%, rgba(142,189,210,0.85), rgba(142,189,210,0.1) 55%, rgba(142,189,210,0) 70%)",
+        boxShadow: "0 0 14px rgba(142,189,210,0.12), 0 0 36px rgba(122,135,168,0.08)",
         animationDelay: delay,
         ...style,
       }}
@@ -61,7 +60,7 @@ function SignalDot({
 export function HomeContent() {
   return (
     <>
-      <section className="relative min-h-[min(88vh,56rem)] scroll-mt-44 overflow-hidden border-b border-keyra-border bg-keyra-bg px-4 py-12 sm:px-6 sm:py-16 lg:scroll-mt-24 lg:py-20">
+      <section className="relative min-h-[min(88vh,56rem)] scroll-mt-44 overflow-hidden border-b border-keyra-border bg-keyra-bg px-[var(--keyra-space-section-x)] py-[var(--keyra-space-section-y)] lg:scroll-mt-24">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
           <div
             className="absolute inset-0 bg-cover bg-center opacity-75"
@@ -73,7 +72,7 @@ export function HomeContent() {
               className="absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(1200px 700px at 20% 15%, rgba(102,227,255,0.12), transparent 55%), radial-gradient(900px 540px at 80% 25%, rgba(108,124,255,0.10), transparent 55%), radial-gradient(950px 640px at 55% 85%, rgba(102,227,255,0.08), transparent 60%)",
+                  "radial-gradient(1200px 700px at 20% 15%, rgba(142,189,210,0.07), transparent 55%), radial-gradient(900px 540px at 80% 25%, rgba(122,135,168,0.06), transparent 55%), radial-gradient(950px 640px at 55% 85%, rgba(142,189,210,0.05), transparent 60%)",
               }}
             />
             <div className="animate-keyra-drift absolute inset-0 opacity-65">
@@ -149,7 +148,7 @@ export function HomeContent() {
                   className="pointer-events-none absolute -inset-3 rounded-full opacity-90 blur-md sm:-inset-4"
                   style={{
                     background:
-                      "radial-gradient(circle at 35% 25%, rgba(102,227,255,0.22), transparent 58%), radial-gradient(circle at 70% 80%, rgba(108,124,255,0.12), transparent 55%)",
+                      "radial-gradient(circle at 35% 25%, rgba(142,189,210,0.12), transparent 58%), radial-gradient(circle at 70% 80%, rgba(122,135,168,0.08), transparent 55%)",
                   }}
                   aria-hidden
                 />

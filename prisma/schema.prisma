@@ -224,3 +224,84 @@ model AuditEvent {
   @@index([entityType, entityId])
   @@index([createdAt])
 }
+
+/** Optional display profile for Keyra marketing / app session (keyed by phone from login). */
+model KeyraSiteUserProfile {
+  id          String   @id @default(cuid())
+  phoneE164 String   @unique
+  displayName String?
+  email       String?
+  country     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/** Admin-configured country weights for keyra.ie “Latest authentications” demo feed. */
+model AuthenticationCountry {
+  id                 String   @id @default(cuid())
+  countryName        String
+  iso2               String   @unique @db.VarChar(2)
+  region             String
+  active             Boolean  @default(true)
+  percentageWeight   Float    @default(1)
+  displayPriority    Int      @default(0)
+  notes              String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([active, region])
+  @@index([displayPriority])
+}
+
+/** SAT protocol rows for weighted demo feed + protocol detail modal. */
+model SatProtocol {
+  id                  String   @id @default(cuid())
+  protocolName        String
+  protocolCode        String   @unique
+  protocolCategory    String
+  active              Boolean  @default(true)
+  percentageWeight    Float    @default(1)
+  protocolMemo        String   @default("")
+  protocolUrlEnabled  Boolean  @default(false)
+  protocolUrl         String?
+  allowProtocolLink   Boolean  @default(false)
+  homePercentage       Float    @default(50)
+  roamingPercentage    Float    @default(50)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([active])
+}
+
+/** Singleton row — use id "default" in application code. */
+model AuthenticationFeedSetting {
+  id                       String   @id
+  feedEnabled              Boolean  @default(true)
+  initialRecordsCount      Int      @default(50)
+  batchSize                Int      @default(50)
+  fetchThreshold             Int      @default(30)
+  sessionUniquenessLimit     Int      @default(2000)
+  maskingEnabled           Boolean  @default(true)
+  obfuscationEnabled       Boolean  @default(false)
+  maxRecordsPerSession     Int      @default(50000)
+  animationSpeedMs       Int      @default(400)
+  refreshBehavior          String   @default("append")
+  defaultRegionWeightPreset String? @db.Text
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+}
+
+/** Server-side session for paginated / weighted auth feed generation. */
+model AuthenticationFeedSession {
+  id                    String   @id @default(cuid())
+  sessionUuid           String   @unique
+  userFingerprintHash   String?
+  renderedCount         Int      @default(0)
+  uniquenessEpoch       Int      @default(0)
+  pairsUsedJson         Json     @default("[]")
+  rngNonce              Int      @default(0)
+  createdAt             DateTime @default(now())
+  expiresAt             DateTime
+
+  @@index([expiresAt])
+}

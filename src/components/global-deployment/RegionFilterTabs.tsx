@@ -23,7 +23,7 @@ export function RegionFilterTabs({
         type="button"
         className={`shrink-0 rounded-full border px-3 py-1 text-xs font-semibold transition focus-visible:outline-none focus-visible:keyra-focus ${
           selectedMapKey === null
-            ? "border-[rgba(102,227,255,0.55)] bg-[rgba(102,227,255,0.12)] text-keyra-primary"
+            ? "border-[var(--keyra-action-border)] bg-[var(--keyra-action)] text-keyra-primary"
             : "border-keyra-border bg-transparent text-keyra-text-2 hover:text-keyra-primary"
         }`}
         onClick={() => onSelectMapKey(null)}
@@ -39,7 +39,7 @@ export function RegionFilterTabs({
             type="button"
             className={`shrink-0 rounded-full border px-3 py-1 text-xs font-semibold transition focus-visible:outline-none focus-visible:keyra-focus ${
               active
-                ? "border-[rgba(102,227,255,0.55)] bg-[rgba(102,227,255,0.12)] text-keyra-primary"
+                ? "border-[var(--keyra-action-border)] bg-[var(--keyra-action)] text-keyra-primary"
                 : "border-keyra-border bg-transparent text-keyra-text-2 hover:text-keyra-primary"
             }`}
             onClick={() => onSelectMapKey(active ? null : k)}

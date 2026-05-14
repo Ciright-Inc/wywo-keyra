@@ -45,7 +45,7 @@ export function HomeRegistrationCTAs() {
         <button
           key={item.key}
           type="button"
-          className="keyra-card group flex h-full min-w-0 flex-col gap-2 rounded-[var(--keyra-radius-card)] p-4 text-left transition duration-200 hover:border-[rgba(102,227,255,0.38)] sm:gap-3 sm:p-6"
+          className="keyra-card group flex h-full min-w-0 flex-col gap-2 rounded-[var(--keyra-radius-card)] p-4 text-left transition duration-300 ease-out hover:border-keyra-border sm:gap-3 sm:p-6"
           onClick={() => openModal(item.key)}
         >
           <span className="text-[15px] font-semibold tracking-tight text-keyra-primary sm:text-[17px]">

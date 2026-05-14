@@ -1,6 +1,6 @@
 /**
  * Browser → Ciright commonrestapi (XHR). Appears in DevTools Network as m1391103 / m1357069.
- * Requires Ciright to send CORS headers for your origin (e.g. localhost:3000, keyra.ie), same as ciright.pro.
+ * Requires Ciright to send CORS headers for your origin (e.g. localhost:3000, keyra.ie), same as app.keyra.ie.
  */
 export type CirightContactSubject = {
   key: number;

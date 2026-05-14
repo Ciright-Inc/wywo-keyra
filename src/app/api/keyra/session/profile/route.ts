@@ -11,6 +11,8 @@ import {
   type KeyraSessionUser,
 } from "@/lib/keyraSessionCookie";
 import { isValidEmail } from "@/lib/keyraRegistrationValidation";
+import { persistProfileFields } from "@/lib/keyraSiteUserProfileDb";
+import { isPostgresDatabaseUrlConfigured } from "@/lib/postgresEnv";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -55,6 +57,37 @@ export async function PATCH(req: Request) {
     const v =
       typeof body.country === "string" ? body.country.trim().slice(0, 120) : "";
     next.country = v || undefined;
+  }
+
+  if (isPostgresDatabaseUrlConfigured()) {
+    try {
+      await persistProfileFields(next.phoneE164, {
+        displayName: next.displayName,
+        email: next.email,
+        country: next.country,
+      });
+    } catch (err) {
+      console.error("[api/keyra/session/profile] persist", err);
+      return NextResponse.json(
+        {
+          error:
+            "Could not save profile to the database. Apply pending migrations: from the Keyra folder run `npx prisma migrate deploy` (or `npx prisma migrate dev`). Ensure the KeyraSiteUserProfile table exists.",
+        },
+        { status: 503 },
+      );
+    }
+  } else if (process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      {
+        error:
+          "DATABASE_URL must be set to a postgres:// or postgresql:// URL in production so profiles can be stored.",
+      },
+      { status: 503 },
+    );
+  } else {
+    console.warn(
+      "[api/keyra/session/profile] DATABASE_URL is missing or not Postgres — saving display name, email, and country in the session cookie only. They will be lost after logout until DATABASE_URL and migrations are set up.",
+    );
   }
 
   const token = serializeSession(next);

@@ -9,6 +9,7 @@ import {
   TargetType,
   type VerificationMethod,
 } from "@prisma/client";
+import { seedAuthenticationFeed } from "./seedAuthenticationFeed";
 
 const prisma = new PrismaClient();
 
@@ -277,6 +278,8 @@ async function main() {
   console.info(
     `[seed] Created ${adminSeeds.length} admin users (password from SEED_ADMIN_PASSWORD or default "ChangeMeSeed!123").`,
   );
+
+  await seedAuthenticationFeed(prisma);
 }
 
 main()

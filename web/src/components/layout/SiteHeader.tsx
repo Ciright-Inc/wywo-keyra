@@ -11,6 +11,7 @@ const nav = [
   { href: "/#missing-layer", label: "The shift" },
   { href: "/#for", label: "Who it's for" },
   { href: "/#global", label: "Global" },
+  { href: "/developers", label: "Developers" },
 ];
 
 export function SiteHeader() {
@@ -18,10 +19,10 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-[200] border-b border-keyra-border bg-keyra-bg/90 backdrop-blur-md">
-      <div className="relative mx-auto grid w-full min-w-0 max-w-7xl grid-cols-1 gap-y-1 px-3 py-1.5 sm:px-6 lg:h-14 lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-5 lg:gap-y-0 lg:py-0">
+      <div className="relative mx-auto grid w-full min-w-0 max-w-7xl grid-cols-1 gap-y-0 px-3 py-0.5 sm:px-6 lg:h-14 lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-5 lg:gap-y-0 lg:py-0">
         <Link
           href="/"
-          className="relative z-0 flex w-full min-w-0 items-center justify-start overflow-visible py-0.5 lg:col-start-1 lg:row-start-1 lg:h-14 lg:w-auto lg:max-w-none lg:py-0.5 lg:pr-3"
+          className="relative z-0 flex w-full min-w-0 items-center justify-start overflow-visible py-0 lg:col-start-1 lg:row-start-1 lg:h-14 lg:w-auto lg:max-w-none lg:py-0 lg:pr-3"
           aria-label="Keyra home"
         >
           <KeyraLogo variant="header" showWordmark={false} />
@@ -50,25 +51,22 @@ export function SiteHeader() {
           <AccountMenu />
 
           <div
-            className="flex min-w-0 shrink-0 flex-row flex-nowrap items-stretch rounded-[var(--keyra-radius-pill)] border border-[rgba(102,227,255,0.38)] bg-[rgba(11,18,32,0.92)] p-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md sm:p-1"
+            className="flex min-w-0 shrink-0 flex-row flex-nowrap items-stretch rounded-[var(--keyra-radius-pill)] border border-keyra-border bg-keyra-surface/90 p-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md sm:p-1"
             aria-label="Sign in and get protected"
           >
             {!user ? (
               <>
                 <Link
                   href="/login"
-                  className="flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-xs font-semibold leading-none text-keyra-accent transition hover:bg-[rgba(102,227,255,0.09)] hover:text-keyra-primary sm:px-3 sm:text-sm"
+                  className="flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-xs font-medium leading-none text-keyra-accent transition duration-300 ease-out hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-3 sm:text-sm"
                 >
                   Sign in
                 </Link>
-                <div
-                  className="my-1.5 w-px shrink-0 self-stretch bg-[rgba(102,227,255,0.28)]"
-                  aria-hidden
-                />
+                <div className="my-1.5 w-px shrink-0 self-stretch bg-keyra-border" aria-hidden />
               </>
             ) : null}
             <Link href="/#get-protected" className="inline-flex min-w-0 shrink-0">
-              <span className="flex items-center whitespace-nowrap rounded-[var(--keyra-radius-pill)] bg-[rgba(102,227,255,0.14)] px-2 py-2 text-xs font-semibold leading-none text-keyra-primary ring-1 ring-[rgba(102,227,255,0.42)] transition hover:bg-[rgba(102,227,255,0.22)] sm:px-3 sm:text-sm">
+              <span className="flex items-center whitespace-nowrap rounded-[var(--keyra-radius-pill)] bg-[var(--keyra-action)] px-2 py-2 text-xs font-medium leading-none text-keyra-primary ring-1 ring-[var(--keyra-action-border)] transition duration-300 ease-out hover:bg-[rgba(255,255,255,0.05)] sm:px-3 sm:text-sm">
                 <span className="sm:hidden">Get protected</span>
                 <span className="hidden sm:inline">Be Protected Online</span>
               </span>

@@ -1,38 +1,118 @@
 @import "tailwindcss";
 
 /**
- * Keyra — global trust theme (dark).
- * Calm, institutional, non-technical. Subtle glow accents.
+ * Keyra — Global Design System (master)
+ *
+ * Three lanes (html[data-keyra-lane]):
+ * - consumer: public / app — calmer, warmer dark, human-first rhythm
+ * - enterprise: admin + global deployment — authoritative graphite infrastructure
+ * - developer: /developers — technical clarity, mono, tighter radii
+ *
+ * Lane is set SSR via middleware → x-keyra-design-lane → layout data-keyra-lane.
  */
+
+/* -------------------------------------------------------------------------- */
+/* Lane: ENTERPRISE (default tokens on :root)                                  */
+/* -------------------------------------------------------------------------- */
 :root {
-  --keyra-bg: #050A12;
-  --keyra-surface: #0B1220;
-  --keyra-surface-2: #0E1728;
-  --keyra-text: #EAF0F6;
-  --keyra-text-secondary: rgba(234, 240, 246, 0.72);
-  --keyra-white: #FFFFFF;
+  --keyra-bg: #040810;
+  --keyra-surface: #0a101a;
+  --keyra-surface-2: #0c141f;
+  --keyra-text: #e8eef5;
+  --keyra-text-secondary: rgba(232, 238, 245, 0.68);
+  --keyra-white: #ffffff;
 
-  /* Accent: “trust signal” glow */
-  --keyra-accent: #66E3FF;
-  --keyra-accent-2: #6C7CFF;
+  --keyra-accent: #8ebdd2;
+  --keyra-accent-2: #7a87a8;
 
-  /* Primary: used for headings & key text */
   --keyra-primary: var(--keyra-text);
 
-  /* Primary actions */
-  --keyra-action: rgba(102, 227, 255, 0.16);
-  --keyra-action-border: rgba(102, 227, 255, 0.35);
+  --keyra-action: rgba(142, 189, 210, 0.12);
+  --keyra-action-border: rgba(142, 189, 210, 0.26);
   --keyra-action-text: var(--keyra-text);
 
-  /* Borders, focus: rgba from rgb(11,31,42) and rgb(26,26,26) */
-  --keyra-border: rgba(255, 255, 255, 0.12);
-  --keyra-ring: rgba(102, 227, 255, 0.18);
-  --keyra-shadow-card: 0 12px 40px rgba(0, 0, 0, 0.35);
-  --keyra-shadow-hover: 0 16px 55px rgba(0, 0, 0, 0.45);
+  --keyra-border: rgba(255, 255, 255, 0.09);
+  --keyra-ring: rgba(142, 189, 210, 0.2);
+  --keyra-shadow-card: 0 8px 28px rgba(0, 0, 0, 0.28);
+  --keyra-shadow-hover: 0 10px 36px rgba(0, 0, 0, 0.34);
 
   --keyra-radius-card: 12px;
   --keyra-radius-sheet: 16px;
   --keyra-radius-pill: 999px;
+
+  --keyra-tracking-head: -0.02em;
+  --keyra-leading-body: 1.55;
+
+  /* Typography scale (rem) */
+  --keyra-text-xs: 0.75rem;
+  --keyra-text-sm: 0.8125rem;
+  --keyra-text-md: 0.9375rem;
+  --keyra-text-base: 1rem;
+  --keyra-text-lg: 1.0625rem;
+  --keyra-text-xl: 1.25rem;
+  --keyra-text-2xl: 1.5rem;
+  --keyra-text-display: clamp(2.25rem, 1.5rem + 2.5vw, 4.25rem);
+
+  /* Spacing scale (rem) */
+  --keyra-space-1: 0.25rem;
+  --keyra-space-2: 0.5rem;
+  --keyra-space-3: 0.75rem;
+  --keyra-space-4: 1rem;
+  --keyra-space-5: 1.25rem;
+  --keyra-space-6: 1.5rem;
+  --keyra-space-8: 2rem;
+  --keyra-space-10: 2.5rem;
+  --keyra-space-12: 3rem;
+  --keyra-space-section-y: clamp(3.5rem, 2.5rem + 3vw, 5.5rem);
+  --keyra-space-section-x: clamp(1rem, 0.5rem + 1.5vw, 1.5rem);
+
+  /* Motion */
+  --keyra-motion-fast: 180ms;
+  --keyra-motion-base: 320ms;
+  --keyra-motion-slow: 520ms;
+  --keyra-ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --keyra-font-mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Lane: CONSUMER — softer dark, warmer text, gentler structure                 */
+/* -------------------------------------------------------------------------- */
+html[data-keyra-lane="consumer"] {
+  --keyra-bg: #0a1018;
+  --keyra-surface: #121b2a;
+  --keyra-surface-2: #162132;
+  --keyra-text: #f0f4fa;
+  --keyra-text-secondary: rgba(240, 244, 250, 0.66);
+  --keyra-accent: #a8c9db;
+  --keyra-accent-2: #8b9ab8;
+  --keyra-action: rgba(168, 201, 219, 0.11);
+  --keyra-action-border: rgba(168, 201, 219, 0.24);
+  --keyra-border: rgba(255, 255, 255, 0.1);
+  --keyra-ring: rgba(168, 201, 219, 0.22);
+  --keyra-shadow-card: 0 8px 26px rgba(0, 0, 0, 0.22);
+  --keyra-shadow-hover: 0 12px 34px rgba(0, 0, 0, 0.28);
+  --keyra-leading-body: 1.62;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Lane: DEVELOPER — technical clarity, mono, tighter UI                        */
+/* -------------------------------------------------------------------------- */
+html[data-keyra-lane="developer"] {
+  --keyra-bg: #06090f;
+  --keyra-surface: #0b1018;
+  --keyra-surface-2: #0e1520;
+  --keyra-text: #e6edf5;
+  --keyra-text-secondary: rgba(230, 237, 245, 0.7);
+  --keyra-accent: #7eb8e8;
+  --keyra-accent-2: #8b9fd4;
+  --keyra-action: rgba(126, 184, 232, 0.1);
+  --keyra-action-border: rgba(126, 184, 232, 0.28);
+  --keyra-border: rgba(255, 255, 255, 0.085);
+  --keyra-ring: rgba(126, 184, 232, 0.24);
+  --keyra-radius-card: 8px;
+  --keyra-radius-sheet: 12px;
+  --keyra-shadow-card: 0 6px 22px rgba(0, 0, 0, 0.32);
 }
 
 @theme inline {
@@ -61,31 +141,113 @@ html {
 body {
   background: var(--keyra-bg);
   color: var(--keyra-text);
-  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, system-ui, sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui,
+    sans-serif;
+  font-size: var(--keyra-text-base);
+  line-height: var(--keyra-leading-body);
   overflow-x: clip;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Section rhythm — progressive complexity (surface → deep without clutter) */
+.keyra-section {
+  padding-left: var(--keyra-space-section-x);
+  padding-right: var(--keyra-space-section-x);
+  padding-top: var(--keyra-space-section-y);
+  padding-bottom: var(--keyra-space-section-y);
+}
+
+/* Typography — primary identity layer */
+.keyra-display {
+  font-size: var(--keyra-text-display);
+  font-weight: 600;
+  letter-spacing: var(--keyra-tracking-head);
+  line-height: 1.06;
+  color: var(--keyra-primary);
+}
+
+.keyra-heading {
+  font-size: var(--keyra-text-2xl);
+  font-weight: 600;
+  letter-spacing: var(--keyra-tracking-head);
+  line-height: 1.15;
+  color: var(--keyra-primary);
+}
+
+@media (min-width: 640px) {
+  .keyra-heading {
+    font-size: clamp(1.75rem, 1.2rem + 1.2vw, 2.75rem);
+  }
+}
+
+.keyra-eyebrow {
+  font-size: var(--keyra-text-sm);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--keyra-text-secondary);
+}
+
+.keyra-prose {
+  font-size: var(--keyra-text-md);
+  line-height: var(--keyra-leading-body);
+  color: var(--keyra-text-secondary);
+  max-width: 42rem;
+}
+
+.keyra-code,
+html[data-keyra-lane="developer"] .keyra-code-block {
+  font-family: var(--keyra-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.55;
 }
 
 .keyra-card {
   border-radius: var(--keyra-radius-card);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.03)
-  );
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.018));
   border: 1px solid var(--keyra-border);
   box-shadow: var(--keyra-shadow-card);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
+  transition:
+    box-shadow var(--keyra-motion-base) var(--keyra-ease-out),
+    border-color var(--keyra-motion-base) var(--keyra-ease-out);
 }
 
 .keyra-card:hover {
   box-shadow: var(--keyra-shadow-hover);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .keyra-focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px var(--keyra-ring);
+  box-shadow: 0 0 0 3px var(--keyra-ring);
+}
+
+/* Unified modal language */
+.keyra-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  padding: var(--keyra-space-4);
+}
+
+.keyra-modal-panel {
+  max-height: min(80vh, 720px);
+  max-width: 32rem;
+  width: 100%;
+  overflow-y: auto;
+  border-radius: var(--keyra-radius-sheet);
+  border: 1px solid var(--keyra-border);
+  background: var(--keyra-surface);
+  padding: var(--keyra-space-6);
+  color: var(--keyra-text);
+  box-shadow: var(--keyra-shadow-hover);
 }
 
 @keyframes keyra-float {
@@ -94,41 +256,41 @@ body {
     transform: translate(0, 0) scale(1);
   }
   50% {
-    transform: translate(8px, -12px) scale(1.03);
+    transform: translate(4px, -6px) scale(1.015);
   }
 }
 
 @keyframes keyra-pulse-soft {
   0%,
   100% {
-    opacity: 0.45;
+    opacity: 0.5;
   }
   50% {
-    opacity: 0.75;
+    opacity: 0.68;
   }
 }
 
 .animate-keyra-float {
-  animation: keyra-float 12s ease-in-out infinite;
+  animation: keyra-float 20s ease-in-out infinite;
 }
 
 .animate-keyra-float-delayed {
-  animation: keyra-float 14s ease-in-out infinite 2s;
+  animation: keyra-float 22s ease-in-out infinite 3s;
 }
 
 .animate-keyra-pulse-soft {
-  animation: keyra-pulse-soft 8s ease-in-out infinite;
+  animation: keyra-pulse-soft 11s ease-in-out infinite;
 }
 
 @keyframes keyra-signal {
   0%,
   100% {
-    opacity: 0.45;
+    opacity: 0.42;
     transform: translateY(0);
   }
   50% {
-    opacity: 0.9;
-    transform: translateY(-2px);
+    opacity: 0.72;
+    transform: translateY(-1px);
   }
 }
 
@@ -138,14 +300,28 @@ body {
     transform: translate(0, 0);
   }
   50% {
-    transform: translate(10px, -12px);
+    transform: translate(5px, -6px);
   }
 }
 
 .animate-keyra-signal {
-  animation: keyra-signal 4.5s ease-in-out infinite;
+  animation: keyra-signal 7s ease-in-out infinite;
 }
 
 .animate-keyra-drift {
-  animation: keyra-drift 18s ease-in-out infinite;
+  animation: keyra-drift 26s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-keyra-float,
+  .animate-keyra-float-delayed,
+  .animate-keyra-pulse-soft,
+  .animate-keyra-signal,
+  .animate-keyra-drift {
+    animation: none !important;
+  }
+
+  .keyra-card {
+    transition: none;
+  }
 }

@@ -14,7 +14,7 @@ export function KeyraLogo({
   showWordmark = true,
   wordmarkClassName = "",
 }: KeyraLogoProps) {
-  const logoSrc = "/kerya-logo.png?v=2";
+  const logoSrc = "/kerya-logo.png?v=3";
   const logoSizes = {
     header: {
       box: "h-12 w-[clamp(200px,min(92vw,420px),420px)] sm:h-[3.35rem] sm:w-[min(96vw,460px)] lg:h-12 lg:w-[280px] xl:h-13 xl:w-[360px]",

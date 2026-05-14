@@ -1,14 +1,9 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { keyraDesignLaneFromPathname, LANE_HEADER } from "@/lib/keyraDesignLane";
 
 /**
- * Prevent stale HTML at CDNs/browsers from referencing old hashed `/_next/static/chunks/*`
- * after a new deploy (chunk names change every build → 404 + net::ERR_ABORTED).
- * Static assets under `/_next/static` keep Next.js default immutable caching.
- *
- * IPification often POSTs `code` to IPIFICATION_REDIRECT_URI. If that URI is still
- * `/callback`, the POST hits this app but a page cannot read the body — rewrite to
- * the route handler that turns the body into GET /callback?code=...
+ * Cache-busting for HTML shells + IPIFICATION POST → GET bridge + design lane for SSR theming.
  */
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname.replace(/\/+$/, "") || "/";
@@ -18,14 +13,16 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  const res = NextResponse.next();
-  res.headers.set(
-    "Cache-Control",
-    "private, no-cache, no-store, max-age=0, must-revalidate",
-  );
+  const lane = keyraDesignLaneFromPathname(request.nextUrl.pathname);
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set(LANE_HEADER, lane);
+
+  const res = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
+  res.headers.set("Cache-Control", "private, no-cache, no-store, max-age=0, must-revalidate");
   res.headers.set("Pragma", "no-cache");
   res.headers.set("Expires", "0");
-  // Help some CDNs honour no-store for document-style responses
   res.headers.set("CDN-Cache-Control", "no-store");
   return res;
 }

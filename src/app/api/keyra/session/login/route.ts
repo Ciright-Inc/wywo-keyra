@@ -10,6 +10,7 @@ import {
   type KeyraSessionUser,
 } from "@/lib/keyraSessionCookie";
 import { isValidMobileE164 } from "@/lib/keyraRegistrationValidation";
+import { loadSavedProfileFields } from "@/lib/keyraSiteUserProfileDb";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -30,7 +31,11 @@ export async function POST(req: Request) {
     );
   }
 
-  const user: KeyraSessionUser = { phoneE164: phone };
+  const saved = await loadSavedProfileFields(phone);
+  const user: KeyraSessionUser = {
+    phoneE164: phone,
+    ...saved,
+  };
   const token = serializeSession(user);
   if (!token) {
     return NextResponse.json(

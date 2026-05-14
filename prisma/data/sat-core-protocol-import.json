@@ -1,0 +1,122 @@
+[
+  {
+    "protocolName": "SAT Subscriber ID",
+    "protocolCode": "SAT-ID",
+    "protocolCategory": "Identity",
+    "percentageWeight": 12,
+    "protocolMemo": "Subscriber hardware identity binding for SAT-MFA. Reference: sat-core.com/applications.",
+    "protocolUrlEnabled": true,
+    "protocolUrl": "https://sat-core.com/applications",
+    "allowProtocolLink": false,
+    "homePercentage": 55,
+    "roamingPercentage": 45
+  },
+  {
+    "protocolName": "SAT Subscriber Signature",
+    "protocolCode": "SAT-SIG",
+    "protocolCategory": "Signing",
+    "percentageWeight": 12,
+    "protocolMemo": "Cryptographic subscriber signatures for transaction assurance.",
+    "protocolUrlEnabled": true,
+    "protocolUrl": "https://sat-core.com/applications",
+    "allowProtocolLink": false,
+    "homePercentage": 52,
+    "roamingPercentage": 48
+  },
+  {
+    "protocolName": "SAT Multi-Factor",
+    "protocolCode": "SAT-MFA",
+    "protocolCategory": "Authentication",
+    "percentageWeight": 14,
+    "protocolMemo": "Layered verification combining device, subscriber, and policy signals.",
+    "protocolUrlEnabled": true,
+    "protocolUrl": "https://sat-core.com/applications",
+    "allowProtocolLink": false,
+    "homePercentage": 58,
+    "roamingPercentage": 42
+  },
+  {
+    "protocolName": "SAT Session Token",
+    "protocolCode": "SAT-SESS",
+    "protocolCategory": "Session",
+    "percentageWeight": 8,
+    "protocolMemo": "Short-lived session attestations for continuous verification.",
+    "protocolUrlEnabled": true,
+    "protocolUrl": "https://sat-core.com/applications",
+    "allowProtocolLink": false,
+    "homePercentage": 50,
+    "roamingPercentage": 50
+  },
+  {
+    "protocolName": "SAT Roaming Attestation",
+    "protocolCode": "SAT-ROAM",
+    "protocolCategory": "Network",
+    "percentageWeight": 7,
+    "protocolMemo": "Roaming network posture checks alongside home-network baselines.",
+    "protocolUrlEnabled": true,
+    "protocolUrl": "https://sat-core.com/applications",
+    "allowProtocolLink": false,
+    "homePercentage": 35,
+    "roamingPercentage": 65
+  },
+  {
+    "protocolName": "SAT Device Binding",
+    "protocolCode": "SAT-DEV",
+    "protocolCategory": "Device",
+    "percentageWeight": 9,
+    "protocolMemo": "Binds verification events to trusted device fingerprints.",
+    "protocolUrlEnabled": true,
+    "protocolUrl": "https://sat-core.com/applications",
+    "allowProtocolLink": false,
+    "homePercentage": 60,
+    "roamingPercentage": 40
+  },
+  {
+    "protocolName": "SAT Policy Gate",
+    "protocolCode": "SAT-POL",
+    "protocolCategory": "Policy",
+    "percentageWeight": 6,
+    "protocolMemo": "Policy-driven step-up and risk scoring for SAT flows.",
+    "protocolUrlEnabled": true,
+    "protocolUrl": "https://sat-core.com/applications",
+    "allowProtocolLink": false,
+    "homePercentage": 50,
+    "roamingPercentage": 50
+  },
+  {
+    "protocolName": "SAT Transaction Seal",
+    "protocolCode": "SAT-TXN",
+    "protocolCategory": "Transaction",
+    "percentageWeight": 10,
+    "protocolMemo": "Seals high-value operations with subscriber-level integrity checks.",
+    "protocolUrlEnabled": true,
+    "protocolUrl": "https://sat-core.com/applications",
+    "allowProtocolLink": false,
+    "homePercentage": 54,
+    "roamingPercentage": 46
+  },
+  {
+    "protocolName": "SAT Recovery Factor",
+    "protocolCode": "SAT-RCV",
+    "protocolCategory": "Recovery",
+    "percentageWeight": 5,
+    "protocolMemo": "Controlled recovery paths with elevated assurance.",
+    "protocolUrlEnabled": true,
+    "protocolUrl": "https://sat-core.com/applications",
+    "allowProtocolLink": false,
+    "homePercentage": 70,
+    "roamingPercentage": 30
+  },
+  {
+    "protocolName": "SAT Compliance Evidence",
+    "protocolCode": "SAT-CMP",
+    "protocolCategory": "Compliance",
+    "percentageWeight": 5,
+    "protocolMemo": "Evidence pack generation for regulated authentication events.",
+    "protocolUrlEnabled": true,
+    "protocolUrl": "https://sat-core.com/applications",
+    "allowProtocolLink": false,
+    "homePercentage": 50,
+    "roamingPercentage": 50
+  }
+]

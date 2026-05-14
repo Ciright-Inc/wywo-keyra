@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 const nav = [
+  { href: "/admin/authentication", label: "Auth feed" },
   { href: "/admin/deployments", label: "Overview" },
   { href: "/admin/deployments/regions", label: "Regions" },
   { href: "/admin/deployments/countries", label: "Countries" },
@@ -34,7 +35,7 @@ export function AdminDeploymentsShell({ children }: { children: ReactNode }) {
                   href={item.href}
                   className={`rounded-md px-2 py-1.5 text-sm transition ${
                     active
-                      ? "bg-[rgba(102,227,255,0.12)] font-medium text-keyra-primary ring-1 ring-[rgba(102,227,255,0.35)]"
+                      ? "bg-[var(--keyra-action)] font-medium text-keyra-primary ring-1 ring-[var(--keyra-action-border)]"
                       : "text-keyra-text-2 hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary"
                   }`}
                 >

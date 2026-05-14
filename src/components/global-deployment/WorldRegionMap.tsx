@@ -33,8 +33,8 @@ export function WorldRegionMap({
       >
         <defs>
           <linearGradient id="keyraMapFill" x1="0" x2="1" y1="0" y2="1">
-            <stop stopColor="rgba(102,227,255,0.10)" />
-            <stop offset="1" stopColor="rgba(108,124,255,0.08)" />
+            <stop stopColor="rgba(142,189,210,0.08)" />
+            <stop offset="1" stopColor="rgba(122,135,168,0.06)" />
           </linearGradient>
         </defs>
 
@@ -70,20 +70,20 @@ export function WorldRegionMap({
               }}
               fill={
                 active
-                  ? "rgba(102,227,255,0.18)"
+                  ? "rgba(142,189,210,0.14)"
                   : isHover
-                    ? "rgba(102,227,255,0.12)"
+                    ? "rgba(142,189,210,0.09)"
                     : "url(#keyraMapFill)"
               }
               stroke={
                 active
-                  ? "rgba(102,227,255,0.55)"
+                  ? "rgba(142,189,210,0.42)"
                   : isHover
-                    ? "rgba(102,227,255,0.35)"
+                    ? "rgba(142,189,210,0.28)"
                     : "rgba(255,255,255,0.12)"
               }
               strokeWidth={active ? 2.25 : 1.5}
-              className="cursor-pointer outline-none transition focus-visible:stroke-[rgba(102,227,255,0.75)]"
+              className="cursor-pointer outline-none transition focus-visible:stroke-[rgba(142,189,210,0.55)]"
             />
           );
         })}
