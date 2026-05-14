@@ -351,132 +351,146 @@ export default function AdminAuthCountriesPage() {
         <p className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">{error}</p>
       ) : null}
 
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-keyra-border bg-keyra-surface/40 px-3 py-3 text-sm">
-        <label className="flex flex-col gap-1 text-keyra-text-2">
-          Search
-          <input
-            className="min-w-[10rem] rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-keyra-primary"
-            value={qInput}
-            onChange={(e) => setQInput(e.target.value)}
-            placeholder="Name, ISO, region…"
-            disabled={busy}
-          />
-        </label>
-        <Button type="button" variant="secondary" disabled={busy} onClick={() => setQ(qInput)}>
-          Apply search
-        </Button>
-        <label className="flex flex-col gap-1 text-keyra-text-2">
-          Region (exact)
-          <input
-            className="min-w-[8rem] rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-keyra-primary"
-            value={region}
-            onChange={(e) => setRegion(e.target.value)}
-            disabled={busy}
-            placeholder="e.g. Europe"
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-keyra-text-2">
-          Sub-region (exact)
-          <input
-            className="min-w-[10rem] rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-keyra-primary"
-            value={subRegion}
-            onChange={(e) => setSubRegion(e.target.value)}
-            disabled={busy}
-            placeholder="e.g. Northern Europe"
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-keyra-text-2">
-          Active
-          <select
-            className="rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-keyra-primary"
-            value={activeFilter}
-            onChange={(e) => setActiveFilter(e.target.value as "" | "true" | "false")}
-            disabled={busy}
-          >
-            <option value="">All</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 text-keyra-text-2">
-          Auth feed
-          <select
-            className="rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-keyra-primary"
-            value={authFilter}
-            onChange={(e) => setAuthFilter(e.target.value as "" | "true" | "false")}
-            disabled={busy}
-          >
-            <option value="">All</option>
-            <option value="true">Enabled</option>
-            <option value="false">Disabled</option>
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 text-keyra-text-2">
-          Wt min
-          <input
-            className="w-20 rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-keyra-primary"
-            value={weightMin}
-            onChange={(e) => setWeightMin(e.target.value)}
-            disabled={busy}
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-keyra-text-2">
-          Wt max
-          <input
-            className="w-20 rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-keyra-primary"
-            value={weightMax}
-            onChange={(e) => setWeightMax(e.target.value)}
-            disabled={busy}
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-keyra-text-2">
-          Sort
-          <select
-            className="rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-keyra-primary"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as SortKey)}
-            disabled={busy}
-          >
-            <option value="name">Name</option>
-            <option value="iso2">ISO-2</option>
-            <option value="priority">Display priority</option>
-            <option value="weight">Weight (desc)</option>
-            <option value="updated">Updated (desc)</option>
-          </select>
-        </label>
+      <div className="rounded-xl border border-keyra-border bg-keyra-surface/40 px-4 py-4 text-sm sm:px-5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-end">
+          <label className="flex min-w-0 flex-1 flex-col gap-1 text-keyra-text-2 lg:min-w-[12rem]">
+            Search
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <input
+                className="min-h-9 min-w-0 flex-1 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary sm:min-w-[12rem]"
+                value={qInput}
+                onChange={(e) => setQInput(e.target.value)}
+                placeholder="Name, ISO, region…"
+                disabled={busy}
+              />
+            <Button type="button" variant="secondary" className="h-9 shrink-0 px-3 py-1.5 text-xs font-semibold sm:min-w-[8rem]" disabled={busy} onClick={() => setQ(qInput)}>
+                Apply search
+              </Button>
+            </div>
+          </label>
+          <label className="flex flex-col gap-1 text-keyra-text-2">
+            Region (exact)
+            <input
+              className="min-h-9 min-w-[8rem] rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+              disabled={busy}
+              placeholder="e.g. Europe"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-keyra-text-2">
+            Sub-region (exact)
+            <input
+              className="min-h-9 min-w-[10rem] rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+              value={subRegion}
+              onChange={(e) => setSubRegion(e.target.value)}
+              disabled={busy}
+              placeholder="e.g. Northern Europe"
+            />
+          </label>
+        </div>
+        <div className="mt-3 flex flex-wrap items-end gap-3 border-t border-keyra-border/50 pt-3">
+          <label className="flex flex-col gap-1 text-keyra-text-2">
+            Active
+            <select
+              className="min-h-9 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+              value={activeFilter}
+              onChange={(e) => setActiveFilter(e.target.value as "" | "true" | "false")}
+              disabled={busy}
+            >
+              <option value="">All</option>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-keyra-text-2">
+            Auth feed
+            <select
+              className="min-h-9 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+              value={authFilter}
+              onChange={(e) => setAuthFilter(e.target.value as "" | "true" | "false")}
+              disabled={busy}
+            >
+              <option value="">All</option>
+              <option value="true">Enabled</option>
+              <option value="false">Disabled</option>
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-keyra-text-2">
+            Wt min
+            <input
+              className="min-h-9 w-20 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+              value={weightMin}
+              onChange={(e) => setWeightMin(e.target.value)}
+              disabled={busy}
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-keyra-text-2">
+            Wt max
+            <input
+              className="min-h-9 w-20 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+              value={weightMax}
+              onChange={(e) => setWeightMax(e.target.value)}
+              disabled={busy}
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-keyra-text-2">
+            Sort
+            <select
+              className="min-h-9 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortKey)}
+              disabled={busy}
+            >
+              <option value="name">Name</option>
+              <option value="iso2">ISO-2</option>
+              <option value="priority">Display priority</option>
+              <option value="weight">Weight (desc)</option>
+              <option value="updated">Updated (desc)</option>
+            </select>
+          </label>
+        </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-keyra-border bg-keyra-surface/40 px-3 py-2 text-sm">
-        <span className="text-keyra-text-2">
-          Selected: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
-        </span>
-        <Button type="button" variant="secondary" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetActive(true)}>
-          Set active
-        </Button>
-        <Button type="button" variant="secondary" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetActive(false)}>
-          Set inactive
-        </Button>
-        <Button type="button" variant="secondary" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetAuthEnabled(true)}>
-          Auth enabled
-        </Button>
-        <Button type="button" variant="secondary" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetAuthEnabled(false)}>
-          Auth disabled
-        </Button>
-        <Button type="button" variant="secondary" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetSelectedWeight(5)}>
-          Set weight = 5 (selected)
-        </Button>
-        <Button type="button" variant="secondary" disabled={busy || selectedIds.length === 0} onClick={normalizeSelectedActiveWeights}>
-          Normalize weights (selected)
-        </Button>
-        <Button type="button" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSave()}>
-          Bulk save selected
-        </Button>
-        <Button type="button" variant="secondary" disabled={busy} onClick={() => void resetAllWeights()}>
-          Reset all weights to 5
-        </Button>
+      <div className="rounded-xl border border-keyra-border bg-keyra-surface/40 px-4 py-3 text-sm sm:px-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-2">
+          <span className="shrink-0 text-keyra-text-2">
+            Selected: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
+          </span>
+          <span className="hidden h-6 w-px shrink-0 bg-keyra-border sm:block" aria-hidden />
+          <div className="flex flex-wrap items-center gap-2">
+            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetActive(true)}>
+              Set active
+            </Button>
+            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetActive(false)}>
+              Set inactive
+            </Button>
+            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetAuthEnabled(true)}>
+              Auth enabled
+            </Button>
+            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetAuthEnabled(false)}>
+              Auth disabled
+            </Button>
+          </div>
+          <span className="hidden h-6 w-px shrink-0 bg-keyra-border sm:block" aria-hidden />
+          <div className="flex flex-wrap items-center gap-2">
+            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSetSelectedWeight(5)}>
+              Weight = 5
+            </Button>
+            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={normalizeSelectedActiveWeights}>
+              Normalize weights
+            </Button>
+            <Button type="button" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSave()}>
+              Bulk save
+            </Button>
+            <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy} onClick={() => void resetAllWeights()}>
+              Reset all weights to 5
+            </Button>
+          </div>
+        </div>
       </div>
 
-      <div className="rounded-xl border border-keyra-border bg-keyra-surface/60 p-4">
+      <div className="rounded-xl border border-keyra-border bg-keyra-surface/60 px-4 py-4 sm:px-5">
         <p className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">Add country</p>
         <p className="mt-1 text-xs text-keyra-text-2">ISO-2 must be unique. Default weight 5.</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -513,28 +527,28 @@ export default function AdminAuthCountriesPage() {
         </div>
       </div>
 
-      <div className="max-h-[70vh] overflow-auto rounded-xl border border-keyra-border">
-        <table className="min-w-[1200px] w-full text-left text-sm">
-          <thead className="sticky top-0 z-10 border-b border-keyra-border bg-keyra-bg/95 text-[11px] uppercase tracking-wider text-keyra-text-2">
+      <div className="max-h-[70vh] overflow-auto rounded-xl border border-keyra-border bg-keyra-surface/30 shadow-sm">
+        <table className="min-w-[1200px] w-full border-collapse text-left text-xs">
+          <thead className="sticky top-0 z-10 border-b border-keyra-border bg-keyra-bg/95 backdrop-blur-sm text-[10px] uppercase tracking-wider text-keyra-text-2">
             <tr>
-              <th className="px-2 py-2">
+              <th className="w-10 pl-4 pr-2 py-2.5 align-middle" scope="col">
                 <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} disabled={busy || rows.length === 0} aria-label="Select all" />
               </th>
-              <th className="px-2 py-2">Name</th>
-              <th className="px-2 py-2">Official</th>
-              <th className="px-2 py-2">Flag</th>
-              <th className="px-2 py-2">ISO2</th>
-              <th className="px-2 py-2">ISO3</th>
-              <th className="px-2 py-2">Region</th>
-              <th className="px-2 py-2">Sub</th>
-              <th className="px-2 py-2">Phone</th>
-              <th className="px-2 py-2">Currency</th>
-              <th className="px-2 py-2">Auth</th>
-              <th className="px-2 py-2">Active</th>
-              <th className="px-2 py-2">Wt</th>
-              <th className="px-2 py-2">Pri</th>
-              <th className="px-2 py-2">Updated</th>
-              <th className="px-2 py-2" />
+              <th className="px-2 py-2.5 align-middle">Name</th>
+              <th className="px-2 py-2.5 align-middle">Official</th>
+              <th className="px-2 py-2.5 align-middle">Flag</th>
+              <th className="px-2 py-2.5 align-middle">ISO2</th>
+              <th className="px-2 py-2.5 align-middle">ISO3</th>
+              <th className="px-2 py-2.5 align-middle">Region</th>
+              <th className="px-2 py-2.5 align-middle">Sub</th>
+              <th className="px-2 py-2.5 align-middle">Phone</th>
+              <th className="px-2 py-2.5 align-middle">Currency</th>
+              <th className="px-2 py-2.5 align-middle">Auth</th>
+              <th className="px-2 py-2.5 align-middle">Active</th>
+              <th className="px-2 py-2.5 align-middle">Wt</th>
+              <th className="px-2 py-2.5 align-middle">Pri</th>
+              <th className="px-2 py-2.5 align-middle">Updated</th>
+              <th className="pr-4 pl-2 py-2.5 align-middle" scope="col" />
             </tr>
           </thead>
           <tbody>
@@ -553,7 +567,7 @@ export default function AdminAuthCountriesPage() {
           </tbody>
         </table>
         {rows.length === 0 ? (
-          <p className="px-3 py-6 text-center text-sm text-keyra-text-2">
+          <p className="px-4 py-8 text-center text-sm text-keyra-text-2 sm:px-6">
             No rows match filters, or the catalog seed has not run. After deploy, <code className="text-xs">npm start</code> seeds countries;
             or run <code className="text-xs">npm run db:seed:world-countries</code>.
           </p>
@@ -580,67 +594,68 @@ function CountryEditorRow({
   onDelete: () => void | Promise<void>;
   disabled: boolean;
 }) {
-  const inp = "rounded border border-keyra-border bg-keyra-bg px-1 py-1 text-xs text-keyra-primary";
+  const inp =
+    "h-8 min-h-8 w-full rounded-md border border-keyra-border bg-keyra-bg px-2 py-1 text-[11px] leading-tight text-keyra-primary placeholder:text-keyra-text-2/50";
   return (
-    <tr className="border-b border-keyra-border/60 align-top">
-      <td className="px-1 py-1">
-        <input type="checkbox" checked={selected} onChange={onToggleSelect} disabled={disabled} aria-label={`Select ${row.countryName}`} />
+    <tr className="border-b border-keyra-border/50 align-middle transition-colors hover:bg-keyra-bg/40">
+      <td className="w-10 pl-4 pr-2 py-1.5 align-middle">
+        <input type="checkbox" checked={selected} onChange={onToggleSelect} disabled={disabled} aria-label={`Select ${row.countryName}`} className="size-3.5 accent-keyra-accent" />
       </td>
-      <td className="px-1 py-1">
-        <input className={`${inp} min-w-[7rem]`} value={row.countryName} onChange={(e) => onChange(row.id, { countryName: e.target.value })} disabled={disabled} />
+      <td className="px-2 py-1.5 align-middle">
+        <input className={`${inp} min-w-[6.5rem]`} value={row.countryName} onChange={(e) => onChange(row.id, { countryName: e.target.value })} disabled={disabled} />
       </td>
-      <td className="px-1 py-1">
+      <td className="max-w-[10rem] px-2 py-1.5 align-middle">
         <input
-          className={`${inp} min-w-[8rem]`}
+          className={`${inp} min-w-0`}
           value={row.officialName ?? ""}
           onChange={(e) => onChange(row.id, { officialName: e.target.value || null })}
           disabled={disabled}
         />
       </td>
-      <td className="px-1 py-1 text-lg leading-none" title="Flag emoji">
+      <td className="px-2 py-1.5 align-middle text-center text-base leading-none" title="Flag emoji">
         {row.flagEmoji ?? "—"}
       </td>
-      <td className="px-1 py-1">
-        <input className={`${inp} w-12 uppercase`} value={row.iso2} onChange={(e) => onChange(row.id, { iso2: e.target.value })} disabled={disabled} />
+      <td className="px-2 py-1.5 align-middle">
+        <input className={`${inp} w-11 uppercase`} value={row.iso2} onChange={(e) => onChange(row.id, { iso2: e.target.value })} disabled={disabled} />
       </td>
-      <td className="px-1 py-1">
+      <td className="px-2 py-1.5 align-middle">
         <input
-          className={`${inp} w-12 uppercase`}
+          className={`${inp} w-11 uppercase`}
           value={row.iso3 ?? ""}
           onChange={(e) => onChange(row.id, { iso3: e.target.value ? e.target.value.toUpperCase().slice(0, 3) : null })}
           disabled={disabled}
         />
       </td>
-      <td className="px-1 py-1">
-        <input className={`${inp} min-w-[5rem]`} value={row.region} onChange={(e) => onChange(row.id, { region: e.target.value })} disabled={disabled} />
+      <td className="px-2 py-1.5 align-middle">
+        <input className={`${inp} min-w-[4.5rem]`} value={row.region} onChange={(e) => onChange(row.id, { region: e.target.value })} disabled={disabled} />
       </td>
-      <td className="px-1 py-1">
+      <td className="px-2 py-1.5 align-middle">
         <input
-          className={`${inp} min-w-[6rem]`}
+          className={`${inp} min-w-[5rem]`}
           value={row.subRegion ?? ""}
           onChange={(e) => onChange(row.id, { subRegion: e.target.value || null })}
           disabled={disabled}
         />
       </td>
-      <td className="px-1 py-1">
+      <td className="px-2 py-1.5 align-middle">
         <input
-          className={`${inp} w-16`}
+          className={`${inp} w-14`}
           value={row.phoneCountryCode ?? ""}
           onChange={(e) => onChange(row.id, { phoneCountryCode: e.target.value || null })}
           disabled={disabled}
         />
       </td>
-      <td className="px-1 py-1">
-        <div className="flex flex-col gap-0.5">
+      <td className="px-2 py-1.5 align-middle">
+        <div className="flex flex-col gap-1">
           <input
-            className={`${inp} w-12 uppercase`}
+            className={`${inp} w-11 uppercase`}
             value={row.currencyCode ?? ""}
             onChange={(e) => onChange(row.id, { currencyCode: e.target.value ? e.target.value.toUpperCase().slice(0, 3) : null })}
             disabled={disabled}
             placeholder="CCY"
           />
           <input
-            className={`${inp} min-w-[5rem]`}
+            className={`${inp} min-w-[4rem]`}
             value={row.currencyName ?? ""}
             onChange={(e) => onChange(row.id, { currencyName: e.target.value || null })}
             disabled={disabled}
@@ -648,43 +663,46 @@ function CountryEditorRow({
           />
         </div>
       </td>
-      <td className="px-1 py-1">
+      <td className="px-2 py-1.5 align-middle text-center">
         <input
           type="checkbox"
+          className="size-3.5 accent-keyra-accent"
           checked={row.authenticationEnabled}
           onChange={(e) => onChange(row.id, { authenticationEnabled: e.target.checked })}
           disabled={disabled}
         />
       </td>
-      <td className="px-1 py-1">
-        <input type="checkbox" checked={row.active} onChange={(e) => onChange(row.id, { active: e.target.checked })} disabled={disabled} />
+      <td className="px-2 py-1.5 align-middle text-center">
+        <input type="checkbox" className="size-3.5 accent-keyra-accent" checked={row.active} onChange={(e) => onChange(row.id, { active: e.target.checked })} disabled={disabled} />
       </td>
-      <td className="px-1 py-1">
+      <td className="px-2 py-1.5 align-middle">
         <input
           type="number"
-          className={`${inp} w-14`}
+          className={`${inp} w-12`}
           value={row.percentageWeight}
           onChange={(e) => onChange(row.id, { percentageWeight: Number(e.target.value) })}
           disabled={disabled}
         />
       </td>
-      <td className="px-1 py-1">
+      <td className="px-2 py-1.5 align-middle">
         <input
           type="number"
-          className={`${inp} w-10`}
+          className={`${inp} w-9`}
           value={row.displayPriority}
           onChange={(e) => onChange(row.id, { displayPriority: Math.floor(Number(e.target.value)) || 0 })}
           disabled={disabled}
         />
       </td>
-      <td className="whitespace-nowrap px-1 py-1 text-xs text-keyra-text-2">{fmtDate(row.updatedAt)}</td>
-      <td className="flex flex-col gap-1 px-1 py-1">
-        <Button type="button" variant="secondary" className="text-xs" disabled={disabled} onClick={() => void onSave()}>
-          Save
-        </Button>
-        <Button type="button" variant="secondary" className="text-xs" disabled={disabled} onClick={() => void onDelete()}>
-          Delete
-        </Button>
+      <td className="whitespace-nowrap px-2 py-1.5 align-middle text-[10px] text-keyra-text-2">{fmtDate(row.updatedAt)}</td>
+      <td className="pr-4 pl-2 py-1.5 align-middle">
+        <div className="flex flex-col gap-1 sm:flex-row sm:flex-wrap">
+          <Button type="button" variant="secondary" className="h-8 px-2.5 py-1 text-[11px] font-semibold" disabled={disabled} onClick={() => void onSave()}>
+            Save
+          </Button>
+          <Button type="button" variant="secondary" className="h-8 px-2.5 py-1 text-[11px] font-semibold" disabled={disabled} onClick={() => void onDelete()}>
+            Delete
+          </Button>
+        </div>
       </td>
     </tr>
   );
