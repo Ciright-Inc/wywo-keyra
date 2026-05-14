@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AccountMenu } from "./AccountMenu";
 import { MobileNav } from "./MobileNav";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
+import { AudienceLaneSwitcher } from "@/components/governance/AudienceLaneSwitcher";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 
 const nav = [
@@ -18,7 +19,7 @@ export function SiteHeader() {
   const { user } = useKeyraSession();
 
   return (
-    <header className="sticky top-0 z-[200] border-b border-keyra-border bg-keyra-bg/90 backdrop-blur-md">
+    <header className="sticky top-0 z-[var(--keyra-z-header)] border-b border-keyra-border bg-keyra-bg/90 backdrop-blur-md">
       <div className="relative mx-auto grid w-full min-w-0 max-w-7xl grid-cols-1 gap-y-0 px-3 py-0.5 sm:px-6 lg:h-14 lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-5 lg:gap-y-0 lg:py-0">
         <Link
           href="/"
@@ -74,6 +75,7 @@ export function SiteHeader() {
           </div>
         </div>
       </div>
+      <AudienceLaneSwitcher />
     </header>
   );
 }

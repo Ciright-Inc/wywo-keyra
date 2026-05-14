@@ -11,6 +11,7 @@ import {
 import { HomeRegistrationCTAs } from "@/components/registration/HomeRegistrationCTAs";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { PageIntentRibbon } from "@/components/trust/PageIntentRibbon";
 
 function SectionShell({
   id,
@@ -98,6 +99,11 @@ export function HomeContent() {
 
         <div className="relative mx-auto grid min-h-0 w-full min-w-0 max-w-6xl grid-cols-1 items-center gap-8 py-4 sm:min-h-[52vh] lg:grid-cols-[minmax(0,1.05fr)_minmax(240px,0.95fr)] lg:min-h-[54vh] lg:gap-10 lg:py-0">
           <div className="w-full min-w-0 max-w-2xl">
+            <PageIntentRibbon
+              who="Households, professionals, and institutions who live and work online."
+              problem="Identity is fragmented; fraud and account takeover are routine."
+              nextAction="Continue to Be Protected Online below, or sign in to manage your Keyra account."
+            />
             <h1 className="text-balance text-4xl font-semibold leading-[1.06] tracking-tight text-keyra-primary sm:text-5xl md:text-6xl lg:text-[4.25rem]">
               <motion.span
                 className="inline-block"

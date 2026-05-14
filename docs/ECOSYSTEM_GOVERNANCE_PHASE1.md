@@ -1,6 +1,6 @@
 # Keyra — Ecosystem governance (Phase 1 audit & implementation map)
 
-**Status:** Phase 1 complete — read-only inventory and safe sequencing.  
+**Status:** Phase 1 inventory preserved below. **Full master-prompt implementation record:** `docs/MASTER_PROMPT_IMPLEMENTATION.md` (governance UI, tokens, ribbons, audience switcher, trust lines — non-destructive).  
 **Companion:** See `simsecure/docs/ECOSYSTEM_GOVERNANCE_PHASE1.md` for the SimSecure / app.keyra surface.  
 **Directive:** Refine without breaking routes, auth, APIs, DB contracts, admin workflows, or live data UIs.
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FadeIn } from "@/components/motion/FadeIn";
+import { PageIntentRibbon } from "@/components/trust/PageIntentRibbon";
 
 export const metadata: Metadata = {
   title: "Trust",
@@ -45,6 +46,11 @@ export default function TrustPage() {
           aria-hidden
         />
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+          <PageIntentRibbon
+            who="Anyone evaluating how Keyra thinks about safety and certainty."
+            problem="Trust pages often read like legal disclaimers instead of human commitments."
+            nextAction="Read the pillars below, then explore the home or app experience."
+          />
           <div className="mx-auto max-w-3xl text-center">
             <FadeIn>
               <p className="text-[14px] font-semibold uppercase tracking-widest text-keyra-muted">

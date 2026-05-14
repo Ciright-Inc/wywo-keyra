@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageIntentRibbon } from "@/components/trust/PageIntentRibbon";
 
 export const metadata: Metadata = {
   title: "Developers",
@@ -10,6 +11,11 @@ export const metadata: Metadata = {
 export default function DevelopersPage() {
   return (
     <div className="mx-auto max-w-3xl px-[var(--keyra-space-section-x)] py-[var(--keyra-space-section-y)] text-keyra-primary">
+      <PageIntentRibbon
+        who="Integrators, carriers, and product teams embedding Keyra APIs."
+        problem="Authentication must be trustworthy without slowing shipping velocity."
+        nextAction="Review the example request below; follow links to consumer and deployment surfaces when you need context."
+      />
       <p className="keyra-eyebrow">Developer & partner ecosystem</p>
       <h1 className="keyra-display mt-3">Integrate with confidence.</h1>
       <p className="keyra-prose mt-5 text-balance">

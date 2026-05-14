@@ -73,6 +73,14 @@
   --keyra-ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
 
   --keyra-font-mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+  /* Elevation / stacking (governance — use instead of ad-hoc z-* where practical) */
+  --keyra-z-base: 0;
+  --keyra-z-sticky: 40;
+  --keyra-z-header: 200;
+  --keyra-z-overlay: 250;
+  --keyra-z-drawer: 260;
+  --keyra-z-toast: 400;
 }
 
 /* -------------------------------------------------------------------------- */
