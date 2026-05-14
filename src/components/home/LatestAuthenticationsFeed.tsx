@@ -26,9 +26,35 @@ type ProtocolDetail = {
   allowProtocolLink: boolean;
   homePercentage: number;
   roamingPercentage: number;
+  shortDescription?: string | null;
+  longDescription?: string | null;
+  securityClassification?: string | null;
+  trustLevel?: number | null;
+  riskReductionScore?: number | null;
+  iconKey?: string | null;
+  colorTheme?: string | null;
+  flagEnterprise?: boolean;
+  flagGovernment?: boolean;
+  flagTelco?: boolean;
+  flagConsumer?: boolean;
+  flagAiAgent?: boolean;
+  globalAvailability?: boolean;
+  apiReady?: boolean;
+  zeroKnowledgeCompatible?: boolean;
+  simOrEsimRequired?: boolean;
+  deviceBindingRequired?: boolean;
+  active?: boolean;
 };
 
 const ROW_EST = 40;
+
+function classificationBadgeClass(c: string | null | undefined): string {
+  const u = (c ?? "").toUpperCase();
+  if (u.includes("SOVEREIGN") || u === "CRITICAL") return "bg-red-500/15 text-red-100 ring-red-500/45";
+  if (u.includes("HIGH") || u.includes("ELEVATED")) return "bg-amber-500/12 text-amber-100 ring-amber-500/40";
+  if (u.includes("STANDARD")) return "bg-keyra-bg text-keyra-text-2 ring-keyra-border";
+  return "bg-keyra-surface text-keyra-text-2 ring-keyra-border";
+}
 
 /** Fixed locale/options so SSR (Node) and the browser render the same time string. */
 function formatFeedTime(isoOrMs: string) {
@@ -217,6 +243,8 @@ export function LatestAuthenticationsFeed() {
           allowProtocolLink: false,
           homePercentage: 50,
           roamingPercentage: 50,
+          securityClassification: null,
+          trustLevel: null,
         });
         return;
       }
@@ -236,6 +264,8 @@ export function LatestAuthenticationsFeed() {
         allowProtocolLink: false,
         homePercentage: 50,
         roamingPercentage: 50,
+        securityClassification: null,
+        trustLevel: null,
       });
     }
   }
@@ -328,12 +358,49 @@ export function LatestAuthenticationsFeed() {
 
       {modal ? (
         <div className="keyra-modal-backdrop" role="dialog" aria-modal onClick={() => setModal(null)}>
-          <div className="keyra-modal-panel text-sm" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-lg font-semibold">{modal.protocolName}</h2>
-            <p className="mt-1 text-xs uppercase tracking-wider text-keyra-text-2">
-              {modal.protocolCode} · {modal.protocolCategory}
+          <div className="keyra-modal-panel max-h-[min(90vh,520px)] overflow-y-auto text-sm" onClick={(e) => e.stopPropagation()}>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold">{modal.protocolName}</h2>
+                <p className="mt-1 text-xs uppercase tracking-wider text-keyra-text-2">
+                  {modal.protocolCode} · {modal.protocolCategory}
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center justify-end gap-1.5">
+                <span
+                  className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ring-1 ${classificationBadgeClass(modal.securityClassification)}`}
+                  title="Security classification"
+                >
+                  {modal.securityClassification ?? "SAT"}
+                </span>
+                {typeof modal.trustLevel === "number" ? (
+                  <span
+                    className="rounded px-2 py-0.5 text-[10px] font-semibold ring-1 ring-keyra-border text-keyra-accent"
+                    title="Trust level (1–5)"
+                  >
+                    Trust L{modal.trustLevel}
+                  </span>
+                ) : null}
+                <span
+                  className="rounded px-2 py-0.5 text-[10px] font-semibold ring-1 ring-emerald-500/40 text-emerald-200"
+                  title="Protocol registry status"
+                >
+                  {modal.active === false ? "Inactive" : "Active"}
+                </span>
+                {modal.flagAiAgent ? (
+                  <span className="rounded px-2 py-0.5 text-[10px] ring-1 ring-fuchsia-500/35 text-fuchsia-200">AI</span>
+                ) : null}
+                {modal.zeroKnowledgeCompatible ? (
+                  <span className="rounded px-2 py-0.5 text-[10px] ring-1 ring-violet-500/35 text-violet-200">ZK</span>
+                ) : null}
+                {modal.simOrEsimRequired ? (
+                  <span className="rounded px-2 py-0.5 text-[10px] ring-1 ring-sky-500/35 text-sky-200">SIM</span>
+                ) : null}
+              </div>
+            </div>
+            <p className="mt-3 whitespace-pre-wrap text-keyra-text-2">
+              {modal.longDescription?.trim() || modal.shortDescription?.trim() || modal.protocolMemo}
             </p>
-            <p className="mt-3 whitespace-pre-wrap text-keyra-text-2">{modal.protocolMemo}</p>
             <p className="mt-3 text-xs text-keyra-text-2">
               H = home network ({modal.homePercentage.toFixed(0)}%) · R = roaming ({modal.roamingPercentage.toFixed(0)}%)
             </p>

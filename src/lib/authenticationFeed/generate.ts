@@ -26,7 +26,9 @@ export function generateLatestAuthBatch(params: {
   pairsUsed: Set<string>;
 }): { records: LatestAuthRecord[]; pairKeysAdded: string[]; poolResetCount: number } {
   const random = makeRng();
-  const activeCountries = params.countries.filter((c) => c.active);
+  const activeCountries = params.countries.filter(
+    (c) => c.active && (c.authenticationEnabled === undefined || c.authenticationEnabled),
+  );
   const activeProtocols = params.protocols.filter((p) => p.active);
   if (!activeCountries.length || !activeProtocols.length) {
     return { records: [], pairKeysAdded: [], poolResetCount: 0 };

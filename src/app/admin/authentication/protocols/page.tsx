@@ -2,11 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { SAT_PROTOCOL_CATEGORIES } from "@/lib/satProtocol/categories";
 
-type Row = {
+type ProtocolRow = {
   id: string;
   protocolName: string;
   protocolCode: string;
+  protocolSlug: string | null;
   protocolCategory: string;
   active: boolean;
   percentageWeight: number;
@@ -16,25 +18,107 @@ type Row = {
   allowProtocolLink: boolean;
   homePercentage: number;
   roamingPercentage: number;
+  shortDescription?: string | null;
+  longDescription?: string | null;
+  securityClassification?: string | null;
+  flagEnterprise?: boolean;
+  flagGovernment?: boolean;
+  flagTelco?: boolean;
+  flagConsumer?: boolean;
+  flagAiAgent?: boolean;
+  displayOrder?: number;
+  iconKey?: string | null;
+  colorTheme?: string | null;
+  trustLevel?: number;
+  riskReductionScore?: number;
+  globalAvailability?: boolean;
+  apiReady?: boolean;
+  auditRequired?: boolean;
+  consentRequired?: boolean;
+  zeroKnowledgeCompatible?: boolean;
+  simOrEsimRequired?: boolean;
+  deviceBindingRequired?: boolean;
+  createdBySystem?: boolean;
 };
 
+const THEME_ACCENTS: Record<string, string> = {
+  sky: "border-sky-500/45 text-sky-200",
+  emerald: "border-emerald-500/45 text-emerald-200",
+  violet: "border-violet-500/45 text-violet-200",
+  amber: "border-amber-500/45 text-amber-200",
+  cyan: "border-cyan-500/45 text-cyan-200",
+  slate: "border-slate-500/45 text-slate-200",
+  fuchsia: "border-fuchsia-500/45 text-fuchsia-200",
+  indigo: "border-indigo-500/45 text-indigo-200",
+  teal: "border-teal-500/45 text-teal-200",
+  stone: "border-stone-500/45 text-stone-200",
+  lime: "border-lime-500/45 text-lime-200",
+  blue: "border-blue-500/45 text-blue-200",
+  orange: "border-orange-500/45 text-orange-200",
+  rose: "border-rose-500/45 text-rose-200",
+  neutral: "border-neutral-500/45 text-neutral-200",
+  yellow: "border-yellow-500/45 text-yellow-200",
+  purple: "border-purple-500/45 text-purple-200",
+  red: "border-red-500/45 text-red-200",
+  zinc: "border-zinc-500/45 text-zinc-200",
+  green: "border-green-500/45 text-green-200",
+};
+
+function themeClass(theme: string | null | undefined) {
+  return THEME_ACCENTS[theme ?? ""] ?? "border-keyra-border text-keyra-text-2";
+}
+
+function secChipClass(c: string | null | undefined) {
+  const u = (c ?? "").toUpperCase();
+  if (u.includes("SOVEREIGN") || u === "CRITICAL") return "bg-red-500/15 text-red-100 ring-red-500/40";
+  if (u.includes("HIGH") || u.includes("ELEVATED")) return "bg-amber-500/12 text-amber-100 ring-amber-500/35";
+  return "bg-keyra-bg/80 text-keyra-text-2 ring-keyra-border";
+}
+
 export default function AdminSatProtocolsPage() {
-  const [rows, setRows] = useState<Row[]>([]);
+  const [rows, setRows] = useState<ProtocolRow[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [searchQ, setSearchQ] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
+  const [category, setCategory] = useState("");
+  const [activeFilter, setActiveFilter] = useState<"all" | "true" | "false">("all");
+  const [sortKey, setSortKey] = useState("displayOrder");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [selected, setSelected] = useState<Record<string, true>>({});
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQ(searchQ.trim()), 280);
+    return () => clearTimeout(t);
+  }, [searchQ]);
 
   const load = useCallback(async () => {
-    const res = await fetch("/api/admin/sat-protocols", { credentials: "include" });
-    const data = (await res.json()) as { protocols?: Row[]; error?: string };
+    const params = new URLSearchParams();
+    if (debouncedQ) params.set("q", debouncedQ);
+    if (category) params.set("category", category);
+    if (activeFilter !== "all") params.set("active", activeFilter);
+    params.set("sort", `${sortKey}:${sortDir}`);
+    const res = await fetch(`/api/admin/sat-protocols?${params.toString()}`, { credentials: "include" });
+    const data = (await res.json()) as { protocols?: ProtocolRow[]; error?: string };
     if (!res.ok) throw new Error(data.error ?? "Failed to load");
     setRows(data.protocols ?? []);
-  }, []);
+  }, [debouncedQ, category, activeFilter, sortKey, sortDir]);
 
   useEffect(() => {
     load().catch((e) => setError(e instanceof Error ? e.message : "Load failed"));
   }, [load]);
 
-  async function saveRow(r: Row) {
+  const selectedIds = Object.keys(selected);
+
+  function toggleSort(key: string) {
+    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  }
+
+  async function saveRow(r: ProtocolRow) {
     setBusy(true);
     setError(null);
     try {
@@ -61,6 +145,11 @@ export default function AdminSatProtocolsPage() {
       const res = await fetch(`/api/admin/sat-protocols/${id}`, { method: "DELETE", credentials: "include" });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Delete failed");
+      setSelected((m) => {
+        const n = { ...m };
+        delete n[id];
+        return n;
+      });
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Delete failed");
@@ -73,10 +162,10 @@ export default function AdminSatProtocolsPage() {
     protocolName: "",
     protocolCode: "",
     protocolCategory: "Identity",
-    percentageWeight: 10,
+    percentageWeight: 60,
     protocolMemo: "",
-    homePercentage: 50,
-    roamingPercentage: 50,
+    homePercentage: 40,
+    roamingPercentage: 60,
   });
 
   async function add() {
@@ -100,10 +189,10 @@ export default function AdminSatProtocolsPage() {
         protocolName: "",
         protocolCode: "",
         protocolCategory: "Identity",
-        percentageWeight: 10,
+        percentageWeight: 60,
         protocolMemo: "",
-        homePercentage: 50,
-        roamingPercentage: 50,
+        homePercentage: 40,
+        roamingPercentage: 60,
       });
       await load();
     } catch (e) {
@@ -113,17 +202,156 @@ export default function AdminSatProtocolsPage() {
     }
   }
 
+  async function patchBulkStatus(active: boolean) {
+    if (!selectedIds.length) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/sat-protocols/status", {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: selectedIds, active }),
+      });
+      const data = (await res.json()) as { error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Bulk status failed");
+      setSelected({});
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Bulk status failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function patchBulkWeights() {
+    if (!selectedIds.length) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/sat-protocols/weights", {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ids: selectedIds,
+          percentageWeight: 60,
+          homePercentage: 40,
+          roamingPercentage: 60,
+        }),
+      });
+      const data = (await res.json()) as { error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Bulk weights failed");
+      setSelected({});
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Bulk weights failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function toggleSelect(id: string) {
+    setSelected((m) => {
+      const n = { ...m };
+      if (n[id]) delete n[id];
+      else n[id] = true;
+      return n;
+    });
+  }
+
+  function selectAllVisible() {
+    const m: Record<string, true> = {};
+    for (const r of rows) m[r.id] = true;
+    setSelected(m);
+  }
+
+  function clearSelection() {
+    setSelected({});
+  }
+
+  const sortableTh = (label: string, key: string) => (
+    <th className="px-1.5 py-2">
+      <button
+        type="button"
+        className="text-left font-semibold hover:text-keyra-accent"
+        onClick={() => toggleSort(key)}
+        disabled={busy}
+      >
+        {label}
+        {sortKey === key ? (sortDir === "asc" ? " ↑" : " ↓") : ""}
+      </button>
+    </th>
+  );
+
   return (
     <div className="space-y-6 text-keyra-primary">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">SAT protocols</h1>
-        <p className="mt-2 max-w-2xl text-sm text-keyra-text-2">
-          Home + roaming must total 100%. Memo is shown on keyra.ie when visitors tap a protocol (unless
-          external link is enabled).
+        <p className="mt-2 max-w-3xl text-sm text-keyra-text-2">
+          Global SAT-Core protocol registry. Home + roaming must total 100% (default 40% home / 60% roaming). Feed
+          weight defaults to 60. Run db:seed:auth-feed to upsert the canonical 20-protocol catalog.
         </p>
       </div>
       {error ? (
         <p className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">{error}</p>
+      ) : null}
+
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-keyra-border bg-keyra-surface/60 p-4">
+        <label className="block min-w-[12rem] flex-1 text-xs text-keyra-text-2">
+          Search
+          <input
+            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-sm text-keyra-primary"
+            placeholder="Name, code, category, slug, description…"
+            value={searchQ}
+            onChange={(e) => setSearchQ(e.target.value)}
+          />
+        </label>
+        <label className="block text-xs text-keyra-text-2">
+          Category
+          <select
+            className="mt-1 block w-48 rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-sm"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="">All</option>
+            {SAT_PROTOCOL_CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="block text-xs text-keyra-text-2">
+          Active
+          <select
+            className="mt-1 block w-32 rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-sm"
+            value={activeFilter}
+            onChange={(e) => setActiveFilter(e.target.value as typeof activeFilter)}
+          >
+            <option value="all">All</option>
+            <option value="true">On</option>
+            <option value="false">Off</option>
+          </select>
+        </label>
+      </div>
+
+      {selectedIds.length > 0 ? (
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-keyra-accent/30 bg-keyra-accent/5 px-3 py-2 text-xs">
+          <span className="font-medium text-keyra-accent">{selectedIds.length} selected</span>
+          <Button type="button" variant="secondary" disabled={busy} onClick={() => void patchBulkStatus(true)}>
+            Enable
+          </Button>
+          <Button type="button" variant="secondary" disabled={busy} onClick={() => void patchBulkStatus(false)}>
+            Disable
+          </Button>
+          <Button type="button" variant="secondary" disabled={busy} onClick={() => void patchBulkWeights()}>
+            Weight 60 · H/R 40/60
+          </Button>
+          <Button type="button" variant="secondary" disabled={busy} onClick={clearSelection}>
+            Clear
+          </Button>
+        </div>
       ) : null}
 
       <div className="rounded-xl border border-keyra-border bg-keyra-surface/60 p-4">
@@ -148,7 +376,7 @@ export default function AdminSatProtocolsPage() {
             onChange={(e) => setDraft((d) => ({ ...d, protocolCategory: e.target.value }))}
           />
           <textarea
-            className="sm:col-span-2 min-h-[72px] rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-sm"
+            className="min-h-[72px] rounded-md border border-keyra-border bg-keyra-bg px-2 py-1.5 text-sm sm:col-span-2"
             placeholder="Protocol memo (modal body)"
             value={draft.protocolMemo}
             onChange={(e) => setDraft((d) => ({ ...d, protocolMemo: e.target.value }))}
@@ -187,51 +415,102 @@ export default function AdminSatProtocolsPage() {
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-keyra-border text-xs">
-        <table className="min-w-full text-left">
+        <div className="flex items-center justify-between border-b border-keyra-border bg-keyra-bg/80 px-2 py-2">
+          <Button type="button" variant="secondary" disabled={busy || rows.length === 0} onClick={selectAllVisible}>
+            Select visible
+          </Button>
+        </div>
+        <table className="min-w-[1100px] text-left">
           <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[10px] uppercase tracking-wider text-keyra-text-2">
             <tr>
-              <th className="px-2 py-2">Name</th>
-              <th className="px-2 py-2">Code</th>
-              <th className="px-2 py-2">Cat</th>
-              <th className="px-2 py-2">On</th>
-              <th className="px-2 py-2">Wt</th>
-              <th className="px-2 py-2">H/R</th>
-              <th className="px-2 py-2">Link</th>
-              <th className="px-2 py-2" />
+              <th className="px-1 py-2">Sel</th>
+              <th className="px-1 py-2">SAT</th>
+              {sortableTh("Name", "protocolName")}
+              {sortableTh("Code", "protocolCode")}
+              {sortableTh("Category", "protocolCategory")}
+              {sortableTh("Wt", "percentageWeight")}
+              {sortableTh("Home", "homePercentage")}
+              {sortableTh("Roam", "roamingPercentage")}
+              {sortableTh("Trust", "trustLevel")}
+              <th className="px-1 py-2">Flags</th>
+              {sortableTh("Global", "globalAvailability")}
+              {sortableTh("API", "apiReady")}
+              {sortableTh("On", "active")}
+              <th className="px-1 py-2" />
             </tr>
           </thead>
           <tbody>
             {rows.map((r) => (
-              <tr key={r.id} className="border-b border-keyra-border/50">
-                <td className="px-1 py-1">
-                  <input
-                    className="w-[110px] rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
-                    value={r.protocolName}
-                    onChange={(e) => setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, protocolName: e.target.value } : x)))}
-                    disabled={busy}
-                  />
-                </td>
-                <td className="px-1 py-1">
-                  <input
-                    className="w-[72px] rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
-                    value={r.protocolCode}
-                    onChange={(e) => setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, protocolCode: e.target.value } : x)))}
-                    disabled={busy}
-                  />
-                </td>
-                <td className="px-1 py-1">
-                  <input
-                    className="w-[80px] rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
-                    value={r.protocolCategory}
-                    onChange={(e) => setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, protocolCategory: e.target.value } : x)))}
-                    disabled={busy}
-                  />
-                </td>
+              <tr key={r.id} className="border-b border-keyra-border/50 align-top">
                 <td className="px-1 py-1">
                   <input
                     type="checkbox"
-                    checked={r.active}
-                    onChange={(e) => setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, active: e.target.checked } : x)))}
+                    checked={!!selected[r.id]}
+                    onChange={() => toggleSelect(r.id)}
+                    disabled={busy}
+                    aria-label={`Select ${r.protocolCode}`}
+                  />
+                </td>
+                <td className="px-1 py-1">
+                  <div
+                    className={`flex size-9 items-center justify-center rounded-md border text-[9px] font-bold leading-tight ${themeClass(r.colorTheme)}`}
+                    title={r.iconKey ?? "SAT-Core"}
+                  >
+                    SAT
+                  </div>
+                </td>
+                <td className="px-1 py-1">
+                  <input
+                    className="w-[130px] rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
+                    value={r.protocolName}
+                    onChange={(e) =>
+                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, protocolName: e.target.value } : x)))
+                    }
+                    disabled={busy}
+                  />
+                  <div className="mt-1 flex flex-wrap gap-1">
+                    <span className={`rounded px-1 py-0.5 text-[9px] ring-1 ${secChipClass(r.securityClassification ?? null)}`}>
+                      {r.securityClassification ?? "—"}
+                    </span>
+                    {typeof r.trustLevel === "number" ? (
+                      <span className="rounded px-1 py-0.5 text-[9px] ring-1 ring-keyra-border text-keyra-accent" title="Trust level">
+                        T{r.trustLevel}
+                      </span>
+                    ) : null}
+                    {r.flagAiAgent ? (
+                      <span className="rounded px-1 py-0.5 text-[9px] ring-1 ring-fuchsia-500/35 text-fuchsia-200">AI</span>
+                    ) : null}
+                    {r.zeroKnowledgeCompatible ? (
+                      <span className="rounded px-1 py-0.5 text-[9px] ring-1 ring-violet-500/35 text-violet-200">ZK</span>
+                    ) : null}
+                    {r.simOrEsimRequired ? (
+                      <span className="rounded px-1 py-0.5 text-[9px] ring-1 ring-sky-500/35 text-sky-200">SIM</span>
+                    ) : null}
+                    <span
+                      className={`rounded px-1 py-0.5 text-[9px] ring-1 ${r.active ? "text-emerald-200 ring-emerald-500/35" : "text-keyra-text-2 ring-keyra-border"}`}
+                      title="Feed / registry activity"
+                    >
+                      {r.active ? "live" : "off"}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-1 py-1">
+                  <input
+                    className="w-[88px] rounded border border-keyra-border bg-keyra-bg px-1 py-0.5 font-mono"
+                    value={r.protocolCode}
+                    onChange={(e) =>
+                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, protocolCode: e.target.value } : x)))
+                    }
+                    disabled={busy}
+                  />
+                </td>
+                <td className="px-1 py-1">
+                  <input
+                    className="w-[100px] rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
+                    value={r.protocolCategory}
+                    onChange={(e) =>
+                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, protocolCategory: e.target.value } : x)))
+                    }
                     disabled={busy}
                   />
                 </td>
@@ -248,7 +527,7 @@ export default function AdminSatProtocolsPage() {
                     disabled={busy}
                   />
                 </td>
-                <td className="px-1 py-1 whitespace-nowrap">
+                <td className="px-1 py-1">
                   <input
                     type="number"
                     className="w-12 rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
@@ -260,7 +539,8 @@ export default function AdminSatProtocolsPage() {
                     }
                     disabled={busy}
                   />
-                  /
+                </td>
+                <td className="px-1 py-1">
                   <input
                     type="number"
                     className="w-12 rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
@@ -275,15 +555,59 @@ export default function AdminSatProtocolsPage() {
                 </td>
                 <td className="px-1 py-1">
                   <input
-                    type="checkbox"
-                    checked={r.allowProtocolLink}
+                    type="number"
+                    min={1}
+                    max={5}
+                    className="w-10 rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
+                    value={r.trustLevel ?? 4}
                     onChange={(e) =>
-                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, allowProtocolLink: e.target.checked } : x)))
+                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, trustLevel: Number(e.target.value) } : x)))
                     }
                     disabled={busy}
                   />
                 </td>
-                <td className="flex gap-1 px-1 py-1">
+                <td className="px-1 py-1 font-mono text-[10px] leading-tight text-keyra-text-2">
+                  {r.flagEnterprise ? "E" : "·"}
+                  {r.flagGovernment ? "G" : "·"}
+                  {r.flagTelco ? "T" : "·"}
+                  {r.flagConsumer ? "C" : "·"}
+                  {r.flagAiAgent ? "A" : "·"}
+                </td>
+                <td className="px-1 py-1 text-center">
+                  <input
+                    type="checkbox"
+                    checked={r.globalAvailability !== false}
+                    onChange={(e) =>
+                      setRows((xs) =>
+                        xs.map((x) => (x.id === r.id ? { ...x, globalAvailability: e.target.checked } : x)),
+                      )
+                    }
+                    disabled={busy}
+                    title="Global availability"
+                  />
+                </td>
+                <td className="px-1 py-1 text-center">
+                  <input
+                    type="checkbox"
+                    checked={r.apiReady !== false}
+                    onChange={(e) =>
+                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, apiReady: e.target.checked } : x)))
+                    }
+                    disabled={busy}
+                    title="API ready"
+                  />
+                </td>
+                <td className="px-1 py-1 text-center">
+                  <input
+                    type="checkbox"
+                    checked={r.active}
+                    onChange={(e) =>
+                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, active: e.target.checked } : x)))
+                    }
+                    disabled={busy}
+                  />
+                </td>
+                <td className="flex flex-wrap gap-1 px-1 py-1">
                   <Button type="button" variant="secondary" disabled={busy} onClick={() => void saveRow(r)}>
                     Save
                   </Button>

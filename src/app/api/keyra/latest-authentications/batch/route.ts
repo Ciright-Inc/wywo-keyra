@@ -8,6 +8,7 @@ import {
   updateSessionAfterBatch,
 } from "@/lib/authenticationFeed/feedSessionDb";
 import { loadFeedGenerationAssets } from "@/lib/authenticationFeed/loadAssets";
+import { toFeedCountryInputs } from "@/lib/authenticationFeed/toFeedCountryInputs";
 import { wrapPublicFeedJson } from "@/lib/authenticationFeed/publicFeedPayload";
 import { isPostgresDatabaseUrlConfigured } from "@/lib/postgresEnv";
 import { cookies } from "next/headers";
@@ -62,14 +63,7 @@ export async function GET(req: Request) {
   const limit = Math.min(settings.batchSize, remaining);
   const pairs = pairsUsedFromJson(session.pairsUsedJson);
 
-  const countryInputs = countries.map((c) => ({
-    id: c.id,
-    iso2: c.iso2,
-    countryName: c.countryName,
-    region: c.region,
-    active: c.active,
-    percentageWeight: c.percentageWeight,
-  }));
+  const countryInputs = toFeedCountryInputs(countries);
   const protocolInputs = protocols.map((p) => ({
     id: p.id,
     protocolCode: p.protocolCode,

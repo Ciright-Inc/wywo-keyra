@@ -62,4 +62,33 @@ describe("generateLatestAuthBatch uniqueness", () => {
     });
     expect(new Set(keys).size).toBe(2);
   });
+
+  it("excludes countries with authenticationEnabled false even when active", () => {
+    const countries = [
+      { id: "c1", iso2: "US", countryName: "United States", region: "NA", active: true, authenticationEnabled: false, percentageWeight: 50 },
+      { id: "c2", iso2: "IE", countryName: "Ireland", region: "EU", active: true, authenticationEnabled: true, percentageWeight: 50 },
+    ];
+    const protocols = [
+      {
+        id: "p1",
+        protocolCode: "SAT-ID",
+        protocolName: "SAT-ID",
+        protocolCategory: "ID",
+        active: true,
+        percentageWeight: 100,
+        homePercentage: 50,
+        roamingPercentage: 50,
+      },
+    ];
+    const { records } = generateLatestAuthBatch({
+      countries,
+      protocols,
+      limit: 3,
+      uniquenessLimit: 20,
+      maskingEnabled: true,
+      pairsUsed: new Set(),
+    });
+    expect(records.length).toBeGreaterThan(0);
+    expect(records.every((r) => r.c === "Ireland")).toBe(true);
+  });
 });

@@ -238,39 +238,84 @@ model KeyraSiteUserProfile {
 
 /** Admin-configured country weights for keyra.ie “Latest authentications” demo feed. */
 model AuthenticationCountry {
-  id                 String   @id @default(cuid())
-  countryName        String
-  iso2               String   @unique @db.VarChar(2)
-  region             String
-  active             Boolean  @default(true)
-  percentageWeight   Float    @default(1)
-  displayPriority    Int      @default(0)
-  notes              String?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  id                      String   @id @default(cuid())
+  countryName             String
+  officialName            String?  @db.Text
+  iso2                    String   @unique @db.VarChar(2)
+  iso3                    String?  @unique @db.VarChar(3)
+  isoNumeric              String?  @db.VarChar(3)
+  /** Broad area (e.g. Europe, Americas) — used for filters and feed region fallback. */
+  region                  String
+  subRegion               String?  @db.Text
+  capitalCity             String?  @db.Text
+  flagEmoji               String?  @db.VarChar(8)
+  flagAssetPath           String?  @db.Text
+  phoneCountryCode        String?  @db.VarChar(32)
+  currencyCode            String?  @db.VarChar(3)
+  currencyName            String?  @db.Text
+  primaryLanguage         String?  @db.Text
+  active                  Boolean  @default(true)
+  /** When false, country is excluded from weighted feed selection (still visible in admin). */
+  authenticationEnabled   Boolean  @default(true)
+  /** Relative weight before normalization to 100% in the feed engine. Default 5 for global seed. */
+  percentageWeight        Float    @default(5)
+  displayPriority         Int      @default(0)
+  notes                     String?  @db.Text
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
 
   @@index([active, region])
+  @@index([active, authenticationEnabled])
+  @@index([subRegion])
   @@index([displayPriority])
 }
 
-/** SAT protocol rows for weighted demo feed + protocol detail modal. */
+/** SAT protocol rows for weighted demo feed + protocol detail modal (global SAT-Core registry). */
 model SatProtocol {
-  id                  String   @id @default(cuid())
-  protocolName        String
-  protocolCode        String   @unique
-  protocolCategory    String
-  active              Boolean  @default(true)
-  percentageWeight    Float    @default(1)
-  protocolMemo        String   @default("")
-  protocolUrlEnabled  Boolean  @default(false)
-  protocolUrl         String?
-  allowProtocolLink   Boolean  @default(false)
-  homePercentage       Float    @default(50)
-  roamingPercentage    Float    @default(50)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  protocolName         String
+  protocolCode         String   @unique
+  /** URL-style slug (e.g. sat-mfa); not used in feed pair keys. */
+  protocolSlug         String?  @unique
+  protocolCategory     String
+  shortDescription     String?  @db.Text
+  longDescription      String?  @db.Text
+  active               Boolean  @default(true)
+  /** Feed selection weight (normalized with other active protocols). */
+  percentageWeight     Float    @default(60)
+  protocolMemo         String   @default("")
+  protocolUrlEnabled   Boolean  @default(false)
+  protocolUrl          String?
+  allowProtocolLink    Boolean  @default(false)
+  /** Home vs roaming split for H/R display (must sum to ~100). Default 40 / 60. */
+  homePercentage        Float    @default(40)
+  roamingPercentage     Float    @default(60)
+  securityClassification String  @default("STANDARD") @db.VarChar(24)
+  flagEnterprise        Boolean  @default(true)
+  flagGovernment        Boolean  @default(true)
+  flagTelco             Boolean  @default(true)
+  flagConsumer          Boolean  @default(true)
+  flagAiAgent           Boolean  @default(true)
+  displayOrder          Int      @default(0)
+  iconKey               String?  @db.VarChar(64)
+  colorTheme            String?  @db.VarChar(32)
+  /** 1–5 scale for admin / UI trust badge. */
+  trustLevel            Int      @default(4)
+  riskReductionScore    Int      @default(0)
+  globalAvailability    Boolean  @default(true)
+  apiReady              Boolean  @default(true)
+  auditRequired         Boolean  @default(true)
+  consentRequired       Boolean  @default(true)
+  zeroKnowledgeCompatible Boolean @default(false)
+  simOrEsimRequired     Boolean  @default(false)
+  deviceBindingRequired Boolean  @default(false)
+  createdBySystem       Boolean  @default(false)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
   @@index([active])
+  @@index([protocolCategory])
+  @@index([displayOrder])
 }
 
 /** Singleton row — use id "default" in application code. */

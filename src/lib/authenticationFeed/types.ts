@@ -17,6 +17,8 @@ export type FeedCountryInput = {
   countryName: string;
   region: string;
   active: boolean;
+  /** Present on rows from `toFeedCountryInputs`; feed generator treats false as excluded before mapping. */
+  authenticationEnabled?: boolean;
   percentageWeight: number;
 };
 

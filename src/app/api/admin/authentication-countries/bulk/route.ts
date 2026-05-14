@@ -1,5 +1,6 @@
 import { readJsonObject, rateLimitResponse } from "@/app/api/keyra/_routeHelpers";
 import { writeAudit } from "@/app/api/admin/deployments/_audit";
+import { validatePercentageWeight } from "@/lib/authenticationFeed/countryPayload";
 import { requireGlobalFeedWrite } from "@/lib/authenticationFeed/adminGuard";
 import { requireDeploymentAuth } from "@/lib/deployments/adminContext";
 import prisma from "@/lib/prisma";
@@ -16,9 +17,30 @@ function patchFromUpdate(u: Record<string, unknown>): { data: Record<string, unk
     data.iso2 = iso2;
   }
   if (typeof u.region === "string") data.region = u.region.trim();
+  if (typeof u.officialName === "string") data.officialName = u.officialName.trim() || null;
+  if (typeof u.subRegion === "string") data.subRegion = u.subRegion.trim() || null;
+  if ("iso3" in u && u.iso3 === null) data.iso3 = null;
+  else if (typeof u.iso3 === "string") {
+    const t = u.iso3.trim().toUpperCase();
+    if (t.length === 0) data.iso3 = null;
+    else {
+      if (t.length !== 3) return { error: "iso3 must be three letters." };
+      data.iso3 = t;
+    }
+  }
+  if (typeof u.isoNumeric === "string") data.isoNumeric = u.isoNumeric.trim().slice(0, 3) || null;
+  if (typeof u.capitalCity === "string") data.capitalCity = u.capitalCity.trim() || null;
+  if (typeof u.flagEmoji === "string") data.flagEmoji = u.flagEmoji.trim().slice(0, 8) || null;
+  if (typeof u.phoneCountryCode === "string") data.phoneCountryCode = u.phoneCountryCode.trim().slice(0, 32) || null;
+  if (typeof u.currencyCode === "string") data.currencyCode = u.currencyCode.trim().toUpperCase().slice(0, 3) || null;
+  if (typeof u.currencyName === "string") data.currencyName = u.currencyName.trim() || null;
+  if (typeof u.primaryLanguage === "string") data.primaryLanguage = u.primaryLanguage.trim() || null;
   if (typeof u.active === "boolean") data.active = u.active;
+  if (typeof u.authenticationEnabled === "boolean") data.authenticationEnabled = u.authenticationEnabled;
   if (typeof u.percentageWeight === "number" && Number.isFinite(u.percentageWeight)) {
-    data.percentageWeight = u.percentageWeight;
+    const wv = validatePercentageWeight(u.percentageWeight);
+    if (typeof wv === "object") return { error: wv.error };
+    data.percentageWeight = wv;
   }
   if (typeof u.displayPriority === "number" && Number.isFinite(u.displayPriority)) {
     data.displayPriority = Math.floor(u.displayPriority);
@@ -79,6 +101,10 @@ export async function POST(req: Request) {
           const clash = await tx.authenticationCountry.findUnique({ where: { iso2: built.data.iso2 as string } });
           if (clash) throw new Error("ISO2_CONFLICT");
         }
+        if (typeof built.data.iso3 === "string" && built.data.iso3 !== existing.iso3) {
+          const clash3 = await tx.authenticationCountry.findUnique({ where: { iso3: built.data.iso3 as string } });
+          if (clash3) throw new Error("ISO3_CONFLICT");
+        }
         await tx.authenticationCountry.update({
           where: { id },
           data: built.data as never,
@@ -96,6 +122,9 @@ export async function POST(req: Request) {
     }
     if (msg === "ISO2_CONFLICT") {
       return NextResponse.json({ error: "Duplicate ISO2 in bulk update." }, { status: 409 });
+    }
+    if (msg === "ISO3_CONFLICT") {
+      return NextResponse.json({ error: "Duplicate ISO3 in bulk update." }, { status: 409 });
     }
     throw e;
   }
