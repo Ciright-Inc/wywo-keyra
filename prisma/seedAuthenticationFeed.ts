@@ -13,7 +13,7 @@ export async function seedAuthenticationFeed(db: PrismaClient): Promise<void> {
     update: {},
   });
 
-  // AuthenticationCountry rows: run `npm run db:seed:world-countries` for full sovereign dataset (weight 5).
+  // AuthenticationCountry rows: also run automatically via `npm run db:seed:deploy-catalog` on `npm start`, or manually: `npm run db:seed:world-countries`.
 
   await seedSatProtocolRegistry(db);
 

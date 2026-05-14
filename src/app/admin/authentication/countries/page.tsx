@@ -337,7 +337,8 @@ export default function AdminAuthCountriesPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Authentication countries</h1>
         <p className="mt-2 max-w-3xl text-sm text-keyra-text-2">
-          Global sovereign dataset: run <code className="rounded bg-keyra-bg px-1 py-0.5 text-xs">npm run db:seed:world-countries</code>{" "}
+          <code className="rounded bg-keyra-bg px-1 py-0.5 text-xs">npm start</code> runs migrations then the deploy catalog seed (includes world countries). Manual only:{" "}
+          <code className="rounded bg-keyra-bg px-1 py-0.5 text-xs">npm run db:seed:world-countries</code>{" "}
           (re-runnable; preserves weights unless <code className="rounded bg-keyra-bg px-1 py-0.5 text-xs">RESET_AUTH_COUNTRY_WEIGHTS=1</code>
           ). Feed uses only rows that are <strong>active</strong> and <strong>authentication enabled</strong>; weights normalize to 100% at
           generation. Raw weight sum (eligible):{" "}
@@ -553,7 +554,8 @@ export default function AdminAuthCountriesPage() {
         </table>
         {rows.length === 0 ? (
           <p className="px-3 py-6 text-center text-sm text-keyra-text-2">
-            No rows match filters. Run <code className="text-xs">npm run db:seed:world-countries</code> after migrating.
+            No rows match filters, or the catalog seed has not run. After deploy, <code className="text-xs">npm start</code> seeds countries;
+            or run <code className="text-xs">npm run db:seed:world-countries</code>.
           </p>
         ) : null}
       </div>

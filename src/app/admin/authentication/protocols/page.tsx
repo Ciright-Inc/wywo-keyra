@@ -290,7 +290,8 @@ export default function AdminSatProtocolsPage() {
         <h1 className="text-2xl font-semibold tracking-tight">SAT protocols</h1>
         <p className="mt-2 max-w-3xl text-sm text-keyra-text-2">
           Global SAT-Core protocol registry. Home + roaming must total 100% (default 40% home / 60% roaming). Feed
-          weight defaults to 60. Run db:seed:auth-feed to upsert the canonical 20-protocol catalog.
+          On deploy, <code className="text-keyra-accent">npm start</code> runs migrations then the catalog seed (protocols + world countries). To run only feed settings and protocols:{" "}
+          <code className="text-keyra-accent">npm run db:seed:auth-feed</code>.
         </p>
       </div>
       {error ? (
