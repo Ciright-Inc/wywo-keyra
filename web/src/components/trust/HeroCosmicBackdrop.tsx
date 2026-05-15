@@ -24,7 +24,7 @@ export function HeroCosmicBackdrop({
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(1200px 700px at 20% 15%, rgba(142,189,210,0.08), transparent 55%), radial-gradient(900px 540px at 80% 25%, rgba(122,135,168,0.07), transparent 55%), radial-gradient(950px 640px at 55% 85%, rgba(142,189,210,0.06), transparent 60%)",
+              "radial-gradient(1200px 720px at 18% 12%, rgba(110,165,198,0.11), transparent 56%), radial-gradient(920px 560px at 82% 22%, rgba(90,110,150,0.09), transparent 54%), radial-gradient(980px 620px at 52% 88%, rgba(130,175,205,0.07), transparent 58%)",
           }}
         />
         <div className="animate-keyra-drift absolute inset-0 opacity-65">

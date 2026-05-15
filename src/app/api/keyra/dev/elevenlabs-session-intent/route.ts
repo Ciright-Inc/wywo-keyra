@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 
 /**
- * Development-only: echoes JSON so DevTools → Network (Fetch/XHR) shows the same
- * `inspect_phone` / `inspect_phone_number` / `inspect_userId` at the top level for quick checks.
- * ElevenLabs itself talks over WebSocket/WebRTC, so those fields do not appear as a plain fetch.
+ * Echoes JSON so DevTools → Network (Fetch/XHR) shows the same `agentId` / `dynamicVariables`
+ * we set on `<elevenlabs-convai>` (plus top-level `employee_name` and request headers for quick scans).
+ * Enabled when `NODE_ENV === "development"` or `NEXT_PUBLIC_DEBUG_ELEVENLABS_SESSION=true`.
+ * ElevenLabs itself talks over WebSocket/WebRTC, so those fields do not appear as a plain Keyra fetch.
  */
 export async function POST(req: Request) {
-  if (process.env.NODE_ENV !== "development") {
+  const mirrorOk =
+    process.env.NODE_ENV === "development" ||
+    process.env.NEXT_PUBLIC_DEBUG_ELEVENLABS_SESSION === "true";
+  if (!mirrorOk) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 

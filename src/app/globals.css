@@ -9,6 +9,9 @@
  * - developer: /developers — technical clarity, mono, tighter radii
  *
  * Lane is set SSR via middleware → x-keyra-design-lane → layout data-keyra-lane.
+ *
+ * Trust Layer doctrine — motion layers: foreground 300ms / midground 500ms / background 700ms
+ * (--keyra-motion-fg|mg|bg). Typography: .keyra-display-hero for sovereign editorial headlines.
  */
 
 /* -------------------------------------------------------------------------- */
@@ -21,6 +24,13 @@
   --keyra-text: #e8eef5;
   --keyra-text-secondary: rgba(232, 238, 245, 0.68);
   --keyra-white: #ffffff;
+
+  /* Light shells — atmospheric warm mineral (not sterile marketing white) */
+  --keyra-canvas: #f2efe6;
+  --keyra-surface-light: #f9f7f2;
+  --keyra-surface-muted: #e8e4d9;
+  --keyra-ink-on-light: #1a1f26;
+  --keyra-ink-muted-on-light: #4a5568;
 
   --keyra-accent: #8ebdd2;
   --keyra-accent-2: #7a87a8;
@@ -66,7 +76,10 @@
   --keyra-space-section-y: clamp(3.5rem, 2.5rem + 3vw, 5.5rem);
   --keyra-space-section-x: clamp(1rem, 0.5rem + 1.5vw, 1.5rem);
 
-  /* Motion */
+  /* Motion — cinematic layers (Trust Layer doctrine) */
+  --keyra-motion-fg: 300ms;
+  --keyra-motion-mg: 500ms;
+  --keyra-motion-bg: 700ms;
   --keyra-motion-fast: 180ms;
   --keyra-motion-base: 320ms;
   --keyra-motion-slow: 520ms;
@@ -87,13 +100,13 @@
 /* Lane: CONSUMER — softer dark, warmer text, gentler structure                 */
 /* -------------------------------------------------------------------------- */
 html[data-keyra-lane="consumer"] {
-  --keyra-bg: #0a1018;
-  --keyra-surface: #121b2a;
-  --keyra-surface-2: #162132;
-  --keyra-text: #f0f4fa;
-  --keyra-text-secondary: rgba(240, 244, 250, 0.66);
-  --keyra-accent: #a8c9db;
-  --keyra-accent-2: #8b9ab8;
+  --keyra-bg: #080f18;
+  --keyra-surface: #111b2a;
+  --keyra-surface-2: #152030;
+  --keyra-text: #f2f5f9;
+  --keyra-text-secondary: rgba(242, 245, 249, 0.65);
+  --keyra-accent: #9ec7dc;
+  --keyra-accent-2: #94a3b8;
   --keyra-action: rgba(168, 201, 219, 0.11);
   --keyra-action-border: rgba(168, 201, 219, 0.24);
   --keyra-border: rgba(255, 255, 255, 0.1);
@@ -158,6 +171,23 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Pale bands inside dark-themed routes — stack over body copy safely */
+.keyra-readable-on-light {
+  color: var(--keyra-ink-on-light);
+}
+
+.keyra-readable-on-light :where(h1, h2, h3, h4, h5, h6):not([class*="text-"]) {
+  color: var(--keyra-ink-on-light);
+}
+
+.keyra-readable-on-light :where(p, li, dd, dt, label, td, th):not([class*="text-"]) {
+  color: var(--keyra-ink-muted-on-light);
+}
+
+.keyra-readable-on-light :where(a):not([class*="text-"]) {
+  color: var(--keyra-accent);
+}
+
 /* Section rhythm — progressive complexity (surface → deep without clutter) */
 .keyra-section {
   padding-left: var(--keyra-space-section-x);
@@ -172,6 +202,22 @@ body {
   font-weight: 600;
   letter-spacing: var(--keyra-tracking-head);
   line-height: 1.06;
+  color: var(--keyra-primary);
+}
+
+.keyra-display-hero {
+  font-size: clamp(2.65rem, 1.25rem + 4.8vw, 5.15rem);
+  font-weight: 600;
+  letter-spacing: -0.032em;
+  line-height: 1.02;
+  color: var(--keyra-primary);
+}
+
+.keyra-display-finale {
+  font-size: clamp(2.5rem, 1.2rem + 3.8vw, 4.5rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
   color: var(--keyra-primary);
 }
 

@@ -16,6 +16,11 @@ import { resolveElevenLabsAgentId } from "@/lib/elevenLabsAgentConfig";
  * ElevenLabs ConvAI widget — `<elevenlabs-convai>` + embed script.
  * The embed loads for every visitor; `dynamic-variables` fill in after sign-in when phone/name exist.
  *
+ * DevTools: ElevenLabs traffic is WebSocket/WebRTC — employee name is not a plain Keyra URL.
+ * When `NODE_ENV=development` or `NEXT_PUBLIC_DEBUG_ELEVENLABS_SESSION=true`, we POST a mirror to
+ * `/api/keyra/dev/elevenlabs-session-intent` with JSON `employee_name`, `inspect_employee_name`,
+ * and headers `X-Keyra-Convai-Has-Employee-Name` / `X-Keyra-Convai-Employee-Name-B64` (UTF-8 base64).
+ *
  * @see https://elevenlabs.io/docs/agents-platform/customization/widget
  */
 
@@ -55,20 +60,52 @@ type ElevenLabsSessionPayload = {
   dynamicVariables: Record<string, string>;
 };
 
-type DevIntentKind = "on-page-load";
+type ConvaiMirrorKind = "convai-context-snapshot";
 
-function devPostElevenLabsIntent(kind: DevIntentKind, payload: ElevenLabsSessionPayload) {
-  if (process.env.NODE_ENV !== "development") return;
+/** Same-origin mirror request so DevTools → Network shows what we pass to the widget (ElevenLabs uses WS/WebRTC). */
+function convaiNetworkMirrorEnabled(): boolean {
+  return (
+    process.env.NODE_ENV === "development" ||
+    process.env.NEXT_PUBLIC_DEBUG_ELEVENLABS_SESSION === "true"
+  );
+}
+
+function utf8ToBase64Header(value: string): string | undefined {
+  const t = value.trim();
+  if (!t) return undefined;
+  try {
+    const bytes = new TextEncoder().encode(t);
+    let binary = "";
+    bytes.forEach((b) => {
+      binary += String.fromCharCode(b);
+    });
+    return btoa(binary);
+  } catch {
+    return undefined;
+  }
+}
+
+function mirrorConvaiDynamicVarsToNetwork(kind: ConvaiMirrorKind, payload: ElevenLabsSessionPayload) {
+  if (!convaiNetworkMirrorEnabled()) return;
+  const employeeName = payload.dynamicVariables.employee_name?.trim() ?? "";
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const nameB64 = utf8ToBase64Header(employeeName);
+  if (nameB64) headers["X-Keyra-Convai-Employee-Name-B64"] = nameB64;
+  if (employeeName) headers["X-Keyra-Convai-Has-Employee-Name"] = "1";
+
   void fetch("/api/keyra/dev/elevenlabs-session-intent", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     credentials: "same-origin",
     body: JSON.stringify({
       kind,
-      ...payload,
+      agentId: payload.agentId,
+      userId: payload.userId,
+      dynamicVariables: payload.dynamicVariables,
+      employee_name: employeeName,
       inspect_phone_number: payload.dynamicVariables.phone_number,
       inspect_employee_id: payload.dynamicVariables.employee_id,
-      inspect_employee_name: payload.dynamicVariables.employee_name,
+      inspect_employee_name: employeeName,
       inspect_userId: payload.userId,
       at: new Date().toISOString(),
     }),
@@ -137,7 +174,7 @@ export function ElevenLabsHomeAgent() {
   useEffect(() => {
     if (!convaiMounted || !embedReady) return;
     const phoneE164 = user?.phoneE164?.trim() ?? "";
-    devPostElevenLabsIntent("on-page-load", {
+    mirrorConvaiDynamicVarsToNetwork("convai-context-snapshot", {
       agentId,
       userId: phoneE164 || "anonymous",
       dynamicVariables: {
