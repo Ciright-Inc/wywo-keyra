@@ -104,7 +104,6 @@ export function GlobalDeploymentView({ initialTree }: { initialTree: PublicDeplo
             selectedMapKey={selectedMapKey}
             onInspectCountry={setInspectCountryId}
           />
-          <RegionLegend />
         </div>
 
         <div className="hidden space-y-4 lg:order-2 lg:block">
@@ -242,6 +241,10 @@ export function GlobalDeploymentView({ initialTree }: { initialTree: PublicDeplo
             </section>
           ))
         )}
+      </div>
+
+      <div className="mt-8 lg:mt-10">
+        <RegionLegend />
       </div>
 
       <DeploymentDetailPanel

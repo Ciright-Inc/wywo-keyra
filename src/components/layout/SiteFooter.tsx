@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { AudienceLaneSwitcher } from "@/components/governance/AudienceLaneSwitcher";
-import { KeyraLogo } from "@/components/brand/KeyraLogo";
 import { getKeyraEcosystemAppLinks, type KeyraEcosystemAppLink } from "@/lib/keyraAppUrls";
 
 const links = [
@@ -21,7 +20,7 @@ function splitInHalf<T>(arr: T[]): [T[], T[]] {
 }
 
 const linkClass =
-  "text-sm text-keyra-text-2 transition hover:text-keyra-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-keyra-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-keyra-bg rounded-sm";
+  "text-sm text-keyra-text-2 transition hover:text-keyra-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-keyra-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-sm";
 
 const sectionTitleClass =
   "text-[11px] font-semibold uppercase tracking-[0.14em] text-keyra-text-2";
@@ -60,32 +59,27 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-keyra-border bg-keyra-bg">
+    <footer className="keyra-site-footer border-t border-keyra-border">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:py-11">
-        <section
-          className="rounded-2xl border border-keyra-border/90 bg-keyra-surface/35 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:p-5"
-          aria-labelledby="footer-ecosystem-heading"
-        >
-          <h2 id="footer-ecosystem-heading" className={sectionTitleClass}>
-            Keyra ecosystem
-          </h2>
-          <div className="mt-3">
-            <AudienceLaneSwitcher variant="footer" />
-          </div>
-        </section>
-
-        <div className="mt-8 grid gap-8 border-t border-keyra-border/80 pt-8 lg:mt-9 lg:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-6 lg:pt-9 xl:gap-8">
-          <div className="w-max max-w-full shrink-0 pr-2 lg:pr-0">
+        <div className="grid gap-8 border-keyra-border/80 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-8 xl:gap-10">
+          <div className="min-w-0">
+            <h2 className={sectionTitleClass}>Keyra ecosystem</h2>
+            <p className="mt-2 max-w-md text-[13px] leading-relaxed text-keyra-text-2">
+              Choose the experience that matches your context — consumer protection, enterprise deployment, or
+              partner tooling.
+            </p>
+            <div className="mt-4">
+              <AudienceLaneSwitcher variant="footer" />
+            </div>
             <Link
               href="/"
-              className="group inline-flex max-w-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-keyra-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-keyra-bg"
-              aria-label="Keyra home"
+              className="mt-5 inline-flex text-sm font-semibold text-keyra-primary underline-offset-4 transition hover:underline"
             >
-              <KeyraLogo variant="footer" showWordmark={false} />
+              Keyra home
             </Link>
           </div>
 
-          <div className="min-w-0">
+          <div className="min-w-0 lg:border-l lg:border-keyra-border/50 lg:pl-6 xl:pl-8">
             <h2 className={sectionTitleClass}>On this site</h2>
             <nav className="mt-3" aria-label="Footer">
               <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-x-5">
@@ -130,7 +124,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-keyra-border/60 pt-6 text-center text-xs text-keyra-text-2/80 sm:text-left">
+        <div className="mt-8 border-t border-keyra-border/80 pt-6 text-center text-xs text-keyra-text-2 sm:text-left">
           <p>© {year} Keyra. All rights reserved.</p>
         </div>
       </div>

@@ -12,12 +12,20 @@ export function HeroCosmicBackdrop({
   /** Rendered above drift lines, under the bottom vignette (e.g. signal dots on home). */
   children?: ReactNode;
 }) {
-  const baseWash = variant === "enterprise" ? "bg-keyra-bg/68" : "bg-keyra-bg/55";
+  /* Enterprise: dark graphite scrim so light typography stays legible over a bright globe. */
+  const baseWash =
+    variant === "enterprise"
+      ? "bg-gradient-to-b from-zinc-950/82 via-zinc-950/48 to-zinc-950/22"
+      : "bg-keyra-bg/55";
   const driftOpacity = variant === "enterprise" ? "opacity-50" : "opacity-70";
+  const imageOpacity = variant === "enterprise" ? "opacity-[0.72]" : "opacity-80";
 
   return (
     <div className="pointer-events-none absolute inset-0" aria-hidden>
-      <div className="absolute inset-0 bg-cover bg-center opacity-80" style={{ backgroundImage: "url('/image.png')" }} />
+      <div
+        className={`absolute inset-0 bg-cover bg-center ${imageOpacity}`}
+        style={{ backgroundImage: "url('/image.png')" }}
+      />
       <div className={`absolute inset-0 ${baseWash}`} />
       <div className={`absolute inset-0 ${driftOpacity}`}>
         <div

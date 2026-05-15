@@ -142,7 +142,7 @@ function PhotorealEarth() {
     return (
       <mesh>
         <sphereGeometry args={[EARTH_RADIUS * 0.98, 48, 48]} />
-        <meshBasicMaterial color="#050a12" />
+        <meshBasicMaterial color="#e8e8e8" />
       </mesh>
     );
   }
@@ -159,8 +159,8 @@ function PhotorealEarth() {
           specularMap={specular ?? undefined}
           specular={specularColor}
           shininess={12}
-          emissive="#0c1828"
-          emissiveIntensity={0.35}
+          emissive="#1a1a1a"
+          emissiveIntensity={0.22}
         />
       </mesh>
 
@@ -186,15 +186,15 @@ function SceneLights() {
   return (
     <>
       {/* Strong fill: terminator is from fixed scene lights + spin, not live sun angle per region. */}
-      <ambientLight intensity={0.42} color="#c4d2e8" />
-      <hemisphereLight args={["#cfe0ff", "#1a2838", 0.55]} />
+      <ambientLight intensity={0.48} color="#f0f0f0" />
+      <hemisphereLight args={["#ffffff", "#d4d4d4", 0.5]} />
       <directionalLight
         castShadow={false}
         position={[4.8, 0.6, 2.2]}
-        intensity={1.65}
+        intensity={1.45}
         color="#ffffff"
       />
-      <directionalLight position={[-2.8, 0.35, -2.2]} intensity={0.52} color="#6a8ab8" />
+      <directionalLight position={[-2.8, 0.35, -2.2]} intensity={0.4} color="#a3a3a3" />
     </>
   );
 }

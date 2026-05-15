@@ -20,7 +20,7 @@ export function SiteHeader() {
   const { user } = useKeyraSession();
 
   return (
-    <header className="sticky top-0 z-[var(--keyra-z-header)] border-b border-keyra-border bg-keyra-bg/90 backdrop-blur-md">
+    <header className="keyra-site-header-shell z-[var(--keyra-z-header)]">
       <div className="relative mx-auto grid w-full min-w-0 max-w-7xl grid-cols-1 gap-y-0 px-3 py-0.5 sm:px-6 lg:h-14 lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-5 lg:gap-y-0 lg:py-0">
         <Link
           href="/"
@@ -40,7 +40,7 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative flex min-w-fit shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-colors hover:bg-[rgba(255,255,255,0.05)] hover:text-keyra-primary lg:px-4"
+                className="relative flex min-w-fit shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-colors hover:bg-black/[0.05] hover:text-keyra-primary lg:px-4"
               >
                 {item.label}
               </Link>

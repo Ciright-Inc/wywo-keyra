@@ -86,7 +86,13 @@ export function GlobalDeploymentMap({
   onCountryInspect: (countryId: string | null) => void;
   inspectCountryId: string | null;
 }) {
-  const reduce = useReducedMotion();
+  const prefersReducedMotion = useReducedMotion();
+  /** Avoid hydration mismatch: SSR / first paint always match; then apply prefers-reduced-motion. */
+  const [motionPrefersReady, setMotionPrefersReady] = useState(false);
+  useEffect(() => {
+    setMotionPrefersReady(true);
+  }, []);
+  const reduce = motionPrefersReady && Boolean(prefersReducedMotion);
   const coarseMap = useCoarseMapLayout();
   const { clusteredNodes, dimmedIsoKeys, allNodes, tree, zoom, setZoom } = mapData;
   const [pan, setPan] = useState({ x: 0, y: 0 });

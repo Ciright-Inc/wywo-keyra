@@ -11,29 +11,34 @@ export function PageIntentRibbon({
   who: string;
   problem: string;
   nextAction: string;
-  /** `onCosmic` — frosted strip over starfield heroes. `onSurface` — Keyra sheet tokens for standard pages. */
+  /**
+   * `onCosmic` — solid dark panel for busy / image heroes (high contrast).
+   * `onSurface` — opaque light panel for editorial pages and light heroes.
+   */
   tone?: "onSurface" | "onCosmic";
 }) {
   const cosmic = tone === "onCosmic";
 
   const shell = cosmic
-    ? "mb-8 rounded-2xl border border-white/10 bg-slate-950/45 px-5 py-4 shadow-[0_12px_48px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:mb-10 sm:px-7 sm:py-5"
-    : "mb-6 rounded-[var(--keyra-radius-card)] border border-keyra-border/45 bg-keyra-surface/50 px-4 py-3 sm:px-5";
+    ? "mb-8 rounded-2xl border border-white/15 bg-zinc-950 px-5 py-4 text-left shadow-[0_16px_48px_rgba(0,0,0,0.45)] sm:mb-10 sm:px-7 sm:py-5"
+    : "mb-6 rounded-[var(--keyra-radius-card)] border border-black/12 bg-keyra-bg px-4 py-4 text-left shadow-[0_16px_48px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.05)] sm:px-6 sm:py-5";
 
-  const dt = cosmic ? "text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400" : "text-[10px] font-semibold uppercase tracking-wider text-keyra-text-2";
+  const dt = cosmic
+    ? "text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-400"
+    : "text-[10px] font-semibold uppercase tracking-wider text-keyra-text-2";
 
   const ddBase = cosmic
     ? "mt-2 text-sm font-medium leading-relaxed sm:text-[15px]"
-    : "mt-1 text-xs leading-snug sm:text-sm";
+    : "mt-1.5 text-sm font-medium leading-relaxed sm:text-[15px]";
 
-  const ddDefault = cosmic ? "text-slate-100" : "text-keyra-primary";
-  const ddAccent = cosmic ? "text-cyan-100/95" : "text-keyra-accent";
+  const ddDefault = cosmic ? "text-zinc-100" : "text-keyra-primary";
+  const ddAccent = cosmic ? "text-white" : "text-keyra-accent";
 
-  const sep = cosmic ? "sm:border-l sm:border-white/10 sm:pl-8" : "";
+  const sep = cosmic ? "sm:border-l sm:border-white/15 sm:pl-6" : "sm:border-l sm:border-black/10 sm:pl-6";
 
   return (
-    <div className={`${shell} text-left`} role="region" aria-label="Page intent">
-      <dl className={`grid gap-6 sm:grid-cols-3 ${cosmic ? "sm:gap-8" : "sm:gap-4"}`}>
+    <div className={shell} role="region" aria-label="Page intent">
+      <dl className={`grid gap-6 sm:grid-cols-3 ${cosmic ? "sm:gap-6" : "sm:gap-5"}`}>
         <div className="min-w-0">
           <dt className={dt}>Who this is for</dt>
           <dd className={`${ddBase} ${ddDefault}`}>{who}</dd>

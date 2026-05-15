@@ -24,9 +24,9 @@ export function deploymentStatusPresentation(
         code: status,
         label: "Identified",
         description: "Market or node identified, not institutionally activated.",
-        dotClass: "bg-red-500",
+        dotClass: "bg-red-600",
         badgeClass:
-          "border-red-500/40 bg-red-500/10 text-red-100 ring-1 ring-inset ring-red-500/25",
+          "border-red-800/28 bg-red-600/12 text-red-950 ring-1 ring-inset ring-red-800/20",
       };
     case "INSTITUTIONAL_AWARENESS":
       return {
@@ -35,7 +35,7 @@ export function deploymentStatusPresentation(
         description: "Stakeholder awareness exists, not yet in technical validation.",
         dotClass: "bg-orange-500",
         badgeClass:
-          "border-orange-500/40 bg-orange-500/10 text-orange-50 ring-1 ring-inset ring-orange-500/25",
+          "border-orange-800/30 bg-orange-500/14 text-orange-950 ring-1 ring-inset ring-orange-800/22",
       };
     case "TVIP":
       return {
@@ -43,18 +43,18 @@ export function deploymentStatusPresentation(
         label: "Testing, Validation, Implementation Pending",
         description:
           "Technical or commercial validation underway; production not live.",
-        dotClass: "bg-yellow-400",
+        dotClass: "bg-amber-500",
         badgeClass:
-          "border-yellow-400/45 bg-yellow-400/12 text-yellow-50 ring-1 ring-inset ring-yellow-400/30",
+          "border-amber-700/32 bg-amber-400/18 text-amber-950 ring-1 ring-inset ring-amber-700/22",
       };
     case "OPERATIONAL":
       return {
         code: status,
         label: "Operational",
         description: "Live or ready-for-live production deployment.",
-        dotClass: "bg-emerald-500",
+        dotClass: "bg-emerald-600",
         badgeClass:
-          "border-emerald-500/40 bg-emerald-500/10 text-emerald-50 ring-1 ring-inset ring-emerald-500/25",
+          "border-emerald-800/30 bg-emerald-600/14 text-emerald-950 ring-1 ring-inset ring-emerald-800/22",
       };
     default: {
       const _exhaustive: never = status;

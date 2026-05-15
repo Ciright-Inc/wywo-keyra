@@ -35,7 +35,7 @@ export function KeyraHomeGlobe({ className = "", "aria-label": ariaLabel }: Keyr
       {Scene ? (
         <Scene />
       ) : (
-        <div className="h-full w-full min-h-[160px] bg-[#050a12]" aria-hidden />
+        <div className="h-full w-full min-h-[160px] bg-[#fafafa]" aria-hidden />
       )}
     </div>
   );

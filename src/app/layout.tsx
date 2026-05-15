@@ -77,11 +77,6 @@ export default async function RootLayout({
             <main className="min-w-0 flex-1">{children}</main>
             <ElevenLabsHomeAgent />
           </KeyraSessionProvider>
-          <div className="border-t border-keyra-border bg-keyra-bg">
-            <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-              <p className="text-xs text-keyra-text-2">Be Protected Online.</p>
-            </div>
-          </div>
           <SiteFooter />
         </ToastProvider>
       </body>

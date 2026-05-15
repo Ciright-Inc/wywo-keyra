@@ -13,7 +13,7 @@ const TELEMETRY_ROWS = [
   { city: "New York", method: "SAT-SIG", badge: "S.A.T." },
 ];
 
-const panelBase = "keyra-card box-border";
+const panelBase = "keyra-card keyra-card--media-hud box-border";
 
 const labelEyebrow =
   "text-[0.52rem] font-medium uppercase tracking-[0.16em] text-keyra-text-2/90";

@@ -33,9 +33,19 @@ export function AudienceLaneSwitcher({
       ? "w-full"
       : variant === "compact"
         ? "flex flex-wrap gap-1.5"
-        : "flex flex-wrap items-center justify-center gap-1 border-t border-keyra-border/50 bg-keyra-bg/60 px-2 py-1.5 sm:gap-2 sm:px-4";
+        : "flex flex-wrap items-center justify-center gap-1 border-t border-black/10 bg-keyra-surface/95 backdrop-blur-sm px-2 py-1.5 sm:gap-2 sm:px-4";
 
   const rowJustify = variant === "footer" ? "justify-start" : "justify-center";
+
+  const pillActive =
+    variant === "footer"
+      ? "min-h-9 shrink-0 rounded-full border border-white/35 bg-white/10 px-3 py-1.5 text-center text-[11px] font-semibold text-white sm:min-h-0 sm:px-3 sm:py-1.5 sm:text-xs"
+      : "min-h-9 shrink-0 rounded-full border border-keyra-accent/35 bg-keyra-accent/10 px-3 py-1.5 text-center text-[11px] font-semibold text-keyra-primary sm:min-h-0 sm:px-3 sm:py-1.5 sm:text-xs";
+
+  const pillIdle =
+    variant === "footer"
+      ? "min-h-9 shrink-0 rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-center text-[11px] font-medium text-white/75 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white sm:min-h-0 sm:px-3 sm:py-1.5 sm:text-xs"
+      : "min-h-9 shrink-0 rounded-full px-3 py-1.5 text-center text-[11px] font-medium text-keyra-text-2 transition hover:bg-keyra-surface hover:text-keyra-primary sm:min-h-0 sm:px-3 sm:py-1.5 sm:text-xs";
 
   return (
     <div className={wrap} role="navigation" aria-label="Keyra experience context: consumers, enterprise, or partners">
@@ -43,15 +53,7 @@ export function AudienceLaneSwitcher({
         {items.map(({ lane, href, label }) => {
           const isActive = current === lane;
           return (
-            <Link
-              key={lane}
-              href={href}
-              className={
-                isActive
-                  ? "min-h-9 shrink-0 rounded-full border border-keyra-accent/35 bg-keyra-accent/10 px-3 py-1.5 text-center text-[11px] font-semibold text-keyra-primary sm:min-h-0 sm:px-3 sm:py-1.5 sm:text-xs"
-                  : "min-h-9 shrink-0 rounded-full px-3 py-1.5 text-center text-[11px] font-medium text-keyra-text-2 transition hover:bg-keyra-surface hover:text-keyra-primary sm:min-h-0 sm:text-xs"
-              }
-            >
+            <Link key={lane} href={href} className={isActive ? pillActive : pillIdle}>
               {label}
             </Link>
           );

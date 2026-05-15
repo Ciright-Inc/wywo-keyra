@@ -8,7 +8,7 @@ import { cn } from "@/components/ui/cn";
 const formatNumber = (value: number) =>
   value.toLocaleString("en", { maximumFractionDigits: 0 });
 
-const panelBase = "keyra-card box-border";
+const panelBase = "keyra-card keyra-card--media-hud box-border";
 
 const labelEyebrow =
   "text-[0.52rem] font-medium uppercase tracking-[0.16em] text-keyra-text-2/90";

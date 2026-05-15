@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
-import { TrustOperatingLine } from "@/components/trust/TrustOperatingLine";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -36,9 +35,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </Link>
               ))}
             </nav>
-          </div>
-          <div className="mt-2 border-t border-keyra-border/40 pt-2">
-            <TrustOperatingLine label="Session protected — manage profile and devices anytime." />
           </div>
         </div>
       </header>

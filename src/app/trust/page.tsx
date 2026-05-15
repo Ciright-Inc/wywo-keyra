@@ -40,7 +40,7 @@ const pillars = [
 export default function TrustPage() {
   return (
     <div className="overflow-hidden">
-      <section className="relative bg-keyra-bg">
+      <section className="relative keyra-band--light">
         <div
           className="pointer-events-none absolute left-1/2 top-0 h-px w-[min(100%,64rem)] -translate-x-1/2 bg-gradient-to-r from-transparent via-keyra-border to-transparent"
           aria-hidden
@@ -90,7 +90,7 @@ export default function TrustPage() {
         </div>
       </section>
 
-      <section className="border-t border-keyra-border/20 bg-keyra-surface">
+      <section className="border-t border-keyra-border keyra-band--dark">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
           <FadeIn>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -145,7 +145,7 @@ export default function TrustPage() {
         </div>
       </section>
 
-      <section className="border-t border-keyra-border/20 bg-keyra-bg">
+      <section className="border-t border-keyra-border keyra-band--light">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
           <FadeIn>
             <div className="flex flex-col items-start justify-between gap-8 rounded-[16px] border border-keyra-border/20 bg-keyra-surface px-8 py-10 sm:flex-row sm:items-center sm:px-10">

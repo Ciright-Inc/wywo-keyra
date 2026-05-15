@@ -8,7 +8,8 @@ type NarrativeSectionProps = {
   lead?: string;
   children?: ReactNode;
   className?: string;
-  surface?: "default" | "elevated" | "silence";
+  /** Full-bleed background: pure white or pure black (`keyra-band--*`),for SLC-style alternation. */
+  band?: "light" | "dark";
   align?: "left" | "center";
 };
 
@@ -22,22 +23,17 @@ export function NarrativeSection({
   lead,
   children,
   className = "",
-  surface = "default",
+  band = "light",
   align = "left",
 }: NarrativeSectionProps) {
-  const surfaceClass =
-    surface === "elevated"
-      ? "bg-[var(--keyra-surface)]"
-      : surface === "silence"
-        ? "bg-keyra-bg"
-        : "bg-keyra-bg";
+  const bandClass = band === "dark" ? "keyra-band--dark" : "keyra-band--light";
 
   const alignClass = align === "center" ? "text-center items-center" : "text-left items-start";
 
   return (
     <section
       id={id}
-      className={`keyra-section scroll-mt-44 lg:scroll-mt-24 ${surfaceClass} ${className}`}
+      className={`keyra-section scroll-mt-44 lg:scroll-mt-24 ${bandClass} ${className}`}
       aria-labelledby={`${id}-title`}
     >
       <div className={`mx-auto flex max-w-6xl flex-col ${alignClass}`}>

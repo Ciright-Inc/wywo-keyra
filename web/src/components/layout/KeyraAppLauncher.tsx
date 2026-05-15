@@ -59,8 +59,8 @@ export function KeyraAppLauncher() {
         aria-label="Keyra apps"
         className={cn(
           "flex h-10 w-10 items-center justify-center rounded-[var(--keyra-radius-pill)] border border-keyra-border transition duration-300 ease-out",
-          "hover:border-[rgba(255,255,255,0.14)] hover:bg-[rgba(255,255,255,0.04)]",
-          open && "border-[rgba(255,255,255,0.14)] bg-[rgba(255,255,255,0.06)]",
+          "hover:border-black/14 hover:bg-black/[0.04]",
+          open && "border-black/18 bg-black/[0.05]",
         )}
         onClick={(e) => {
           e.stopPropagation();
@@ -73,7 +73,7 @@ export function KeyraAppLauncher() {
         <div
           role="menu"
           aria-label="Keyra apps"
-          className="absolute right-0 top-[calc(100%+8px)] z-[65] w-[min(calc(100vw-1.5rem),20rem)] rounded-[var(--keyra-radius-sheet)] border border-keyra-border bg-keyra-surface p-3 shadow-[var(--keyra-shadow-hover)] sm:w-[20rem]"
+          className="absolute right-0 top-[calc(100%+8px)] z-[65] w-[min(calc(100vw-1.5rem),20rem)] rounded-[var(--keyra-radius-sheet)] border border-black/12 bg-keyra-bg p-3 shadow-[0_24px_64px_rgba(0,0,0,0.14),0_0_0_1px_rgba(0,0,0,0.05)] sm:w-[20rem]"
         >
           <p className="px-1 pb-2 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
             Keyra apps
@@ -87,10 +87,10 @@ export function KeyraAppLauncher() {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={`${item.label} — ${item.description}`}
-                  className="flex min-h-[4.25rem] flex-col items-center justify-center gap-1 rounded-lg border border-transparent px-1 py-2 text-center transition hover:border-keyra-border hover:bg-keyra-bg"
+                  className="flex min-h-[4.25rem] flex-col items-center justify-center gap-1 rounded-lg border border-transparent px-1 py-2 text-center transition hover:border-black/12 hover:bg-keyra-surface"
                   onClick={() => setOpen(false)}
                 >
-                  <span className="flex size-9 items-center justify-center rounded-md bg-[rgba(255,255,255,0.06)] text-[10px] font-semibold leading-tight text-keyra-accent">
+                  <span className="flex size-9 items-center justify-center rounded-md border border-black/[0.08] bg-keyra-surface text-[10px] font-semibold leading-tight text-keyra-accent">
                     {item.label.slice(0, 2)}
                   </span>
                   <span className="line-clamp-2 w-full text-[10px] font-medium leading-tight text-keyra-primary">

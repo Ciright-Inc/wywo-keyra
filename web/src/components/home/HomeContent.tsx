@@ -46,7 +46,7 @@ export function HomeContent() {
   return (
     <>
       {/* SECTION 1 — HERO */}
-      <section className="relative min-h-[min(92vh,58rem)] scroll-mt-44 overflow-hidden border-b border-keyra-border bg-keyra-bg px-[var(--keyra-space-section-x)] py-[var(--keyra-space-section-y)] lg:scroll-mt-24">
+      <section className="keyra-band--light relative min-h-[min(92vh,58rem)] scroll-mt-44 overflow-hidden border-b border-keyra-border px-[var(--keyra-space-section-x)] py-[var(--keyra-space-section-y)] lg:scroll-mt-24">
         <HeroCosmicBackdrop variant="marketing">
           <SignalDot style={{ left: "14%", top: "28%" }} delay="0.1s" />
           <SignalDot style={{ left: "26%", top: "42%" }} delay="1.1s" size={7} />
@@ -99,7 +99,7 @@ export function HomeContent() {
               transition={{ duration: 0.5, delay: 0.16, ease: easeTrust }}
             >
               <PageIntentRibbon
-                tone="onCosmic"
+                tone="onSurface"
                 who="Households, professionals, and institutions who live and work online."
                 problem="Identity is fragmented; fraud and synthetic deception are routine."
                 nextAction="Continue below, or sign in to manage your Keyra account."
@@ -162,6 +162,7 @@ export function HomeContent() {
       {/* SECTION 2 — THE COLLAPSE */}
       <NarrativeSection
         id="problem"
+        band="dark"
         eyebrow="The collapse"
         title="The internet lost identity."
         lead="We built connection without certainty. Fraud, impersonation, and synthetic voices spread where proof should live — and hesitation became normal."
@@ -185,8 +186,8 @@ export function HomeContent() {
       {/* SECTION 3 — THE SHIFT */}
       <NarrativeSection
         id="missing-layer"
+        band="light"
         eyebrow="The shift"
-        surface="elevated"
         title="AI changed the internet forever."
         lead="Generative scale collided with ambiguous identity. The next era requires orchestration between verified humans, verified systems, and verified carriers — not louder alerts."
       >
@@ -206,6 +207,7 @@ export function HomeContent() {
       {/* SECTION 4 — THE FRACTURE */}
       <NarrativeSection
         id="trust-fracture"
+        band="dark"
         eyebrow="The fracture"
         title="Passwords failed. Probabilistic trust failed."
         lead="Shared secrets, one-time codes, and guesswork cannot anchor sovereign-scale identity. What remained was exposure dressed as convenience."
@@ -214,8 +216,8 @@ export function HomeContent() {
       {/* SECTION 5 — THE SOLUTION */}
       <NarrativeSection
         id="solution"
+        band="light"
         eyebrow="The restoration"
-        surface="elevated"
         title="Keyra restores deterministic trust."
         lead="A composed trust layer — SIM and eSIM-aware signals, cryptographic orchestration, and verification routing that feels inevitable because it is structured, not improvised."
       />
@@ -223,6 +225,7 @@ export function HomeContent() {
       {/* SECTION 6 — TRUST VISUALIZATION */}
       <NarrativeSection
         id="trust-signals"
+        band="dark"
         eyebrow="Trust visualization"
         title="Invisible systems, rendered with restraint."
         lead="Protection expressed as atmosphere — signal choreography instead of noise. Identity pulses quietly across carrier paths, hardware truth, and institutional policy."
@@ -246,8 +249,8 @@ export function HomeContent() {
       {/* SECTION 7 — GLOBAL */}
       <NarrativeSection
         id="global"
+        band="light"
         eyebrow="Global infrastructure"
-        surface="elevated"
         title="Carrier-scale architecture for national resilience."
         lead="Built in Ireland as a trust institution for the digital age — composed for global deployment without compromising sovereignty or clarity."
       >
@@ -259,6 +262,7 @@ export function HomeContent() {
       {/* SECTION 8 — WHO IT'S FOR */}
       <NarrativeSection
         id="for"
+        band="dark"
         eyebrow="Who it’s for"
         title="Everyone who depends on certainty."
         lead="One quiet standard across households, enterprises, and nations — verification that feels human because it is mathematically composed."
@@ -311,8 +315,8 @@ export function HomeContent() {
       {/* SECTION 9 — HUMAN + AI */}
       <NarrativeSection
         id="human-ai"
+        band="light"
         eyebrow="Human + AI trust"
-        surface="elevated"
         title="Verified agents. Verified humans. Verified interactions."
         lead="Orchestration that distinguishes authenticity from synthesis — without theatrical friction. Trust becomes ambient infrastructure."
       >
@@ -332,6 +336,7 @@ export function HomeContent() {
       {/* SECTION 10 — DEVELOPER PLATFORM */}
       <NarrativeSection
         id="developers"
+        band="dark"
         eyebrow="Developer platform"
         title="API-first. Composed like infrastructure should be."
         lead="Documentation and primitives that treat trust as a craft — minimal surfaces, precise semantics, and clarity worthy of the institutions you serve."
@@ -344,7 +349,7 @@ export function HomeContent() {
       {/* SECTION 11 — FINAL STATEMENT */}
       <section
         id="get-protected"
-        className="keyra-section scroll-mt-44 pb-28 sm:scroll-mt-24 sm:pb-36"
+        className="keyra-band--light keyra-section scroll-mt-44 pb-28 sm:scroll-mt-24 sm:pb-36"
         aria-labelledby="finale-heading"
       >
         <div className="mx-auto max-w-6xl">

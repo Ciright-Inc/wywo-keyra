@@ -4,8 +4,8 @@
  * Keyra — Global Design System (master)
  *
  * Three lanes (html[data-keyra-lane]):
- * - consumer: public / app — calmer, warmer dark, human-first rhythm
- * - enterprise: admin + global deployment — authoritative graphite infrastructure
+ * - consumer: public / app — light monochrome, editorial rhythm
+ * - enterprise: admin + global deployment — white field, black ink
  * - developer: /developers — technical clarity, mono, tighter radii
  *
  * Lane is set SSR via middleware → x-keyra-design-lane → layout data-keyra-lane.
@@ -17,33 +17,36 @@
 /* Lane: ENTERPRISE (default tokens on :root)                                  */
 /* -------------------------------------------------------------------------- */
 :root {
-  --keyra-bg: #040810;
-  --keyra-surface: #0a101a;
-  --keyra-surface-2: #0c141f;
-  --keyra-text: #e8eef5;
-  --keyra-text-secondary: rgba(232, 238, 245, 0.68);
+  --keyra-bg: #ffffff;
+  --keyra-surface: #fafafa;
+  --keyra-surface-2: #f0f0f0;
+  --keyra-text: #000000;
+  --keyra-text-secondary: rgba(0, 0, 0, 0.55);
   --keyra-white: #ffffff;
 
-  /* Light shells — atmospheric warm mineral (not sterile marketing white) */
-  --keyra-canvas: #f2efe6;
-  --keyra-surface-light: #f9f7f2;
-  --keyra-surface-muted: #e8e4d9;
-  --keyra-ink-on-light: #1a1f26;
-  --keyra-ink-muted-on-light: #4a5568;
+  /* Light shells — same field as global bg (monochrome) */
+  --keyra-canvas: #ffffff;
+  --keyra-surface-light: #fafafa;
+  --keyra-surface-muted: #f4f4f4;
+  --keyra-ink-on-light: #000000;
+  --keyra-ink-muted-on-light: rgba(0, 0, 0, 0.55);
 
-  --keyra-accent: #8ebdd2;
-  --keyra-accent-2: #7a87a8;
+  --keyra-ink-mid: rgba(0, 0, 0, 0.45);
+  --keyra-ink-low: rgba(0, 0, 0, 0.38);
+
+  --keyra-accent: #000000;
+  --keyra-accent-2: #262626;
 
   --keyra-primary: var(--keyra-text);
 
-  --keyra-action: rgba(142, 189, 210, 0.12);
-  --keyra-action-border: rgba(142, 189, 210, 0.26);
+  --keyra-action: rgba(0, 0, 0, 0.07);
+  --keyra-action-border: rgba(0, 0, 0, 0.2);
   --keyra-action-text: var(--keyra-text);
 
-  --keyra-border: rgba(255, 255, 255, 0.09);
-  --keyra-ring: rgba(142, 189, 210, 0.2);
-  --keyra-shadow-card: 0 8px 28px rgba(0, 0, 0, 0.28);
-  --keyra-shadow-hover: 0 10px 36px rgba(0, 0, 0, 0.34);
+  --keyra-border: rgba(0, 0, 0, 0.1);
+  --keyra-ring: rgba(0, 0, 0, 0.22);
+  --keyra-shadow-card: 0 8px 28px rgba(0, 0, 0, 0.06);
+  --keyra-shadow-hover: 0 10px 36px rgba(0, 0, 0, 0.1);
 
   --keyra-radius-card: 12px;
   --keyra-radius-sheet: 16px;
@@ -95,23 +98,47 @@
   --keyra-z-toast: 400;
 }
 
+/* Site header shell — Keyra marketing / app chrome parity (synced with tools/keyra-theme) */
+.keyra-site-header-shell {
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  background: color-mix(in srgb, var(--keyra-bg) 90%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.keyra-site-header-shell--fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .keyra-site-header-shell {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--keyra-bg);
+  }
+}
+
 /* -------------------------------------------------------------------------- */
-/* Lane: CONSUMER — softer dark, warmer text, gentler structure                 */
+/* Lane: CONSUMER — light monochrome, slightly roomier body leading            */
 /* -------------------------------------------------------------------------- */
 html[data-keyra-lane="consumer"] {
-  --keyra-bg: #080f18;
-  --keyra-surface: #111b2a;
-  --keyra-surface-2: #152030;
-  --keyra-text: #f2f5f9;
-  --keyra-text-secondary: rgba(242, 245, 249, 0.65);
-  --keyra-accent: #9ec7dc;
-  --keyra-accent-2: #94a3b8;
-  --keyra-action: rgba(168, 201, 219, 0.11);
-  --keyra-action-border: rgba(168, 201, 219, 0.24);
-  --keyra-border: rgba(255, 255, 255, 0.1);
-  --keyra-ring: rgba(168, 201, 219, 0.22);
-  --keyra-shadow-card: 0 8px 26px rgba(0, 0, 0, 0.22);
-  --keyra-shadow-hover: 0 12px 34px rgba(0, 0, 0, 0.28);
+  --keyra-bg: #ffffff;
+  --keyra-surface: #fafafa;
+  --keyra-surface-2: #f0f0f0;
+  --keyra-text: #000000;
+  --keyra-text-secondary: rgba(0, 0, 0, 0.55);
+  --keyra-accent: #000000;
+  --keyra-accent-2: #262626;
+  --keyra-action: rgba(0, 0, 0, 0.06);
+  --keyra-action-border: rgba(0, 0, 0, 0.18);
+  --keyra-border: rgba(0, 0, 0, 0.1);
+  --keyra-ring: rgba(0, 0, 0, 0.2);
+  --keyra-shadow-card: 0 8px 26px rgba(0, 0, 0, 0.06);
+  --keyra-shadow-hover: 0 12px 34px rgba(0, 0, 0, 0.09);
   --keyra-leading-body: 1.62;
 }
 
@@ -119,20 +146,20 @@ html[data-keyra-lane="consumer"] {
 /* Lane: DEVELOPER — technical clarity, mono, tighter UI                        */
 /* -------------------------------------------------------------------------- */
 html[data-keyra-lane="developer"] {
-  --keyra-bg: #06090f;
-  --keyra-surface: #0b1018;
-  --keyra-surface-2: #0e1520;
-  --keyra-text: #e6edf5;
-  --keyra-text-secondary: rgba(230, 237, 245, 0.7);
-  --keyra-accent: #7eb8e8;
-  --keyra-accent-2: #8b9fd4;
-  --keyra-action: rgba(126, 184, 232, 0.1);
-  --keyra-action-border: rgba(126, 184, 232, 0.28);
-  --keyra-border: rgba(255, 255, 255, 0.085);
-  --keyra-ring: rgba(126, 184, 232, 0.24);
+  --keyra-bg: #ffffff;
+  --keyra-surface: #fafafa;
+  --keyra-surface-2: #ebebeb;
+  --keyra-text: #000000;
+  --keyra-text-secondary: rgba(0, 0, 0, 0.55);
+  --keyra-accent: #000000;
+  --keyra-accent-2: #262626;
+  --keyra-action: rgba(0, 0, 0, 0.07);
+  --keyra-action-border: rgba(0, 0, 0, 0.22);
+  --keyra-border: rgba(0, 0, 0, 0.1);
+  --keyra-ring: rgba(0, 0, 0, 0.22);
   --keyra-radius-card: 8px;
   --keyra-radius-sheet: 12px;
-  --keyra-shadow-card: 0 6px 22px rgba(0, 0, 0, 0.32);
+  --keyra-shadow-card: 0 6px 22px rgba(0, 0, 0, 0.06);
 }
 
 @theme inline {
@@ -192,6 +219,99 @@ body {
   padding-right: var(--keyra-space-section-x);
   padding-top: var(--keyra-space-section-y);
   padding-bottom: var(--keyra-space-section-y);
+}
+
+/* Full-bleed bands — white / black section alternation (editorial contrast) */
+.keyra-band--light {
+  background: #ffffff;
+  color: #000000;
+  --keyra-bg: #ffffff;
+  --keyra-surface: #fafafa;
+  --keyra-primary: #000000;
+  --keyra-text: #000000;
+  --keyra-text-secondary: rgba(0, 0, 0, 0.55);
+  --keyra-border: rgba(0, 0, 0, 0.1);
+  --keyra-ring: rgba(0, 0, 0, 0.22);
+  --keyra-accent: #000000;
+  --keyra-accent-2: #262626;
+  --keyra-action: rgba(0, 0, 0, 0.07);
+  --keyra-action-border: rgba(0, 0, 0, 0.2);
+  --keyra-action-text: #000000;
+}
+
+.keyra-band--dark {
+  background: #000000;
+  color: #ffffff;
+  --keyra-bg: #000000;
+  --keyra-surface: rgba(255, 255, 255, 0.06);
+  --keyra-primary: #ffffff;
+  --keyra-text: #ffffff;
+  --keyra-text-secondary: rgba(255, 255, 255, 0.68);
+  --keyra-border: rgba(255, 255, 255, 0.14);
+  --keyra-ring: rgba(255, 255, 255, 0.35);
+  --keyra-accent: #ffffff;
+  --keyra-accent-2: rgba(255, 255, 255, 0.88);
+  --keyra-action: rgba(255, 255, 255, 0.12);
+  --keyra-action-border: rgba(255, 255, 255, 0.28);
+  --keyra-action-text: #ffffff;
+}
+
+.keyra-band--dark .keyra-card {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.07),
+    rgba(255, 255, 255, 0.03)
+  );
+  border-color: var(--keyra-border);
+  color: var(--keyra-text);
+}
+
+.keyra-band--dark .keyra-card:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* Readable HUD readouts over cinematic / dark media (e.g. globe) */
+.keyra-card.keyra-card--media-hud {
+  background: var(--keyra-bg);
+  color: var(--keyra-text);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.keyra-band--dark .keyra-card.keyra-card--media-hud {
+  box-shadow:
+    0 20px 64px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.keyra-band--dark .keyra-link:hover {
+  color: #ffffff;
+}
+
+/* Site footer — full-width black */
+.keyra-site-footer {
+  background: #000000;
+  color: rgba(255, 255, 255, 0.88);
+  --keyra-bg: #000000;
+  --keyra-surface: rgba(255, 255, 255, 0.07);
+  --keyra-primary: #ffffff;
+  --keyra-text: #ffffff;
+  --keyra-text-secondary: rgba(255, 255, 255, 0.65);
+  --keyra-border: rgba(255, 255, 255, 0.14);
+  --keyra-accent: #ffffff;
+  --keyra-accent-2: rgba(255, 255, 255, 0.88);
+  --keyra-ring: rgba(255, 255, 255, 0.35);
+  --keyra-action: rgba(255, 255, 255, 0.12);
+  --keyra-action-border: rgba(255, 255, 255, 0.28);
+  --keyra-action-text: #ffffff;
+}
+
+.keyra-site-footer-logo img {
+  filter: brightness(0) invert(1);
+  opacity: 0.95;
 }
 
 /* Typography — primary identity layer */
@@ -257,7 +377,7 @@ html[data-keyra-lane="developer"] .keyra-code-block {
 
 .keyra-card {
   border-radius: var(--keyra-radius-card);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.018));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.008));
   border: 1px solid var(--keyra-border);
   box-shadow: var(--keyra-shadow-card);
   backdrop-filter: blur(8px);
@@ -268,7 +388,7 @@ html[data-keyra-lane="developer"] .keyra-code-block {
 
 .keyra-card:hover {
   box-shadow: var(--keyra-shadow-hover);
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(0, 0, 0, 0.14);
 }
 
 .keyra-focus {
