@@ -431,7 +431,7 @@ export default function AdminAuthCountriesPage() {
         </table>
         {rows.length === 0 ? (
           <p className="px-4 py-8 text-center text-sm text-keyra-text-2 sm:px-6">
-            No rows match filters, or the catalog seed has not run. After deploy, <code className="text-xs">npm start</code> seeds countries;
+            No rows match filters, or the catalog seed has not run. After deploy, <code className="text-xs">npm start</code> runs migrations and seeds the catalog (including world countries and the deployment map);
             or run <code className="text-xs">npm run db:seed:world-countries</code>.
           </p>
         ) : null}
@@ -648,7 +648,7 @@ export default function AdminAuthCountriesPage() {
               <section className="rounded-lg border border-keyra-border/80 bg-keyra-bg/30 p-4 text-xs leading-relaxed text-keyra-text-2">
                 <p className="font-semibold text-keyra-primary">Data & seeding</p>
                 <p className="mt-2">
-                  <code className="rounded bg-keyra-bg px-1 py-0.5">npm start</code> runs migrations then the deploy catalog seed (world countries). Manual:{" "}
+                  <code className="rounded bg-keyra-bg px-1 py-0.5">npm start</code> runs migrations then the deploy catalog seed (world countries, deployment map regions/countries/telcos, SAT protocols). Manual:{" "}
                   <code className="rounded bg-keyra-bg px-1 py-0.5">npm run db:seed:world-countries</code>. Re-runnable; preserves weights unless{" "}
                   <code className="rounded bg-keyra-bg px-1 py-0.5">RESET_AUTH_COUNTRY_WEIGHTS=1</code>. The feed uses rows that are{" "}
                   <strong>active</strong> and <strong>authentication enabled</strong>; weights normalize at generation.

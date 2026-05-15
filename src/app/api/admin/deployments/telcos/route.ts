@@ -10,7 +10,7 @@ import {
 } from "@/app/api/admin/deployments/_audit";
 import { parseBoolean, parseDeploymentStatus, parseIntOrNull } from "@/app/api/admin/deployments/_parse";
 import { telcoSubdomainFromCountry } from "@/lib/deployments/subdomains";
-import { requireDeploymentAuth, telcoWhereFromAuth } from "@/lib/deployments/adminContext";
+import { requireDeploymentAuth } from "@/lib/deployments/adminContext";
 import {
   canCreateTelco,
   denyIfComplianceOnlyWriter,
@@ -26,9 +26,7 @@ export async function GET(req: Request) {
   const status = url.searchParams.get("status") ?? undefined;
   const q = url.searchParams.get("q")?.trim().toLowerCase() ?? "";
 
-  const scoped = await telcoWhereFromAuth(auth);
   const filters: Prisma.TelcoDeploymentWhereInput = {
-    ...(scoped ?? {}),
     ...(countryId ? { countryId } : {}),
     ...(status ? { status: status as never } : {}),
     ...(q

@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-import type { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { revalidateDeploymentsAfterMutation, writeAudit } from "@/app/api/admin/deployments/_audit";
 import { parseBoolean, parseDeploymentStatus, parseIntOrNull } from "@/app/api/admin/deployments/_parse";
-import { requireDeploymentAuth, telcoWhereFromAuth } from "@/lib/deployments/adminContext";
+import { requireDeploymentAuth } from "@/lib/deployments/adminContext";
 import { canPatchTelco, denyIfComplianceOnlyWriter, denyIfReadOnly } from "@/lib/deployments/adminAuthz";
 
 function csvEscape(value: string): string {
@@ -15,11 +14,7 @@ export async function GET(req: Request) {
   const auth = await requireDeploymentAuth(req);
   if (auth instanceof Response) return auth;
 
-  const scoped = await telcoWhereFromAuth(auth);
-  const where: Prisma.TelcoDeploymentWhereInput = scoped ?? {};
-
   const rows = await prisma.telcoDeployment.findMany({
-    where,
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     include: { country: { select: { iso2: true } } },
   });

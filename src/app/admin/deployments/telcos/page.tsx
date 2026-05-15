@@ -1,7 +1,7 @@
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { assertAdminServer } from "@/lib/assertAdminServer";
-import { countryWhereFromAuth, telcoWhereFromAuth } from "@/lib/deployments/adminContext";
+import { countryWhereFromAuth } from "@/lib/deployments/adminContext";
 import { createTelco } from "@/app/admin/deployments/actions";
 import { Button } from "@/components/ui/Button";
 import { isComplianceReviewer, isReadOnlyRole } from "@/lib/deployments/adminAuthz";
@@ -10,9 +10,8 @@ const STATUS_OPTIONS = ["IDENTIFIED", "INSTITUTIONAL_AWARENESS", "TVIP", "OPERAT
 
 export default async function AdminTelcosPage() {
   const auth = await assertAdminServer();
-  const tw = await telcoWhereFromAuth(auth);
+  /** Full catalog for browsing; create/edit still enforced per-row in actions and detail pages. */
   const telcos = await prisma.telcoDeployment.findMany({
-    where: tw ?? {},
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     include: { country: { select: { name: true, iso2: true, id: true } } },
   });
@@ -35,7 +34,9 @@ export default async function AdminTelcosPage() {
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
         <div>
           <h1 className="text-2xl font-semibold text-keyra-primary">Telcos</h1>
-          <p className="mt-2 text-sm text-keyra-text-2">Scoped list with in-browser create and edit where permitted.</p>
+          <p className="mt-2 text-sm text-keyra-text-2">
+            Full telco catalog. Create and in-browser edits remain limited by your deployment role.
+          </p>
         </div>
         <Link
           href="/api/admin/deployments/telcos/csv"

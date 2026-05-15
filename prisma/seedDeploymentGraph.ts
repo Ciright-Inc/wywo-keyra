@@ -1,0 +1,151 @@
+/**
+ * Idempotent upsert of global deployment map rows (regions, countries, telcos) from
+ * `prisma/data/deployment-seed.json`. Safe on every production boot: does not wipe admins,
+ * audit, access rules, or server nodes (those remain `prisma db seed` only).
+ */
+import { DeploymentStatus, PrismaClient } from "@prisma/client";
+import { buildTelcoSubdomainForSeed, loadDeploymentSeed } from "./deploymentSeedData";
+
+export type DeploymentGraphSeedStats = {
+  regionsUpserted: number;
+  countriesUpserted: number;
+  telcosUpserted: number;
+};
+
+export async function seedDeploymentGraph(prisma: PrismaClient): Promise<DeploymentGraphSeedStats> {
+  const data = loadDeploymentSeed();
+  const regionBySlug = new Map<string, { id: string }>();
+  let regionsUpserted = 0;
+
+  for (const r of data.regions) {
+    const row = await prisma.region.upsert({
+      where: { slug: r.slug },
+      create: {
+        continentCode: r.continentCode,
+        subregionCode: r.subregionCode,
+        name: r.name,
+        slug: r.slug,
+        mapKey: r.mapKey,
+        sortOrder: r.sortOrder,
+        isPublished: r.isPublished,
+      },
+      update: {
+        continentCode: r.continentCode,
+        subregionCode: r.subregionCode,
+        name: r.name,
+        mapKey: r.mapKey,
+        sortOrder: r.sortOrder,
+        isPublished: r.isPublished,
+      },
+    });
+    regionBySlug.set(r.slug, { id: row.id });
+    regionsUpserted++;
+  }
+
+  const countryByIso2 = new Map<string, { id: string; countrySubdomain: string }>();
+  let countriesUpserted = 0;
+
+  for (const c of data.countries) {
+    const region = regionBySlug.get(c.regionSlug);
+    if (!region) throw new Error(`[seedDeploymentGraph] Missing region slug: ${c.regionSlug}`);
+    const subdomain = c.countrySubdomain.toLowerCase();
+    const row = await prisma.countryDeployment.upsert({
+      where: { countrySubdomain: subdomain },
+      create: {
+        regionId: region.id,
+        name: c.name,
+        iso2: c.iso2.toUpperCase(),
+        iso3: c.iso3.toUpperCase(),
+        flagAssetKey: c.flagAssetKey,
+        population: c.population,
+        populationDisplay: c.populationDisplay,
+        countrySubdomain: subdomain,
+        officialReferenceDomain: c.officialReferenceDomain,
+        status: c.status as DeploymentStatus,
+        statusNote: c.statusNote,
+        sourceLabel: c.sourceLabel,
+        sourceUrl: c.sourceUrl,
+        sourceVerifiedAt: c.sourceVerifiedAt ? new Date(c.sourceVerifiedAt) : null,
+        sortOrder: c.sortOrder,
+        isPublished: c.isPublished,
+      },
+      update: {
+        regionId: region.id,
+        name: c.name,
+        iso2: c.iso2.toUpperCase(),
+        iso3: c.iso3.toUpperCase(),
+        flagAssetKey: c.flagAssetKey,
+        population: c.population,
+        populationDisplay: c.populationDisplay,
+        officialReferenceDomain: c.officialReferenceDomain,
+        status: c.status as DeploymentStatus,
+        statusNote: c.statusNote,
+        sourceLabel: c.sourceLabel,
+        sourceUrl: c.sourceUrl,
+        sourceVerifiedAt: c.sourceVerifiedAt ? new Date(c.sourceVerifiedAt) : null,
+        sortOrder: c.sortOrder,
+        isPublished: c.isPublished,
+      },
+    });
+    countryByIso2.set(c.iso2.toUpperCase(), { id: row.id, countrySubdomain: row.countrySubdomain });
+    countriesUpserted++;
+  }
+
+  let telcosUpserted = 0;
+  for (const t of data.telcos) {
+    const country = countryByIso2.get(t.countryIso2.toUpperCase());
+    if (!country) throw new Error(`[seedDeploymentGraph] Missing country ISO2: ${t.countryIso2}`);
+    const telcoSubdomain = buildTelcoSubdomainForSeed(country.countrySubdomain, t.slug);
+
+    await prisma.telcoDeployment.upsert({
+      where: {
+        countryId_slug: {
+          countryId: country.id,
+          slug: t.slug,
+        },
+      },
+      create: {
+        countryId: country.id,
+        name: t.name,
+        slug: t.slug,
+        subscribers: t.subscribers,
+        subscribersDisplay: t.subscribersDisplay,
+        telcoSubdomain,
+        officialDomain: t.officialDomain,
+        status: t.status as DeploymentStatus,
+        sortOrder: t.sortOrder,
+        isPublished: t.isPublished,
+      },
+      update: {
+        name: t.name,
+        subscribers: t.subscribers,
+        subscribersDisplay: t.subscribersDisplay,
+        telcoSubdomain,
+        officialDomain: t.officialDomain,
+        status: t.status as DeploymentStatus,
+        sortOrder: t.sortOrder,
+        isPublished: t.isPublished,
+      },
+    });
+    telcosUpserted++;
+  }
+
+  return { regionsUpserted, countriesUpserted, telcosUpserted };
+}
+
+const runStandalone = typeof process !== "undefined" && process.argv[1]?.includes("seedDeploymentGraph");
+if (runStandalone) {
+  async function main() {
+    const prisma = new PrismaClient();
+    try {
+      const stats = await seedDeploymentGraph(prisma);
+      console.info("[seedDeploymentGraph]", stats);
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
+  void main().catch((e) => {
+    console.error("[seedDeploymentGraph]", e);
+    process.exit(1);
+  });
+}

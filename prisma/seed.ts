@@ -1,5 +1,3 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { hash } from "bcryptjs";
 import {
   DeploymentAdminRole,
@@ -9,78 +7,13 @@ import {
   TargetType,
   type VerificationMethod,
 } from "@prisma/client";
+import { buildTelcoSubdomainForSeed, loadDeploymentSeed } from "./deploymentSeedData";
 import { seedAuthenticationFeed } from "./seedAuthenticationFeed";
 
 const prisma = new PrismaClient();
 
-type SeedFile = {
-  regions: Array<{
-    continentCode: string;
-    subregionCode: string;
-    name: string;
-    slug: string;
-    mapKey: string;
-    sortOrder: number;
-    isPublished: boolean;
-  }>;
-  countries: Array<{
-    regionSlug: string;
-    name: string;
-    iso2: string;
-    iso3: string;
-    flagAssetKey: string;
-    population: number | null;
-    populationDisplay: string | null;
-    countrySubdomain: string;
-    officialReferenceDomain: string | null;
-    status: string;
-    statusNote: string | null;
-    sourceLabel: string | null;
-    sourceUrl: string | null;
-    sourceVerifiedAt: string | null;
-    sortOrder: number;
-    isPublished: boolean;
-  }>;
-  telcos: Array<{
-    countryIso2: string;
-    name: string;
-    slug: string;
-    subscribers: number | null;
-    subscribersDisplay: string | null;
-    officialDomain: string | null;
-    status: string;
-    sortOrder: number;
-    isPublished: boolean;
-  }>;
-  accessDomainRules: Array<{
-    target:
-      | { type: "COUNTRY"; iso2: string }
-      | { type: "TELCO"; countryIso2: string; slug: string };
-    allowedEmailDomain: string;
-    verificationMethod: string;
-    isActive: boolean;
-  }>;
-  serverNodes: Array<{
-    countryIso2: string;
-    fqdn: string;
-    environment: string;
-    healthcheckUrl: string | null;
-    status: string;
-  }>;
-};
-
-function loadSeed(): SeedFile {
-  const p = join(process.cwd(), "prisma", "data", "deployment-seed.json");
-  const raw = readFileSync(p, "utf8");
-  return JSON.parse(raw) as SeedFile;
-}
-
-function telcoSubdomain(countrySubdomain: string, telcoSlug: string): string {
-  return `${telcoSlug}.${countrySubdomain}`;
-}
-
 async function main() {
-  const data = loadSeed();
+  const data = loadDeploymentSeed();
 
   await prisma.adminUser.deleteMany();
 
@@ -149,7 +82,7 @@ async function main() {
         slug: t.slug,
         subscribers: t.subscribers,
         subscribersDisplay: t.subscribersDisplay,
-        telcoSubdomain: telcoSubdomain(country.countrySubdomain, t.slug),
+        telcoSubdomain: buildTelcoSubdomainForSeed(country.countrySubdomain, t.slug),
         officialDomain: t.officialDomain,
         status: t.status as DeploymentStatus,
         sortOrder: t.sortOrder,

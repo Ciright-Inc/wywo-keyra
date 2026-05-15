@@ -233,6 +233,209 @@ export default async function AdminCountryEditPage({ params }: { params: Promise
           <input name="isPublished" type="checkbox" defaultChecked={country.isPublished} disabled={!canEdit} className="size-4" />
           Published
         </label>
+        <fieldset className="space-y-3 rounded-lg border border-keyra-border/80 bg-keyra-bg/40 p-4">
+          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-keyra-text-2">
+            Public map &amp; operational profile
+          </legend>
+          <input type="hidden" name="countryMapFields" value="1" />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block text-sm text-keyra-text-2">
+              Latitude (WGS84)
+              <input
+                name="latitude"
+                type="text"
+                inputMode="decimal"
+                defaultValue={country.latitude ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              Longitude (WGS84)
+              <input
+                name="longitude"
+                type="text"
+                inputMode="decimal"
+                defaultValue={country.longitude ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              Visual offset X (map px)
+              <input
+                name="visualOffsetX"
+                type="text"
+                inputMode="decimal"
+                defaultValue={country.visualOffsetX}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              Visual offset Y (map px)
+              <input
+                name="visualOffsetY"
+                type="text"
+                inputMode="decimal"
+                defaultValue={country.visualOffsetY}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+          </div>
+          <label className="block text-sm text-keyra-text-2">
+            Deployment stage label
+            <input
+              name="deploymentStage"
+              defaultValue={country.deploymentStage ?? ""}
+              disabled={!canEdit}
+              className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+            />
+          </label>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block text-sm text-keyra-text-2">
+              Infrastructure health (0–100)
+              <input
+                name="infrastructureHealth"
+                type="number"
+                defaultValue={country.infrastructureHealth ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              Node health (0–100)
+              <input
+                name="nodeHealth"
+                type="number"
+                defaultValue={country.nodeHealth ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              Uptime %
+              <input
+                name="uptimePercentage"
+                type="text"
+                inputMode="decimal"
+                defaultValue={country.uptimePercentage ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              Auth volume (roll-up)
+              <input
+                name="authVolume"
+                type="number"
+                defaultValue={country.authVolume ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              Deployment maturity score
+              <input
+                name="deploymentScore"
+                type="number"
+                defaultValue={country.deploymentScore ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              Connected apps count
+              <input
+                name="connectedAppsCount"
+                type="number"
+                defaultValue={country.connectedAppsCount ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+          </div>
+          <label className="block text-sm text-keyra-text-2">
+            Cluster region
+            <input
+              name="clusterRegion"
+              defaultValue={country.clusterRegion ?? ""}
+              disabled={!canEdit}
+              className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+            />
+          </label>
+          <label className="block text-sm text-keyra-text-2">
+            Last sync (ISO local)
+            <input
+              name="lastSyncAt"
+              type="datetime-local"
+              defaultValue={country.lastSyncAt ? country.lastSyncAt.toISOString().slice(0, 16) : ""}
+              disabled={!canEdit}
+              className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+            />
+          </label>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block text-sm text-keyra-text-2">
+              SAT protocol coverage
+              <input
+                name="satProtocolCoverage"
+                defaultValue={country.satProtocolCoverage ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              SIM / eSIM status
+              <input
+                name="simEsimStatus"
+                defaultValue={country.simEsimStatus ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              Government integration
+              <input
+                name="govIntegrationStatus"
+                defaultValue={country.govIntegrationStatus ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              API status
+              <input
+                name="apiStatus"
+                defaultValue={country.apiStatus ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              Regulatory readiness
+              <input
+                name="regulatoryReadiness"
+                defaultValue={country.regulatoryReadiness ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+            <label className="block text-sm text-keyra-text-2">
+              Risk status
+              <input
+                name="riskStatus"
+                defaultValue={country.riskStatus ?? ""}
+                disabled={!canEdit}
+                className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
+              />
+            </label>
+          </div>
+          <label className="flex items-center gap-2 text-sm text-keyra-text-2">
+            <input name="aiAgentEnabled" type="checkbox" defaultChecked={country.aiAgentEnabled} disabled={!canEdit} className="size-4" />
+            AI agent enabled (public map)
+          </label>
+        </fieldset>
         {canEdit ? <Button type="submit">Save</Button> : <p className="text-sm text-keyra-text-2">Read-only for your role.</p>}
       </form>
     </div>

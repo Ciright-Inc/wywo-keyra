@@ -12,6 +12,7 @@ import { HomeRegistrationCTAs } from "@/components/registration/HomeRegistration
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageIntentRibbon } from "@/components/trust/PageIntentRibbon";
+import { HeroCosmicBackdrop } from "@/components/trust/HeroCosmicBackdrop";
 
 function SectionShell({
   id,
@@ -62,28 +63,7 @@ export function HomeContent() {
   return (
     <>
       <section className="relative min-h-[min(88vh,56rem)] scroll-mt-44 overflow-hidden border-b border-keyra-border bg-keyra-bg px-[var(--keyra-space-section-x)] py-[var(--keyra-space-section-y)] lg:scroll-mt-24">
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div
-            className="absolute inset-0 bg-cover bg-center opacity-75"
-            style={{ backgroundImage: "url('/image.png')" }}
-          />
-          <div className="absolute inset-0 bg-keyra-bg/55" />
-          <div className="absolute inset-0 opacity-70">
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(1200px 700px at 20% 15%, rgba(142,189,210,0.07), transparent 55%), radial-gradient(900px 540px at 80% 25%, rgba(122,135,168,0.06), transparent 55%), radial-gradient(950px 640px at 55% 85%, rgba(142,189,210,0.05), transparent 60%)",
-              }}
-            />
-            <div className="animate-keyra-drift absolute inset-0 opacity-65">
-              <div className="absolute inset-0 opacity-70 [mask-image:radial-gradient(60%_55%_at_52%_40%,#000,transparent)]">
-                <div className="absolute left-[-10%] top-[14%] h-[1px] w-[120%] bg-gradient-to-r from-transparent via-[rgba(234,240,246,0.22)] to-transparent" />
-                <div className="absolute left-[-10%] top-[34%] h-[1px] w-[120%] bg-gradient-to-r from-transparent via-[rgba(234,240,246,0.16)] to-transparent" />
-                <div className="absolute left-[-10%] top-[54%] h-[1px] w-[120%] bg-gradient-to-r from-transparent via-[rgba(234,240,246,0.12)] to-transparent" />
-              </div>
-            </div>
-          </div>
+        <HeroCosmicBackdrop variant="marketing">
           <SignalDot style={{ left: "14%", top: "28%" }} delay="0.1s" />
           <SignalDot style={{ left: "26%", top: "42%" }} delay="1.1s" size={7} />
           <SignalDot style={{ left: "38%", top: "31%" }} delay="0.7s" />
@@ -94,78 +74,87 @@ export function HomeContent() {
           <SignalDot style={{ left: "84%", top: "55%" }} delay="2.1s" size={8} />
           <SignalDot style={{ left: "31%", top: "62%" }} delay="2.6s" />
           <SignalDot style={{ left: "62%", top: "68%" }} delay="1.9s" size={7} />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-keyra-bg" />
-        </div>
+        </HeroCosmicBackdrop>
 
-        <div className="relative mx-auto grid min-h-0 w-full min-w-0 max-w-6xl grid-cols-1 items-center gap-8 py-4 sm:min-h-[52vh] lg:grid-cols-[minmax(0,1.05fr)_minmax(240px,0.95fr)] lg:min-h-[54vh] lg:gap-10 lg:py-0">
-          <div className="w-full min-w-0 max-w-2xl">
-            <PageIntentRibbon
-              who="Households, professionals, and institutions who live and work online."
-              problem="Identity is fragmented; fraud and account takeover are routine."
-              nextAction="Continue to Be Protected Online below, or sign in to manage your Keyra account."
-            />
-            <h1 className="text-balance text-4xl font-semibold leading-[1.06] tracking-tight text-keyra-primary sm:text-5xl md:text-6xl lg:text-[4.25rem]">
-              <motion.span
-                className="inline-block"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55 }}
-              >
-                Be Protected Online.
-              </motion.span>
-            </h1>
-            <motion.p
-              className="mt-5 text-balance text-[16px] leading-relaxed text-keyra-text-2 sm:text-lg md:text-[20px]"
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.12 }}
-            >
-              The identity trust layer of the internet — for people, businesses,
-              and nations.
-            </motion.p>
-
-            <motion.div
-              className="mt-7 w-full min-w-0 max-w-3xl"
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.2 }}
-            >
-              <HomeRegistrationCTAs />
-            </motion.div>
-
-            <motion.p
-              className="mt-8 text-sm text-keyra-text-2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.28 }}
-            >
-              A global standard that feels human. <span className="text-keyra-primary">Be Protected Online.</span>
-            </motion.p>
-          </div>
-
-          <div className="pointer-events-auto relative flex w-full max-w-[min(100%,580px)] justify-center justify-self-center lg:max-w-[580px] lg:justify-self-end">
-            <div
-              className="keyra-globe-stage relative box-border flex w-full flex-col gap-3 lg:block lg:min-h-[min(500px,62vw)] lg:px-3 lg:pb-7 lg:pt-5"
-              suppressHydrationWarning
-            >
-              <KeyraGlobeLiveStatPanel />
-              <div className="relative order-2 mx-auto w-full max-w-[320px] sm:max-w-[380px] lg:absolute lg:left-1/2 lg:top-1/2 lg:max-w-[460px] lg:-translate-x-1/2 lg:-translate-y-1/2">
-                <div
-                  className="pointer-events-none absolute -inset-3 rounded-full opacity-90 blur-md sm:-inset-4"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 35% 25%, rgba(142,189,210,0.12), transparent 58%), radial-gradient(circle at 70% 80%, rgba(122,135,168,0.08), transparent 55%)",
-                  }}
-                  aria-hidden
-                />
-                <div
-                  className="relative mx-auto aspect-square w-full overflow-hidden rounded-full shadow-[0_24px_80px_rgba(0,0,0,0.35)] lg:aspect-auto lg:h-[460px] lg:w-[min(100%-24px,460px)] lg:max-w-[460px]"
-                  suppressHydrationWarning
+        <div className="relative z-10 mx-auto flex w-full min-w-0 max-w-6xl flex-col gap-8 py-4 sm:min-h-[52vh] lg:min-h-[54vh] lg:gap-10 lg:py-0">
+          <header className="relative z-10 w-full min-w-0 lg:pt-1">
+            <div className="max-w-2xl">
+              <h1 className="text-balance text-4xl font-semibold leading-[1.06] tracking-tight text-keyra-primary sm:text-5xl md:text-6xl lg:text-[4.25rem]">
+                <motion.span
+                  className="inline-block"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55 }}
                 >
-                  <KeyraHomeGlobe className="block h-full w-full touch-pan-y" />
+                  Be Protected Online.
+                </motion.span>
+              </h1>
+              <motion.p
+                className="mt-5 text-balance text-[16px] leading-relaxed text-keyra-text-2 sm:text-lg md:text-[20px]"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.12 }}
+              >
+                The identity trust layer of the internet — for people, businesses,
+                and nations.
+              </motion.p>
+            </div>
+
+            <div className="mt-8 w-full min-w-0 sm:mt-10">
+              <PageIntentRibbon
+                tone="onCosmic"
+                who="Households, professionals, and institutions who live and work online."
+                problem="Identity is fragmented; fraud and account takeover are routine."
+                nextAction="Continue to Be Protected Online below, or sign in to manage your Keyra account."
+              />
+            </div>
+          </header>
+
+          <div className="grid min-h-0 w-full grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(240px,0.95fr)] lg:gap-10">
+            <div className="relative z-10 w-full min-w-0 max-w-3xl">
+              <motion.div
+                className="w-full min-w-0"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.2 }}
+              >
+                <HomeRegistrationCTAs />
+              </motion.div>
+
+              <motion.p
+                className="mt-8 text-sm text-keyra-text-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.28 }}
+              >
+                A global standard that feels human. <span className="text-keyra-primary">Be Protected Online.</span>
+              </motion.p>
+            </div>
+
+            <div className="pointer-events-auto relative z-0 flex w-full max-w-[min(100%,580px)] justify-center justify-self-center lg:max-w-[580px] lg:justify-self-end lg:pt-2">
+              <div
+                className="keyra-globe-stage relative box-border flex w-full flex-col gap-3 lg:block lg:min-h-[min(500px,62vw)] lg:px-3 lg:pb-7 lg:pt-5"
+                suppressHydrationWarning
+              >
+                <KeyraGlobeLiveStatPanel />
+                <div className="relative order-2 mx-auto w-full max-w-[320px] sm:max-w-[380px] lg:absolute lg:left-1/2 lg:top-1/2 lg:max-w-[460px] lg:-translate-x-1/2 lg:-translate-y-1/2">
+                  <div
+                    className="pointer-events-none absolute -inset-3 rounded-full opacity-90 blur-md sm:-inset-4"
+                    style={{
+                      background:
+                        "radial-gradient(circle at 35% 25%, rgba(142,189,210,0.12), transparent 58%), radial-gradient(circle at 70% 80%, rgba(122,135,168,0.08), transparent 55%)",
+                    }}
+                    aria-hidden
+                  />
+                  <div
+                    className="relative mx-auto aspect-square w-full overflow-hidden rounded-full shadow-[0_24px_80px_rgba(0,0,0,0.35)] lg:aspect-auto lg:h-[460px] lg:w-[min(100%-24px,460px)] lg:max-w-[460px]"
+                    suppressHydrationWarning
+                  >
+                    <KeyraHomeGlobe className="block h-full w-full touch-pan-y" />
+                  </div>
                 </div>
+                <KeyraGlobeLiveActivityPanel />
               </div>
-              <KeyraGlobeLiveActivityPanel />
             </div>
           </div>
         </div>

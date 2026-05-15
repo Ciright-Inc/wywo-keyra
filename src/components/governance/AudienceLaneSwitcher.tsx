@@ -20,18 +20,26 @@ const items: { lane: Lane; href: string; label: string }[] = [
   { lane: "ecosystem", href: AUDIENCE_LANE_HREFS.ecosystem, label: AUDIENCE_LANE_LABELS.ecosystem },
 ];
 
-export function AudienceLaneSwitcher({ variant = "bar" }: { variant?: "bar" | "compact" }) {
+export function AudienceLaneSwitcher({
+  variant = "bar",
+}: {
+  variant?: "bar" | "compact" | "footer";
+}) {
   const pathname = usePathname();
   const current = activeLane(pathname);
 
   const wrap =
-    variant === "compact"
-      ? "flex flex-wrap gap-1.5"
-      : "flex flex-wrap items-center justify-center gap-1 border-t border-keyra-border/50 bg-keyra-bg/60 px-2 py-1.5 sm:gap-2 sm:px-4";
+    variant === "footer"
+      ? "w-full"
+      : variant === "compact"
+        ? "flex flex-wrap gap-1.5"
+        : "flex flex-wrap items-center justify-center gap-1 border-t border-keyra-border/50 bg-keyra-bg/60 px-2 py-1.5 sm:gap-2 sm:px-4";
+
+  const rowJustify = variant === "footer" ? "justify-start" : "justify-center";
 
   return (
     <div className={wrap} role="navigation" aria-label="Keyra experience context: consumers, enterprise, or partners">
-      <div className="flex w-full min-w-0 flex-wrap items-center justify-center gap-1 sm:gap-2">
+      <div className={`flex w-full min-w-0 flex-wrap items-center gap-1 sm:gap-2 ${rowJustify}`}>
         {items.map(({ lane, href, label }) => {
           const isActive = current === lane;
           return (

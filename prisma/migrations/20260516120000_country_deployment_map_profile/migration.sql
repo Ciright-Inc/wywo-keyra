@@ -1,0 +1,21 @@
+-- Optional public map + operational profile fields (backward compatible).
+ALTER TABLE "CountryDeployment" ADD COLUMN     "latitude" DOUBLE PRECISION;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "longitude" DOUBLE PRECISION;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "visualOffsetX" DOUBLE PRECISION NOT NULL DEFAULT 0;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "visualOffsetY" DOUBLE PRECISION NOT NULL DEFAULT 0;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "deploymentStage" TEXT;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "infrastructureHealth" INTEGER;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "uptimePercentage" DOUBLE PRECISION;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "nodeHealth" INTEGER;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "authVolume" INTEGER;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "clusterRegion" TEXT;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "lastSyncAt" TIMESTAMP(3);
+ALTER TABLE "CountryDeployment" ADD COLUMN     "aiAgentEnabled" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "deploymentScore" INTEGER;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "satProtocolCoverage" TEXT;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "simEsimStatus" TEXT;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "govIntegrationStatus" TEXT;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "apiStatus" TEXT;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "regulatoryReadiness" TEXT;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "riskStatus" TEXT;
+ALTER TABLE "CountryDeployment" ADD COLUMN     "connectedAppsCount" INTEGER;

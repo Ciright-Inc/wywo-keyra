@@ -37,6 +37,26 @@ export type PublicCountry = Pick<
   | "sourceUrl"
   | "sourceVerifiedAt"
   | "sortOrder"
+  | "latitude"
+  | "longitude"
+  | "visualOffsetX"
+  | "visualOffsetY"
+  | "deploymentStage"
+  | "infrastructureHealth"
+  | "uptimePercentage"
+  | "nodeHealth"
+  | "authVolume"
+  | "clusterRegion"
+  | "lastSyncAt"
+  | "aiAgentEnabled"
+  | "deploymentScore"
+  | "satProtocolCoverage"
+  | "simEsimStatus"
+  | "govIntegrationStatus"
+  | "apiStatus"
+  | "regulatoryReadiness"
+  | "riskStatus"
+  | "connectedAppsCount"
 > & {
   /** First label of `countrySubdomain` (before `.`), stable for public URLs */
   publicSlug: string;
@@ -103,6 +123,26 @@ async function loadTree(): Promise<PublicDeploymentTree> {
       sourceUrl: c.sourceUrl,
       sourceVerifiedAt: c.sourceVerifiedAt,
       sortOrder: c.sortOrder,
+      latitude: c.latitude,
+      longitude: c.longitude,
+      visualOffsetX: c.visualOffsetX,
+      visualOffsetY: c.visualOffsetY,
+      deploymentStage: c.deploymentStage,
+      infrastructureHealth: c.infrastructureHealth,
+      uptimePercentage: c.uptimePercentage,
+      nodeHealth: c.nodeHealth,
+      authVolume: c.authVolume,
+      clusterRegion: c.clusterRegion,
+      lastSyncAt: c.lastSyncAt,
+      aiAgentEnabled: c.aiAgentEnabled,
+      deploymentScore: c.deploymentScore,
+      satProtocolCoverage: c.satProtocolCoverage,
+      simEsimStatus: c.simEsimStatus,
+      govIntegrationStatus: c.govIntegrationStatus,
+      apiStatus: c.apiStatus,
+      regulatoryReadiness: c.regulatoryReadiness,
+      riskStatus: c.riskStatus,
+      connectedAppsCount: c.connectedAppsCount,
       publicSlug: publicSlugFromSubdomain(c.countrySubdomain),
       telcos: c.telcos.map((t) => ({
         id: t.id,

@@ -551,7 +551,7 @@ export default function AdminSatProtocolsPage() {
         </table>
         {rows.length === 0 ? (
           <p className="px-4 py-8 text-center text-sm text-keyra-text-2 sm:px-6">
-            No rows match filters, or the catalog seed has not run. After deploy, <code className="text-xs text-keyra-accent">npm start</code> runs migrations then seeds protocols and world countries. For feed settings and protocols only:{" "}
+            No rows match filters, or the catalog seed has not run. After deploy, <code className="text-xs text-keyra-accent">npm start</code> runs migrations then seeds protocols, world countries, and the deployment map. For feed settings and protocols only:{" "}
             <code className="text-xs text-keyra-accent">npm run db:seed:auth-feed</code>.
           </p>
         ) : null}
@@ -745,7 +745,7 @@ export default function AdminSatProtocolsPage() {
               <section className="rounded-lg border border-keyra-border/80 bg-keyra-bg/30 p-4 text-xs leading-relaxed text-keyra-text-2">
                 <p className="font-semibold text-keyra-primary">Data & seeding</p>
                 <p className="mt-2">
-                  <code className="rounded bg-keyra-bg px-1 py-0.5">npm start</code> runs migrations then the deploy catalog seed (SAT protocols and world countries). To refresh feed-related settings and protocols only:{" "}
+                  <code className="rounded bg-keyra-bg px-1 py-0.5">npm start</code> runs migrations then the deploy catalog seed (SAT protocols, world countries, deployment map). To refresh feed-related settings and protocols only:{" "}
                   <code className="rounded bg-keyra-bg px-1 py-0.5">npm run db:seed:auth-feed</code>. The feed reflects rows marked <strong>live</strong> (active) in this table; keep home + roaming percentages summing to 100%.
                 </p>
               </section>

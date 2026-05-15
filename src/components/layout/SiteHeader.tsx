@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { AccountMenu } from "./AccountMenu";
+import { KeyraAppLauncher } from "./KeyraAppLauncher";
 import { MobileNav } from "./MobileNav";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
 import { AudienceLaneSwitcher } from "@/components/governance/AudienceLaneSwitcher";
@@ -73,6 +74,8 @@ export function SiteHeader() {
               </span>
             </Link>
           </div>
+
+          <KeyraAppLauncher />
         </div>
       </div>
       <AudienceLaneSwitcher />

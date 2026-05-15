@@ -221,6 +221,68 @@ export async function updateCountry(formData: FormData) {
   if (sortOrder !== undefined) data.sortOrder = sortOrder;
   data.isPublished = formData.get("isPublished") === "on";
 
+  if (formData.get("countryMapFields") === "1") {
+    if (formData.has("latitude")) {
+      const s = String(formData.get("latitude") ?? "").trim();
+      data.latitude = s.length ? Number.parseFloat(s) : null;
+    }
+    if (formData.has("longitude")) {
+      const s = String(formData.get("longitude") ?? "").trim();
+      data.longitude = s.length ? Number.parseFloat(s) : null;
+    }
+    if (formData.has("visualOffsetX")) {
+      const s = String(formData.get("visualOffsetX") ?? "").trim();
+      data.visualOffsetX = s.length ? Number.parseFloat(s) : 0;
+    }
+    if (formData.has("visualOffsetY")) {
+      const s = String(formData.get("visualOffsetY") ?? "").trim();
+      data.visualOffsetY = s.length ? Number.parseFloat(s) : 0;
+    }
+    if (formData.has("deploymentStage")) {
+      data.deploymentStage = String(formData.get("deploymentStage") ?? "").trim() || null;
+    }
+    const infraHealth = parseIntOrNull(formData.get("infrastructureHealth"));
+    if (infraHealth !== undefined) data.infrastructureHealth = infraHealth;
+    const uptime = String(formData.get("uptimePercentage") ?? "").trim();
+    if (formData.has("uptimePercentage")) {
+      data.uptimePercentage = uptime.length ? Number.parseFloat(uptime) : null;
+    }
+    const nodeH = parseIntOrNull(formData.get("nodeHealth"));
+    if (nodeH !== undefined) data.nodeHealth = nodeH;
+    const authVol = parseIntOrNull(formData.get("authVolume"));
+    if (authVol !== undefined) data.authVolume = authVol;
+    if (formData.has("clusterRegion")) {
+      data.clusterRegion = String(formData.get("clusterRegion") ?? "").trim() || null;
+    }
+    const ls = String(formData.get("lastSyncAt") ?? "").trim();
+    if (formData.has("lastSyncAt")) {
+      data.lastSyncAt = ls.length ? new Date(ls) : null;
+    }
+    data.aiAgentEnabled = formData.get("aiAgentEnabled") === "on";
+    const dScore = parseIntOrNull(formData.get("deploymentScore"));
+    if (dScore !== undefined) data.deploymentScore = dScore;
+    if (formData.has("satProtocolCoverage")) {
+      data.satProtocolCoverage = String(formData.get("satProtocolCoverage") ?? "").trim() || null;
+    }
+    if (formData.has("simEsimStatus")) {
+      data.simEsimStatus = String(formData.get("simEsimStatus") ?? "").trim() || null;
+    }
+    if (formData.has("govIntegrationStatus")) {
+      data.govIntegrationStatus = String(formData.get("govIntegrationStatus") ?? "").trim() || null;
+    }
+    if (formData.has("apiStatus")) {
+      data.apiStatus = String(formData.get("apiStatus") ?? "").trim() || null;
+    }
+    if (formData.has("regulatoryReadiness")) {
+      data.regulatoryReadiness = String(formData.get("regulatoryReadiness") ?? "").trim() || null;
+    }
+    if (formData.has("riskStatus")) {
+      data.riskStatus = String(formData.get("riskStatus") ?? "").trim() || null;
+    }
+    const apps = parseIntOrNull(formData.get("connectedAppsCount"));
+    if (apps !== undefined) data.connectedAppsCount = apps;
+  }
+
   const nextStatus = parseDeploymentStatus(formData.get("status"));
   if (nextStatus && nextStatus !== existing.status) {
     data.status = nextStatus;
@@ -229,7 +291,10 @@ export async function updateCountry(formData: FormData) {
   const mergedRegionId = (data.regionId as string | undefined) ?? existing.regionId;
   if (!canPatchCountry(auth, { id: existing.id, regionId: mergedRegionId })) forbidden();
 
-  await prisma.countryDeployment.update({ where: { id }, data });
+  await prisma.countryDeployment.update({
+    where: { id },
+    data: data as Prisma.CountryDeploymentUpdateInput,
+  });
 
   if (nextStatus && nextStatus !== existing.status) {
     await writeStatusHistory({

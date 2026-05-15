@@ -114,6 +114,30 @@ model CountryDeployment {
   createdAt               DateTime          @default(now())
   updatedAt               DateTime          @updatedAt
 
+  /** WGS84 — authoritative map anchor when set (admin). */
+  latitude   Float?
+  longitude  Float?
+  /** Pixel offsets in map space (1000×500 projection) for fine placement. */
+  visualOffsetX Float @default(0)
+  visualOffsetY Float @default(0)
+
+  deploymentStage          String?
+  infrastructureHealth     Int?
+  uptimePercentage         Float?
+  nodeHealth               Int?
+  authVolume               Int?
+  clusterRegion            String?
+  lastSyncAt               DateTime?
+  aiAgentEnabled           Boolean @default(false)
+  deploymentScore          Int?
+  satProtocolCoverage      String?
+  simEsimStatus            String?
+  govIntegrationStatus     String?
+  apiStatus                String?
+  regulatoryReadiness      String?
+  riskStatus               String?
+  connectedAppsCount       Int?
+
   telcos TelcoDeployment[]
 
   @@unique([countrySubdomain])

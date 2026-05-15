@@ -21,8 +21,9 @@ export function AdminDeploymentsShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <div className="flex flex-col gap-8 lg:flex-row">
-        <aside className="shrink-0 lg:w-56">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+        {/* Sticky below site header (lg:h-14); page scrolls, nav stays in view. */}
+        <aside className="shrink-0 lg:sticky lg:top-14 lg:z-[90] lg:w-56 lg:self-start">
           <p className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">Deployments</p>
           <nav className="mt-3 flex flex-col gap-1">
             {nav.map((item) => {
@@ -60,7 +61,7 @@ export function AdminDeploymentsShell({ children }: { children: ReactNode }) {
             </button>
           </form>
         </aside>
-        <div className="min-w-0 flex-1 overflow-x-auto">{children}</div>
+        <div className="min-w-0 flex-1 overflow-x-auto lg:min-h-0">{children}</div>
       </div>
     </div>
   );

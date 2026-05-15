@@ -14,7 +14,7 @@ import { resolveElevenLabsAgentId } from "@/lib/elevenLabsAgentConfig";
 
 /**
  * ElevenLabs ConvAI widget — `<elevenlabs-convai>` + embed script.
- * The embed script loads **only after sign-in** so anonymous visits are not blocked by unpkg.
+ * The embed loads for every visitor; `dynamic-variables` fill in after sign-in when phone/name exist.
  *
  * @see https://elevenlabs.io/docs/agents-platform/customization/widget
  */
@@ -68,6 +68,7 @@ function devPostElevenLabsIntent(kind: DevIntentKind, payload: ElevenLabsSession
       ...payload,
       inspect_phone_number: payload.dynamicVariables.phone_number,
       inspect_employee_id: payload.dynamicVariables.employee_id,
+      inspect_employee_name: payload.dynamicVariables.employee_name,
       inspect_userId: payload.userId,
       at: new Date().toISOString(),
     }),
@@ -89,12 +90,7 @@ export function ElevenLabsHomeAgent() {
   );
 
   useEffect(() => {
-    if (!user) {
-      startTransition(() => {
-        setEmbedReady(false);
-      });
-      return;
-    }
+    if (!convaiMounted) return;
 
     const existing =
       (document.getElementById(ELEVENLABS_EMBED_SCRIPT_ID) as HTMLScriptElement | null) ??
@@ -136,29 +132,31 @@ export function ElevenLabsHomeAgent() {
         setEmbedReady(true);
       });
     document.body.appendChild(s);
-  }, [user]);
+  }, [convaiMounted]);
 
   useEffect(() => {
-    const phoneE164 = user?.phoneE164?.trim();
-    if (!phoneE164 || !convaiMounted || !embedReady) return;
+    if (!convaiMounted || !embedReady) return;
+    const phoneE164 = user?.phoneE164?.trim() ?? "";
     devPostElevenLabsIntent("on-page-load", {
       agentId,
-      userId: phoneE164,
+      userId: phoneE164 || "anonymous",
       dynamicVariables: {
         employee_id: "",
-        phone_number: phoneE164.trim(),
+        employee_name: user?.displayName?.trim() ?? "",
+        phone_number: phoneE164,
         is_widget: "1",
       },
     });
-  }, [user?.phoneE164, convaiMounted, embedReady, agentId]);
+  }, [user?.phoneE164, user?.displayName, convaiMounted, embedReady, agentId]);
 
   const dynamicVariables = useMemo(() => {
     return {
       employee_id: "",
+      employee_name: user?.displayName?.trim() ?? "",
       phone_number: user?.phoneE164?.trim() ?? "",
       is_widget: "1",
     };
-  }, [user?.phoneE164]);
+  }, [user?.phoneE164, user?.displayName]);
 
   const dynamicVariablesJson = useMemo(
     () => JSON.stringify(dynamicVariables),
@@ -167,7 +165,7 @@ export function ElevenLabsHomeAgent() {
 
   /** Mirror static HTML: setAttribute so the custom element sees latest context. */
   useLayoutEffect(() => {
-    if (!user || !convaiMounted || !embedReady) return;
+    if (!convaiMounted || !embedReady) return;
     const el =
       widgetHostRef.current ??
       (typeof document !== "undefined"
@@ -179,12 +177,13 @@ export function ElevenLabsHomeAgent() {
     } catch {
       /* ignore */
     }
-  }, [user, convaiMounted, embedReady, dynamicVariablesJson]);
+  }, [convaiMounted, embedReady, dynamicVariablesJson]);
 
   useEffect(() => {
-    if (!user || process.env.NODE_ENV !== "development" || typeof window === "undefined") {
+    if (process.env.NODE_ENV !== "development" || typeof window === "undefined") {
       return;
     }
+    if (!convaiMounted || !embedReady) return;
     try {
       (
         window as Window & {
@@ -194,9 +193,9 @@ export function ElevenLabsHomeAgent() {
     } catch {
       /* ignore */
     }
-  }, [user, dynamicVariables]);
+  }, [convaiMounted, embedReady, dynamicVariables]);
 
-  if (!convaiMounted || !user || !embedReady) return null;
+  if (!convaiMounted || !embedReady) return null;
 
   return (
     <elevenlabs-convai

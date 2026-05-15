@@ -1,12 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, within, fireEvent } from "@testing-library/react";
 import { GlobalDeploymentView } from "@/components/global-deployment/GlobalDeploymentView";
 import type { PublicDeploymentTree } from "@/lib/deployments/publicTree";
-
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({ replace: vi.fn() }),
-  useSearchParams: () => new URLSearchParams(),
-}));
 
 const tree: PublicDeploymentTree = {
   mapKeys: ["EUROPE"],
@@ -36,6 +31,26 @@ const tree: PublicDeploymentTree = {
           sourceUrl: null,
           sourceVerifiedAt: null,
           sortOrder: 0,
+          latitude: null,
+          longitude: null,
+          visualOffsetX: 0,
+          visualOffsetY: 0,
+          deploymentStage: null,
+          infrastructureHealth: null,
+          uptimePercentage: null,
+          nodeHealth: null,
+          authVolume: null,
+          clusterRegion: null,
+          lastSyncAt: null,
+          aiAgentEnabled: false,
+          deploymentScore: null,
+          satProtocolCoverage: null,
+          simEsimStatus: null,
+          govIntegrationStatus: null,
+          apiStatus: null,
+          regulatoryReadiness: null,
+          riskStatus: null,
+          connectedAppsCount: null,
           publicSlug: "testland",
           telcos: [
             {
@@ -60,11 +75,32 @@ const tree: PublicDeploymentTree = {
   ],
 };
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ replace: vi.fn() }),
+  useSearchParams: () => new URLSearchParams(),
+}));
+
+beforeEach(() => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(tree),
+      }),
+    ) as unknown as typeof fetch,
+  );
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
 describe("GlobalDeploymentView", () => {
   it("expands a country row to show telcos", () => {
     render(<GlobalDeploymentView initialTree={tree} />);
 
-    const countryBtn = screen.getByRole("button", { name: /Testland/i });
+    const countryBtn = screen.getByRole("button", { name: /Registry row: Testland/i });
     expect(countryBtn.getAttribute("aria-expanded")).toBe("false");
 
     fireEvent.click(countryBtn);
