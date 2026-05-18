@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="px-4 py-16 sm:px-6 sm:py-20">
+    <div className="keyra-band--light px-4 py-16 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-3xl">
         <FadeIn>
           <div className="text-center">

@@ -38,7 +38,7 @@ const faqs = [
 
 export default function FaqPage() {
   return (
-    <div className="bg-keyra-bg px-4 py-12 sm:px-6 sm:py-20 md:py-24">
+    <div className="keyra-band--light bg-keyra-bg px-4 py-12 sm:px-6 sm:py-20 md:py-24">
       <div className="mx-auto max-w-3xl">
         <FadeIn>
           <h1 className="text-balance text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl md:text-[2.75rem]">
@@ -48,7 +48,7 @@ export default function FaqPage() {
             <span className="text-keyra-primary">Be Protected Online.</span>{" "}
             Quick answers in plain language. If you need more detail, we are
             happy to help — see{" "}
-            <Link href="/contact" className="font-medium text-keyra-primary underline-offset-4 hover:underline">
+            <Link href="/contact" className="font-medium text-keyra-text underline-offset-4 hover:underline">
               Contact us
             </Link>
             .
@@ -59,7 +59,7 @@ export default function FaqPage() {
           {faqs.map((item, i) => (
             <FadeIn key={item.q} delay={i * 0.04}>
               <li className="keyra-card p-5 sm:p-6">
-                <h2 className="text-lg font-semibold text-keyra-primary sm:text-xl">{item.q}</h2>
+                <h2 className="text-lg font-semibold text-keyra-text sm:text-xl">{item.q}</h2>
                 <p className="mt-3 text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px]">{item.a}</p>
               </li>
             </FadeIn>
@@ -67,7 +67,7 @@ export default function FaqPage() {
         </ul>
 
         <FadeIn className="mt-12 text-center">
-          <p className="font-medium text-keyra-primary">Still have a question?</p>
+          <p className="font-medium text-keyra-text">Still have a question?</p>
           <Link href="/contact" className="mt-4 inline-flex">
             <Button>Contact us</Button>
           </Link>

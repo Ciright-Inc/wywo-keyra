@@ -21,13 +21,13 @@ import {
 import { type FormEvent, useEffect, useState } from "react";
 
 const BORDER_OK =
-  "border-keyra-border/20 focus:border-keyra-primary focus:ring-2 focus:ring-keyra-primary/20";
+  "border-keyra-border focus-visible:border-keyra-text focus-visible:ring-2 focus-visible:ring-keyra-text/15";
 const BORDER_ERR =
-  "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-200/80";
+  "border-black/40 focus-visible:border-keyra-text focus-visible:ring-2 focus-visible:ring-black/12";
 
 function FieldError({ id, text }: { id: string; text: string }) {
   return (
-    <p id={id} className="mt-1.5 text-sm text-red-700" role="alert">
+    <p id={id} className="mt-1.5 text-sm font-medium text-keyra-text" role="alert">
       {text}
     </p>
   );
@@ -159,13 +159,13 @@ export function ContactLeadForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-6" noValidate>
       {feedback?.kind === "success" ? (
-        <p className="rounded-xl border border-emerald-200/80 bg-emerald-50/90 px-4 py-3 text-sm text-emerald-950">
+        <p className="rounded-xl border border-keyra-border bg-keyra-surface px-4 py-3 text-sm text-keyra-text">
           {feedback.text}
         </p>
       ) : null}
       {formError ? (
         <p
-          className="rounded-xl border border-red-200/80 bg-red-50/90 px-4 py-3 text-sm text-red-950"
+          className="rounded-xl border border-keyra-border bg-keyra-surface-2 px-4 py-3 text-sm text-keyra-text"
           role="alert"
         >
           {formError}
@@ -178,7 +178,7 @@ export function ContactLeadForm() {
             htmlFor="name"
             className="mb-2 block text-sm font-medium text-keyra-primary"
           >
-            Name <span className="text-red-600">*</span>
+            Name <span className="text-keyra-text opacity-70">*</span>
           </label>
           <input
             id="name"
@@ -202,7 +202,7 @@ export function ContactLeadForm() {
             htmlFor="email"
             className="mb-2 block text-sm font-medium text-keyra-primary"
           >
-            Email <span className="text-red-600">*</span>
+            Email <span className="text-keyra-text opacity-70">*</span>
           </label>
           <input
             id="email"
@@ -272,7 +272,7 @@ export function ContactLeadForm() {
             htmlFor="subject"
             className="mb-2 block text-sm font-medium text-keyra-primary"
           >
-            Subject <span className="text-red-600">*</span>
+            Subject <span className="text-keyra-text opacity-70">*</span>
           </label>
           <select
             id="subject"
@@ -306,7 +306,7 @@ export function ContactLeadForm() {
             htmlFor="message"
             className="mb-2 block text-sm font-medium text-keyra-primary"
           >
-            Message <span className="text-red-600">*</span>
+            Message <span className="text-keyra-text opacity-70">*</span>
           </label>
           <textarea
             id="message"
@@ -332,7 +332,7 @@ export function ContactLeadForm() {
           Prefer email? Contact{" "}
           <a
             href="mailto:hello@keyra.ie"
-            className="font-medium text-keyra-primary underline-offset-4 hover:underline"
+            className="font-medium text-keyra-text underline-offset-4 hover:underline"
           >
             hello@keyra.ie
           </a>
@@ -340,7 +340,7 @@ export function ContactLeadForm() {
         <button
           type="submit"
           disabled={pending || !subjectsReady}
-          className="inline-flex w-full shrink-0 justify-center rounded-full bg-keyra-primary px-6 py-3 text-sm font-semibold text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+          className="inline-flex w-full shrink-0 justify-center rounded-full border border-keyra-text bg-keyra-text px-6 py-3 text-sm font-semibold text-keyra-bg transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
         >
           {pending ? "Sending…" : "Send message"}
         </button>
