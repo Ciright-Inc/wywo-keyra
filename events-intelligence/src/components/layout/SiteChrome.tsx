@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { KeyraEcosystemFooterPublic } from "@/components/layout/KeyraEcosystemFooterPublic";
 
 const links = [
   { href: "/map", label: "Global Map" },
@@ -39,17 +40,8 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-auto border-t border-[var(--line)] bg-[var(--surface)] py-10 text-sm text-[var(--muted)]">
-      <div className="mx-auto max-w-6xl px-5">
-        <p className="max-w-2xl leading-relaxed">
-          Field intelligence for where governments, carriers, banks, platforms, and developers align on
-          trust, authentication, identity, fraud resistance, and secure access — not a conference list,
-          a decision map.
-        </p>
-        <p className="mt-6 text-xs uppercase tracking-[0.25em] text-[var(--muted-2)]">
-          Keyra · SAT-Core alignment layer
-        </p>
-      </div>
+    <footer className="mt-auto border-t border-[var(--line)] bg-black text-zinc-400">
+      <KeyraEcosystemFooterPublic />
     </footer>
   );
 }
