@@ -135,17 +135,18 @@ export function CountrySelect({
 export function PhoneInternationalRow({
   idBase,
   label,
-  dialValue,
+  phoneCountryCode,
   nationalValue,
-  onDialChange,
+  onPhoneCountryChange,
   onNationalChange,
   hint,
 }: {
   idBase: string;
   label: string;
-  dialValue: string;
+  /** ISO 3166-1 alpha-2 (unique per row; avoids duplicate +1 option values). */
+  phoneCountryCode: string;
   nationalValue: string;
-  onDialChange: (d: string) => void;
+  onPhoneCountryChange: (isoCode: string) => void;
   onNationalChange: (n: string) => void;
   hint?: ReactNode;
 }) {
@@ -156,12 +157,12 @@ export function PhoneInternationalRow({
         <select
           id={`${idBase}-dial`}
           className={regField}
-          value={dialValue}
-          onChange={(e) => onDialChange(e.target.value)}
+          value={phoneCountryCode}
+          onChange={(e) => onPhoneCountryChange(e.target.value)}
           aria-label="Country calling code"
         >
           {PHONE_COUNTRY_OPTIONS.map((c) => (
-            <option key={c.code} value={c.dial}>
+            <option key={c.code} value={c.code}>
               {c.dial} {c.name}
             </option>
           ))}

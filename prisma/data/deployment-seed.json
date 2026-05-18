@@ -10,7 +10,8 @@
     { "continentCode": "019", "subregionCode": "021", "name": "Northern America", "slug": "northern-america", "mapKey": "AMERICAS", "sortOrder": 80, "isPublished": true },
     { "continentCode": "019", "subregionCode": "005", "name": "South America", "slug": "south-america", "mapKey": "AMERICAS", "sortOrder": 90, "isPublished": true },
     { "continentCode": "002", "subregionCode": "018", "name": "Southern Africa", "slug": "southern-africa", "mapKey": "AFRICA", "sortOrder": 100, "isPublished": true },
-    { "continentCode": "002", "subregionCode": "011", "name": "Western Africa", "slug": "western-africa", "mapKey": "AFRICA", "sortOrder": 110, "isPublished": true }
+    { "continentCode": "002", "subregionCode": "011", "name": "Western Africa", "slug": "western-africa", "mapKey": "AFRICA", "sortOrder": 110, "isPublished": true },
+    { "continentCode": "000", "subregionCode": "000", "name": "Global catalog", "slug": "global-catalog", "mapKey": "GLOBAL", "sortOrder": 999, "isPublished": false }
   ],
   "countries": [
     { "regionSlug": "northern-europe", "name": "Ireland", "iso2": "IE", "iso3": "IRL", "flagAssetKey": "ie", "population": 5000000, "populationDisplay": "5.0M", "countrySubdomain": "ireland.keyra.ie", "officialReferenceDomain": "https://www.gov.ie/", "status": "OPERATIONAL", "statusNote": null, "sourceLabel": "World Bank — population (seed)", "sourceUrl": "https://data.worldbank.org/", "sourceVerifiedAt": "2026-01-01T00:00:00.000Z", "sortOrder": 10, "isPublished": true },

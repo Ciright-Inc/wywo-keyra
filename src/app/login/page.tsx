@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 export default function LoginPage() {
   const router = useRouter();
   const { user, refresh } = useKeyraSession();
-  const { dial, setDial } = useDefaultPhoneDial();
+  const { phoneCountryCode, setPhoneCountryCode, dial } = useDefaultPhoneDial();
   const [national, setNational] = useState("");
   const [honeypot, setHoneypot] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -83,9 +83,9 @@ export default function LoginPage() {
         <PhoneInternationalRow
           idBase="login-phone"
           label="Mobile number"
-          dialValue={dial}
+          phoneCountryCode={phoneCountryCode}
           nationalValue={national}
-          onDialChange={setDial}
+          onPhoneCountryChange={setPhoneCountryCode}
           onNationalChange={setNational}
           hint="Use your primary phone. OTP/SMS verification can be added when connected to Core."
         />

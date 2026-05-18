@@ -1,9 +1,15 @@
 "use client";
 
-import { DEFAULT_PHONE_COUNTRY_DIAL } from "@/lib/phoneCountryOptions";
+import {
+  DEFAULT_PHONE_COUNTRY_CODE,
+  dialForPhoneCountryCode,
+} from "@/lib/phoneCountryOptions";
 import { useState } from "react";
 
 export function useDefaultPhoneDial() {
-  const [dial, setDial] = useState(DEFAULT_PHONE_COUNTRY_DIAL);
-  return { dial, setDial };
+  const [phoneCountryCode, setPhoneCountryCode] = useState(
+    DEFAULT_PHONE_COUNTRY_CODE,
+  );
+  const dial = dialForPhoneCountryCode(phoneCountryCode);
+  return { phoneCountryCode, setPhoneCountryCode, dial };
 }

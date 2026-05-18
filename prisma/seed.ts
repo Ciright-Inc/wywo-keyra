@@ -9,6 +9,7 @@ import {
 } from "@prisma/client";
 import { buildTelcoSubdomainForSeed, loadDeploymentSeed } from "./deploymentSeedData";
 import { seedAuthenticationFeed } from "./seedAuthenticationFeed";
+import { seedDeploymentGraph } from "./seedDeploymentGraph";
 
 const prisma = new PrismaClient();
 
@@ -211,6 +212,9 @@ async function main() {
   console.info(
     `[seed] Created ${adminSeeds.length} admin users (password from SEED_ADMIN_PASSWORD or default "ChangeMeSeed!123").`,
   );
+
+  await seedDeploymentGraph(prisma);
+  console.info("[seed] Extended deployment map with ISO-3166 catalog countries + placeholder telcos.");
 
   await seedAuthenticationFeed(prisma);
 }

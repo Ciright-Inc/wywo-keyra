@@ -34,7 +34,7 @@ export function IndividualRegistrationModal({
 
   const [countryCitizenship, setCountryCitizenship] = useState("");
   const [countryResidence, setCountryResidence] = useState("");
-  const { dial, setDial } = useDefaultPhoneDial();
+  const { phoneCountryCode, setPhoneCountryCode, dial } = useDefaultPhoneDial();
   const [national, setNational] = useState("");
 
   useEffect(() => {
@@ -158,9 +158,9 @@ export function IndividualRegistrationModal({
           <PhoneInternationalRow
             idBase="ki-mob"
             label="Mobile number *"
-            dialValue={dial}
+            phoneCountryCode={phoneCountryCode}
             nationalValue={national}
-            onDialChange={setDial}
+            onPhoneCountryChange={setPhoneCountryCode}
             onNationalChange={setNational}
             hint="Include country code via the dropdown. Mobile verification is how Keyra anchors your identity."
           />

@@ -13,7 +13,7 @@ export function keyraGetStartedUrl(): string {
   return trimSlash(process.env.NEXT_PUBLIC_GET_STARTED_URL?.trim() || "https://get-started.keyra.ie");
 }
 
-/** Main Keyra / Ciright Pro app — app.keyra.ie (`NEXT_PUBLIC_SIMSECURE_URL` in SimSecure). */
+/** Main Keyra platform app — app.keyra.ie (`NEXT_PUBLIC_SIMSECURE_URL` in SimSecure). */
 export function keyraPlatformAppUrl(): string {
   return trimSlash(process.env.NEXT_PUBLIC_SIMSECURE_URL?.trim() || "https://app.keyra.ie");
 }

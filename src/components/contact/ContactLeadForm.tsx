@@ -13,9 +13,10 @@ import {
   validateContactFields,
 } from "@/lib/contactFormValidation";
 import {
-  DEFAULT_PHONE_COUNTRY_DIAL,
+  DEFAULT_PHONE_COUNTRY_CODE,
   PHONE_COUNTRY_OPTIONS,
   combinePhoneParts,
+  dialForPhoneCountryCode,
 } from "@/lib/phoneCountryOptions";
 import { type FormEvent, useEffect, useState } from "react";
 
@@ -84,7 +85,7 @@ export function ContactLeadForm() {
     const email = String(fd.get("email") ?? "");
     const description = String(fd.get("message") ?? "");
     const subjectRaw = String(fd.get("subject") ?? "").trim();
-    const dial = String(fd.get("phoneCountry") ?? "").trim();
+    const phoneCountryCode = String(fd.get("phoneCountry") ?? "").trim();
     const national = String(fd.get("phoneNational") ?? "").trim();
     const phoneNationalDigits = national.replace(/\D/g, "");
 
@@ -102,7 +103,7 @@ export function ContactLeadForm() {
     }
 
     const phone = combinePhoneParts(
-      dial || DEFAULT_PHONE_COUNTRY_DIAL,
+      dialForPhoneCountryCode(phoneCountryCode || DEFAULT_PHONE_COUNTRY_CODE),
       national,
     );
 
@@ -148,7 +149,7 @@ export function ContactLeadForm() {
       });
       form.reset();
       const sel = form.querySelector<HTMLSelectElement>("#phoneCountry");
-      if (sel) sel.value = DEFAULT_PHONE_COUNTRY_DIAL;
+      if (sel) sel.value = DEFAULT_PHONE_COUNTRY_CODE;
       setFieldErrors({});
     } finally {
       setPending(false);
@@ -231,7 +232,7 @@ export function ContactLeadForm() {
             <select
               name="phoneCountry"
               id="phoneCountry"
-              defaultValue={DEFAULT_PHONE_COUNTRY_DIAL}
+              defaultValue={DEFAULT_PHONE_COUNTRY_CODE}
               autoComplete="tel-country-code"
               aria-labelledby="phone-label"
               onChange={() => clearFieldError("phone")}
@@ -240,7 +241,7 @@ export function ContactLeadForm() {
               }`}
             >
               {PHONE_COUNTRY_OPTIONS.map((c) => (
-                <option key={c.code} value={c.dial}>
+                <option key={c.code} value={c.code}>
                   {c.name} ({c.dial})
                 </option>
               ))}

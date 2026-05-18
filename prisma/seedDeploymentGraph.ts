@@ -1,15 +1,24 @@
 /**
  * Idempotent upsert of global deployment map rows (regions, countries, telcos) from
- * `prisma/data/deployment-seed.json`. Safe on every production boot: does not wipe admins,
- * audit, access rules, or server nodes (those remain `prisma db seed` only).
+ * `prisma/data/deployment-seed.json`, plus every ISO-3166 alpha-2 territory from `world-countries`
+ * (region: global-catalog, subdomain `{iso2}.keyra.ie`, not published by default) and a placeholder
+ * telco per country that would otherwise have none — so the admin telcos UI lists all countries.
+ * Safe on every production boot: does not wipe admins, audit, access rules, or server nodes
+ * (those remain `prisma db seed` only).
  */
 import { DeploymentStatus, PrismaClient } from "@prisma/client";
 import { buildTelcoSubdomainForSeed, loadDeploymentSeed } from "./deploymentSeedData";
+import { allWorldCountriesWithIso2 } from "./worldCountriesIso";
+
+const PLACEHOLDER_TELCO_SLUG = "national-carriers";
+const PLACEHOLDER_TELCO_NAME = "National carriers (catalog)";
 
 export type DeploymentGraphSeedStats = {
   regionsUpserted: number;
   countriesUpserted: number;
   telcosUpserted: number;
+  worldCatalogCountriesUpserted: number;
+  placeholderTelcosUpserted: number;
 };
 
 export async function seedDeploymentGraph(prisma: PrismaClient): Promise<DeploymentGraphSeedStats> {
@@ -40,6 +49,11 @@ export async function seedDeploymentGraph(prisma: PrismaClient): Promise<Deploym
     });
     regionBySlug.set(r.slug, { id: row.id });
     regionsUpserted++;
+  }
+
+  const globalCatalogRegion = regionBySlug.get("global-catalog");
+  if (!globalCatalogRegion) {
+    throw new Error("[seedDeploymentGraph] Missing region slug: global-catalog (add to deployment-seed.json).");
   }
 
   const countryByIso2 = new Map<string, { id: string; countrySubdomain: string }>();
@@ -91,6 +105,52 @@ export async function seedDeploymentGraph(prisma: PrismaClient): Promise<Deploym
     countriesUpserted++;
   }
 
+  let worldCatalogCountriesUpserted = 0;
+  let worldCatalogSort = 10000;
+
+  for (const wc of allWorldCountriesWithIso2()) {
+    const iso2 = wc.cca2.toUpperCase();
+    if (countryByIso2.has(iso2)) continue;
+
+    const subdomain = `${iso2.toLowerCase()}.keyra.ie`;
+    const name = wc.name.common;
+    const iso3 = (wc.cca3 ?? "XXX").toUpperCase();
+    const flagAssetKey = iso2.toLowerCase();
+    worldCatalogSort += 1;
+
+    const row = await prisma.countryDeployment.upsert({
+      where: { countrySubdomain: subdomain },
+      create: {
+        regionId: globalCatalogRegion.id,
+        name,
+        iso2,
+        iso3,
+        flagAssetKey,
+        population: null,
+        populationDisplay: null,
+        countrySubdomain: subdomain,
+        officialReferenceDomain: null,
+        status: DeploymentStatus.IDENTIFIED,
+        statusNote: "Auto-seeded from world-countries; refine in admin.",
+        sourceLabel: "world-countries (npm)",
+        sourceUrl: "https://www.npmjs.com/package/world-countries",
+        sourceVerifiedAt: new Date(),
+        sortOrder: worldCatalogSort,
+        isPublished: false,
+      },
+      update: {
+        regionId: globalCatalogRegion.id,
+        name,
+        iso2,
+        iso3,
+        flagAssetKey,
+      },
+    });
+
+    countryByIso2.set(iso2, { id: row.id, countrySubdomain: row.countrySubdomain });
+    worldCatalogCountriesUpserted++;
+  }
+
   let telcosUpserted = 0;
   for (const t of data.telcos) {
     const country = countryByIso2.get(t.countryIso2.toUpperCase());
@@ -130,7 +190,48 @@ export async function seedDeploymentGraph(prisma: PrismaClient): Promise<Deploym
     telcosUpserted++;
   }
 
-  return { regionsUpserted, countriesUpserted, telcosUpserted };
+  let placeholderTelcosUpserted = 0;
+  for (const { id, countrySubdomain } of countryByIso2.values()) {
+    const existingCount = await prisma.telcoDeployment.count({ where: { countryId: id } });
+    if (existingCount > 0) continue;
+
+    const telcoSubdomain = buildTelcoSubdomainForSeed(countrySubdomain, PLACEHOLDER_TELCO_SLUG);
+    await prisma.telcoDeployment.upsert({
+      where: {
+        countryId_slug: {
+          countryId: id,
+          slug: PLACEHOLDER_TELCO_SLUG,
+        },
+      },
+      create: {
+        countryId: id,
+        name: PLACEHOLDER_TELCO_NAME,
+        slug: PLACEHOLDER_TELCO_SLUG,
+        subscribers: null,
+        subscribersDisplay: null,
+        telcoSubdomain,
+        officialDomain: null,
+        status: DeploymentStatus.IDENTIFIED,
+        sortOrder: 0,
+        isPublished: false,
+      },
+      update: {
+        name: PLACEHOLDER_TELCO_NAME,
+        telcoSubdomain,
+        status: DeploymentStatus.IDENTIFIED,
+        isPublished: false,
+      },
+    });
+    placeholderTelcosUpserted++;
+  }
+
+  return {
+    regionsUpserted,
+    countriesUpserted,
+    telcosUpserted,
+    worldCatalogCountriesUpserted,
+    placeholderTelcosUpserted,
+  };
 }
 
 const runStandalone = typeof process !== "undefined" && process.argv[1]?.includes("seedDeploymentGraph");

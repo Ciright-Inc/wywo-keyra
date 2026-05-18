@@ -6,7 +6,7 @@ export const AUDIENCE_LANE_HREFS = {
 } as const;
 
 export const AUDIENCE_LANE_LABELS = {
-  consumers: "Consumers",
-  enterprise: "Governments & carriers",
-  ecosystem: "Partners & developers",
+  consumers: "Consumer",
+  enterprise: "Governments",
+  ecosystem: "Partners",
 } as const;

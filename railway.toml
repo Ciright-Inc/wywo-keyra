@@ -1,0 +1,6 @@
+# Railway: keep default build (Nixpacks/npm) but pin start so migrations + deploy-catalog seed always run.
+# Do not set SKIP_DEPLOY_CATALOG_SEED=1, SKIP_WORLD_COUNTRIES_SEED=1, or SKIP_DEPLOYMENT_GRAPH_SEED=1
+# on the Keyra service unless you intentionally disable auto-seeding.
+
+[deploy]
+startCommand = "npm run start"

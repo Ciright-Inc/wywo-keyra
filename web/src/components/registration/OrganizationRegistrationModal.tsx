@@ -17,7 +17,7 @@ import {
   KEYRA_ORGANIZATION_TYPES,
   KEYRA_ORG_ROLE_TYPES,
 } from "@/lib/keyraRegistrationConstants";
-import { combinePhoneParts, DEFAULT_PHONE_COUNTRY_DIAL } from "@/lib/phoneCountryOptions";
+import { combinePhoneParts, DEFAULT_PHONE_COUNTRY_CODE, dialForPhoneCountryCode } from "@/lib/phoneCountryOptions";
 import { useEffect, useState } from "react";
 
 type EmployeeRow = {
@@ -27,7 +27,7 @@ type EmployeeRow = {
   title: string;
   department: string;
   workEmail: string;
-  dial: string;
+  phoneCountryCode: string;
   national: string;
   country: string;
   roleType: string;
@@ -44,7 +44,7 @@ function emptyEmployee(): EmployeeRow {
     title: "",
     department: "",
     workEmail: "",
-    dial: DEFAULT_PHONE_COUNTRY_DIAL,
+    phoneCountryCode: DEFAULT_PHONE_COUNTRY_CODE,
     national: "",
     country: "",
     roleType: "",
@@ -80,7 +80,11 @@ export function OrganizationRegistrationModal({
   const [slFirst, setSlFirst] = useState("");
   const [slLast, setSlLast] = useState("");
   const [slTitle, setSlTitle] = useState("");
-  const { dial: slDial, setDial: setSlDial } = useDefaultPhoneDial();
+  const {
+    phoneCountryCode: slPhoneCountryCode,
+    setPhoneCountryCode: setSlPhoneCountryCode,
+    dial: slDial,
+  } = useDefaultPhoneDial();
   const [slNational, setSlNational] = useState("");
   const [slEmail, setSlEmail] = useState("");
 
@@ -109,10 +113,10 @@ export function OrganizationRegistrationModal({
       setSlTitle("");
       setSlNational("");
       setSlEmail("");
-      setSlDial(DEFAULT_PHONE_COUNTRY_DIAL);
+      setSlPhoneCountryCode(DEFAULT_PHONE_COUNTRY_CODE);
       setEmployees([]);
     }
-  }, [open, setSlDial]);
+  }, [open, setSlPhoneCountryCode]);
 
   async function onMainDomainBlur() {
     const d = mainDomain.trim().toLowerCase();
@@ -166,7 +170,7 @@ export function OrganizationRegistrationModal({
       title: emp.title.trim(),
       department: emp.department.trim(),
       workEmail: emp.workEmail.trim(),
-      mobileNumber: combinePhoneParts(emp.dial, emp.national),
+      mobileNumber: combinePhoneParts(dialForPhoneCountryCode(emp.phoneCountryCode), emp.national),
       country: emp.country,
       roleType: emp.roleType,
     }));
@@ -442,9 +446,9 @@ export function OrganizationRegistrationModal({
               <PhoneInternationalRow
                 idBase="ko-sl-m"
                 label="Mobile number *"
-                dialValue={slDial}
+                phoneCountryCode={slPhoneCountryCode}
                 nationalValue={slNational}
-                onDialChange={setSlDial}
+                onPhoneCountryChange={setSlPhoneCountryCode}
                 onNationalChange={setSlNational}
               />
             </div>
@@ -581,11 +585,13 @@ export function OrganizationRegistrationModal({
                       <PhoneInternationalRow
                         idBase={`ko-em-${emp.key}`}
                         label="Mobile number *"
-                        dialValue={emp.dial}
+                        phoneCountryCode={emp.phoneCountryCode}
                         nationalValue={emp.national}
-                        onDialChange={(d) =>
+                        onPhoneCountryChange={(code) =>
                           setEmployees((prev) =>
-                            prev.map((x) => (x.key === emp.key ? { ...x, dial: d } : x)),
+                            prev.map((x) =>
+                              x.key === emp.key ? { ...x, phoneCountryCode: code } : x,
+                            ),
                           )
                         }
                         onNationalChange={(n) =>

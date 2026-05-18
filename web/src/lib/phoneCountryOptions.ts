@@ -91,8 +91,16 @@ export const PHONE_COUNTRY_OPTIONS: PhoneCountryOption[] = [
   return a.name.localeCompare(b.name);
 });
 
+/** ISO 3166-1 alpha-2; used as the `<select>` value so +1 countries stay distinct. */
+export const DEFAULT_PHONE_COUNTRY_CODE = "IE";
+
+export function dialForPhoneCountryCode(isoCode: string): string {
+  const c = PHONE_COUNTRY_OPTIONS.find((x) => x.code === isoCode);
+  return c?.dial ?? "+353";
+}
+
 export const DEFAULT_PHONE_COUNTRY_DIAL =
-  PHONE_COUNTRY_OPTIONS.find((c) => c.code === "IE")?.dial ?? "+353";
+  dialForPhoneCountryCode(DEFAULT_PHONE_COUNTRY_CODE);
 
 export function combinePhoneParts(dial: string, nationalDigits: string): string {
   const d = dial.trim().startsWith("+") ? dial.trim() : `+${dial.trim()}`;

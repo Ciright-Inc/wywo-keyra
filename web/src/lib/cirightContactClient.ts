@@ -251,7 +251,7 @@ export async function submitCirightLeadInBrowser(
     return {
       ok: false,
       message:
-        "Could not reach Ciright (network or CORS). Ask ops to allow this site origin on the API.",
+        "Could not reach Keyra services (network or CORS). Ask ops to allow this site origin on the API.",
     };
   }
 }

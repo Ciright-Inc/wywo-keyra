@@ -37,6 +37,11 @@ export function AudienceLaneSwitcher({
 
   const rowJustify = variant === "footer" ? "justify-start" : "justify-center";
 
+  const innerRowClass =
+    variant === "bar"
+      ? "grid w-full min-w-0 grid-cols-3 items-center justify-items-center gap-x-0 gap-y-0 sm:flex sm:w-full sm:flex-wrap sm:justify-center sm:gap-2"
+      : `flex w-full min-w-0 flex-wrap items-center gap-1 sm:gap-2 ${rowJustify}`;
+
   const pillActive =
     variant === "footer"
       ? "min-h-9 shrink-0 rounded-full border border-white/35 bg-white/10 px-3 py-1.5 text-center text-[11px] font-semibold text-white sm:min-h-0 sm:px-3 sm:py-1.5 sm:text-xs"
@@ -48,8 +53,8 @@ export function AudienceLaneSwitcher({
       : "min-h-9 shrink-0 rounded-full px-3 py-1.5 text-center text-[11px] font-medium text-keyra-text-2 transition hover:bg-keyra-surface hover:text-keyra-primary sm:min-h-0 sm:px-3 sm:py-1.5 sm:text-xs";
 
   return (
-    <div className={wrap} role="navigation" aria-label="Keyra experience context: consumers, enterprise, or partners">
-      <div className={`flex w-full min-w-0 flex-wrap items-center gap-1 sm:gap-2 ${rowJustify}`}>
+    <div className={wrap} role="navigation" aria-label="Keyra audience: Consumer, Governments, or Partners">
+      <div className={innerRowClass}>
         {items.map(({ lane, href, label }) => {
           const isActive = current === lane;
           return (

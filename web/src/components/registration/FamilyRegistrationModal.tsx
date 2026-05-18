@@ -13,7 +13,7 @@ import {
 } from "@/components/registration/registrationPrimitives";
 import { useDefaultPhoneDial } from "@/components/registration/useDefaultPhoneDial";
 import { Modal } from "@/components/ui/Modal";
-import { combinePhoneParts, DEFAULT_PHONE_COUNTRY_DIAL } from "@/lib/phoneCountryOptions";
+import { combinePhoneParts, DEFAULT_PHONE_COUNTRY_CODE, dialForPhoneCountryCode } from "@/lib/phoneCountryOptions";
 import { useEffect, useState } from "react";
 
 type SocialRow = {
@@ -27,7 +27,7 @@ type MemberRow = {
   key: string;
   firstName: string;
   lastName: string;
-  dial: string;
+  phoneCountryCode: string;
   national: string;
   relationship: string;
   countryCitizenship: string;
@@ -55,7 +55,7 @@ function newMember(surname: string): MemberRow {
         : String(Date.now()),
     firstName: "",
     lastName: surname.trim(),
-    dial: DEFAULT_PHONE_COUNTRY_DIAL,
+    phoneCountryCode: DEFAULT_PHONE_COUNTRY_CODE,
     national: "",
     relationship: "",
     countryCitizenship: "",
@@ -138,7 +138,7 @@ export function FamilyRegistrationModal({
     const membersPayload = members.map((m) => ({
       firstName: m.firstName.trim(),
       lastName: m.lastName.trim(),
-      mobileNumber: combinePhoneParts(m.dial, m.national),
+      mobileNumber: combinePhoneParts(dialForPhoneCountryCode(m.phoneCountryCode), m.national),
       relationship: m.relationship.trim(),
       countryOfCitizenship: m.countryCitizenship,
       email: m.email.trim(),
@@ -314,9 +314,9 @@ export function FamilyRegistrationModal({
               <PhoneInternationalRow
                 idBase="kf-dp-m"
                 label="Mobile number *"
-                dialValue={dpPhone.dial}
+                phoneCountryCode={dpPhone.phoneCountryCode}
                 nationalValue={dpNational}
-                onDialChange={dpPhone.setDial}
+                onPhoneCountryChange={dpPhone.setPhoneCountryCode}
                 onNationalChange={setDpNational}
               />
             </div>
@@ -410,11 +410,13 @@ export function FamilyRegistrationModal({
                     <PhoneInternationalRow
                       idBase={`kf-m-${mem.key}`}
                       label="Mobile number *"
-                      dialValue={mem.dial}
+                      phoneCountryCode={mem.phoneCountryCode}
                       nationalValue={mem.national}
-                      onDialChange={(d) =>
+                      onPhoneCountryChange={(code) =>
                         setMembers((prev) =>
-                          prev.map((x) => (x.key === mem.key ? { ...x, dial: d } : x)),
+                          prev.map((x) =>
+                            x.key === mem.key ? { ...x, phoneCountryCode: code } : x,
+                          ),
                         )
                       }
                       onNationalChange={(n) =>

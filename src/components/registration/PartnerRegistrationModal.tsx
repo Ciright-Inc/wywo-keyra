@@ -36,7 +36,7 @@ export function PartnerRegistrationModal({
   const [tsReset, setTsReset] = useState(0);
 
   const [countryReg, setCountryReg] = useState("");
-  const { dial, setDial } = useDefaultPhoneDial();
+  const { phoneCountryCode, setPhoneCountryCode, dial } = useDefaultPhoneDial();
   const [national, setNational] = useState("");
 
   useEffect(() => {
@@ -184,9 +184,9 @@ export function PartnerRegistrationModal({
           <PhoneInternationalRow
             idBase="kp-mob"
             label="Mobile number *"
-            dialValue={dial}
+            phoneCountryCode={phoneCountryCode}
             nationalValue={national}
-            onDialChange={setDial}
+            onPhoneCountryChange={setPhoneCountryCode}
             onNationalChange={setNational}
           />
 

@@ -70,14 +70,15 @@ npm run db:seed
 
 1. Add a **PostgreSQL** service in the same Railway project.
 2. On the **Keyra** web service, set `DATABASE_URL` to Railway’s reference (e.g. `${{Postgres.DATABASE_URL}}`) or paste the connection string from the Postgres service.
-3. Deploy: **`npm run start`** runs **`prisma migrate deploy`** before `next start`, so new migrations apply automatically. Ensure `DATABASE_URL` is available at runtime (it is by default for linked variables).
-4. **One-time data:** after the first successful deploy, run seed if you need demo admins and deployment rows (Railway shell or a one-off command):
-
-   ```bash
-   npx prisma db seed
-   ```
-
-   Set `SEED_ADMIN_PASSWORD` in Railway first if you do not want the default seed password.
+3. **Every deploy:** **`npm run start`** (see `railway.toml`) runs, in order:
+   - **`prisma migrate deploy`** — apply pending migrations
+   - **`npm run db:seed:deploy-catalog`** — idempotent catalog seed:
+     - authentication feed + SAT protocol registry
+     - **all `AuthenticationCountry` rows** from `world-countries` (unless `SKIP_WORLD_COUNTRIES_SEED=1`)
+     - **deployment map** (regions / countries / telcos), including **ISO-3166 catalog countries** and **placeholder telcos** where needed (unless `SKIP_DEPLOYMENT_GRAPH_SEED=1`)
+   - **`next start`** — app
+   Keep **`DATABASE_URL`** available at runtime. Do **not** set `SKIP_DEPLOY_CATALOG_SEED=1` on production unless you truly want to skip the whole catalog pass.
+4. **Full demo wipe + admins:** `npx prisma db seed` (loads `prisma/seed.ts` — resets deployment JSON graph, demo admins, then extends with the world catalog). Use Railway shell for one-off; set `SEED_ADMIN_PASSWORD` first if you do not want the default seed password.
 
 ### Scripts
 
@@ -86,7 +87,8 @@ npm run db:seed
 | `npm run db:migrate` | `prisma migrate dev` — create/apply migrations in development |
 | `npm run db:migrate:deploy` | `prisma migrate deploy` — apply pending migrations (also runs at container start) |
 | `npm run db:push` | Push schema without a migration (prototyping only) |
-| `npm run db:seed` | Load deployment JSON + admin users |
+| `npm run db:seed:deploy-catalog` | **Production boot:** idempotent auth countries + deployment map (+ world catalog telcos) — also run from `npm start` |
+| `npm run db:seed` | Load deployment JSON + demo admins (destructive reset — use shell / one-off only) |
 
 ## Railway checklist
 

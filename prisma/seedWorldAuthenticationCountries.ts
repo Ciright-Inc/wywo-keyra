@@ -1,11 +1,12 @@
 /**
- * Idempotent sovereign-country upsert for AuthenticationCountry (ISO independent states).
+ * Idempotent upsert for AuthenticationCountry — every ISO 3166-1 alpha-2 entry from world-countries
+ * (sovereign states plus territories and dependencies that have their own alpha-2 code, e.g. PR, AW, HK).
  * Preserves admin-edited weight, active, authenticationEnabled, displayPriority, notes on re-run.
  * Run: npx tsx prisma/seedWorldAuthenticationCountries.ts
  * Force reset all weights to 5: RESET_AUTH_COUNTRY_WEIGHTS=1 npx tsx prisma/seedWorldAuthenticationCountries.ts
  */
 import { PrismaClient } from "@prisma/client";
-import countries from "world-countries";
+import { allWorldCountriesWithIso2 } from "./worldCountriesIso";
 
 const prisma = new PrismaClient();
 
@@ -52,9 +53,9 @@ type Stats = { inserted: number; updated: number; skipped: number; failed: numbe
 
 export async function seedWorldAuthenticationCountries(db: PrismaClient): Promise<Stats> {
   const stats: Stats = { inserted: 0, updated: 0, skipped: 0, failed: 0 };
-  const sovereign = countries.filter((c) => c.independent === true);
+  const toSeed = allWorldCountriesWithIso2();
 
-  for (const c of sovereign) {
+  for (const c of toSeed) {
     const iso2 = (c.cca2 ?? "").toUpperCase();
     if (iso2.length !== 2) {
       stats.skipped += 1;
@@ -97,7 +98,7 @@ export async function seedWorldAuthenticationCountries(db: PrismaClient): Promis
             authenticationEnabled: true,
             percentageWeight: DEFAULT_WEIGHT,
             displayPriority: 0,
-            notes: "Seeded from world-countries (independent).",
+            notes: "Seeded from world-countries (ISO 3166-1 alpha-2).",
           },
         });
         stats.inserted += 1;
@@ -140,8 +141,8 @@ async function main() {
     JSON.stringify(
       {
         ...s,
-        totalIndependentSource: countries.filter((c) => c.independent === true).length,
-        message: "World sovereign seed complete.",
+        totalIso3166Alpha2Source: allWorldCountriesWithIso2().length,
+        message: "World country seed complete (all ISO 3166-1 alpha-2 rows).",
         hint: "Set RESET_AUTH_COUNTRY_WEIGHTS=1 to force percentageWeight=5 on every row.",
       },
       null,
