@@ -106,7 +106,7 @@ export function KeyraEcosystemFooterPublic() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 text-[var(--keyra-text)] sm:px-6 sm:py-10 lg:py-11">
-      <div className="grid gap-8 border border-[color:color-mix(in_srgb,var(--keyra-border)_80%,transparent)] lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-8 xl:gap-10">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-12 xl:gap-14">
         <div className="min-w-0">
           <h2 className={sectionTitle}>Keyra ecosystem</h2>
           <p className="mt-2 max-w-md text-[13px] leading-relaxed text-[var(--keyra-text-secondary)]">
@@ -133,7 +133,7 @@ export function KeyraEcosystemFooterPublic() {
           </a>
         </div>
 
-        <div className="min-w-0 lg:border-l lg:border-[color:color-mix(in_srgb,var(--keyra-border)_50%,transparent)] lg:pl-6 xl:pl-8">
+        <div className="min-w-0">
           <h2 className={sectionTitle}>On this site</h2>
           <nav className="mt-3" aria-label="Keyra marketing site">
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-x-5">
@@ -159,7 +159,7 @@ export function KeyraEcosystemFooterPublic() {
           </nav>
         </div>
 
-        <div className="min-w-0 lg:border-l lg:border-[color:color-mix(in_srgb,var(--keyra-border)_50%,transparent)] lg:pl-6 xl:pl-8">
+        <div className="min-w-0">
           <h2 className={sectionTitle}>Keyra apps</h2>
           <nav className="mt-3" aria-label="Keyra apps">
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-x-5">
