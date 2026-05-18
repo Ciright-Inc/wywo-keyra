@@ -1,0 +1,63 @@
+import type { Event, EventIndustry, EventSatCoreProblem } from "@prisma/client";
+
+export type EventPayload = Event & {
+  industries: EventIndustry[];
+  satCoreProblems: EventSatCoreProblem[];
+};
+
+export function toPublicEventJson(e: EventPayload) {
+  return {
+    id: e.id,
+    slug: e.slug,
+    name: e.name,
+    parentEventBrand: e.parentEventBrand,
+    eventCategory: e.eventCategory,
+    geopoliticalRegion: e.geopoliticalRegion,
+    continent: e.continent,
+    country: e.country,
+    city: e.city,
+    venue: e.venue,
+    startDate: e.startDate.toISOString(),
+    endDate: e.endDate.toISOString(),
+    eventAgeYears: e.eventAgeYears,
+    yearsRunning: e.yearsRunning,
+    estimatedAttendees: e.estimatedAttendees,
+    estimatedExhibitors: e.estimatedExhibitors,
+    estimatedSpeakers: e.estimatedSpeakers,
+    governmentAttendance: e.governmentAttendance,
+    carrierAttendance: e.carrierAttendance,
+    bankingFintechAttendance: e.bankingFintechAttendance,
+    developerAttendance: e.developerAttendance,
+    cybersecurityRelevance: e.cybersecurityRelevance,
+    identityRelevance: e.identityRelevance,
+    telecomRelevance: e.telecomRelevance,
+    aiRelevance: e.aiRelevance,
+    appSecurityRelevance: e.appSecurityRelevance,
+    governmentRelevance: e.governmentRelevance,
+    bankingRelevance: e.bankingRelevance,
+    keyraPriorityScore: e.keyraPriorityScore,
+    recommendedAction: e.recommendedAction,
+    targetMeetingType: e.targetMeetingType,
+    primaryBuyerPersona: e.primaryBuyerPersona,
+    secondaryBuyerPersona: e.secondaryBuyerPersona,
+    targetCompanies: e.targetCompanies,
+    targetMinistries: e.targetMinistries,
+    targetCarriers: e.targetCarriers,
+    targetBanks: e.targetBanks,
+    summary: e.summary,
+    whyItMatters: e.whyItMatters,
+    whoAttends: e.whoAttends,
+    problemKeyraSolves: e.problemKeyraSolves,
+    satCoreAlignment: e.satCoreAlignment,
+    targetMeetingList: e.targetMeetingList,
+    eventWebsite: e.eventWebsite,
+    sourceUrl: e.sourceUrl,
+    verificationStatus: e.verificationStatus,
+    lastUpdated: e.lastUpdated.toISOString(),
+    tier: e.tier,
+    featured: e.featured,
+    keyraOwner: e.keyraOwner,
+    industries: e.industries.map((i) => i.industry),
+    satCoreProblems: e.satCoreProblems.map((s) => s.problem),
+  };
+}

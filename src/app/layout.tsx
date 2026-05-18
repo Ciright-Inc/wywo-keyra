@@ -13,6 +13,7 @@ import {
 import { LANE_HEADER, parseKeyraDesignLaneHeader } from "@/lib/keyraDesignLane";
 import { ToastProvider } from "@/components/ui/Toast";
 import { ElevenLabsHomeAgent } from "@/components/home/ElevenLabsHomeAgent";
+import { PlausibleScripts } from "@/components/analytics/PlausibleScripts";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -79,6 +80,7 @@ export default async function RootLayout({
           </KeyraSessionProvider>
           <SiteFooter />
         </ToastProvider>
+        <PlausibleScripts />
       </body>
     </html>
   );

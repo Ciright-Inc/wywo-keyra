@@ -1,0 +1,218 @@
+// Keyra Global Events Intelligence — PostgreSQL schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Prisma 6 — connection URL lives here (Prisma 7+ moved URL to prisma.config.ts).
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum GeopoliticalRegion {
+  NORTH_AMERICA
+  WESTERN_EUROPE
+  EASTERN_EUROPE_BALKANS_CAUCASUS
+  MIDDLE_EAST_GCC
+  SOUTH_ASIA
+  SOUTHEAST_ASIA
+  EAST_ASIA
+  LATIN_AMERICA
+  CARIBBEAN
+  AFRICA
+  OCEANIA
+}
+
+enum Continent {
+  NORTH_AMERICA
+  SOUTH_AMERICA
+  EUROPE
+  ASIA
+  AFRICA
+  OCEANIA
+  MIDDLE_EAST
+}
+
+enum EventTier {
+  TIER_1
+  TIER_2
+  TIER_3
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  PARTIAL
+  VERIFIED
+}
+
+enum Industry {
+  CYBERSECURITY
+  DIGITAL_IDENTITY
+  TELECOM
+  FINTECH
+  AI
+  CLOUD
+  APP_SECURITY
+  DEVELOPER_PLATFORMS
+  DIGITAL_GOVERNMENT
+  INTERNET_GOVERNANCE
+  MOBILE_INFRASTRUCTURE
+  PAYMENTS
+  BANKING
+  SMART_CITIES
+  IOT
+  CRITICAL_INFRASTRUCTURE
+}
+
+enum SatCoreProblem {
+  ACCOUNT_TAKEOVER
+  PASSWORDLESS_AUTHENTICATION
+  WEAK_MFA
+  SIM_SWAP
+  DEVICE_TRUST
+  APP_FRAUD
+  BANKING_FRAUD
+  GOVERNMENT_ACCESS
+  TELECOM_SUBSCRIBER_VERIFICATION
+  ROAMING_AUTHENTICATION
+  AI_AGENT_IDENTITY
+  ZERO_TRUST
+  DEVELOPER_AUTHENTICATION
+}
+
+model Event {
+  id        String @id @default(cuid())
+  slug      String @unique
+  createdAt DateTime @default(now())
+
+  name             String
+  parentEventBrand String?
+  eventCategory    String?
+
+  geopoliticalRegion GeopoliticalRegion
+  continent          Continent
+  country            String
+  city               String
+  venue              String?
+
+  startDate DateTime
+  endDate   DateTime
+
+  /// Years since first edition (optional narrative field)
+  eventAgeYears Int?
+  yearsRunning  Int?
+
+  estimatedAttendees Int?
+  estimatedExhibitors Int?
+  estimatedSpeakers   Int?
+
+  governmentAttendance        Boolean @default(false)
+  carrierAttendance           Boolean @default(false)
+  bankingFintechAttendance    Boolean @default(false)
+  developerAttendance         Boolean @default(false)
+
+  cybersecurityRelevance Int @default(0)
+  identityRelevance      Int @default(0)
+  telecomRelevance       Int @default(0)
+  aiRelevance            Int @default(0)
+  appSecurityRelevance   Int @default(0)
+
+  governmentRelevance Int @default(0)
+  bankingRelevance    Int @default(0)
+
+  /// 0–100 composite score (computed in application layer)
+  keyraPriorityScore Int @default(0)
+
+  recommendedAction String?
+  targetMeetingType String?
+
+  primaryBuyerPersona   String?
+  secondaryBuyerPersona String?
+
+  targetCompanies  String[] @default([])
+  targetMinistries String[] @default([])
+  targetCarriers   String[] @default([])
+  targetBanks      String[] @default([])
+
+  summary            String?
+  whyItMatters       String?
+  whoAttends         String?
+  problemKeyraSolves String?
+  satCoreAlignment   String?
+  targetMeetingList  String?
+
+  eventWebsite String?
+  sourceUrl    String?
+
+  verificationStatus VerificationStatus @default(UNVERIFIED)
+  lastUpdated        DateTime           @updatedAt
+
+  tier           EventTier @default(TIER_3)
+  approvedPublic Boolean   @default(false)
+  featured       Boolean   @default(false)
+  keyraOwner     String?
+
+  industries       EventIndustry[]
+  satCoreProblems  EventSatCoreProblem[]
+
+  meetingRequests     MeetingRequest[]
+  eventUpdates        EventUpdateSubmission[]
+  globalEventPlanItems GlobalEventPlanItem[]
+}
+
+model EventIndustry {
+  eventId   String
+  industry  Industry
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, industry])
+  @@index([industry])
+}
+
+model EventSatCoreProblem {
+  eventId String
+  problem SatCoreProblem
+  event   Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, problem])
+  @@index([problem])
+}
+
+model MeetingRequest {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  eventId String?
+  event   Event?  @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  name          String
+  email         String
+  organization  String?
+  role          String?
+  meetingIntent String
+  notes         String?
+}
+
+model EventUpdateSubmission {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  eventId String?
+  event   Event?  @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  submitterEmail String
+  updateSummary  String
+  sourceUrl      String?
+}
+
+model GlobalEventPlanItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  visitorKey String
+  eventId    String
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([visitorKey, eventId])
+}
