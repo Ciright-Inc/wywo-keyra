@@ -85,15 +85,16 @@ function onKeyraLinkList(): { href: string; label: string }[] {
   }));
 }
 
-/** Matches keyra.ie footer: secondary body links, primary on hover. */
+/** Parity with Keyra `SiteFooter`: `text-keyra-text-2` + `hover:text-keyra-primary`. */
 const linkClass =
   "block text-sm text-[var(--keyra-text-secondary)] transition hover:text-[var(--keyra-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--keyra-ring)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-sm";
 
 const sectionTitle =
   "text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--keyra-text-secondary)]";
 
+/** Matches `AudienceLaneSwitcher` footer idle pills on keyra.ie (not token-mixed borders). */
 const pillClass =
-  "min-h-9 shrink-0 rounded-full border border-[var(--keyra-border)] bg-[var(--keyra-action)] px-3 py-1.5 text-center text-[11px] font-medium text-[color:rgba(255,255,255,0.82)] transition hover:border-[var(--keyra-action-border)] hover:bg-[var(--keyra-surface)] hover:text-[var(--keyra-primary)] sm:text-xs";
+  "min-h-9 shrink-0 rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-center text-[11px] font-medium text-white/75 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white sm:min-h-0 sm:py-1.5 sm:text-xs";
 
 export function KeyraEcosystemFooterPublic() {
   const year = new Date().getFullYear();
@@ -104,15 +105,15 @@ export function KeyraEcosystemFooterPublic() {
   const [siteLeft, siteRight] = splitInHalf(siteLinks);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 text-[var(--keyra-text)] sm:px-6 lg:py-11">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-8 xl:gap-10">
+    <div className="mx-auto max-w-7xl px-4 py-8 text-[var(--keyra-text)] sm:px-6 sm:py-10 lg:py-11">
+      <div className="grid gap-8 border border-[color:color-mix(in_srgb,var(--keyra-border)_80%,transparent)] lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-8 xl:gap-10">
         <div className="min-w-0">
           <h2 className={sectionTitle}>Keyra ecosystem</h2>
           <p className="mt-2 max-w-md text-[13px] leading-relaxed text-[var(--keyra-text-secondary)]">
             Choose the experience that matches your context — consumer protection, enterprise deployment, or
             partner tooling.
           </p>
-          <div className="mt-4 flex flex-wrap gap-1.5 sm:gap-2" role="navigation" aria-label="Keyra audience">
+          <div className="mt-4 flex flex-wrap gap-1 sm:gap-2" role="navigation" aria-label="Keyra audience">
             <a href={`${m}/`} className={pillClass} rel="noopener noreferrer">
               Consumers
             </a>
@@ -132,7 +133,7 @@ export function KeyraEcosystemFooterPublic() {
           </a>
         </div>
 
-        <div className="min-w-0 lg:border-l lg:border-[var(--keyra-border)] lg:pl-6 xl:pl-8">
+        <div className="min-w-0 lg:border-l lg:border-[color:color-mix(in_srgb,var(--keyra-border)_50%,transparent)] lg:pl-6 xl:pl-8">
           <h2 className={sectionTitle}>On this site</h2>
           <nav className="mt-3" aria-label="Keyra marketing site">
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-x-5">
@@ -158,7 +159,7 @@ export function KeyraEcosystemFooterPublic() {
           </nav>
         </div>
 
-        <div className="min-w-0 lg:border-l lg:border-[var(--keyra-border)] lg:pl-6 xl:pl-8">
+        <div className="min-w-0 lg:border-l lg:border-[color:color-mix(in_srgb,var(--keyra-border)_50%,transparent)] lg:pl-6 xl:pl-8">
           <h2 className={sectionTitle}>Keyra apps</h2>
           <nav className="mt-3" aria-label="Keyra apps">
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-x-5">
@@ -197,7 +198,7 @@ export function KeyraEcosystemFooterPublic() {
         </div>
       </div>
 
-      <div className="mt-8 border-t border-[var(--keyra-border)] pt-6 text-center text-xs text-[var(--keyra-text-secondary)] sm:text-left">
+      <div className="mt-8 border-t border-[color:color-mix(in_srgb,var(--keyra-border)_80%,transparent)] pt-6 text-center text-xs text-[var(--keyra-text-secondary)] sm:text-left">
         <p>© {year} Keyra. All rights reserved.</p>
       </div>
     </div>
