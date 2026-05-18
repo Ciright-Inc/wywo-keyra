@@ -40,7 +40,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-auto border-t border-[var(--line)] bg-black text-zinc-400">
+    <footer className="keyra-site-footer mt-auto border-t border-[var(--keyra-border)]">
       <KeyraEcosystemFooterPublic />
     </footer>
   );

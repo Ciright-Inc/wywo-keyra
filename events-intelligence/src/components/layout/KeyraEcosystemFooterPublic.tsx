@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Same link model and copy as keyra.ie `SiteFooter` (three columns), for satellite Keyra apps.
- * Styled for dark footers (black field) to match Developer / Affiliate / Press marketing shells.
+ * Same link model as keyra.ie `SiteFooter`. Colors use `keyra-site-footer` CSS variables
+ * from `keyra-theme.css` (institutional black field, not Tailwind zinc).
  */
 
 function trimSlash(s: string): string {
@@ -85,9 +85,15 @@ function onKeyraLinkList(): { href: string; label: string }[] {
   }));
 }
 
+/** Matches keyra.ie footer: secondary body links, primary on hover. */
 const linkClass =
-  "block text-sm text-zinc-400 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-sm";
-const sectionTitle = "text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500";
+  "block text-sm text-[var(--keyra-text-secondary)] transition hover:text-[var(--keyra-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--keyra-ring)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-sm";
+
+const sectionTitle =
+  "text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--keyra-text-secondary)]";
+
+const pillClass =
+  "min-h-9 shrink-0 rounded-full border border-[var(--keyra-border)] bg-[var(--keyra-action)] px-3 py-1.5 text-center text-[11px] font-medium text-[color:rgba(255,255,255,0.82)] transition hover:border-[var(--keyra-action-border)] hover:bg-[var(--keyra-surface)] hover:text-[var(--keyra-primary)] sm:text-xs";
 
 export function KeyraEcosystemFooterPublic() {
   const year = new Date().getFullYear();
@@ -98,47 +104,35 @@ export function KeyraEcosystemFooterPublic() {
   const [siteLeft, siteRight] = splitInHalf(siteLinks);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-11">
+    <div className="mx-auto max-w-7xl px-4 py-10 text-[var(--keyra-text)] sm:px-6 lg:py-11">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-8 xl:gap-10">
         <div className="min-w-0">
           <h2 className={sectionTitle}>Keyra ecosystem</h2>
-          <p className="mt-2 max-w-md text-[13px] leading-relaxed text-zinc-500">
+          <p className="mt-2 max-w-md text-[13px] leading-relaxed text-[var(--keyra-text-secondary)]">
             Choose the experience that matches your context — consumer protection, enterprise deployment, or
             partner tooling.
           </p>
           <div className="mt-4 flex flex-wrap gap-1.5 sm:gap-2" role="navigation" aria-label="Keyra audience">
-            <a
-              href={`${m}/`}
-              className="min-h-9 shrink-0 rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-center text-[11px] font-medium text-white/75 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white sm:text-xs"
-              rel="noopener noreferrer"
-            >
+            <a href={`${m}/`} className={pillClass} rel="noopener noreferrer">
               Consumers
             </a>
-            <a
-              href={`${m}/global-deployment`}
-              className="min-h-9 shrink-0 rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-center text-[11px] font-medium text-white/75 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white sm:text-xs"
-              rel="noopener noreferrer"
-            >
+            <a href={`${m}/global-deployment`} className={pillClass} rel="noopener noreferrer">
               Governments &amp; carriers
             </a>
-            <a
-              href={`${m}/developers`}
-              className="min-h-9 shrink-0 rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-center text-[11px] font-medium text-white/75 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white sm:text-xs"
-              rel="noopener noreferrer"
-            >
+            <a href={`${m}/developers`} className={pillClass} rel="noopener noreferrer">
               Partners &amp; developers
             </a>
           </div>
           <a
             href={m}
-            className="mt-5 inline-flex text-sm font-semibold text-white underline-offset-4 transition hover:underline"
+            className="mt-5 inline-flex text-sm font-semibold text-[var(--keyra-primary)] underline-offset-4 transition hover:underline"
             rel="noopener noreferrer"
           >
             Keyra home
           </a>
         </div>
 
-        <div className="min-w-0 lg:border-l lg:border-white/10 lg:pl-6 xl:pl-8">
+        <div className="min-w-0 lg:border-l lg:border-[var(--keyra-border)] lg:pl-6 xl:pl-8">
           <h2 className={sectionTitle}>On this site</h2>
           <nav className="mt-3" aria-label="Keyra marketing site">
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-x-5">
@@ -164,7 +158,7 @@ export function KeyraEcosystemFooterPublic() {
           </nav>
         </div>
 
-        <div className="min-w-0 lg:border-l lg:border-white/10 lg:pl-6 xl:pl-8">
+        <div className="min-w-0 lg:border-l lg:border-[var(--keyra-border)] lg:pl-6 xl:pl-8">
           <h2 className={sectionTitle}>Keyra apps</h2>
           <nav className="mt-3" aria-label="Keyra apps">
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-x-5">
@@ -203,7 +197,7 @@ export function KeyraEcosystemFooterPublic() {
         </div>
       </div>
 
-      <div className="mt-8 border-t border-white/10 pt-6 text-center text-xs text-zinc-500 sm:text-left">
+      <div className="mt-8 border-t border-[var(--keyra-border)] pt-6 text-center text-xs text-[var(--keyra-text-secondary)] sm:text-left">
         <p>© {year} Keyra. All rights reserved.</p>
       </div>
     </div>

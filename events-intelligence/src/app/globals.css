@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../../../../tools/keyra-theme/keyra-theme.css";
 
 :root {
   --bg: #fbfbfb;
