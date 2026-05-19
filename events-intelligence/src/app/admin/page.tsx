@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { isAbsoluteHttpUrl, publicEventDetailHref, publicEventsCatalogHref } from "@/lib/public-site-url";
 
 type Row = {
   id: string;
@@ -18,6 +19,8 @@ export default function AdminHomePage() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [pendingOnly, setPendingOnly] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+
+  const catalogHref = publicEventsCatalogHref();
 
   const fetchRows = useCallback(async () => {
     const q = pendingOnly ? "?pending=1" : "";
@@ -36,11 +39,6 @@ export default function AdminHomePage() {
     });
   }, [fetchRows]);
 
-  async function logout() {
-    await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
-    window.location.href = "/admin/login";
-  }
-
   async function quickToggle(id: string, field: "approvedPublic" | "featured", value: boolean) {
     await fetch(`/api/admin/events/${id}`, {
       method: "PATCH",
@@ -48,6 +46,26 @@ export default function AdminHomePage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ [field]: value }),
     });
+    await fetchRows();
+  }
+
+  async function setTier(id: string, tier: string) {
+    await fetch(`/api/admin/events/${id}`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tier }),
+    });
+    await fetchRows();
+  }
+
+  async function deleteRow(id: string, name: string) {
+    if (!confirm(`Permanently delete “${name}”?`)) return;
+    const res = await fetch(`/api/admin/events/${id}`, { method: "DELETE", credentials: "include" });
+    if (!res.ok) {
+      alert("Delete failed");
+      return;
+    }
     await fetchRows();
   }
 
@@ -66,21 +84,33 @@ export default function AdminHomePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-3xl font-light text-[var(--fg)]">Operator console</h1>
-        <button type="button" onClick={logout} className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-          Log out
-        </button>
-      </div>
+      <h1 className="text-3xl font-light text-[var(--fg)]">Operator console</h1>
 
       <div className="mt-8 flex flex-wrap items-center gap-4">
+        <Link
+          href="/admin/events/new"
+          className="rounded-full bg-[var(--fg)] px-4 py-2 text-sm font-medium text-[var(--bg)]"
+        >
+          New event
+        </Link>
         <label className="flex items-center gap-2 text-sm text-[var(--muted)]">
           <input type="checkbox" checked={pendingOnly} onChange={(e) => setPendingOnly(e.target.checked)} />
           Pending approval only
         </label>
-        <Link href="/events" className="text-sm underline-offset-4 hover:underline">
-          View public site
-        </Link>
+        {isAbsoluteHttpUrl(catalogHref) ? (
+          <a
+            href={catalogHref}
+            className="text-sm underline-offset-4 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View public site
+          </a>
+        ) : (
+          <Link href={catalogHref} className="text-sm underline-offset-4 hover:underline">
+            View public site
+          </Link>
+        )}
       </div>
 
       <section className="mt-10 rounded-3xl border border-[var(--line)] bg-[var(--elevated)] p-6">
@@ -114,13 +144,34 @@ export default function AdminHomePage() {
             {(rows ?? []).map((r) => (
               <tr key={r.id} className="border-b border-[var(--line)]">
                 <td className="py-3 pr-4">
-                  <Link href={`/events/${r.slug}`} className="font-medium hover:underline">
-                    {r.name}
-                  </Link>
+                  {isAbsoluteHttpUrl(publicEventDetailHref(r.slug)) ? (
+                    <a
+                      href={publicEventDetailHref(r.slug)}
+                      className="font-medium hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {r.name}
+                    </a>
+                  ) : (
+                    <Link href={publicEventDetailHref(r.slug)} className="font-medium hover:underline">
+                      {r.name}
+                    </Link>
+                  )}
                   <div className="font-mono text-[10px] text-[var(--muted-2)]">{r.slug}</div>
                 </td>
                 <td className="py-3 pr-4">{r.keyraPriorityScore}</td>
-                <td className="py-3 pr-4">{r.tier}</td>
+                <td className="py-3 pr-4">
+                  <select
+                    value={r.tier}
+                    onChange={(e) => void setTier(r.id, e.target.value)}
+                    className="max-w-[120px] rounded-lg border border-[var(--line)] bg-[var(--surface)] px-2 py-1 text-xs"
+                  >
+                    <option value="TIER_1">Tier 1</option>
+                    <option value="TIER_2">Tier 2</option>
+                    <option value="TIER_3">Tier 3</option>
+                  </select>
+                </td>
                 <td className="py-3 pr-4">{r.approvedPublic ? "yes" : "no"}</td>
                 <td className="py-3 pr-4">{r.featured ? "yes" : "no"}</td>
                 <td className="py-3 space-x-2 whitespace-nowrap">
@@ -141,6 +192,13 @@ export default function AdminHomePage() {
                   <Link href={`/admin/events/${r.id}`} className="text-xs underline">
                     Edit JSON
                   </Link>
+                  <button
+                    type="button"
+                    className="text-xs text-red-600 underline"
+                    onClick={() => void deleteRow(r.id, r.name)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}

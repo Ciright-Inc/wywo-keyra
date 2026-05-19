@@ -3,9 +3,12 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { toPublicEventJson } from "@/lib/event-json";
 import { isAdmin } from "@/lib/admin-auth";
+import { SLUG_TO_REGION } from "@/lib/constants";
 import {
   buildEventOrderBy,
   buildEventWhere,
+  finalizeEventSort,
+  mergeIndustryFilters,
   type EventListSort,
   parseIndustryList,
   parseSatList,
@@ -30,14 +33,21 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q");
-  const region = searchParams.get("region");
+  const regionRaw = searchParams.get("region");
+  const regionResolved = regionRaw?.trim()
+    ? SLUG_TO_REGION[regionRaw.trim()] ?? regionRaw.trim()
+    : null;
   const continent = searchParams.get("continent");
   const country = searchParams.get("country");
   const city = searchParams.get("city");
   const tier = searchParams.get("tier");
+  const month = searchParams.get("month");
   const featuredOnly = searchParams.get("featured") === "1";
   const pendingOnly = searchParams.get("pending") === "1";
-  const industries = parseIndustryList(searchParams.get("industries"));
+  const industries = mergeIndustryFilters(
+    parseIndustryList(searchParams.get("industries")),
+    searchParams.get("industry"),
+  );
   const satProblems = parseSatList(searchParams.get("sat"));
 
   const sort = (searchParams.get("sort") ?? "startDate") as EventListSort;
@@ -45,11 +55,12 @@ export async function GET(req: Request) {
 
   const where = buildEventWhere({
     q,
-    region,
+    region: regionResolved,
     continent,
     country,
     city,
     tier,
+    month,
     industries,
     satProblems,
     featuredOnly,
@@ -58,12 +69,15 @@ export async function GET(req: Request) {
 
   const orderBy = buildEventOrderBy(sort);
 
-  const rows = await prisma.event.findMany({
-    where,
-    orderBy,
-    take: limit,
-    include: { industries: true, satCoreProblems: true },
-  });
+  const rows = finalizeEventSort(
+    await prisma.event.findMany({
+      where,
+      orderBy,
+      take: limit,
+      include: { industries: true, satCoreProblems: true },
+    }),
+    sort,
+  );
 
   return NextResponse.json({ events: rows.map(toPublicEventJson) });
 }

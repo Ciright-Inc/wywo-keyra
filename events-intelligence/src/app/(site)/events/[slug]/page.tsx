@@ -66,8 +66,18 @@ export default async function EventDetailPage(props: Props) {
       </dl>
 
       <section className="mt-12">
+        <h2 className="text-lg font-medium text-[var(--fg)]">Event summary</h2>
+        <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
+          {event.summary ??
+            "Summary not yet published — operators can add executive framing from the admin console."}
+        </p>
+      </section>
+
+      <section className="mt-10">
         <h2 className="text-lg font-medium text-[var(--fg)]">Why this event matters to Keyra</h2>
-        <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">{event.whyItMatters ?? event.summary}</p>
+        <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
+          {event.whyItMatters ?? event.summary}
+        </p>
       </section>
 
       <section className="mt-10">

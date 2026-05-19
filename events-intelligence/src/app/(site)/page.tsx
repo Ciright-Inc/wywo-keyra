@@ -2,12 +2,19 @@ import Link from "next/link";
 import { EventCard } from "@/components/events/EventCard";
 import { RegionLattice } from "@/components/map/RegionLattice";
 import { getFeaturedEvents } from "@/lib/data/events";
-import { REGION_LABELS, REGION_ORDER, REGION_SLUGS, SAT_LABELS } from "@/lib/constants";
+import {
+  INDUSTRY_LABELS,
+  INDUSTRY_ORDER,
+  REGION_LABELS,
+  REGION_ORDER,
+  REGION_SLUGS,
+  SAT_LABELS,
+} from "@/lib/constants";
 import type { SatCoreProblem } from "@prisma/client";
 
 export default async function HomePage() {
   const featured = await getFeaturedEvents(8);
-  const previewProblems = (Object.keys(SAT_LABELS) as SatCoreProblem[]).slice(0, 8);
+  const allSatKeys = Object.keys(SAT_LABELS) as SatCoreProblem[];
 
   return (
     <div className="space-y-24 pb-24">
@@ -40,6 +47,22 @@ export default async function HomePage() {
             Open global map
           </Link>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5">
+        <h2 className="text-2xl font-light text-[var(--fg)]">Why this event matters to Keyra</h2>
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[var(--muted)]">
+          Every catalogue row answers where strategic gravity sits for SAT-Core: who needs subscriber-bound
+          assurance, who is exposed to SIM-subscriber fraud, where IAM complexity breaks in banking and
+          government, and which carriers monetize trust next. Detail pages spell out narrative summary,
+          attendee physics, SAT-Core mapping, recommended posture (sponsor / speak / carrier workshop /
+          private dinner), and target ministries, carriers, banks, and enterprises.
+        </p>
+        <p className="mt-4 text-sm">
+          <Link href="/priority" className="underline-offset-4 hover:underline">
+            Open Tier-1 priority roster →
+          </Link>
+        </p>
       </section>
 
       <section className="mx-auto max-w-6xl px-5">
@@ -79,10 +102,11 @@ export default async function HomePage() {
       <section className="mx-auto max-w-6xl px-5">
         <h2 className="text-2xl font-light text-[var(--fg)]">Filter by SAT-Core problem space</h2>
         <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
-          Trace where SAT-Core proof points resonate across regions and buyer motions.
+          Trace where SAT-Core proof points resonate — account takeover, SIM swap, zero trust, AI-agent
+          identity, roaming trust, developer burden, and more.
         </p>
         <ul className="mt-6 flex flex-wrap gap-2">
-          {previewProblems.map((p) => (
+          {allSatKeys.map((p) => (
             <li key={p}>
               <Link
                 href={`/events?sat=${p}`}
@@ -101,22 +125,46 @@ export default async function HomePage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-5">
-        <h2 className="text-2xl font-light text-[var(--fg)]">Regional snapshots</h2>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {REGION_ORDER.slice(0, 4).map((r) => (
+        <h2 className="text-2xl font-light text-[var(--fg)]">Filter by geopolitical region</h2>
+        <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
+          Jump straight into the catalogue scoped to a theater — same ordering model operators use in the
+          field console.
+        </p>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {REGION_ORDER.map((r) => (
             <Link
               key={r}
-              href={`/regions/${REGION_SLUGS[r]}`}
-              className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 transition hover:bg-[var(--elevated)]"
+              href={`/events?region=${REGION_SLUGS[r]}`}
+              className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm font-medium text-[var(--fg)] transition hover:bg-[var(--elevated)] hover:border-[var(--fg)]"
             >
-              <p className="text-sm font-medium text-[var(--fg)]">{REGION_LABELS[r]}</p>
-              <p className="mt-2 text-xs text-[var(--muted)]">
-                Open intelligence for carriers, banks, platforms, and digital government buyers active in
-                this theater.
-              </p>
+              {REGION_LABELS[r]}
             </Link>
           ))}
         </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5">
+        <h2 className="text-2xl font-light text-[var(--fg)]">Filter by industry lane</h2>
+        <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
+          Cross-cut cybersecurity, identity, telecom, banking, digital government, AI, IoT, payments, and
+          adjacent stacks.
+        </p>
+        <div className="mt-6 flex flex-wrap gap-2">
+          {INDUSTRY_ORDER.map((ind) => (
+            <Link
+              key={ind}
+              href={`/events?industry=${ind}`}
+              className="rounded-full border border-[var(--line)] bg-[var(--elevated)] px-3 py-1.5 text-xs text-[var(--fg)] transition hover:border-[var(--fg)]"
+            >
+              {INDUSTRY_LABELS[ind]}
+            </Link>
+          ))}
+        </div>
+        <p className="mt-4 text-sm">
+          <Link href="/industries" className="underline-offset-4 hover:underline">
+            Industry directory →
+          </Link>
+        </p>
       </section>
 
       <section className="mx-auto max-w-6xl rounded-3xl border border-[var(--line)] bg-[var(--elevated)] px-6 py-12 md:px-12">

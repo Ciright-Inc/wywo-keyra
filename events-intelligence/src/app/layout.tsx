@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { PlausibleScripts } from "@/components/analytics/PlausibleScripts";
-import { SiteFooter, SiteHeader } from "@/components/layout/SiteChrome";
+import { SITE_LOGO_SRC } from "@/lib/site-branding";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Keyra Global Events Intelligence",
   description:
     "Mapping digital trust, cybersecurity, telecom, identity, AI, fintech, and app infrastructure events — organized by geopolitical region with SAT-Core alignment.",
+  icons: {
+    icon: SITE_LOGO_SRC,
+    apple: SITE_LOGO_SRC,
+  },
 };
 
 export default function RootLayout({
@@ -16,10 +20,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-IE" className="h-full">
-      <body className="min-h-full flex flex-col bg-[var(--bg)] text-[var(--fg)] antialiased">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+      <body className="flex min-h-full flex-col bg-[var(--bg)] text-[var(--fg)] antialiased">
+        {children}
         <PlausibleScripts />
       </body>
     </html>

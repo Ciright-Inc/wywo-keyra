@@ -1,0 +1,12 @@
+# Railway — deploy inside the same project as your Postgres + auth services.
+# After linking Postgres → this service, Railway injects DATABASE_URL automatically.
+
+[build]
+builder = "nixpacks"
+
+[deploy]
+# Run migrations + seed before binding PORT (runtime has access to private Postgres).
+startCommand = "/bin/sh -c \"npm run deploy:db && exec npm run start\""
+healthcheckPath = "/"
+# db push + seed on a cold DB can exceed the default healthcheck window
+healthcheckTimeout = 300

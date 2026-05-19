@@ -8,6 +8,8 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // Isolate from other apps on the same Postgres (e.g. SAT-FORMS in `public`).
+  schemas  = ["keyra_events"]
 }
 
 enum GeopoliticalRegion {
@@ -22,6 +24,8 @@ enum GeopoliticalRegion {
   CARIBBEAN
   AFRICA
   OCEANIA
+
+  @@schema("keyra_events")
 }
 
 enum Continent {
@@ -32,18 +36,24 @@ enum Continent {
   AFRICA
   OCEANIA
   MIDDLE_EAST
+
+  @@schema("keyra_events")
 }
 
 enum EventTier {
   TIER_1
   TIER_2
   TIER_3
+
+  @@schema("keyra_events")
 }
 
 enum VerificationStatus {
   UNVERIFIED
   PARTIAL
   VERIFIED
+
+  @@schema("keyra_events")
 }
 
 enum Industry {
@@ -63,6 +73,8 @@ enum Industry {
   SMART_CITIES
   IOT
   CRITICAL_INFRASTRUCTURE
+
+  @@schema("keyra_events")
 }
 
 enum SatCoreProblem {
@@ -79,6 +91,8 @@ enum SatCoreProblem {
   AI_AGENT_IDENTITY
   ZERO_TRUST
   DEVELOPER_AUTHENTICATION
+
+  @@schema("keyra_events")
 }
 
 model Event {
@@ -159,6 +173,8 @@ model Event {
   meetingRequests     MeetingRequest[]
   eventUpdates        EventUpdateSubmission[]
   globalEventPlanItems GlobalEventPlanItem[]
+
+  @@schema("keyra_events")
 }
 
 model EventIndustry {
@@ -168,6 +184,7 @@ model EventIndustry {
 
   @@id([eventId, industry])
   @@index([industry])
+  @@schema("keyra_events")
 }
 
 model EventSatCoreProblem {
@@ -177,6 +194,7 @@ model EventSatCoreProblem {
 
   @@id([eventId, problem])
   @@index([problem])
+  @@schema("keyra_events")
 }
 
 model MeetingRequest {
@@ -192,6 +210,8 @@ model MeetingRequest {
   role          String?
   meetingIntent String
   notes         String?
+
+  @@schema("keyra_events")
 }
 
 model EventUpdateSubmission {
@@ -204,6 +224,8 @@ model EventUpdateSubmission {
   submitterEmail String
   updateSummary  String
   sourceUrl      String?
+
+  @@schema("keyra_events")
 }
 
 model GlobalEventPlanItem {
@@ -215,4 +237,5 @@ model GlobalEventPlanItem {
   event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@unique([visitorKey, eventId])
+  @@schema("keyra_events")
 }

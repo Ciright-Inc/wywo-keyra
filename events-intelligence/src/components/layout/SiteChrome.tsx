@@ -1,9 +1,13 @@
 import Link from "next/link";
 import { KeyraEcosystemFooterPublic } from "@/components/layout/KeyraEcosystemFooterPublic";
+import { SITE_LOGO_SRC } from "@/lib/site-branding";
+
+export { SITE_LOGO_SRC };
 
 const links = [
   { href: "/map", label: "Global Map" },
   { href: "/regions", label: "Regions" },
+  { href: "/countries", label: "Countries" },
   { href: "/industries", label: "Industries" },
   { href: "/events", label: "Events" },
   { href: "/sat-core", label: "SAT-Core Alignment" },
@@ -16,11 +20,22 @@ export function SiteHeader() {
   return (
     <header className="border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur-md sticky top-0 z-50">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-4 md:flex-row md:items-center md:justify-between">
-        <Link href="/" className="group">
-          <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--muted)]">events.keyra.ie</p>
-          <p className="text-lg font-medium tracking-tight text-[var(--fg)] group-hover:opacity-80">
-            Keyra Global Events Intelligence
-          </p>
+        <Link
+          href="/"
+          className="flex shrink-0 items-center"
+          aria-label="Keyra Global Events Intelligence — home"
+        >
+          <span className="flex h-[80px] w-[120px] shrink-0 items-center justify-start overflow-hidden">
+            <img
+              src={SITE_LOGO_SRC}
+              alt="Keyra"
+              width={316}
+              height={212}
+              decoding="async"
+              fetchPriority="high"
+              className="box-border h-[80px] max-h-[80px] w-[120px] max-w-[120px] object-contain object-left"
+            />
+          </span>
         </Link>
         <nav className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-[var(--muted)]">
           {links.map((l) => (

@@ -1134,14 +1134,28 @@ const tier1: SeedEvent[] = [
 ];
 
 async function main() {
+  /**
+   * Live deploy safety:
+   * - Default: upsert Tier-1 anchors on every `deploy:db` (refreshes seeded fields).
+   * - Set SEED_ON_EMPTY_ONLY=true to seed only when the DB has zero events (recommended after
+   *   first production launch so redeploys do not overwrite operator edits to seeded slugs).
+   */
+  if (process.env.SEED_ON_EMPTY_ONLY === "true") {
+    const n = await prisma.event.count();
+    if (n > 0) {
+      console.log(`Skipping seed: database already has ${n} event(s).`);
+      return;
+    }
+  }
+
   for (const e of tier1) {
     await upsertEvent(e);
   }
+  console.log(`Seeded ${tier1.length} Tier-1 intelligence anchors.`);
 }
 
 main()
   .then(async () => {
-    console.log(`Seeded ${tier1.length} Tier-1 intelligence anchors.`);
     await prisma.$disconnect();
   })
   .catch(async (err) => {

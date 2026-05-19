@@ -65,3 +65,13 @@ export async function getEventsByContinent(
     include,
   });
 }
+
+export async function getCountriesWithCounts(): Promise<{ country: string; count: number }[]> {
+  const rows = await prisma.event.groupBy({
+    by: ["country"],
+    where: { approvedPublic: true },
+    _count: { _all: true },
+    orderBy: { country: "asc" },
+  });
+  return rows.map((r) => ({ country: r.country, count: r._count._all }));
+}

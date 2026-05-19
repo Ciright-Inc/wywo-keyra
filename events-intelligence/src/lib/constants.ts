@@ -61,6 +61,17 @@ export const CONTINENT_LABELS: Record<Continent, string> = {
   MIDDLE_EAST: "Middle East",
 };
 
+/** Stable ordering for filters & admin selects */
+export const CONTINENT_ORDER: Continent[] = [
+  "NORTH_AMERICA",
+  "SOUTH_AMERICA",
+  "EUROPE",
+  "MIDDLE_EAST",
+  "ASIA",
+  "AFRICA",
+  "OCEANIA",
+];
+
 export const INDUSTRY_ORDER: Industry[] = [
   "CYBERSECURITY",
   "DIGITAL_IDENTITY",

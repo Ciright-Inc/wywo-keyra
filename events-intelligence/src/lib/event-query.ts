@@ -6,21 +6,28 @@ import type {
   Prisma,
   SatCoreProblem,
 } from "@prisma/client";
+import { Industry as IndustryEnum } from "@prisma/client";
+import { INDUSTRY_LABELS } from "@/lib/constants";
+
+const INDUSTRY_ENUM_SET = new Set<string>(Object.values(IndustryEnum));
 
 export type EventListSort =
   | "startDate"
   | "priorityScore"
+  | "satCoreFit"
   | "attendees"
   | "yearsRunning"
   | "country"
   | "city"
   | "region"
+  | "industry"
   | "identity"
   | "telecom"
   | "banking"
   | "government"
   | "cybersecurity"
-  | "appSecurity";
+  | "appSecurity"
+  | "ai";
 
 export function parseIndustryList(raw: string | null): Industry[] | undefined {
   if (!raw?.trim()) return undefined;
@@ -34,6 +41,18 @@ export function parseSatList(raw: string | null): SatCoreProblem[] | undefined {
   return parts.filter(Boolean) as SatCoreProblem[];
 }
 
+/** Calendar month filter `YYYY-MM` on event start date (UTC month boundaries). */
+export function applyMonthFilter(where: Prisma.EventWhereInput, month: string | null | undefined) {
+  if (!month?.trim()) return;
+  const parts = month.trim().split("-").map(Number);
+  if (parts.length !== 2 || parts.some((n) => Number.isNaN(n))) return;
+  const [y, mo] = parts;
+  if (mo < 1 || mo > 12) return;
+  const start = new Date(Date.UTC(y, mo - 1, 1));
+  const end = new Date(Date.UTC(y, mo, 1));
+  where.startDate = { gte: start, lt: end };
+}
+
 export function buildEventWhere(input: {
   q?: string | null;
   region?: string | null;
@@ -43,6 +62,7 @@ export function buildEventWhere(input: {
   industries?: Industry[];
   satProblems?: SatCoreProblem[];
   tier?: string | null;
+  month?: string | null;
   featuredOnly?: boolean;
   /** public default: only catalogue-approved events */
   approvedFilter?: "public" | "all" | "pending";
@@ -89,7 +109,22 @@ export function buildEventWhere(input: {
     where.satCoreProblems = { some: { problem: { in: input.satProblems } } };
   }
 
+  applyMonthFilter(where, input.month);
+
   return where;
+}
+
+export function mergeIndustryFilters(
+  list: Industry[] | undefined,
+  single: string | null | undefined,
+): Industry[] | undefined {
+  const v = single?.trim().toUpperCase();
+  const extra = v && INDUSTRY_ENUM_SET.has(v) ? (v as Industry) : undefined;
+  if (!extra && (!list || list.length === 0)) return list;
+  const acc = new Set<Industry>(list ?? []);
+  if (extra) acc.add(extra);
+  const out = [...acc];
+  return out.length ? out : undefined;
 }
 
 export function buildEventOrderBy(
@@ -97,6 +132,7 @@ export function buildEventOrderBy(
 ): Prisma.EventOrderByWithRelationInput[] {
   switch (sort) {
     case "priorityScore":
+    case "satCoreFit":
       return [{ keyraPriorityScore: "desc" }, { startDate: "asc" }, { id: "asc" }];
     case "attendees":
       return [{ estimatedAttendees: "desc" }, { startDate: "asc" }, { id: "asc" }];
@@ -108,6 +144,8 @@ export function buildEventOrderBy(
       return [{ city: "asc" }, { startDate: "asc" }, { id: "asc" }];
     case "region":
       return [{ geopoliticalRegion: "asc" }, { startDate: "asc" }, { id: "asc" }];
+    case "industry":
+      return [{ startDate: "asc" }, { id: "asc" }];
     case "identity":
       return [{ identityRelevance: "desc" }, { startDate: "asc" }, { id: "asc" }];
     case "telecom":
@@ -120,8 +158,24 @@ export function buildEventOrderBy(
       return [{ cybersecurityRelevance: "desc" }, { startDate: "asc" }, { id: "asc" }];
     case "appSecurity":
       return [{ appSecurityRelevance: "desc" }, { startDate: "asc" }, { id: "asc" }];
+    case "ai":
+      return [{ aiRelevance: "desc" }, { startDate: "asc" }, { id: "asc" }];
     case "startDate":
     default:
       return [{ startDate: "asc" }, { id: "asc" }];
   }
+}
+
+/** Post-sort when Prisma cannot order by relation label (industry lane). */
+export function finalizeEventSort<
+  T extends { id: string; industries: { industry: Industry }[] },
+>(events: T[], sort: EventListSort | null): T[] {
+  if (sort !== "industry") return events;
+  return [...events].sort((a, b) => {
+    const la =
+      [...a.industries.map((x) => INDUSTRY_LABELS[x.industry])].sort()[0] ?? "\uFFFF";
+    const lb =
+      [...b.industries.map((x) => INDUSTRY_LABELS[x.industry])].sort()[0] ?? "\uFFFF";
+    return la.localeCompare(lb);
+  });
 }

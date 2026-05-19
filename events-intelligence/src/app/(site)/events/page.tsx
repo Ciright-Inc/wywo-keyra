@@ -1,15 +1,27 @@
 import Link from "next/link";
 import { EventCard } from "@/components/events/EventCard";
-import { REGION_LABELS, REGION_ORDER, REGION_SLUGS, SAT_LABELS, SLUG_TO_REGION } from "@/lib/constants";
+import {
+  CONTINENT_LABELS,
+  CONTINENT_ORDER,
+  INDUSTRY_LABELS,
+  INDUSTRY_ORDER,
+  REGION_LABELS,
+  REGION_ORDER,
+  REGION_SLUGS,
+  SAT_LABELS,
+  SLUG_TO_REGION,
+} from "@/lib/constants";
 import { prisma } from "@/lib/db";
 import {
   buildEventOrderBy,
   buildEventWhere,
+  finalizeEventSort,
+  mergeIndustryFilters,
   type EventListSort,
   parseIndustryList,
   parseSatList,
 } from "@/lib/event-query";
-import type { SatCoreProblem } from "@prisma/client";
+import type { Continent, SatCoreProblem } from "@prisma/client";
 
 type Search = Record<string, string | string[] | undefined>;
 
@@ -29,15 +41,26 @@ export default async function EventsCatalogPage({
   const sort = (single(sp.sort) ?? "startDate") as EventListSort;
   const satRaw = single(sp.sat);
   const indRaw = single(sp.industries);
+  const industryQuick = single(sp.industry);
+  const continent = single(sp.continent);
+  const country = single(sp.country);
+  const city = single(sp.city);
+  const tier = single(sp.tier);
+  const month = single(sp.month);
 
   const regionEnum = regionSlug ? SLUG_TO_REGION[regionSlug] : undefined;
 
-  const industries = parseIndustryList(indRaw ?? null);
+  const industries = mergeIndustryFilters(parseIndustryList(indRaw ?? null), industryQuick ?? null);
   const satProblems = parseSatList(satRaw ?? null);
 
   const where = buildEventWhere({
     q: q ?? null,
     region: regionEnum ?? undefined,
+    continent: continent ?? null,
+    country: country ?? null,
+    city: city ?? null,
+    tier: tier ?? null,
+    month: month ?? null,
     industries,
     satProblems,
     approvedFilter: "public",
@@ -45,12 +68,14 @@ export default async function EventsCatalogPage({
 
   const orderBy = buildEventOrderBy(sort);
 
-  const events = await prisma.event.findMany({
+  const rawEvents = await prisma.event.findMany({
     where,
     orderBy,
     take: 80,
     include: { industries: true, satCoreProblems: true },
   });
+
+  const events = finalizeEventSort(rawEvents, sort);
 
   const satKeys = Object.keys(SAT_LABELS) as SatCoreProblem[];
 
@@ -58,15 +83,15 @@ export default async function EventsCatalogPage({
     <div className="mx-auto max-w-6xl px-5 py-14">
       <h1 className="text-4xl font-light text-[var(--fg)]">Events catalogue</h1>
       <p className="mt-4 max-w-2xl text-sm text-[var(--muted)]">
-        Sort by priority score, attendance gravity, identity relevance, telecom relevance, SAT-Core fit,
-        or calendar date — filters compose without overwhelming the surface.
+        Sort and filter by geopolitical region, continent, country, industry lane, calendar month, SAT-Core
+        tags, tier, Keyra priority score, relevance vectors, and field scale — composed without noise.
       </p>
 
       <form
         method="get"
-        className="mt-10 grid gap-4 rounded-3xl border border-[var(--line)] bg-[var(--elevated)] p-6 md:grid-cols-4"
+        className="mt-10 grid gap-4 rounded-3xl border border-[var(--line)] bg-[var(--elevated)] p-6 md:grid-cols-4 lg:grid-cols-6"
       >
-        <label className="md:col-span-2">
+        <label className="md:col-span-2 lg:col-span-3">
           <span className="text-[11px] uppercase tracking-[0.25em] text-[var(--muted-2)]">Search</span>
           <input
             name="q"
@@ -91,15 +116,85 @@ export default async function EventsCatalogPage({
           </select>
         </label>
         <label>
+          <span className="text-[11px] uppercase tracking-[0.25em] text-[var(--muted-2)]">Continent</span>
+          <select
+            name="continent"
+            defaultValue={continent ?? ""}
+            className="mt-2 w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-sm"
+          >
+            <option value="">All continents</option>
+            {CONTINENT_ORDER.map((c) => (
+              <option key={c} value={c}>
+                {CONTINENT_LABELS[c as Continent]}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="md:col-span-2">
+          <span className="text-[11px] uppercase tracking-[0.25em] text-[var(--muted-2)]">Country</span>
+          <input
+            name="country"
+            defaultValue={country ?? ""}
+            placeholder="Exact match, case-insensitive"
+            className="mt-2 w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-sm"
+          />
+        </label>
+        <label className="md:col-span-2">
+          <span className="text-[11px] uppercase tracking-[0.25em] text-[var(--muted-2)]">City</span>
+          <input
+            name="city"
+            defaultValue={city ?? ""}
+            className="mt-2 w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-sm"
+          />
+        </label>
+        <label>
+          <span className="text-[11px] uppercase tracking-[0.25em] text-[var(--muted-2)]">Tier</span>
+          <select
+            name="tier"
+            defaultValue={tier ?? ""}
+            className="mt-2 w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-sm"
+          >
+            <option value="">All tiers</option>
+            <option value="TIER_1">Tier 1</option>
+            <option value="TIER_2">Tier 2</option>
+            <option value="TIER_3">Tier 3</option>
+          </select>
+        </label>
+        <label>
+          <span className="text-[11px] uppercase tracking-[0.25em] text-[var(--muted-2)]">Start month</span>
+          <input
+            name="month"
+            type="month"
+            defaultValue={month ?? ""}
+            className="mt-2 w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-sm"
+          />
+        </label>
+        <label className="md:col-span-2 lg:col-span-3">
+          <span className="text-[11px] uppercase tracking-[0.25em] text-[var(--muted-2)]">Industry lane</span>
+          <select
+            name="industry"
+            defaultValue={industryQuick ?? ""}
+            className="mt-2 w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-sm"
+          >
+            <option value="">Any industry</option>
+            {INDUSTRY_ORDER.map((ind) => (
+              <option key={ind} value={ind}>
+                {INDUSTRY_LABELS[ind]}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="md:col-span-2 lg:col-span-3">
           <span className="text-[11px] uppercase tracking-[0.25em] text-[var(--muted-2)]">Sort</span>
           <select
             name="sort"
             defaultValue={sort}
             className="mt-2 w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-sm"
           >
-            <option value="startDate">Date</option>
+            <option value="startDate">Start date</option>
             <option value="priorityScore">Keyra priority score</option>
-            <option value="attendees">Attendees</option>
+            <option value="satCoreFit">SAT-Core fit (priority score)</option>
+            <option value="attendees">Estimated attendees</option>
             <option value="yearsRunning">Years running</option>
             <option value="identity">Identity relevance</option>
             <option value="telecom">Telecom relevance</option>
@@ -107,12 +202,14 @@ export default async function EventsCatalogPage({
             <option value="government">Government relevance</option>
             <option value="cybersecurity">Cybersecurity relevance</option>
             <option value="appSecurity">App security relevance</option>
+            <option value="ai">AI relevance</option>
+            <option value="industry">Industry (A→Z by primary lane)</option>
             <option value="country">Country</option>
             <option value="city">City</option>
-            <option value="region">Region</option>
+            <option value="region">Geopolitical region</option>
           </select>
         </label>
-        <label className="md:col-span-2">
+        <label className="md:col-span-3 lg:col-span-6">
           <span className="text-[11px] uppercase tracking-[0.25em] text-[var(--muted-2)]">
             SAT-Core problems (comma-separated enum keys)
           </span>
@@ -123,9 +220,9 @@ export default async function EventsCatalogPage({
             className="mt-2 w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 font-mono text-xs"
           />
         </label>
-        <label className="md:col-span-2">
+        <label className="md:col-span-3 lg:col-span-6">
           <span className="text-[11px] uppercase tracking-[0.25em] text-[var(--muted-2)]">
-            Industries (comma-separated enum keys)
+            Industries — advanced (comma-separated enums, combines with Industry lane)
           </span>
           <input
             name="industries"
@@ -134,7 +231,7 @@ export default async function EventsCatalogPage({
             className="mt-2 w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 font-mono text-xs"
           />
         </label>
-        <div className="flex items-end md:col-span-4">
+        <div className="flex items-end md:col-span-4 lg:col-span-6">
           <button
             type="submit"
             className="rounded-full bg-[var(--fg)] px-6 py-2.5 text-sm font-medium text-[var(--bg)]"
@@ -146,7 +243,7 @@ export default async function EventsCatalogPage({
 
       <div className="mt-8 flex flex-wrap gap-2 text-xs">
         <span className="text-[var(--muted-2)]">Quick SAT filters:</span>
-        {satKeys.slice(0, 10).map((k) => (
+        {satKeys.map((k) => (
           <Link
             key={k}
             href={`/events?sat=${k}`}
@@ -168,10 +265,9 @@ export default async function EventsCatalogPage({
       ) : null}
 
       <p className="mt-10 text-xs text-[var(--muted-2)]">
-        Filters accept Prisma enum keys (uppercase). Example SAT-Core tags:{" "}
-        <code className="font-mono">SIM_SWAP</code>, <code className="font-mono">ZERO_TRUST</code>.
-        Industries: <code className="font-mono">FINTECH</code>,{" "}
-        <code className="font-mono">TELECOM</code>.
+        Enum keys are uppercase Prisma values. Month filter matches events whose{" "}
+        <strong>start date</strong> falls in that calendar month (UTC). Cursor pagination on{" "}
+        <code className="font-mono">/api/events</code> is disabled when sorting by industry lane.
       </p>
     </div>
   );

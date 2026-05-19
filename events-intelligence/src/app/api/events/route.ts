@@ -4,29 +4,46 @@ import { toPublicEventJson } from "@/lib/event-json";
 import {
   buildEventOrderBy,
   buildEventWhere,
+  finalizeEventSort,
+  mergeIndustryFilters,
   type EventListSort,
   parseIndustryList,
   parseSatList,
 } from "@/lib/event-query";
 import { isAdmin } from "@/lib/admin-auth";
+import { SLUG_TO_REGION } from "@/lib/constants";
+
+function resolveRegion(raw: string | null): string | null {
+  if (!raw?.trim()) return null;
+  const slug = raw.trim();
+  return SLUG_TO_REGION[slug] ?? slug;
+}
 
 export async function GET(req: Request) {
   const admin = await isAdmin();
   const { searchParams } = new URL(req.url);
 
   const q = searchParams.get("q");
-  const region = searchParams.get("region");
+  const regionRaw = searchParams.get("region");
   const continent = searchParams.get("continent");
   const country = searchParams.get("country");
   const city = searchParams.get("city");
   const tier = searchParams.get("tier");
+  const month = searchParams.get("month");
   const featuredOnly = searchParams.get("featured") === "1";
-  const industries = parseIndustryList(searchParams.get("industries"));
+  const industries = mergeIndustryFilters(
+    parseIndustryList(searchParams.get("industries")),
+    searchParams.get("industry"),
+  );
   const satProblems = parseSatList(searchParams.get("sat"));
 
   const sort = (searchParams.get("sort") ?? "startDate") as EventListSort;
   const limit = Math.min(100, Math.max(1, Number(searchParams.get("limit") ?? "40")));
-  const cursor = searchParams.get("cursor");
+  const cursorParam = searchParams.get("cursor");
+  const industrySort = sort === "industry";
+  const useCursor = Boolean(cursorParam && !industrySort);
+
+  const region = resolveRegion(regionRaw);
 
   const where = buildEventWhere({
     q,
@@ -35,6 +52,7 @@ export async function GET(req: Request) {
     country,
     city,
     tier,
+    month,
     industries,
     satProblems,
     featuredOnly,
@@ -47,7 +65,7 @@ export async function GET(req: Request) {
     where,
     orderBy,
     take: limit + 1,
-    ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
+    ...(useCursor ? { skip: 1, cursor: { id: cursorParam! } } : {}),
     include: { industries: true, satCoreProblems: true },
   });
 
@@ -55,9 +73,11 @@ export async function GET(req: Request) {
   let list = rows;
   if (rows.length > limit) {
     const next = rows.pop();
-    nextCursor = next?.id ?? null;
+    nextCursor = industrySort ? null : next?.id ?? null;
     list = rows;
   }
+
+  list = finalizeEventSort(list, sort);
 
   return NextResponse.json({
     events: list.map(toPublicEventJson),

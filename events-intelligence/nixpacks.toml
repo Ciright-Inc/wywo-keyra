@@ -1,0 +1,14 @@
+# Railway / Nixpacks — Next.js 16 needs Node >= 20.9; Prisma needs OpenSSL at runtime.
+# Explicit install/build avoids ambiguous provider steps when NODE_ENV=production.
+
+[variables]
+NIXPACKS_NODE_VERSION = "22"
+
+[phases.setup]
+nixPkgs = ["...", "openssl"]
+
+[phases.install]
+cmds = ["npm ci --include=dev"]
+
+[phases.build]
+cmds = ["npm run build"]

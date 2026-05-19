@@ -68,7 +68,9 @@ npm run db:seed
 
 ### Production / Railway
 
-1. Add a **PostgreSQL** service in the same Railway project.
+**To host Keyra in the same Railway project as `simsecure-auth-backend` (SAT) and share one Postgres:** follow **`RAILWAY_SAT_CONSOLIDATION.md`**.
+
+1. Add a **PostgreSQL** service in the same Railway project (or reuse the existing SAT Postgres).
 2. On the **Keyra** web service, set `DATABASE_URL` to Railway’s reference (e.g. `${{Postgres.DATABASE_URL}}`) or paste the connection string from the Postgres service.
 3. **Every deploy:** **`npm run start`** (see `railway.toml`) runs, in order:
    - **`prisma migrate deploy`** — apply pending migrations
