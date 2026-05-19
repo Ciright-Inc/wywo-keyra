@@ -67,6 +67,22 @@ export function AccountMenu() {
           </Link>
           <Link
             role="menuitem"
+            href="/app/family"
+            className="block px-4 py-2.5 text-[14px] text-keyra-text transition hover:bg-keyra-bg"
+            onClick={() => setOpen(false)}
+          >
+            Family
+          </Link>
+          <Link
+            role="menuitem"
+            href="/app/settings"
+            className="block px-4 py-2.5 text-[14px] text-keyra-text transition hover:bg-keyra-bg"
+            onClick={() => setOpen(false)}
+          >
+            Settings
+          </Link>
+          <Link
+            role="menuitem"
             href="/app"
             className="block px-4 py-2.5 text-[14px] text-keyra-text transition hover:bg-keyra-bg"
             onClick={() => setOpen(false)}

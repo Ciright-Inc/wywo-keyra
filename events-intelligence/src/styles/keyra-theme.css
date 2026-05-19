@@ -1,53 +1,112 @@
 /*
- * Keyra brand theme — portable design tokens (editorial light).
+ * Keyra brand theme — portable design tokens (Expo-inspired editorial light).
  *
- * Benchmark: crisp white field, black typography, hairline rules — similar in
- * spirit to institutional product pages (e.g. SLC Guardian). No SaaS-neon accent;
- * use tokens, not one-off hex.
+ * Benchmark: pure white canvas, sky-blue gradient hero, black primary CTAs,
+ * Inter + JetBrains Mono typography. No SaaS-neon accent; use tokens, not one-off hex.
  */
 
 :root {
-  --keyra-bg: #ffffff;
-  --keyra-surface: #fafafa;
-  --keyra-surface-2: #f0f0f0;
-  --keyra-text: #000000;
-  --keyra-text-secondary: rgba(0, 0, 0, 0.55);
+  /* Brand & Accent Colors */
+  --color-primary: #000000;
+  --color-primary-active: #1a1a1a;
+  --color-text-link: #0d74ce;
+  --color-text-link-secondary: #476cff;
+  --color-accent-link-bright: #47c2ff;
+
+  /* Surface Colors */
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #fafafa;
+  --color-surface-card: #ffffff;
+  --color-surface-strong: #f0f0f3;
+  --color-surface-dark: #171717;
+  --color-surface-dark-elevated: #1a1a1a;
+
+  /* Atmospheric Backdrop (Hero only) */
+  --color-gradient-sky-light: #cfe7ff;
+  --color-gradient-sky-mid: #a8c8e8;
+
+  /* Hairlines */
+  --color-hairline: #f0f0f3;
+  --color-hairline-soft: #f5f5f7;
+  --color-hairline-strong: #dcdee0;
+
+  /* Text Colors */
+  --color-ink: #171717;
+  --color-body: #60646c;
+  --color-body-strong: #171717;
+  --color-muted: #999999;
+  --color-muted-soft: #cccccc;
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: #b0b4ba;
+
+  /* Semantic Colors */
+  --color-accent-warning: #ab6400;
+  --color-accent-preview: #8145b5;
+  --color-semantic-success: #16a34a;
+  --color-semantic-error: #eb8e90;
+
+  /* Legacy Keyra tokens (mapped to new system) */
+  --keyra-bg: var(--color-canvas);
+  --keyra-surface: var(--color-canvas-soft);
+  --keyra-surface-2: var(--color-surface-strong);
+  --keyra-text: var(--color-ink);
+  --keyra-text-secondary: var(--color-body);
   --keyra-white: #ffffff;
 
-  --keyra-canvas: #ffffff;
-  --keyra-surface-light: #fafafa;
-  --keyra-surface-muted: #f4f4f4;
-  --keyra-ink-on-light: #000000;
-  --keyra-ink-muted-on-light: rgba(0, 0, 0, 0.55);
+  --keyra-canvas: var(--color-canvas);
+  --keyra-surface-light: var(--color-canvas-soft);
+  --keyra-surface-muted: var(--color-surface-strong);
+  --keyra-ink-on-light: var(--color-ink);
+  --keyra-ink-muted-on-light: var(--color-body);
 
   --keyra-ink-mid: rgba(0, 0, 0, 0.45);
   --keyra-ink-low: rgba(0, 0, 0, 0.38);
 
-  --keyra-accent: #000000;
-  --keyra-accent-2: #262626;
+  --keyra-accent: var(--color-primary);
+  --keyra-accent-2: var(--color-primary-active);
 
-  --keyra-primary: var(--keyra-text);
+  --keyra-primary: var(--color-ink);
 
   --keyra-action: rgba(0, 0, 0, 0.06);
   --keyra-action-border: rgba(0, 0, 0, 0.18);
   --keyra-action-text: var(--keyra-text);
 
-  --keyra-border: rgba(0, 0, 0, 0.08);
+  --keyra-border: var(--color-hairline);
   --keyra-ring: rgba(0, 0, 0, 0.2);
-  --keyra-shadow-card: 0 8px 32px rgba(0, 0, 0, 0.05);
-  --keyra-shadow-hover: 0 14px 44px rgba(0, 0, 0, 0.07);
+  --keyra-shadow-card: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --keyra-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.08);
 
-  --keyra-radius-card: 12px;
-  --keyra-radius-sheet: 16px;
-  --keyra-radius-pill: 999px;
+  /* Border Radius */
+  --keyra-radius-none: 0px;
+  --keyra-radius-xs: 4px;
+  --keyra-radius-sm: 6px;
+  --keyra-radius-md: 8px;
+  --keyra-radius-lg: 12px;
+  --keyra-radius-xl: 16px;
+  --keyra-radius-xxl: 24px;
+  --keyra-radius-pill: 9999px;
+  --keyra-radius-card: var(--keyra-radius-lg);
+  --keyra-radius-sheet: var(--keyra-radius-xl);
+  --keyra-radius-cta: var(--keyra-radius-md);
 
-  --keyra-font-sans: var(--font-inter, "Inter"), -apple-system, BlinkMacSystemFont,
+  /* Typography */
+  --keyra-tracking-head: -0.02em;
+  --keyra-leading-body: 1.5;
+
+  /* Typography - Inter for sans, JetBrains Mono for code */
+  --keyra-font-sans: "Inter", var(--font-inter, "Inter"), -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, system-ui, sans-serif;
+  --keyra-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 
-  --keyra-marketing-hero-image:
-    radial-gradient(1200px 700px at 20% 15%, rgba(0, 0, 0, 0.04), transparent 55%),
-    radial-gradient(900px 540px at 80% 25%, rgba(0, 0, 0, 0.035), transparent 55%),
-    radial-gradient(950px 640px at 55% 85%, rgba(0, 0, 0, 0.03), transparent 60%);
+  /* Hero gradient (Expo-inspired sky-blue) */
+  --keyra-hero-gradient:
+    radial-gradient(
+      ellipse at 50% 0%,
+      var(--color-gradient-sky-light) 0%,
+      var(--color-gradient-sky-mid) 40%,
+      transparent 70%
+    );
 }
 
 .keyra-readable-on-light {
@@ -63,7 +122,7 @@
 }
 
 .keyra-readable-on-light :where(a):not([class*="text-"]) {
-  color: var(--keyra-accent);
+  color: var(--color-text-link);
 }
 
 .keyra-hero {
@@ -77,10 +136,8 @@
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(1200px 700px at 20% 15%, rgba(0, 0, 0, 0.04), transparent 55%),
-    radial-gradient(900px 540px at 80% 25%, rgba(0, 0, 0, 0.035), transparent 55%),
-    radial-gradient(950px 640px at 55% 85%, rgba(0, 0, 0, 0.03), transparent 60%);
+  background: var(--keyra-hero-gradient);
+  opacity: 0.6;
   pointer-events: none;
   z-index: 0;
 }
@@ -150,15 +207,15 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.65rem 1.25rem;
+  padding: 0.625rem 1.125rem;
   font-family: var(--keyra-font-sans);
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 500;
   line-height: 1;
-  border-radius: var(--keyra-radius-pill);
+  border-radius: var(--keyra-radius-cta);
   border: 1px solid var(--keyra-accent);
   background: var(--keyra-accent);
-  color: var(--keyra-white);
+  color: var(--color-on-primary);
   cursor: pointer;
   transition: transform 120ms ease, box-shadow 200ms ease, background 200ms ease;
   text-decoration: none;
@@ -167,7 +224,7 @@
 .keyra-btn:hover {
   background: var(--keyra-accent-2);
   border-color: var(--keyra-accent-2);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   transform: translateY(-1px);
 }
 .keyra-btn:focus-visible {
@@ -205,12 +262,8 @@
 
 .keyra-card {
   border-radius: var(--keyra-radius-card);
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.02),
-    rgba(0, 0, 0, 0.01)
-  );
-  border: 1px solid var(--keyra-border);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
   box-shadow: var(--keyra-shadow-card);
   backdrop-filter: blur(10px);
   color: var(--keyra-text);
@@ -226,12 +279,12 @@
 }
 
 .keyra-link {
-  color: var(--keyra-accent);
+  color: var(--color-text-link);
   text-decoration: none;
   transition: color 150ms ease;
 }
 .keyra-link:hover {
-  color: var(--keyra-accent-2);
+  color: var(--color-primary-active);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -246,7 +299,7 @@
   color: var(--keyra-text);
 }
 .keyra-topbar a:hover {
-  color: var(--keyra-accent-2);
+  color: var(--color-primary-active);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -255,37 +308,37 @@
 /* -------------------------------------------------------------------------- */
 
 .keyra-band--light {
-  background: #ffffff;
-  color: #000000;
-  --keyra-bg: #ffffff;
-  --keyra-surface: #fafafa;
-  --keyra-primary: #000000;
-  --keyra-text: #000000;
-  --keyra-text-secondary: rgba(0, 0, 0, 0.55);
-  --keyra-border: rgba(0, 0, 0, 0.1);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  --keyra-bg: var(--color-canvas);
+  --keyra-surface: var(--color-canvas-soft);
+  --keyra-primary: var(--color-ink);
+  --keyra-text: var(--color-ink);
+  --keyra-text-secondary: var(--color-body);
+  --keyra-border: var(--color-hairline);
   --keyra-ring: rgba(0, 0, 0, 0.22);
-  --keyra-accent: #000000;
-  --keyra-accent-2: #262626;
+  --keyra-accent: var(--color-primary);
+  --keyra-accent-2: var(--color-primary-active);
   --keyra-action: rgba(0, 0, 0, 0.07);
   --keyra-action-border: rgba(0, 0, 0, 0.2);
-  --keyra-action-text: #000000;
+  --keyra-action-text: var(--color-ink);
 }
 
 .keyra-band--dark {
-  background: #000000;
-  color: #ffffff;
-  --keyra-bg: #000000;
+  background: var(--color-surface-dark);
+  color: var(--color-on-dark);
+  --keyra-bg: var(--color-surface-dark);
   --keyra-surface: rgba(255, 255, 255, 0.06);
-  --keyra-primary: #ffffff;
-  --keyra-text: #ffffff;
+  --keyra-primary: var(--color-on-dark);
+  --keyra-text: var(--color-on-dark);
   --keyra-text-secondary: rgba(255, 255, 255, 0.68);
   --keyra-border: rgba(255, 255, 255, 0.14);
   --keyra-ring: rgba(255, 255, 255, 0.35);
-  --keyra-accent: #ffffff;
+  --keyra-accent: var(--color-on-dark);
   --keyra-accent-2: rgba(255, 255, 255, 0.88);
   --keyra-action: rgba(255, 255, 255, 0.12);
   --keyra-action-border: rgba(255, 255, 255, 0.28);
-  --keyra-action-text: #ffffff;
+  --keyra-action-text: var(--color-on-dark);
 }
 
 .keyra-band--dark .keyra-card {
@@ -325,20 +378,20 @@
 
 /* Site footer — full-width black (institutional contrast; refs: SLC-style footers) */
 .keyra-site-footer {
-  background: #000000;
+  background: var(--color-surface-dark);
   color: rgba(255, 255, 255, 0.88);
-  --keyra-bg: #000000;
+  --keyra-bg: var(--color-surface-dark);
   --keyra-surface: rgba(255, 255, 255, 0.07);
-  --keyra-primary: #ffffff;
-  --keyra-text: #ffffff;
+  --keyra-primary: var(--color-on-dark);
+  --keyra-text: var(--color-on-dark);
   --keyra-text-secondary: rgba(255, 255, 255, 0.65);
   --keyra-border: rgba(255, 255, 255, 0.14);
-  --keyra-accent: #ffffff;
+  --keyra-accent: var(--color-on-dark);
   --keyra-accent-2: rgba(255, 255, 255, 0.88);
   --keyra-ring: rgba(255, 255, 255, 0.35);
   --keyra-action: rgba(255, 255, 255, 0.12);
   --keyra-action-border: rgba(255, 255, 255, 0.28);
-  --keyra-action-text: #ffffff;
+  --keyra-action-text: var(--color-on-dark);
 }
 
 /* Dark-on-transparent wordmarks on black */
@@ -537,8 +590,8 @@
 .keyra-site-header-shell {
   position: sticky;
   top: 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  background: color-mix(in srgb, var(--keyra-bg, #ffffff) 90%, transparent);
+  border-bottom: 1px solid var(--color-hairline);
+  background: color-mix(in srgb, var(--color-canvas) 90%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -553,6 +606,6 @@
   .keyra-site-header-shell {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    background: var(--keyra-bg, #ffffff);
+    background: var(--color-canvas);
   }
 }

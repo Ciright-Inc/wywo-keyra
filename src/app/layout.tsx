@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: "%s | Keyra",
   },
   description:
-    "The Trust Layer of the Internet — calm, deterministic identity for people, businesses, and nations. Be Protected Online.",
+    "Be Protected Online — calm, deterministic identity for people, businesses, and nations. Keyra restores trust infrastructure.",
   metadataBase: new URL("https://keyra.ie"),
   icons: {
     icon: "/kerya-logo.png",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Keyra — Be Protected Online",
     description:
-      "The Trust Layer of the Internet — calm, deterministic identity for people, businesses, and nations. Be Protected Online.",
+      "Be Protected Online — calm, deterministic identity for people, businesses, and nations. Keyra restores trust infrastructure.",
     url: "https://keyra.ie",
     siteName: "Keyra",
     locale: "en_IE",

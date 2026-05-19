@@ -14,7 +14,7 @@ const links = [
   { href: "/#for", label: "Who it's for" },
   { href: "/#global", label: "Global" },
   { href: "/developers", label: "Developers" },
-  { href: "/#get-protected", label: "Be Protected Online" },
+  { href: "/", label: "Be Protected Online" },
 ];
 
 export function MobileNav() {
@@ -81,11 +81,11 @@ export function MobileNav() {
                 {!user ? (
                   <li>
                     <Link
-                      href="/login"
+                      href="/"
                       onClick={() => setOpen(false)}
                       className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-accent hover:bg-keyra-surface"
                     >
-                      Sign in
+                      Get Started
                     </Link>
                   </li>
                 ) : null}

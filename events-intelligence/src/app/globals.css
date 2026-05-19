@@ -2,17 +2,19 @@
 @import "../styles/keyra-theme.css";
 
 :root {
-  --bg: #fbfbfb;
-  --surface: #f7f7f5;
-  --elevated: #ffffff;
-  --fg: #0b0b0b;
-  --muted: #4d4d4d;
-  --muted-2: #7a7a7a;
-  --line: #e4e4e2;
+  /* Expo-inspired color tokens */
+  --bg: var(--color-canvas);
+  --surface: var(--color-canvas-soft);
+  --elevated: var(--color-surface-card);
+  --fg: var(--color-ink);
+  --muted: var(--color-body);
+  --muted-2: var(--color-muted);
+  --line: var(--color-hairline);
 }
 
 @theme inline {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: var(--keyra-font-mono);
 }
 
 body {
