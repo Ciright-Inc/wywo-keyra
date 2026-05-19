@@ -141,6 +141,15 @@ export function KeyraSessionProvider({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const onPageShow = () => {
+      void fetchSession();
+    };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, [fetchSession]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
     let interval: ReturnType<typeof setInterval>;
     const schedulePoll = () => {
       clearInterval(interval);

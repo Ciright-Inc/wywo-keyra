@@ -8,6 +8,8 @@ import { MobileNav } from "./MobileNav";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
 import { AudienceLaneSwitcher } from "@/components/governance/AudienceLaneSwitcher";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
+import { buildGetStartedAccessUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
+import { useMemo } from "react";
 
 const nav = [
   { href: "/#problem", label: "Why identity" },
@@ -20,6 +22,16 @@ const nav = [
 export function SiteHeader() {
   const { user } = useKeyraSession();
   const pathname = usePathname();
+  const accessHref = useMemo(() => {
+    if (typeof window !== "undefined") {
+      return buildGetStartedAccessUrl(
+        `${window.location.origin}${pathname}${window.location.search || ""}`,
+      );
+    }
+    const base = keyraMarketingOrigin();
+    const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
+    return buildGetStartedAccessUrl(`${base}${path}`);
+  }, [pathname]);
   const isAdminRoute = pathname.startsWith("/admin");
   const isAdminLoginRoute = pathname.startsWith("/admin/login");
   const isProtectedAdminRoute = isAdminRoute && !isAdminLoginRoute;
@@ -87,7 +99,7 @@ export function SiteHeader() {
           {isAdminLoginRoute ? null : (
             <div
               className="flex min-w-0 shrink-0 flex-row flex-nowrap items-stretch rounded-[var(--keyra-radius-pill)] border border-keyra-border bg-keyra-surface/90 p-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md sm:p-1"
-              aria-label="Sign in and get protected"
+              aria-label="Access Get Started and Be Protected Online"
             >
               {isProtectedAdminRoute ? (
                 <button
@@ -99,12 +111,12 @@ export function SiteHeader() {
                 </button>
               ) : !user ? (
                 <>
-                  <Link
-                    href="/login"
+                  <a
+                    href={accessHref}
                     className="flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-xs font-medium leading-none text-keyra-accent transition duration-300 ease-out hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-3 sm:text-sm"
                   >
-                    Sign in
-                  </Link>
+                    Access
+                  </a>
                   <div className="my-1.5 w-px shrink-0 self-stretch bg-keyra-border" aria-hidden />
                 </>
               ) : null}

@@ -6,7 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AudienceLaneSwitcher } from "@/components/governance/AudienceLaneSwitcher";
 import { Button } from "@/components/ui/Button";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
-import { useRouter } from "next/navigation";
+import { buildGetStartedAccessUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
+import { usePathname, useRouter } from "next/navigation";
+import { useMemo } from "react";
 
 const links = [
   { href: "/#problem", label: "Why identity" },
@@ -21,6 +23,17 @@ export function MobileNav() {
   const [open, setOpen] = useState(false);
   const { user, logout } = useKeyraSession();
   const router = useRouter();
+  const pathname = usePathname();
+  const accessHref = useMemo(() => {
+    if (typeof window !== "undefined") {
+      return buildGetStartedAccessUrl(
+        `${window.location.origin}${pathname}${window.location.search || ""}`,
+      );
+    }
+    const base = keyraMarketingOrigin();
+    const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
+    return buildGetStartedAccessUrl(`${base}${path}`);
+  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -80,13 +93,13 @@ export function MobileNav() {
                 ))}
                 {!user ? (
                   <li>
-                    <Link
-                      href="/"
+                    <a
+                      href={accessHref}
                       onClick={() => setOpen(false)}
                       className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-accent hover:bg-keyra-surface"
                     >
-                      Get Started
-                    </Link>
+                      Access
+                    </a>
                   </li>
                 ) : null}
                 {user ? (

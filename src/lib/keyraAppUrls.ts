@@ -13,6 +13,21 @@ export function keyraGetStartedUrl(): string {
   return trimSlash(process.env.NEXT_PUBLIC_GET_STARTED_URL?.trim() || "https://get-started.keyra.ie");
 }
 
+/**
+ * Opens Get Started with optional `return` query — after login/verification the app may send the user
+ * back to Keyra (absolute URL; see get-started `return` handling).
+ */
+export function buildGetStartedAccessUrl(returnToAbsoluteUrl: string): string {
+  const gs = keyraGetStartedUrl();
+  let u = returnToAbsoluteUrl.trim();
+  if (!u.startsWith("http://") && !u.startsWith("https://")) {
+    const base = keyraMarketingOrigin();
+    const path = u.startsWith("/") ? u : `/${u}`;
+    u = `${trimSlash(base)}${path}`;
+  }
+  return `${gs}/?return=${encodeURIComponent(u)}`;
+}
+
 /** Main Keyra platform app — app.keyra.ie (`NEXT_PUBLIC_SIMSECURE_URL` in SimSecure). */
 export function keyraPlatformAppUrl(): string {
   return trimSlash(process.env.NEXT_PUBLIC_SIMSECURE_URL?.trim() || "https://app.keyra.ie");
