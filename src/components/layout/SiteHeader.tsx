@@ -107,10 +107,10 @@ export function SiteHeader() {
                 <span className="auth-loading-placeholder" aria-hidden="true" />
               ) : (
                 <Link
-                  href="/#get-protected"
+                  href={process.env.NEXT_PUBLIC_GET_STARTED_URL || "/#get-protected"}
                   className="flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-xs font-medium leading-none text-keyra-accent transition duration-300 ease-out hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-3 sm:text-sm"
                 >
-                  Get Started
+                  Access
                 </Link>
               )}
             </div>
