@@ -129,6 +129,35 @@ export function getKeyraEcosystemAppLinks(): KeyraEcosystemAppLink[] {
   ];
 }
 
+/** Full app directory used by the admin Apps tab and the 9-dot launcher. */
+export function getKeyraAdminAppLinks(): KeyraEcosystemAppLink[] {
+  return [
+    { id: "keyra", label: "Keyra", description: "Platform & product hub", href: keyraPlatformAppUrl() },
+    { id: "get-started", label: "Get Started", description: "Enrollment & verification", href: keyraGetStartedUrl() },
+    { id: "developer", label: "Developer", description: "APIs & documentation", href: keyraDeveloperPortalUrl() },
+    { id: "settings", label: "Settings", description: "Settings app", href: keyraSettingsPortalUrl() },
+    { id: "press", label: "Press", description: "Press room", href: keyraPressUrl() },
+    { id: "my-account", label: "My Account", description: "Account portal", href: keyraMyAccountUrl() },
+    { id: "affiliates", label: "Affiliates", description: "Affiliate program", href: keyraAffiliatesUrl() },
+    { id: "directors", label: "Directors", description: "Directors portal", href: "https://directors.keyra.ie" },
+    { id: "video", label: "Video", description: "Video app", href: "https://video.keyra.ie" },
+    { id: "event", label: "Event", description: "Event app", href: "https://event.keyra.ie" },
+    { id: "podcast", label: "Podcast", description: "Podcast app", href: "https://podcast.keyra.ie" },
+    { id: "ve", label: "Ve", description: "Ve app", href: "https://ve.keyra.ie" },
+    { id: "admin", label: "Admin", description: "Admin portal", href: "https://admin.keyra.ie" },
+    { id: "info", label: "Info", description: "Information hub", href: "https://info.keyra.ie" },
+    { id: "family-office", label: "Family Office", description: "Family office portal", href: "https://family-office.keyra.ie" },
+    { id: "ftp", label: "FTP", description: "File transfer portal", href: "https://ftp.keyra.ie" },
+    { id: "app", label: "App", description: "Consumer app", href: keyraPlatformAppUrl() },
+    { id: "jione-documents", label: "Jione Documents", description: "Documents workspace", href: "https://jione-documents.keyra.ie" },
+    { id: "authenticator", label: "Authenticator", description: "Authenticator app", href: "https://authenticator.keyra.ie" },
+    { id: "investor", label: "Investor", description: "Investor portal", href: "https://investor.keyra.ie" },
+    { id: "esim", label: "ESim", description: "eSIM app", href: "https://esim.keyra.ie" },
+    { id: "analytics", label: "Analytics", description: "Analytics workspace", href: "https://analytics.keyra.ie" },
+    { id: "drive", label: "Drive", description: "Drive workspace", href: "https://drive.keyra.ie" },
+  ];
+}
+
 /**
  * Consumer hub for widgets / deep links — prefers explicit app URL, then SimSecure platform URL, else same-origin `/app`.
  */

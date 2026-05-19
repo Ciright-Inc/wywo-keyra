@@ -493,6 +493,24 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   box-shadow: 0 0 0 3px var(--keyra-ring);
 }
 
+.keyra-app-launcher-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.22) transparent;
+}
+
+.keyra-app-launcher-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.keyra-app-launcher-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.keyra-app-launcher-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 999px;
+}
+
 /* Unified modal language */
 .keyra-modal-backdrop {
   position: fixed;

@@ -359,38 +359,59 @@ export default function AdminAuthCountriesPage() {
   }, [q, region, subRegion, activeFilter, authFilter, weightMin, weightMax, sortBy]);
 
   return (
-    <div className="flex flex-col gap-4 text-keyra-primary">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Authentication countries</h1>
-        <p className="mt-1 text-xs text-keyra-text-2">
-          <span className="font-medium text-keyra-primary">{rows.length}</span> rows · Eligible weight sum{" "}
-          <span className="font-medium text-keyra-primary">{activeSum.toFixed(2)}</span>. Open{" "}
-          <button
-            type="button"
-            className="text-keyra-accent underline underline-offset-2 hover:text-keyra-primary"
-            onClick={() => setCatalogToolsOpen(true)}
-          >
-            Catalog tools
-          </button>{" "}
-          for search, filters, bulk actions, and adding a country.
-        </p>
-      </div>
+    <div className="flex flex-col gap-5 text-keyra-primary">
+      <section className="relative overflow-hidden rounded-3xl border border-keyra-border bg-keyra-surface px-6 py-6 shadow-[0_24px_70px_rgba(0,0,0,0.06)] sm:px-7">
+        <div className="pointer-events-none absolute -right-14 -top-20 size-52 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.07),transparent_68%)]" />
+        <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-keyra-text-2">
+              Latest authentications
+            </p>
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-keyra-primary">
+              Authentication countries
+            </h1>
+            <p className="mt-3 text-sm leading-6 text-keyra-text-2">
+              Manage country eligibility, weighting, and feed visibility for authentication events.
+              Open{" "}
+              <button
+                type="button"
+                className="font-medium text-keyra-accent underline-offset-4 hover:text-keyra-primary hover:underline"
+                onClick={() => setCatalogToolsOpen(true)}
+              >
+                Catalog tools
+              </button>{" "}
+              for search, filters, bulk actions, and adding a country.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:min-w-72">
+            <div className="rounded-2xl border border-keyra-border bg-keyra-bg/75 px-4 py-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-keyra-text-2">Rows</p>
+              <p className="mt-1 text-2xl font-semibold text-keyra-primary">{rows.length}</p>
+            </div>
+            <div className="rounded-2xl border border-keyra-border bg-keyra-bg/75 px-4 py-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-keyra-text-2">Weight sum</p>
+              <p className="mt-1 text-2xl font-semibold text-keyra-primary">{activeSum.toFixed(2)}</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {error ? (
-        <p className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">{error}</p>
+        <p className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700">{error}</p>
       ) : null}
 
-      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-keyra-border bg-keyra-surface/50 px-3 py-2.5 sm:px-4">
+      <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-keyra-border bg-keyra-surface/75 px-3 py-3 shadow-sm sm:px-4">
         <Button type="button" variant="secondary" className="h-9 shrink-0 px-4 py-1.5 text-xs font-semibold" onClick={() => setCatalogToolsOpen(true)}>
           Catalog tools…
         </Button>
         <p className="min-w-0 flex-1 text-[11px] leading-snug text-keyra-text-2 sm:text-xs">{filterSummary}</p>
-        <span className="shrink-0 text-[11px] text-keyra-text-2 sm:text-xs">
+        <span className="shrink-0 rounded-full border border-keyra-border bg-keyra-bg px-3 py-1.5 text-[11px] text-keyra-text-2 sm:text-xs">
           Selected: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
         </span>
       </div>
 
-      <div className="max-h-[min(85vh,calc(100dvh-11rem))] min-h-[240px] overflow-auto rounded-xl border border-keyra-border bg-keyra-surface/30 shadow-sm">
+      <div className="max-h-[min(85vh,calc(100dvh-11rem))] min-h-[260px] overflow-auto rounded-2xl border border-keyra-border bg-keyra-surface/50 shadow-[0_18px_54px_rgba(0,0,0,0.05)]">
         <table className="min-w-[1200px] w-full border-collapse text-left text-xs">
           <thead className="sticky top-0 z-10 border-b border-keyra-border bg-keyra-bg/95 backdrop-blur-sm text-[10px] uppercase tracking-wider text-keyra-text-2">
             <tr>

@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/components/ui/cn";
-import { getKeyraEcosystemAppLinks } from "@/lib/keyraAppUrls";
+import { getKeyraAdminAppLinks } from "@/lib/keyraAppUrls";
 
 function NineDotTriggerIcon({ className }: { className?: string }) {
   return (
@@ -28,10 +29,29 @@ function NineDotTriggerIcon({ className }: { className?: string }) {
   );
 }
 
+function AppTileIcon({ label }: { label: string }) {
+  return (
+    <span className="relative flex size-10 items-center justify-center overflow-hidden rounded-xl border border-black/20 bg-keyra-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
+      <Image
+        src="/keyra-app-mark.png"
+        alt=""
+        fill
+        sizes="40px"
+        className="scale-[1.18] object-contain opacity-35"
+        aria-hidden
+        unoptimized
+      />
+      <span className="relative rounded-sm bg-white px-0.5 py-0.5 text-[10px] font-semibold leading-none text-keyra-primary shadow-sm ring-1 ring-black/[0.06]">
+        {label.slice(0, 2).toUpperCase()}
+      </span>
+    </span>
+  );
+}
+
 export function KeyraAppLauncher() {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const tiles = useMemo(() => getKeyraEcosystemAppLinks(), []);
+  const tiles = useMemo(() => getKeyraAdminAppLinks(), []);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -58,7 +78,7 @@ export function KeyraAppLauncher() {
         aria-haspopup="menu"
         aria-label="Keyra apps"
         className={cn(
-          "flex h-10 w-10 items-center justify-center rounded-[var(--keyra-radius-pill)] border border-keyra-border transition duration-300 ease-out",
+          "flex h-10 w-10 items-center justify-center rounded-[var(--keyra-radius-pill)] border border-keyra-border transition duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-black/35",
           "hover:border-black/14 hover:bg-black/[0.04]",
           open && "border-black/18 bg-black/[0.05]",
         )}
@@ -73,12 +93,12 @@ export function KeyraAppLauncher() {
         <div
           role="menu"
           aria-label="Keyra apps"
-          className="absolute right-0 top-[calc(100%+8px)] z-[65] w-[min(calc(100vw-1.5rem),20rem)] rounded-[var(--keyra-radius-sheet)] border border-black/12 bg-keyra-bg p-3 shadow-[0_24px_64px_rgba(0,0,0,0.14),0_0_0_1px_rgba(0,0,0,0.05)] sm:w-[20rem]"
+          className="absolute right-0 top-[calc(100%+8px)] z-[65] flex max-h-[min(34rem,calc(100vh-6rem))] w-[min(calc(100vw-1.5rem),20rem)] flex-col rounded-xl border border-black/12 bg-keyra-bg p-3 shadow-[0_24px_64px_rgba(0,0,0,0.14),0_0_0_1px_rgba(0,0,0,0.05)] sm:w-[20rem]"
         >
           <p className="px-1 pb-2 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
             Keyra apps
           </p>
-          <ul className="grid grid-cols-3 gap-2">
+          <ul className="keyra-app-launcher-scroll grid min-h-0 grid-cols-3 gap-2 overflow-y-auto pr-1">
             {tiles.map((item) => (
               <li key={item.id} className="min-w-0">
                 <a
@@ -87,12 +107,10 @@ export function KeyraAppLauncher() {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={`${item.label} — ${item.description}`}
-                  className="flex min-h-[4.25rem] flex-col items-center justify-center gap-1 rounded-lg border border-transparent px-1 py-2 text-center transition hover:border-black/12 hover:bg-keyra-surface"
+                  className="flex min-h-[4.25rem] flex-col items-center justify-center gap-1 rounded-xl border border-transparent px-1 py-2 text-center transition hover:border-black/12 hover:bg-keyra-surface focus:outline-none focus-visible:border-black/30 focus-visible:ring-2 focus-visible:ring-black/20"
                   onClick={() => setOpen(false)}
                 >
-                  <span className="flex size-9 items-center justify-center rounded-md border border-black/[0.08] bg-keyra-surface text-[10px] font-semibold leading-tight text-keyra-accent">
-                    {item.label.slice(0, 2)}
-                  </span>
+                  <AppTileIcon label={item.label} />
                   <span className="line-clamp-2 w-full text-[10px] font-medium leading-tight text-keyra-primary">
                     {item.label}
                   </span>
