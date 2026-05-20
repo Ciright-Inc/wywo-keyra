@@ -7,6 +7,7 @@ import { HomeRegistrationCTAs } from "@/components/registration/HomeRegistration
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { NarrativeSection } from "@/components/home/narrative/NarrativeSection";
+import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
 
 const easeTrust = [0.22, 0.61, 0.36, 1] as const;
 
@@ -15,20 +16,20 @@ export function HomeContent() {
   return (
     <>
       {/* SECTION 1 — HERO */}
-      <section className="relative min-h-screen overflow-hidden bg-white text-slate-900">
+      <section className="relative overflow-hidden bg-white text-slate-900">
         <div className="pointer-events-none absolute inset-0" aria-hidden style={{background:"radial-gradient(ellipse 55% 90% at 18% 55%,rgba(241,245,249,0.8) 0%,rgba(255,255,255,0.6) 40%,transparent 80%)"}} />
         <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.04]" aria-hidden style={{backgroundImage:"url('/image.png')",filter:"blur(60px)"}} />
 
-        <div className="relative z-10 mx-auto max-w-[1440px] px-12 py-16 lg:px-20 lg:py-24">
+        <div className="relative z-10 mx-auto max-w-[1440px] px-12 pb-16 pt-8 lg:px-20 lg:pb-20 lg:pt-12">
           <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6,ease:easeTrust}}>
             <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-500">Sovereign trust infrastructure</p>
             <h1 className="mt-5 text-[clamp(3rem,5.5vw,5.8rem)] font-semibold leading-[1.05] tracking-[-0.03em]">Be Protected Online.</h1>
             <p className="mt-5 max-w-lg text-[15px] leading-[1.65] text-slate-400">The internet finally became trustworthy — calm, deterministic identity for people, institutions, and verified intelligence.</p>
           </motion.div>
 
-          <div className="mt-16 flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
+          <div className="mt-12 grid grid-cols-1 gap-10 lg:mt-14 lg:grid-cols-[minmax(0,42%)_minmax(0,1fr)] lg:items-start lg:gap-8">
             {/* LEFT: Globe */}
-            <div className="relative lg:w-[42%] lg:-ml-16 xl:-ml-24">
+            <div className="relative lg:-ml-16 xl:-ml-24">
               <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" aria-hidden style={{width:"120%",height:"120%",background:"radial-gradient(circle,rgba(59,130,246,0.12) 0%,rgba(37,99,235,0.03) 50%,transparent 70%)",filter:"blur(40px)"}} />
               <div className="relative mx-auto w-full max-w-[520px] lg:max-w-none">
                 <div className="relative aspect-square w-full overflow-hidden rounded-full">
@@ -37,69 +38,73 @@ export function HomeContent() {
               </div>
             </div>
 
-            {/* CENTER: Timeline */}
-            <div className="lg:w-[30%] lg:pt-4">
-              <div className="flex flex-col gap-6">
-                {[{l:"Who this is for",t:"Households, professionals, and institutions who live and work online."},{l:"Problem",t:"Identity is fragmented; fraud and synthetic deception are routine."},{l:"What to do next",t:"Continue below, or sign in to manage your Keyra account."}].map((item,i)=>(
-                  <div key={item.l} className="flex items-start gap-8">
-                    {/* Stepper dot + line */}
-                    <div className="relative flex w-5 flex-col items-center self-stretch pt-[5px]">
-                      {i > 0 && (
-                        <div
-                          className="absolute left-1/2 w-px -translate-x-1/2 bg-slate-300/50"
-                          style={{ bottom: 'calc(100% - 10px)', height: '22px' }}
-                        />
-                      )}
-                      <div className={`relative z-10 h-2.5 w-2.5 rounded-full ${i===0?'bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.6)]':i===1?'bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.5)]':'bg-slate-400 shadow-[0_0_12px_rgba(148,163,184,0.4)]'}`} />
-                      {i < 2 && (
-                        <div
-                          className={`absolute left-1/2 top-[10px] w-px -translate-x-1/2 ${i===0?'bg-gradient-to-b from-blue-500/50 to-slate-300/40':'bg-slate-300/50'}`}
-                          style={{ height: 'calc(100% + 2px)' }}
-                        />
-                      )}
-                    </div>
+            {/* RIGHT: Timeline + widgets, then 4 CTAs directly below */}
+            <div className="flex min-w-0 flex-col gap-8 lg:gap-10">
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,15.5rem)] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,17.5rem)]">
+                {/* Timeline */}
+                <div className="lg:pt-1">
+                  <div className="flex flex-col gap-6">
+                    {[{l:"Who this is for",t:"Households, professionals, and institutions who live and work online."},{l:"Problem",t:"Identity is fragmented; fraud and synthetic deception are routine."},{l:"What to do next",t:"Continue below, or sign in to manage your Keyra account."}].map((item,i)=>(
+                      <div key={item.l} className="flex items-start gap-8">
+                        {/* Stepper dot + line */}
+                        <div className="relative flex w-5 flex-col items-center self-stretch pt-[5px]">
+                          {i > 0 && (
+                            <div
+                              className="absolute left-1/2 w-px -translate-x-1/2 bg-slate-300/50"
+                              style={{ bottom: 'calc(100% - 10px)', height: '22px' }}
+                            />
+                          )}
+                          <div className={`relative z-10 h-2.5 w-2.5 rounded-full ${i===0?'bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.6)]':i===1?'bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.5)]':'bg-slate-400 shadow-[0_0_12px_rgba(148,163,184,0.4)]'}`} />
+                          {i < 2 && (
+                            <div
+                              className={`absolute left-1/2 top-[10px] w-px -translate-x-1/2 ${i===0?'bg-gradient-to-b from-blue-500/50 to-slate-300/40':'bg-slate-300/50'}`}
+                              style={{ height: 'calc(100% + 2px)' }}
+                            />
+                          )}
+                        </div>
 
-                    <motion.div className="flex-1 rounded-xl border border-slate-200/80 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.2+i*0.08,ease:easeTrust}}>
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">{item.l}</p>
-                      <p className="mt-2 text-[13px] leading-[1.6] text-slate-600">{item.t}</p>
-                    </motion.div>
+                        <motion.div className="flex-1 rounded-xl border border-slate-200/80 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.2+i*0.08,ease:easeTrust}}>
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">{item.l}</p>
+                          <p className="mt-2 text-[13px] leading-[1.6] text-slate-600">{item.t}</p>
+                        </motion.div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
 
-            {/* RIGHT: Widgets */}
-            <div className="flex flex-col gap-3 lg:w-[22%] lg:pt-4">
-              <motion.div className="rounded-xl border border-slate-200/80 bg-white/60 p-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.35,ease:easeTrust}}>
-                <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Global verification signals</p>
-                <p className="mt-3 font-mono text-[1.65rem] font-semibold leading-none tracking-tight tabular-nums text-slate-900">2,801,077</p>
-                <div className="mt-3 flex gap-5">
-                  <div><p className="font-mono text-xs font-medium tabular-nums text-slate-900">4,822</p><p className="text-[10px] text-slate-500">Per second</p></div>
-                  <div><p className="font-mono text-xs font-medium tabular-nums text-slate-900">289,320</p><p className="text-[10px] text-slate-500">Per minute</p></div>
+                {/* Widgets */}
+                <div className="flex flex-col gap-3 lg:pt-1">
+                  <motion.div className="rounded-xl border border-slate-200/80 bg-white/60 p-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.35,ease:easeTrust}}>
+                    <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Global verification signals</p>
+                    <p className="mt-3 font-mono text-[1.65rem] font-semibold leading-none tracking-tight tabular-nums text-slate-900">2,801,077</p>
+                    <div className="mt-3 flex gap-5">
+                      <div><p className="font-mono text-xs font-medium tabular-nums text-slate-900">4,822</p><p className="text-[10px] text-slate-500">Per second</p></div>
+                      <div><p className="font-mono text-xs font-medium tabular-nums text-slate-900">289,320</p><p className="text-[10px] text-slate-500">Per minute</p></div>
+                    </div>
+                    <div className="mt-3 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-2 text-center"><span className="text-[11px] text-slate-500">Global numbers verified — live by region</span></div>
+                  </motion.div>
+                  <motion.div className="rounded-xl border border-slate-200/80 bg-white/60 p-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.42,ease:easeTrust}}>
+                    <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Latest authentications</p>
+                    <div className="mt-3 space-y-2.5">
+                      {["Ireland • SIM verified","Germany • eSIM enrolled","USA • Carrier signal"].map(l=>(<div key={l} className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]" /><span className="text-[12px] text-slate-500">{l}</span></div>))}
+                    </div>
+                  </motion.div>
                 </div>
-                <div className="mt-3 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-2 text-center"><span className="text-[11px] text-slate-500">Global numbers verified — live by region</span></div>
-              </motion.div>
-              <motion.div className="rounded-xl border border-slate-200/80 bg-white/60 p-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.42,ease:easeTrust}}>
-                <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Latest authentications</p>
-                <div className="mt-3 space-y-2.5">
-                  {["Ireland • SIM verified","Germany • eSIM enrolled","USA • Carrier signal"].map(l=>(<div key={l} className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]" /><span className="text-[12px] text-slate-500">{l}</span></div>))}
-                </div>
+              </div>
+
+              <motion.div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6,delay:0.5,ease:easeTrust}}>
+                {[{t:"Protect Your Identity",d:"Secure your personal identity, mobile device, and digital presence with Keyra.",h:"/signup",c:"text-blue-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]"},{t:"Protect Your Family",d:"Create a protected family identity registry for every family member.",h:"/app/family",c:"text-emerald-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]"},{t:"Secure Your Organization",d:"Protect your company domains, data, and team identities.",h:"/contact",c:"text-violet-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(167,139,250,0.5)]"},{t:"Partner With Keyra",d:"Join Keyra as a telecom, technology, or service partner.",h:"/partners",c:"text-orange-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(251,146,60,0.5)]"}].map(item=>(
+                  <Link key={item.t} href={item.h} className="group block">
+                    <div className="h-full rounded-xl border border-slate-200/70 bg-white p-6 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md">
+                      <h3 className="text-[15px] font-semibold leading-snug text-slate-900">{item.t}</h3>
+                      <p className="mt-2 text-[13px] leading-[1.6] text-slate-500">{item.d}</p>
+                      <span className={`mt-5 inline-flex items-center gap-1 text-[13px] font-medium ${item.c} transition-all duration-300`}>Begin<span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span></span>
+                    </div>
+                  </Link>
+                ))}
               </motion.div>
             </div>
           </div>
-
-          {/* BOTTOM: 4-column cards */}
-          <motion.div className="mt-20 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6,delay:0.5,ease:easeTrust}}>
-            {[{t:"Protect Your Identity",d:"Secure your personal identity, mobile device, and digital presence with Keyra.",h:"/signup",c:"text-blue-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]"},{t:"Protect Your Family",d:"Create a protected family identity registry for every family member.",h:"/app/family",c:"text-emerald-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]"},{t:"Secure Your Organization",d:"Protect your company domains, data, and team identities.",h:"/contact",c:"text-violet-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(167,139,250,0.5)]"},{t:"Partner With Keyra",d:"Join Keyra as a telecom, technology, or service partner.",h:"/partners",c:"text-orange-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(251,146,60,0.5)]"}].map(item=>(
-              <Link key={item.t} href={item.h} className="group block">
-                <div className="h-full rounded-xl border border-slate-200/70 bg-white p-6 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md">
-                  <h3 className="text-[15px] font-semibold leading-snug text-slate-900">{item.t}</h3>
-                  <p className="mt-2 text-[13px] leading-[1.6] text-slate-500">{item.d}</p>
-                  <span className={`mt-5 inline-flex items-center gap-1 text-[13px] font-medium ${item.c} transition-all duration-300`}>Begin<span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span></span>
-                </div>
-              </Link>
-            ))}
-          </motion.div>
         </div>
       </section>
 
@@ -118,7 +123,7 @@ export function HomeContent() {
             "Humans and agents blurred.",
             "Institutions needed proof, not patches.",
           ].map((line) => (
-            <Card key={line} className="border-keyra-border/80 bg-white px-6 py-5 shadow-none">
+            <Card key={line} className="keyra-surface-light px-6 py-5 shadow-none">
               <p className="text-[15px] font-medium leading-snug tracking-tight text-keyra-primary sm:text-[16px]">
                 {line}
               </p>
@@ -183,8 +188,8 @@ export function HomeContent() {
             "Deterministic verification routing",
             "Institutional continuity — calm by default",
           ].map((line) => (
-            <Card key={line} className="border-keyra-border/70 bg-transparent px-6 py-5 shadow-none">
-              <p className="text-[14px] font-medium leading-relaxed text-keyra-text sm:text-[15px]">{line}</p>
+            <Card key={line} className="keyra-surface-light px-6 py-5 shadow-none">
+              <p className="text-[14px] font-medium leading-relaxed text-keyra-primary sm:text-[15px]">{line}</p>
             </Card>
           ))}
         </div>
@@ -285,9 +290,14 @@ export function HomeContent() {
         title="API-first. Composed like infrastructure should be."
         lead="Documentation and primitives that treat trust as a craft — minimal surfaces, precise semantics, and clarity worthy of the institutions you serve."
       >
-        <Link href="/developers" className="inline-flex focus-visible:outline-none focus-visible:keyra-focus rounded-[var(--keyra-radius-pill)]">
+        <a
+          href={keyraDeveloperPortalUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex focus-visible:outline-none focus-visible:keyra-focus rounded-[var(--keyra-radius-pill)]"
+        >
           <Button variant="secondary">Explore the developer platform</Button>
-        </Link>
+        </a>
       </NarrativeSection>
 
       {/* SECTION 11 — FINAL STATEMENT */}

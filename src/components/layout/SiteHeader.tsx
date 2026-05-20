@@ -6,18 +6,21 @@ import { AccountMenu } from "./AccountMenu";
 import { KeyraAppLauncher } from "./KeyraAppLauncher";
 import { MobileNav } from "./MobileNav";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
-import { AudienceLaneSwitcher } from "@/components/governance/AudienceLaneSwitcher";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
-import { buildGetStartedAccessUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
+import { buildGetStartedAccessUrl, keyraDeveloperPortalUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
 import { useMemo, useEffect, useState } from "react";
 
-const nav = [
-  { href: "/#problem", label: "Why identity" },
-  { href: "/#missing-layer", label: "The shift" },
-  { href: "/#for", label: "Who it's for" },
-  { href: "/#global", label: "Global" },
-  { href: "/developers", label: "Developers" },
-];
+type NavItem = { href: string; label: string; external?: boolean };
+
+function buildNav(): NavItem[] {
+  return [
+    { href: "/#problem", label: "Why identity" },
+    { href: "/#missing-layer", label: "The shift" },
+    { href: "/#for", label: "Who it's for" },
+    { href: "/#global", label: "Global" },
+    { href: keyraDeveloperPortalUrl(), label: "Developers", external: true },
+  ];
+}
 
 export function SiteHeader() {
   const { user } = useKeyraSession();
@@ -46,6 +49,7 @@ export function SiteHeader() {
   const isAdminRoute = pathname.startsWith("/admin");
   const isAdminLoginRoute = pathname.startsWith("/admin/login");
   const isProtectedAdminRoute = isAdminRoute && !isAdminLoginRoute;
+  const nav = useMemo(() => buildNav(), []);
 
   async function handleAdminSignOut() {
     await fetch("/api/admin/auth/logout", { method: "POST" });
@@ -81,28 +85,45 @@ export function SiteHeader() {
           >
             <div className="flex max-w-full flex-nowrap items-center justify-center gap-2 overflow-visible whitespace-nowrap px-2">
               {nav.map((item) => {
-                const isActive = item.href === pathname || item.href === `${pathname}${currentHash}` || (pathname === "/" && !currentHash && item.href === "/#problem");
+                const isActive =
+                  !item.external &&
+                  (item.href === pathname ||
+                    item.href === `${pathname}${currentHash}` ||
+                    (pathname === "/" && !currentHash && item.href === "/#problem"));
+                const linkClass = `relative inline-flex items-center justify-center whitespace-nowrap rounded-[9999px] px-4 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-all duration-250 ease-out ${
+                  isActive
+                    ? "bg-black/[0.06] ring-1 ring-black/[0.12] shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
+                    : "hover:bg-black/[0.03]"
+                }`;
                 const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-                  if (item.href.startsWith("/#")) {
-                    e.preventDefault();
-                    const hash = item.href.replace("/#", "");
-                    if (pathname !== "/") {
-                      window.location.href = `/#${hash}`;
-                    } else {
-                      window.location.hash = hash;
-                    }
+                  if (item.external || !item.href.startsWith("/#")) return;
+                  e.preventDefault();
+                  const hash = item.href.replace("/#", "");
+                  if (pathname !== "/") {
+                    window.location.href = `/#${hash}`;
+                  } else {
+                    window.location.hash = hash;
                   }
                 };
+                if (item.external) {
+                  return (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={linkClass}
+                    >
+                      {item.label}
+                    </a>
+                  );
+                }
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={handleClick}
-                    className={`relative inline-flex items-center justify-center whitespace-nowrap rounded-[9999px] px-4 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-all duration-250 ease-out ${
-                      isActive
-                        ? "bg-black/[0.06] ring-1 ring-black/[0.12] shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
-                        : "hover:bg-black/[0.03]"
-                    }`}
+                    className={linkClass}
                   >
                     {item.label}
                   </Link>

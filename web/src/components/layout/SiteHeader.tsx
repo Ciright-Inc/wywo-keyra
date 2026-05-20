@@ -5,17 +5,25 @@ import { AccountMenu } from "./AccountMenu";
 import { KeyraAppLauncher } from "./KeyraAppLauncher";
 import { MobileNav } from "./MobileNav";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
-import { AudienceLaneSwitcher } from "@/components/governance/AudienceLaneSwitcher";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
+import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
+import { useMemo } from "react";
 
-const nav = [
-  { href: "/#for", label: "Consumer" },
-  { href: "/governments", label: "Governments" },
-  { href: "/partners", label: "Partners" },
-];
+type NavItem = { href: string; label: string; external?: boolean };
+
+function buildNav(): NavItem[] {
+  return [
+    { href: "/#problem", label: "Why identity" },
+    { href: "/#missing-layer", label: "The shift" },
+    { href: "/#for", label: "Who it's for" },
+    { href: "/#global", label: "Global" },
+    { href: keyraDeveloperPortalUrl(), label: "Developers", external: true },
+  ];
+}
 
 export function SiteHeader() {
   const { user } = useKeyraSession();
+  const nav = useMemo(() => buildNav(), []);
 
   return (
     <header className="keyra-site-header-shell z-[var(--keyra-z-header)]">
@@ -34,15 +42,27 @@ export function SiteHeader() {
           style={{ lineHeight: "1.5" }}
         >
           <div className="flex max-w-full flex-nowrap items-center justify-center gap-2 overflow-visible whitespace-nowrap px-2">
-            {nav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="relative flex min-w-fit shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-colors hover:bg-black/[0.05] hover:text-keyra-primary lg:px-4"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {nav.map((item) =>
+              item.external ? (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative flex min-w-fit shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-colors hover:bg-black/[0.05] hover:text-keyra-primary lg:px-4"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="relative flex min-w-fit shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-colors hover:bg-black/[0.05] hover:text-keyra-primary lg:px-4"
+                >
+                  {item.label}
+                </Link>
+              ),
+            )}
           </div>
         </nav>
 
@@ -76,7 +96,6 @@ export function SiteHeader() {
           <KeyraAppLauncher />
         </div>
       </div>
-      <AudienceLaneSwitcher />
     </header>
   );
 }

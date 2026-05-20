@@ -3,21 +3,24 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AudienceLaneSwitcher } from "@/components/governance/AudienceLaneSwitcher";
 import { Button } from "@/components/ui/Button";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
-import { buildGetStartedAccessUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
+import { buildGetStartedAccessUrl, keyraDeveloperPortalUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 
-const links = [
-  { href: "/#problem", label: "Why identity" },
-  { href: "/#missing-layer", label: "The shift" },
-  { href: "/#for", label: "Who it's for" },
-  { href: "/#global", label: "Global" },
-  { href: "/developers", label: "Developers" },
-  { href: "/", label: "Be Protected Online" },
-];
+type NavLink = { href: string; label: string; external?: boolean };
+
+function buildLinks(): NavLink[] {
+  return [
+    { href: "/#problem", label: "Why identity" },
+    { href: "/#missing-layer", label: "The shift" },
+    { href: "/#for", label: "Who it's for" },
+    { href: "/#global", label: "Global" },
+    { href: keyraDeveloperPortalUrl(), label: "Developers", external: true },
+    { href: "/", label: "Be Protected Online" },
+  ];
+}
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -34,6 +37,7 @@ export function MobileNav() {
     const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
     return buildGetStartedAccessUrl(`${base}${path}`);
   }, [pathname]);
+  const links = useMemo(() => buildLinks(), []);
 
   useEffect(() => {
     if (!open) return;
@@ -81,14 +85,26 @@ export function MobileNav() {
             >
               <ul className="flex flex-col gap-1">
                 {links.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                      className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-primary hover:bg-keyra-surface"
-                    >
-                      {item.label}
-                    </Link>
+                  <li key={item.label}>
+                    {item.external ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setOpen(false)}
+                        className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-primary hover:bg-keyra-surface"
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        onClick={() => setOpen(false)}
+                        className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-primary hover:bg-keyra-surface"
+                      >
+                        {item.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
                 {!user ? (
@@ -129,9 +145,6 @@ export function MobileNav() {
                   </>
                 ) : null}
               </ul>
-              <div className="mt-3 border-t border-keyra-border/60 pt-3">
-                <AudienceLaneSwitcher variant="compact" />
-              </div>
             </motion.nav>
           </>
         ) : null}

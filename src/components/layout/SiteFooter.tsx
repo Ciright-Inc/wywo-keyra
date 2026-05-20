@@ -1,18 +1,20 @@
 import Link from "next/link";
-import { AudienceLaneSwitcher } from "@/components/governance/AudienceLaneSwitcher";
 import { getKeyraEcosystemAppLinks, type KeyraEcosystemAppLink } from "@/lib/keyraAppUrls";
 
-const links = [
-  { href: "/#problem", label: "Why identity" },
-  { href: "/#missing-layer", label: "The shift" },
-  { href: "/#for", label: "Who it's for" },
-  { href: "/#global", label: "Global" },
-  { href: "/developers", label: "Developers" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/contact", label: "Contact us" },
-  { href: "/privacy", label: "Privacy" },
-  { href: "/terms", label: "Terms" },
-];
+type SiteLink = { href: string; label: string; external?: boolean };
+
+function siteLinks(): SiteLink[] {
+  return [
+    { href: "/#problem", label: "Why identity" },
+    { href: "/#missing-layer", label: "The shift" },
+    { href: "/#for", label: "Who it's for" },
+    { href: "/#global", label: "Global" },
+    { href: "/faq", label: "FAQ" },
+    { href: "/contact", label: "Contact us" },
+    { href: "/privacy", label: "Privacy" },
+    { href: "/terms", label: "Terms" },
+  ];
+}
 
 function splitInHalf<T>(arr: T[]): [T[], T[]] {
   const mid = Math.ceil(arr.length / 2);
@@ -55,6 +57,7 @@ function FooterAppLinkItem({ item, linkClass }: { item: KeyraEcosystemAppLink; l
 export function SiteFooter() {
   const appLinks = getKeyraEcosystemAppLinks();
   const [appLinksLeft, appLinksRight] = splitInHalf(appLinks);
+  const links = siteLinks();
   const [siteLinksLeft, siteLinksRight] = splitInHalf(links);
   const year = new Date().getFullYear();
 
@@ -68,9 +71,6 @@ export function SiteFooter() {
               Choose the experience that matches your context — consumer protection, enterprise deployment, or
               partner tooling.
             </p>
-            <div className="mt-4">
-              <AudienceLaneSwitcher variant="footer" />
-            </div>
             <Link
               href="/"
               className="mt-5 inline-flex text-sm font-semibold text-keyra-primary underline-offset-4 transition hover:underline"
@@ -86,18 +86,42 @@ export function SiteFooter() {
                 <ul className="flex min-w-0 flex-col gap-2">
                   {siteLinksLeft.map((link) => (
                     <li key={link.label} className="min-w-0">
-                      <Link href={link.href} className={`${linkClass} block`}>
-                        {link.label}
-                      </Link>
+                      {link.external ? (
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${linkClass} block`}
+                        >
+                          {link.label}
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      ) : (
+                        <Link href={link.href} className={`${linkClass} block`}>
+                          {link.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>
                 <ul className="flex min-w-0 flex-col gap-2">
                   {siteLinksRight.map((link) => (
                     <li key={link.label} className="min-w-0">
-                      <Link href={link.href} className={`${linkClass} block`}>
-                        {link.label}
-                      </Link>
+                      {link.external ? (
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${linkClass} block`}
+                        >
+                          {link.label}
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      ) : (
+                        <Link href={link.href} className={`${linkClass} block`}>
+                          {link.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>

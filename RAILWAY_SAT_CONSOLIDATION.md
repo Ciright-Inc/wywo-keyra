@@ -191,7 +191,20 @@ railway up --ci
 
 ---
 
-## 8. Checklist
+## 8. global-deployment (standalone map site)
+
+```bash
+cd Keyra/global-deployment
+railway login
+./scripts/railway-deploy.sh
+# or: railway link → global-deployment service → variable set DATABASE_URL → railway up --ci
+```
+
+Set **`NEXT_PUBLIC_GLOBAL_DEPLOYMENT_URL`** to the service’s public hostname. Point main Keyra **`NEXT_PUBLIC_GLOBAL_DEPLOYMENT_URL`** at the same URL so `/global-deployment` redirects correctly.
+
+---
+
+## 9. Checklist
 
 - [ ] `railway login` / `railway link` from **`Keyra/`** → SAT
 - [ ] Service exists; **Root Directory** = **`Keyra`** if monorepo

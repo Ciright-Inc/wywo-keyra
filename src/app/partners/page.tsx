@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageIntentRibbon } from "@/components/trust/PageIntentRibbon";
+import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
 
 export const metadata: Metadata = {
   title: "Partners",
@@ -37,9 +38,14 @@ export default function PartnersPage() {
       </div>
       <p className="mt-8 text-sm text-keyra-text-2">
         Explore our{" "}
-        <Link href="/developers" className="font-medium text-keyra-accent underline-offset-2 hover:underline">
+        <a
+          href={keyraDeveloperPortalUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-keyra-accent underline-offset-2 hover:underline"
+        >
           developer platform
-        </Link>
+        </a>
         {" "}and{" "}
         <Link href="/contact" className="font-medium text-keyra-accent underline-offset-2 hover:underline">
           contact us

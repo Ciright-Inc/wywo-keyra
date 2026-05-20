@@ -13,7 +13,7 @@ const DATA = path.join(ROOT, "node_modules/world-countries/data");
 
 const VIEW_W = 1000;
 const VIEW_H = 500;
-const MAX_RING_PTS = 14;
+const MAX_RING_PTS = 48;
 
 function project(lon: number, lat: number): [number, number] {
   const x = ((lon + 180) / 360) * VIEW_W;

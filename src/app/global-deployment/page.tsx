@@ -1,39 +1,7 @@
-import type { Metadata } from "next";
-import { Suspense } from "react";
-import { DeploymentErrorBoundary } from "@/components/global-deployment/DeploymentErrorBoundary";
-import { GlobalDeploymentHero } from "@/components/global-deployment/GlobalDeploymentHero";
-import { GlobalDeploymentView } from "@/components/global-deployment/GlobalDeploymentView";
-import { LoadingSkeleton } from "@/components/global-deployment/LoadingSkeleton";
-import { getPublicDeploymentTree } from "@/lib/deployments/publicTree";
+import { redirect } from "next/navigation";
+import { keyraGlobalDeploymentUrl } from "@/lib/keyraAppUrls";
 
-/** Reads DB via unstable_cache; avoid build-time static generation without a database. */
-export const dynamic = "force-dynamic";
-
-export const metadata: Metadata = {
-  title: "Global deployment",
-  description:
-    "Explore Keyra’s published regional, country, and operator deployment posture — calm, structured, and institutionally grounded.",
-};
-
-function ViewFallback() {
-  return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <LoadingSkeleton />
-    </div>
-  );
-}
-
-export default async function GlobalDeploymentPage() {
-  const tree = await getPublicDeploymentTree();
-
-  return (
-    <>
-      <GlobalDeploymentHero />
-      <DeploymentErrorBoundary>
-        <Suspense fallback={<ViewFallback />}>
-          <GlobalDeploymentView initialTree={tree} />
-        </Suspense>
-      </DeploymentErrorBoundary>
-    </>
-  );
+/** Global deployment lives on its own site — redirect legacy path on keyra.ie. */
+export default function GlobalDeploymentRedirectPage() {
+  redirect(keyraGlobalDeploymentUrl());
 }

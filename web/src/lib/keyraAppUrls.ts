@@ -68,6 +68,14 @@ export function keyraMarketingPath(path: string): string {
   return `${base}${p}`;
 }
 
+/** Standalone global deployment site (e.g. global.keyra.ie or http://localhost:3050). */
+export function keyraGlobalDeploymentUrl(): string {
+  return trimSlash(
+    process.env.NEXT_PUBLIC_GLOBAL_DEPLOYMENT_URL?.trim() ||
+      keyraMarketingPath("/global-deployment"),
+  );
+}
+
 /** Shared list for 9-dot launcher + footer (SimSecure-style subdomain URLs). */
 export type KeyraEcosystemAppLink = {
   id: string;
@@ -111,13 +119,6 @@ export function getKeyraEcosystemAppLinks(): KeyraEcosystemAppLink[] {
       href: keyraSettingsPortalUrl(),
     },
     {
-      id: "trust",
-      label: "Trust",
-      description: "Trust & assurance",
-      href: keyraMarketingPath("/trust"),
-      internalPath: "/trust",
-    },
-    {
       id: "affiliates",
       label: "Affiliates",
       description: "Affiliate program",
@@ -130,11 +131,23 @@ export function getKeyraEcosystemAppLinks(): KeyraEcosystemAppLink[] {
       href: keyraPressUrl(),
     },
     {
-      id: "global",
-      label: "Global deployment",
-      description: "Deployment map",
-      href: keyraMarketingPath("/global-deployment"),
-      internalPath: "/global-deployment",
+      id: "trust",
+      label: "Trust",
+      description: "Trust & assurance",
+      href: keyraMarketingPath("/trust"),
+      internalPath: "/trust",
+    },
+    {
+      id: "governments",
+      label: "Governments",
+      description: "Government programs",
+      href: keyraGovernmentsUrl(),
+    },
+    {
+      id: "partners",
+      label: "Partners",
+      description: "Partner programs",
+      href: keyraPartnersUrl(),
     },
   ];
 }

@@ -1,17 +1,20 @@
 import Link from "next/link";
-import { getKeyraEcosystemAppLinks, keyraGovernmentsUrl, keyraPartnersUrl, type KeyraEcosystemAppLink } from "@/lib/keyraAppUrls";
+import { getKeyraEcosystemAppLinks, type KeyraEcosystemAppLink } from "@/lib/keyraAppUrls";
 
-const links = [
-  { href: "/#problem", label: "Why identity" },
-  { href: "/#missing-layer", label: "The shift" },
-  { href: "/#for", label: "Who it's for" },
-  { href: "/#global", label: "Global" },
-  { href: "/developers", label: "Developers" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/contact", label: "Contact us" },
-  { href: "/privacy", label: "Privacy" },
-  { href: "/terms", label: "Terms" },
-];
+type SiteLink = { href: string; label: string; external?: boolean };
+
+function siteLinks(): SiteLink[] {
+  return [
+    { href: "/#problem", label: "Why identity" },
+    { href: "/#missing-layer", label: "The shift" },
+    { href: "/#for", label: "Who it's for" },
+    { href: "/#global", label: "Global" },
+    { href: "/faq", label: "FAQ" },
+    { href: "/contact", label: "Contact us" },
+    { href: "/privacy", label: "Privacy" },
+    { href: "/terms", label: "Terms" },
+  ];
+}
 
 function splitInHalf<T>(arr: T[]): [T[], T[]] {
   const mid = Math.ceil(arr.length / 2);
@@ -54,6 +57,7 @@ function FooterAppLinkItem({ item, linkClass }: { item: KeyraEcosystemAppLink; l
 export function SiteFooter() {
   const appLinks = getKeyraEcosystemAppLinks();
   const [appLinksLeft, appLinksRight] = splitInHalf(appLinks);
+  const links = siteLinks();
   const [siteLinksLeft, siteLinksRight] = splitInHalf(links);
   const year = new Date().getFullYear();
 
@@ -82,18 +86,42 @@ export function SiteFooter() {
                 <ul className="flex min-w-0 flex-col gap-2">
                   {siteLinksLeft.map((link) => (
                     <li key={link.label} className="min-w-0">
-                      <Link href={link.href} className={`${linkClass} block`}>
-                        {link.label}
-                      </Link>
+                      {link.external ? (
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${linkClass} block`}
+                        >
+                          {link.label}
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      ) : (
+                        <Link href={link.href} className={`${linkClass} block`}>
+                          {link.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>
                 <ul className="flex min-w-0 flex-col gap-2">
                   {siteLinksRight.map((link) => (
                     <li key={link.label} className="min-w-0">
-                      <Link href={link.href} className={`${linkClass} block`}>
-                        {link.label}
-                      </Link>
+                      {link.external ? (
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${linkClass} block`}
+                        >
+                          {link.label}
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      ) : (
+                        <Link href={link.href} className={`${linkClass} block`}>
+                          {link.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -114,26 +142,6 @@ export function SiteFooter() {
                   {appLinksRight.map((item) => (
                     <FooterAppLinkItem key={item.id} item={item} linkClass={linkClass} />
                   ))}
-                  <li className="min-w-0 mt-2">
-                    <div className="flex flex-row flex-wrap gap-2">
-                      <a
-                        href={keyraGovernmentsUrl()}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center rounded-full border border-keyra-border bg-keyra-surface/80 px-3 py-1.5 text-[11px] font-medium text-keyra-primary transition hover:bg-keyra-surface"
-                      >
-                        Governments
-                      </a>
-                      <a
-                        href={keyraPartnersUrl()}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center rounded-full border border-keyra-border bg-keyra-surface/80 px-3 py-1.5 text-[11px] font-medium text-keyra-primary transition hover:bg-keyra-surface"
-                      >
-                        Partners
-                      </a>
-                    </div>
-                  </li>
                 </ul>
               </div>
             </nav>

@@ -12,18 +12,11 @@ import {
   matchAccessDomainRule,
 } from "@/lib/deployments/accessRequest";
 import prisma from "@/lib/prisma";
+import { keyraGlobalDeploymentUrl } from "@/lib/keyraAppUrls";
 import { isMandrillConfigured, sendMandrillTransactional } from "@/services/mandrillClient";
 
 const NEUTRAL_MESSAGE =
   "If your organization is eligible, you will receive a verification message shortly.";
-
-function siteOrigin(): string {
-  const raw =
-    process.env.NEXT_PUBLIC_KEYRA_SITE_URL?.trim() ||
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-    "https://keyra.ie";
-  return raw.replace(/\/$/, "");
-}
 
 export async function POST(req: Request) {
   const limited = rateLimitResponse(req, "public-access-requests");
@@ -105,7 +98,7 @@ export async function POST(req: Request) {
     },
   });
 
-  const verifyUrl = `${siteOrigin()}/global-deployment?rid=${encodeURIComponent(
+  const verifyUrl = `${keyraGlobalDeploymentUrl()}/?rid=${encodeURIComponent(
     created.id,
   )}&code=${encodeURIComponent(token)}`;
 

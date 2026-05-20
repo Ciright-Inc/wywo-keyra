@@ -357,6 +357,23 @@ body {
   color: #ffffff;
 }
 
+/* Light panels on dark bands — reset typography tokens so white cards stay readable */
+.keyra-band--dark .keyra-surface-light {
+  --keyra-primary: var(--color-ink);
+  --keyra-text: var(--color-ink);
+  --keyra-text-2: var(--color-body);
+  --keyra-text-secondary: var(--color-body);
+  --keyra-border: var(--color-hairline-strong);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  border-color: var(--color-hairline-strong);
+}
+
+.keyra-band--dark .keyra-surface-light ::selection {
+  background: rgba(59, 130, 246, 0.28);
+  color: var(--color-ink);
+}
+
 /* Site footer — full-width black */
 .keyra-site-footer {
   background: var(--color-surface-dark);

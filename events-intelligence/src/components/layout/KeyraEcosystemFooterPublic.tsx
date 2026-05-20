@@ -56,7 +56,7 @@ function ecosystemAppLinks(): { id: string; label: string; href: string }[] {
       href: trimSlash(process.env.NEXT_PUBLIC_PRESS_URL || "https://press.keyra.ie"),
     },
     { id: "trust", label: "Trust", href: `${m}/trust` },
-    { id: "global", label: "Global deployment", href: `${m}/global-deployment` },
+    { id: "global", label: "Global deployment", href: trimSlash(process.env.NEXT_PUBLIC_GLOBAL_DEPLOYMENT_URL || `${m}/global-deployment`) },
   ];
 }
 
@@ -65,7 +65,6 @@ const ON_KEYRA_NAV_LINKS: { href: string; label: string }[] = [
   { href: "/#missing-layer", label: "The shift" },
   { href: "/#for", label: "Who it's for" },
   { href: "/#global", label: "Global" },
-  { href: "/developers", label: "Developers" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact us" },
   { href: "/privacy", label: "Privacy" },
@@ -117,10 +116,10 @@ export function KeyraEcosystemFooterPublic() {
             <a href={`${m}/`} className={pillClass} rel="noopener noreferrer">
               Consumers
             </a>
-            <a href={`${m}/global-deployment`} className={pillClass} rel="noopener noreferrer">
+            <a href={trimSlash(process.env.NEXT_PUBLIC_GLOBAL_DEPLOYMENT_URL || `${m}/global-deployment`)} className={pillClass} rel="noopener noreferrer">
               Governments &amp; carriers
             </a>
-            <a href={`${m}/developers`} className={pillClass} rel="noopener noreferrer">
+            <a href={trimSlash(process.env.NEXT_PUBLIC_DEVELOPER_URL || "https://developer.keyra.ie")} className={pillClass} rel="noopener noreferrer" target="_blank">
               Partners &amp; developers
             </a>
           </div>
