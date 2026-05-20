@@ -14,6 +14,7 @@ import { LANE_HEADER, parseKeyraDesignLaneHeader } from "@/lib/keyraDesignLane";
 import { ToastProvider } from "@/components/ui/Toast";
 import { ElevenLabsHomeAgent } from "@/components/home/ElevenLabsHomeAgent";
 import { PlausibleScripts } from "@/components/analytics/PlausibleScripts";
+import { RailwayPlausibleScripts } from "@/components/analytics/RailwayPlausibleScripts";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -68,6 +69,10 @@ export default async function RootLayout({
       className={`${inter.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <PlausibleScripts />
+        <RailwayPlausibleScripts />
+      </head>
       <body
         className="flex min-h-full min-w-0 flex-col font-sans"
         suppressHydrationWarning
@@ -80,7 +85,6 @@ export default async function RootLayout({
           </KeyraSessionProvider>
           <SiteFooter />
         </ToastProvider>
-        <PlausibleScripts />
       </body>
     </html>
   );
