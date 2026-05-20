@@ -39,21 +39,32 @@ export function HomeContent() {
 
             {/* CENTER: Timeline */}
             <div className="lg:w-[30%] lg:pt-4">
-              <div className="flex gap-5">
-                <div className="relative flex flex-col items-center pt-2">
-                  <div className="absolute inset-y-0 w-px bg-slate-200" />
-                  <div className="relative z-10 h-2 w-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-                  <div className="relative z-10 mt-[88px] h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
-                  <div className="relative z-10 mt-[88px] h-2 w-2 rounded-full bg-slate-500 shadow-[0_0_10px_rgba(100,116,139,0.5)]" />
-                </div>
-                <div className="flex flex-col gap-6">
-                  {[{l:"Who this is for",t:"Households, professionals, and institutions who live and work online."},{l:"Problem",t:"Identity is fragmented; fraud and synthetic deception are routine."},{l:"What to do next",t:"Continue below, or sign in to manage your Keyra account."}].map((item,i)=>(
-                    <motion.div key={item.l} className="rounded-xl border border-slate-200/80 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.2+i*0.08,ease:easeTrust}}>
+              <div className="flex flex-col gap-6">
+                {[{l:"Who this is for",t:"Households, professionals, and institutions who live and work online."},{l:"Problem",t:"Identity is fragmented; fraud and synthetic deception are routine."},{l:"What to do next",t:"Continue below, or sign in to manage your Keyra account."}].map((item,i)=>(
+                  <div key={item.l} className="flex items-start gap-8">
+                    {/* Stepper dot + line */}
+                    <div className="relative flex w-5 flex-col items-center self-stretch pt-[5px]">
+                      {i > 0 && (
+                        <div
+                          className="absolute left-1/2 w-px -translate-x-1/2 bg-slate-300/50"
+                          style={{ bottom: 'calc(100% - 10px)', height: '22px' }}
+                        />
+                      )}
+                      <div className={`relative z-10 h-2.5 w-2.5 rounded-full ${i===0?'bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.6)]':i===1?'bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.5)]':'bg-slate-400 shadow-[0_0_12px_rgba(148,163,184,0.4)]'}`} />
+                      {i < 2 && (
+                        <div
+                          className={`absolute left-1/2 top-[10px] w-px -translate-x-1/2 ${i===0?'bg-gradient-to-b from-blue-500/50 to-slate-300/40':'bg-slate-300/50'}`}
+                          style={{ height: 'calc(100% + 2px)' }}
+                        />
+                      )}
+                    </div>
+
+                    <motion.div className="flex-1 rounded-xl border border-slate-200/80 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.2+i*0.08,ease:easeTrust}}>
                       <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">{item.l}</p>
                       <p className="mt-2 text-[13px] leading-[1.6] text-slate-600">{item.t}</p>
                     </motion.div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
 
