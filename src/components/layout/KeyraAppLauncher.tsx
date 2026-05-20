@@ -1,9 +1,17 @@
 "use client";
 
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/components/ui/cn";
 import { getKeyraAdminAppLinks } from "@/lib/keyraAppUrls";
+
+type LauncherApp = {
+  id: string;
+  label: string;
+  description: string;
+  href: string;
+};
 
 function NineDotTriggerIcon({ className }: { className?: string }) {
   return (
@@ -49,9 +57,35 @@ function AppTileIcon({ label }: { label: string }) {
 }
 
 export function KeyraAppLauncher() {
+  const pathname = usePathname();
+  const isAdminRoute = pathname.startsWith("/admin");
   const [open, setOpen] = useState(false);
+  const [apps, setApps] = useState<LauncherApp[]>(() => (isAdminRoute ? [] : getKeyraAdminAppLinks()));
   const wrapRef = useRef<HTMLDivElement>(null);
-  const tiles = useMemo(() => getKeyraAdminAppLinks(), []);
+  const tiles = useMemo(() => apps, [apps]);
+
+  function refreshLauncherApps() {
+    if (isAdminRoute) setApps([]);
+    fetch(`/api/admin/deployments/apps?surface=launcher&t=${Date.now()}`, {
+      cache: "no-store",
+      credentials: "include",
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { apps?: LauncherApp[] } | null) => {
+        if (Array.isArray(data?.apps)) setApps(data.apps);
+      })
+      .catch(() => {
+        if (!isAdminRoute) setApps(getKeyraAdminAppLinks());
+      });
+  }
+
+  useEffect(() => {
+    if (isAdminRoute) setApps([]);
+    if (!isAdminRoute) refreshLauncherApps();
+    return () => {
+      // Keep the hook shape stable for Fast Refresh.
+    };
+  }, [isAdminRoute]);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -84,7 +118,9 @@ export function KeyraAppLauncher() {
         )}
         onClick={(e) => {
           e.stopPropagation();
-          setOpen((o) => !o);
+          const nextOpen = !open;
+          setOpen(nextOpen);
+          if (nextOpen) refreshLauncherApps();
         }}
       >
         <NineDotTriggerIcon />

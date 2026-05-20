@@ -1,15 +1,21 @@
 import { PrismaClient } from "@prisma/client";
 
-const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+const PRISMA_CLIENT_SCHEMA_VERSION = "deployment-apps-private";
+const globalForPrisma = globalThis as unknown as {
+  prisma?: PrismaClient;
+  prismaClientSchemaVersion?: string;
+};
 
 export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-  });
+  globalForPrisma.prismaClientSchemaVersion === PRISMA_CLIENT_SCHEMA_VERSION && globalForPrisma.prisma
+    ? globalForPrisma.prisma
+    : new PrismaClient({
+        log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+      });
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
+  globalForPrisma.prismaClientSchemaVersion = PRISMA_CLIENT_SCHEMA_VERSION;
 }
 
 export default prisma;

@@ -1,6 +1,6 @@
 "use server";
 
-import { forbidden } from "next/navigation";
+import { forbidden, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import {
   ServerEnvironment,
@@ -111,9 +111,26 @@ function revalidateDeploymentSurfaces() {
   revalidatePublicDeployments();
   revalidatePath("/admin/deployments");
   revalidatePath("/admin/deployments/countries");
-  revalidatePath("/admin/deployments/telcos");
+  revalidatePath("/admin/deployments/telcos", "page");
   revalidatePath("/admin/deployments/server-nodes");
   revalidatePath("/admin/deployments/access-domain-rules");
+}
+
+/** Telcos list default page size (must stay in sync with `telcos/page.tsx`). */
+const TELCOS_DEFAULT_PAGE_SIZE = 25;
+
+function parseTelcosListPerPage(formData: FormData): number {
+  const raw = parseInt(String(formData.get("_telcosPageSize") ?? "").trim(), 10);
+  if (raw === 25 || raw === 50 || raw === 100) return raw;
+  return TELCOS_DEFAULT_PAGE_SIZE;
+}
+
+/** After create — page 1 so the new row (sorted by newest) is visible immediately. */
+function redirectToTelcosListPageOne(perPage: number): never {
+  if (perPage === TELCOS_DEFAULT_PAGE_SIZE) {
+    redirect("/admin/deployments/telcos");
+  }
+  redirect(`/admin/deployments/telcos?perPage=${perPage}`);
 }
 
 export async function createCountry(formData: FormData) {
@@ -365,12 +382,14 @@ export async function createTelco(formData: FormData) {
     },
   });
 
+  const creationReason =
+    String(formData.get("statusChangeReason") ?? "").trim() || null;
   await writeStatusHistory({
     targetType: StatusHistoryTargetType.TELCO,
     targetId: created.id,
     previousStatus: null,
     nextStatus: status,
-    reason: "Created",
+    reason: creationReason ?? "Created",
   });
   await writeAudit({
     entityType: "TelcoDeployment",
@@ -378,7 +397,9 @@ export async function createTelco(formData: FormData) {
     action: "CREATE",
     payload: { slug, telcoSubdomain },
   });
+  const listPerPage = parseTelcosListPerPage(formData);
   revalidateDeploymentSurfaces();
+  redirectToTelcosListPageOne(listPerPage);
 }
 
 export async function updateTelco(formData: FormData) {
