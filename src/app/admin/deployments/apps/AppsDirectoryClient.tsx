@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { DeploymentAppView } from "@/lib/deploymentAppConstants";
+import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 
 const sectionDefinitions = [
   { title: "Core apps" },
@@ -33,15 +34,29 @@ function AppListIcon({ label }: { label: string }) {
 export function AppsDirectoryClient({ initialApps }: { initialApps: DeploymentAppView[] }) {
   const [apps, setApps] = useState(initialApps);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+
+  /** Case-insensitive substring match across label, description, href, and section. */
+  const filteredApps = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return apps;
+    return apps.filter((app) =>
+      [app.label, app.description, app.href, app.section].some((value) =>
+        (value ?? "").toLowerCase().includes(q),
+      ),
+    );
+  }, [apps, query]);
 
   const sections = useMemo(
     () =>
       sectionDefinitions.map((section) => ({
         title: section.title,
-        apps: apps.filter((app) => app.section === section.title),
+        apps: filteredApps.filter((app) => app.section === section.title),
       })),
-    [apps],
+    [filteredApps],
   );
+  const hasSearch = query.trim().length > 0;
+  const totalVisible = filteredApps.length;
 
   async function deleteApp(app: DeploymentAppView) {
     if (!window.confirm(`Delete ${app.label}?`)) return;
@@ -70,21 +85,36 @@ export function AppsDirectoryClient({ initialApps }: { initialApps: DeploymentAp
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-2xl font-semibold text-keyra-primary">Apps</h1>
             <span className="rounded-full border border-keyra-border bg-keyra-surface px-3 py-1 text-xs font-medium text-keyra-text-2">
-              {apps.length}
+              {hasSearch ? `${totalVisible} of ${apps.length}` : apps.length}
             </span>
           </div>
-          <Link
-            href="/admin/deployments/apps/new"
-            className="inline-flex items-center gap-2 rounded-full border border-[var(--keyra-action-border)] bg-[var(--keyra-action)] px-4 py-2 text-sm font-medium leading-none text-keyra-primary shadow-sm transition hover:bg-keyra-surface"
-          >
-            <span aria-hidden>+</span>
-            Create new app
-          </Link>
+          <div className="flex items-center gap-2">
+            <CollapsibleSearchBar
+              mode="client"
+              searchQuery={query}
+              onChange={setQuery}
+              placeholder="Label, description, link, section…"
+              ariaLabel="Search apps"
+            />
+            <Link
+              href="/admin/deployments/apps/new"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--keyra-action-border)] bg-[var(--keyra-action)] px-4 py-2 text-sm font-medium leading-none text-keyra-primary shadow-sm transition hover:bg-keyra-surface"
+            >
+              <span aria-hidden>+</span>
+              Create new app
+            </Link>
+          </div>
         </div>
         <p className="mt-2 text-sm text-keyra-text-2">
           Select an app to open its configured destination.
         </p>
       </div>
+
+      {hasSearch && totalVisible === 0 ? (
+        <p className="mt-6 rounded-2xl border border-keyra-border bg-keyra-surface/50 px-4 py-6 text-center text-sm text-keyra-text-2">
+          No apps match your search. Try different keywords or clear the search.
+        </p>
+      ) : null}
 
       <div className="mt-6 grid gap-3 xl:grid-cols-3">
         {sections.map((section) => (

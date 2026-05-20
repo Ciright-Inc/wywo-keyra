@@ -1,67 +1,132 @@
+import type { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { assertAdminServer } from "@/lib/assertAdminServer";
+import { parsePage, parsePageSize, parseSearchQuery } from "@/lib/admin/listSearchParams";
+import { AuditDirectoryClient } from "./AuditDirectoryClient";
 
-export default async function AdminAuditPage() {
+const DEFAULT_PAGE_SIZE = 25;
+const PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
+
+type Search = {
+  /** Events (Audit events) section URL params. */
+  eq?: string;
+  epage?: string;
+  eperPage?: string;
+  /** History (Status history) section URL params. */
+  hq?: string;
+  hpage?: string;
+  hperPage?: string;
+};
+
+function auditEventSearchWhere(query: string): Prisma.AuditEventWhereInput | undefined {
+  const q = query.trim();
+  if (!q) return undefined;
+  return {
+    OR: [
+      { action: { contains: q, mode: "insensitive" } },
+      { entityType: { contains: q, mode: "insensitive" } },
+      { entityId: { contains: q, mode: "insensitive" } },
+      { actorId: { contains: q, mode: "insensitive" } },
+      { actorRole: { contains: q, mode: "insensitive" } },
+    ],
+  };
+}
+
+function statusHistorySearchWhere(query: string): Prisma.StatusHistoryWhereInput | undefined {
+  const q = query.trim();
+  if (!q) return undefined;
+  return {
+    OR: [
+      { targetId: { contains: q, mode: "insensitive" } },
+      { changedBy: { contains: q, mode: "insensitive" } },
+      { reason: { contains: q, mode: "insensitive" } },
+    ],
+  };
+}
+
+export default async function AdminAuditPage({ searchParams }: { searchParams: Promise<Search> }) {
   await assertAdminServer();
-  const [audit, history] = await Promise.all([
-    prisma.auditEvent.findMany({ orderBy: { createdAt: "desc" }, take: 120 }),
-    prisma.statusHistory.findMany({ orderBy: { changedAt: "desc" }, take: 120 }),
+  const sp = await searchParams;
+
+  const ePageSize = parsePageSize(sp.eperPage, PAGE_SIZE_OPTIONS, DEFAULT_PAGE_SIZE);
+  let ePage = parsePage(sp.epage);
+  const eQuery = parseSearchQuery(sp.eq);
+  const eWhere = auditEventSearchWhere(eQuery);
+
+  const hPageSize = parsePageSize(sp.hperPage, PAGE_SIZE_OPTIONS, DEFAULT_PAGE_SIZE);
+  let hPage = parsePage(sp.hpage);
+  const hQuery = parseSearchQuery(sp.hq);
+  const hWhere = statusHistorySearchWhere(hQuery);
+
+  const [eTotal, hTotal] = await Promise.all([
+    prisma.auditEvent.count({ where: eWhere ?? {} }),
+    prisma.statusHistory.count({ where: hWhere ?? {} }),
   ]);
 
+  const eTotalPages = Math.max(1, Math.ceil(eTotal / ePageSize));
+  ePage = Math.min(ePage, eTotalPages);
+  const hTotalPages = Math.max(1, Math.ceil(hTotal / hPageSize));
+  hPage = Math.min(hPage, hTotalPages);
+
+  const [events, history] = await Promise.all([
+    prisma.auditEvent.findMany({
+      where: eWhere ?? {},
+      orderBy: { createdAt: "desc" },
+      skip: (ePage - 1) * ePageSize,
+      take: ePageSize,
+    }),
+    prisma.statusHistory.findMany({
+      where: hWhere ?? {},
+      orderBy: { changedAt: "desc" },
+      skip: (hPage - 1) * hPageSize,
+      take: hPageSize,
+    }),
+  ]);
+
+  const eShowingFrom = eTotal === 0 ? 0 : (ePage - 1) * ePageSize + 1;
+  const eShowingTo = Math.min(ePage * ePageSize, eTotal);
+  const hShowingFrom = hTotal === 0 ? 0 : (hPage - 1) * hPageSize + 1;
+  const hShowingTo = Math.min(hPage * hPageSize, hTotal);
+
   return (
-    <div>
-      <h1 className="text-2xl font-semibold text-keyra-primary">Audit</h1>
-      <p className="mt-2 text-sm text-keyra-text-2">Immutable-style audit trail and status transitions.</p>
-
-      <h2 className="mt-10 text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Audit events</h2>
-      <div className="mt-3 overflow-x-auto rounded-[var(--keyra-radius-card)] border border-keyra-border">
-        <table className="w-full min-w-[36rem] text-left text-sm">
-          <thead className="bg-[rgba(255,255,255,0.03)] text-xs uppercase tracking-wider text-keyra-text-2">
-            <tr>
-              <th className="px-3 py-2">When</th>
-              <th className="px-3 py-2">Action</th>
-              <th className="px-3 py-2">Entity</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-keyra-border">
-            {audit.map((a) => (
-              <tr key={a.id}>
-                <td className="px-3 py-3 text-xs text-keyra-text-2">{a.createdAt.toISOString()}</td>
-                <td className="px-3 py-3 text-keyra-primary">{a.action}</td>
-                <td className="px-3 py-3 text-xs text-keyra-text-2">
-                  {a.entityType} · {a.entityId}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <h2 className="mt-10 text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Status history</h2>
-      <div className="mt-3 overflow-x-auto rounded-[var(--keyra-radius-card)] border border-keyra-border">
-        <table className="w-full min-w-[36rem] text-left text-sm">
-          <thead className="bg-[rgba(255,255,255,0.03)] text-xs uppercase tracking-wider text-keyra-text-2">
-            <tr>
-              <th className="px-3 py-2">When</th>
-              <th className="px-3 py-2">Target</th>
-              <th className="px-3 py-2">Change</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-keyra-border">
-            {history.map((h) => (
-              <tr key={h.id}>
-                <td className="px-3 py-3 text-xs text-keyra-text-2">{h.changedAt.toISOString()}</td>
-                <td className="px-3 py-3 text-xs text-keyra-text-2">
-                  {h.targetType} · {h.targetId}
-                </td>
-                <td className="px-3 py-3 text-keyra-text-2">
-                  {h.previousStatus ?? "—"} → {h.nextStatus}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <AuditDirectoryClient
+      events={events.map((a) => ({
+        id: a.id,
+        createdAt: a.createdAt.toISOString(),
+        action: a.action,
+        entityType: a.entityType,
+        entityId: a.entityId,
+      }))}
+      history={history.map((h) => ({
+        id: h.id,
+        changedAt: h.changedAt.toISOString(),
+        targetType: h.targetType,
+        targetId: h.targetId,
+        previousStatus: h.previousStatus,
+        nextStatus: h.nextStatus,
+      }))}
+      eventsPagination={{
+        page: ePage,
+        pageSize: ePageSize,
+        totalCount: eTotal,
+        totalPages: eTotalPages,
+        showingFrom: eShowingFrom,
+        showingTo: eShowingTo,
+      }}
+      historyPagination={{
+        page: hPage,
+        pageSize: hPageSize,
+        totalCount: hTotal,
+        totalPages: hTotalPages,
+        showingFrom: hShowingFrom,
+        showingTo: hShowingTo,
+      }}
+      pageSizeOptions={PAGE_SIZE_OPTIONS}
+      defaultPageSize={DEFAULT_PAGE_SIZE}
+      state={{
+        events: { q: eQuery, page: ePage, perPage: ePageSize },
+        history: { q: hQuery, page: hPage, perPage: hPageSize },
+      }}
+    />
   );
 }

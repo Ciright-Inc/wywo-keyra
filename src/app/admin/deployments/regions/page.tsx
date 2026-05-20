@@ -1,99 +1,77 @@
-import Link from "next/link";
+import type { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { assertAdminServer } from "@/lib/assertAdminServer";
 import { regionWhereFromAuth } from "@/lib/deployments/adminContext";
 import { createRegion } from "@/app/admin/deployments/actions";
-import { Button } from "@/components/ui/Button";
 import { canCreateRegion } from "@/lib/deployments/adminAuthz";
+import { parsePage, parsePageSize, parseSearchQuery } from "@/lib/admin/listSearchParams";
+import { RegionsDirectoryClient } from "./RegionsDirectoryClient";
 
-export default async function AdminRegionsPage() {
+const DEFAULT_PAGE_SIZE = 25;
+const PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
+
+type Search = { page?: string; perPage?: string; q?: string };
+
+function regionSearchWhere(query: string): Prisma.RegionWhereInput | undefined {
+  const q = query.trim();
+  if (!q) return undefined;
+  return {
+    OR: [
+      { name: { contains: q, mode: "insensitive" } },
+      { slug: { contains: q, mode: "insensitive" } },
+      { mapKey: { contains: q, mode: "insensitive" } },
+      { continentCode: { contains: q, mode: "insensitive" } },
+      { subregionCode: { contains: q, mode: "insensitive" } },
+    ],
+  };
+}
+
+export default async function AdminRegionsPage({ searchParams }: { searchParams: Promise<Search> }) {
+  const sp = await searchParams;
+  const pageSize = parsePageSize(sp.perPage, PAGE_SIZE_OPTIONS, DEFAULT_PAGE_SIZE);
+  let page = parsePage(sp.page);
+  const searchQuery = parseSearchQuery(sp.q);
+
   const auth = await assertAdminServer();
   const rw = await regionWhereFromAuth(auth);
+  const searchWhere = regionSearchWhere(searchQuery);
+
+  /** Combine RBAC scope (`rw`) with optional substring filter (`searchWhere`). */
+  const where: Prisma.RegionWhereInput = {
+    AND: [rw ?? {}, searchWhere ?? {}].filter((part) => Object.keys(part).length > 0),
+  };
+
+  const totalCount = await prisma.region.count({ where });
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  page = Math.min(page, totalPages);
+
   const regions = await prisma.region.findMany({
-    where: rw ?? {},
+    where,
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    skip: (page - 1) * pageSize,
+    take: pageSize,
   });
+
   const showCreate = auth.kind === "legacy_super" || (auth.kind === "user" && canCreateRegion(auth));
 
+  const showingFrom = totalCount === 0 ? 0 : (page - 1) * pageSize + 1;
+  const showingTo = Math.min(page * pageSize, totalCount);
+
   return (
-    <div>
-      <h1 className="text-2xl font-semibold text-keyra-primary">Regions</h1>
-      <p className="mt-2 text-sm text-keyra-text-2">Formal UN M49 macro + subregion codes, with UI map keys.</p>
-
-      <div className="mt-8 overflow-x-auto rounded-[var(--keyra-radius-card)] border border-keyra-border">
-        <table className="w-full min-w-[36rem] text-left text-sm">
-          <thead className="bg-[rgba(255,255,255,0.03)] text-xs uppercase tracking-wider text-keyra-text-2">
-            <tr>
-              <th className="px-3 py-2">Name</th>
-              <th className="px-3 py-2">Slug</th>
-              <th className="px-3 py-2">Map</th>
-              <th className="px-3 py-2">Published</th>
-              <th className="px-3 py-2 text-right">Edit</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-keyra-border">
-            {regions.map((r) => (
-              <tr key={r.id}>
-                <td className="px-3 py-3 text-keyra-primary">{r.name}</td>
-                <td className="px-3 py-3 text-keyra-text-2">{r.slug}</td>
-                <td className="px-3 py-3 text-keyra-text-2">{r.mapKey}</td>
-                <td className="px-3 py-3 text-keyra-text-2">{r.isPublished ? "Yes" : "No"}</td>
-                <td className="px-3 py-3 text-right">
-                  <Link
-                    href={`/admin/deployments/regions/${r.id}`}
-                    className="text-keyra-accent underline-offset-4 hover:underline"
-                  >
-                    Edit
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {showCreate ? (
-      <div className="mt-10 keyra-card p-6">
-        <h2 className="text-lg font-semibold text-keyra-primary">Create region</h2>
-        <form action={createRegion} className="mt-4 grid gap-3 sm:grid-cols-2">
-          <label className="text-sm text-keyra-text-2 sm:col-span-2">
-            Name
-            <input name="name" required className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary" />
-          </label>
-          <label className="text-sm text-keyra-text-2">
-            Slug
-            <input name="slug" required className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary" />
-          </label>
-          <label className="text-sm text-keyra-text-2">
-            Map key
-            <input name="mapKey" required className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary" />
-          </label>
-          <label className="text-sm text-keyra-text-2">
-            Continent code (M49)
-            <input name="continentCode" required className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary" />
-          </label>
-          <label className="text-sm text-keyra-text-2">
-            Subregion code (M49)
-            <input name="subregionCode" required className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary" />
-          </label>
-          <label className="text-sm text-keyra-text-2">
-            Sort order
-            <input name="sortOrder" defaultValue="0" className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary" />
-          </label>
-          <label className="flex items-center gap-2 text-sm text-keyra-text-2 sm:col-span-2">
-            <input name="isPublished" type="checkbox" className="size-4" />
-            Published
-          </label>
-          <div className="sm:col-span-2">
-            <Button type="submit" variant="primary">
-              Create
-            </Button>
-          </div>
-        </form>
-      </div>
-      ) : (
-        <p className="mt-10 text-sm text-keyra-text-2">You do not have permission to create regions.</p>
-      )}
-    </div>
+    <RegionsDirectoryClient
+      regions={regions.map((r) => ({
+        id: r.id,
+        name: r.name,
+        slug: r.slug,
+        mapKey: r.mapKey,
+        isPublished: r.isPublished,
+      }))}
+      pagination={{ page, pageSize, totalCount, totalPages, showingFrom, showingTo }}
+      pageSizeOptions={PAGE_SIZE_OPTIONS}
+      defaultPageSize={DEFAULT_PAGE_SIZE}
+      searchQuery={searchQuery}
+      showCreate={showCreate}
+      createRegion={createRegion}
+    />
   );
 }

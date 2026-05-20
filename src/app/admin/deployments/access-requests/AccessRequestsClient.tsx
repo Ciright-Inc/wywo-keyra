@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState, startTransition } from "react";
+import { useCallback, useEffect, useMemo, useState, startTransition } from "react";
 import { Button } from "@/components/ui/Button";
+import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 
 type Row = {
   id: string;
@@ -16,6 +17,7 @@ type Row = {
 export function AccessRequestsClient() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
 
   const load = useCallback(async () => {
     startTransition(() => {
@@ -38,16 +40,47 @@ export function AccessRequestsClient() {
     void load();
   }, [load]);
 
+  /** Case-insensitive substring filter across the visible columns. */
+  const filteredRows = useMemo(() => {
+    if (!rows) return null;
+    const q = query.trim().toLowerCase();
+    if (!q) return rows;
+    return rows.filter((r) =>
+      [r.workEmail, r.targetType, r.targetId, r.verificationStatus, r.approvalStatus].some((value) =>
+        (value ?? "").toLowerCase().includes(q),
+      ),
+    );
+  }, [rows, query]);
+  const hasSearch = query.trim().length > 0;
+  const visibleCount = filteredRows?.length ?? 0;
+  const totalCount = rows?.length ?? 0;
+
   return (
     <div>
-      <div className="flex items-end justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-keyra-primary">Access requests</h1>
+          <h1 className="text-2xl font-semibold text-keyra-primary">
+            Access requests
+            {rows ? (
+              <span className="ml-2 rounded-full border border-keyra-border bg-keyra-surface px-2.5 py-0.5 align-middle text-xs font-medium text-keyra-text-2">
+                {hasSearch ? `${visibleCount} of ${totalCount}` : totalCount}
+              </span>
+            ) : null}
+          </h1>
           <p className="mt-2 text-sm text-keyra-text-2">Approve or reject after email verification.</p>
         </div>
-        <Button type="button" variant="secondary" onClick={() => void load()}>
-          Refresh
-        </Button>
+        <div className="flex items-center gap-2">
+          <CollapsibleSearchBar
+            mode="client"
+            searchQuery={query}
+            onChange={setQuery}
+            placeholder="Email, target id, status…"
+            ariaLabel="Search access requests"
+          />
+          <Button type="button" variant="secondary" onClick={() => void load()}>
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {error ? <p className="mt-4 text-sm text-red-300">{error}</p> : null}
@@ -65,7 +98,16 @@ export function AccessRequestsClient() {
             </tr>
           </thead>
           <tbody className="divide-y divide-keyra-border">
-            {(rows ?? []).map((r) => (
+            {rows !== null && (filteredRows ?? []).length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-3 py-8 text-center text-sm text-keyra-text-2">
+                  {hasSearch
+                    ? "No access requests match your search."
+                    : "No access requests yet."}
+                </td>
+              </tr>
+            ) : null}
+            {(filteredRows ?? []).map((r) => (
               <tr key={r.id}>
                 <td className="px-3 py-3 text-xs text-keyra-text-2">{r.createdAt}</td>
                 <td className="px-3 py-3 text-keyra-primary">{r.workEmail}</td>

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { SAT_PROTOCOL_CATEGORIES } from "@/lib/satProtocol/categories";
 
 type ProtocolRow = {
@@ -343,6 +344,19 @@ export default function AdminSatProtocolsPage() {
         <span className="shrink-0 text-[11px] text-keyra-text-2 sm:text-xs">
           Selected: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
         </span>
+        {/*
+          Telcos-style icon-expand search bound directly to the existing `searchQ` state.
+          The redundant search input inside the Catalog tools modal stays in place; both
+          edit the same field. This adds the matching visual treatment without removing
+          any existing behavior.
+        */}
+        <CollapsibleSearchBar
+          mode="client"
+          searchQuery={searchQ}
+          onChange={setSearchQ}
+          placeholder="Name, code, category…"
+          ariaLabel="Search protocols"
+        />
       </div>
 
       <div className="max-h-[min(85vh,calc(100dvh-11rem))] min-h-[240px] overflow-auto rounded-xl border border-keyra-border bg-keyra-surface/30 shadow-sm">
