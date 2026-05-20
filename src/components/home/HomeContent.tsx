@@ -349,19 +349,23 @@ export function HomeContent() {
       {/* SECTION 11 — FINAL STATEMENT */}
       <section
         id="get-protected"
-        className="keyra-band--light keyra-section scroll-mt-44 pb-28 sm:scroll-mt-24 sm:pb-36"
+        className="relative scroll-mt-44 px-[var(--keyra-space-section-x)] pt-20 pb-20 sm:scroll-mt-24 sm:pt-20 sm:pb-20"
+        style={{ background: "linear-gradient(to bottom, #f0f2f5, #e8eaf0)" }}
         aria-labelledby="finale-heading"
       >
-        <div className="mx-auto max-w-6xl">
-          <div className="overflow-hidden rounded-[var(--keyra-radius-sheet)] border border-keyra-border/90 bg-[linear-gradient(165deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] px-5 py-16 text-center sm:px-12 sm:py-24 md:py-28">
+        {/* Strong ambient glow behind card */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] h-[95%] rounded-full opacity-70 blur-[80px]" style={{ background: "radial-gradient(circle at center, rgba(255,255,255,0.95), transparent 60%)" }} aria-hidden />
+        
+        <div className="mx-auto max-w-4xl relative">
+          <div className="overflow-hidden rounded-[32px] border-[rgba(255,255,255,0.9)] bg-[rgba(255,255,255,0.95)] backdrop-blur-[20px] shadow-[0_32px_80px_rgba(0,0,0,0.12),0_16px_40px_rgba(0,0,0,0.08)] px-8 py-16 text-center sm:px-16 sm:py-16 md:px-20 md:py-20 transition-all duration-[0.35s] ease hover:-translate-y-2 hover:shadow-[0_40px_100px_rgba(0,0,0,0.15),0_20px_50px_rgba(0,0,0,0.1)]">
             <p className="keyra-eyebrow">Final statement</p>
-            <h2 id="finale-heading" className="keyra-display-finale mx-auto mt-6 max-w-[18ch] text-balance">
+            <h2 id="finale-heading" className="keyra-display-finale mx-auto mt-4 max-w-[18ch] text-balance">
               Be Protected Online.
             </h2>
-            <p className="mx-auto mt-8 max-w-xl text-pretty text-[16px] leading-[1.65] text-keyra-text-2 sm:text-[17px]">
+            <p className="mx-auto mt-6 max-w-xl text-pretty text-[16px] leading-[1.65] text-keyra-text-2 sm:text-[17px]">
               Civilization-grade trust — rendered as calm infrastructure. Keyra is how the internet keeps its promises.
             </p>
-            <div className="mx-auto mt-14 max-w-xl rounded-[var(--keyra-radius-card)] border border-keyra-border/80 bg-[rgba(255,255,255,0.03)] px-5 py-8 sm:px-8">
+            <div className="mx-auto mt-10 max-w-xl rounded-[var(--keyra-radius-card)] border border-keyra-border/80 bg-[rgba(255,255,255,0.03)] px-5 py-6 sm:px-8">
               <div className="mx-auto max-w-lg text-left">
                 <HomeRegistrationCTAs />
               </div>
