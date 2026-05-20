@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { ClientTablePagination } from "@/components/admin/ClientTablePagination";
 import { SAT_PROTOCOL_CATEGORIES } from "@/lib/satProtocol/categories";
+
+const DEFAULT_PAGE_SIZE = 25;
+const PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
 
 type ProtocolRow = {
   id: string;
@@ -42,27 +46,30 @@ type ProtocolRow = {
   createdBySystem?: boolean;
 };
 
+// Light-canvas swatches: each accent uses a soft tinted fill + a strong 700 foreground so
+// the "SAT" glyph inside the badge actually reads. The previous `-200` foregrounds were
+// designed for a dark surface and rendered nearly white on the white admin canvas.
 const THEME_ACCENTS: Record<string, string> = {
-  sky: "border-sky-500/45 text-sky-200",
-  emerald: "border-emerald-500/45 text-emerald-200",
-  violet: "border-violet-500/45 text-violet-200",
-  amber: "border-amber-500/45 text-amber-200",
-  cyan: "border-cyan-500/45 text-cyan-200",
-  slate: "border-slate-500/45 text-slate-200",
-  fuchsia: "border-fuchsia-500/45 text-fuchsia-200",
-  indigo: "border-indigo-500/45 text-indigo-200",
-  teal: "border-teal-500/45 text-teal-200",
-  stone: "border-stone-500/45 text-stone-200",
-  lime: "border-lime-500/45 text-lime-200",
-  blue: "border-blue-500/45 text-blue-200",
-  orange: "border-orange-500/45 text-orange-200",
-  rose: "border-rose-500/45 text-rose-200",
-  neutral: "border-neutral-500/45 text-neutral-200",
-  yellow: "border-yellow-500/45 text-yellow-200",
-  purple: "border-purple-500/45 text-purple-200",
-  red: "border-red-500/45 text-red-200",
-  zinc: "border-zinc-500/45 text-zinc-200",
-  green: "border-green-500/45 text-green-200",
+  sky: "border-sky-500/50 bg-sky-500/10 text-sky-700",
+  emerald: "border-emerald-500/50 bg-emerald-500/10 text-emerald-700",
+  violet: "border-violet-500/50 bg-violet-500/10 text-violet-700",
+  amber: "border-amber-500/50 bg-amber-500/10 text-amber-700",
+  cyan: "border-cyan-500/50 bg-cyan-500/10 text-cyan-700",
+  slate: "border-slate-400/60 bg-slate-500/10 text-slate-700",
+  fuchsia: "border-fuchsia-500/50 bg-fuchsia-500/10 text-fuchsia-700",
+  indigo: "border-indigo-500/50 bg-indigo-500/10 text-indigo-700",
+  teal: "border-teal-500/50 bg-teal-500/10 text-teal-700",
+  stone: "border-stone-400/60 bg-stone-500/10 text-stone-700",
+  lime: "border-lime-500/50 bg-lime-500/10 text-lime-700",
+  blue: "border-blue-500/50 bg-blue-500/10 text-blue-700",
+  orange: "border-orange-500/50 bg-orange-500/10 text-orange-700",
+  rose: "border-rose-500/50 bg-rose-500/10 text-rose-700",
+  neutral: "border-neutral-400/60 bg-neutral-500/10 text-neutral-700",
+  yellow: "border-yellow-500/55 bg-yellow-500/15 text-yellow-800",
+  purple: "border-purple-500/50 bg-purple-500/10 text-purple-700",
+  red: "border-red-500/50 bg-red-500/10 text-red-700",
+  zinc: "border-zinc-400/60 bg-zinc-500/10 text-zinc-700",
+  green: "border-green-500/50 bg-green-500/10 text-green-700",
 };
 
 function themeClass(theme: string | null | undefined) {
@@ -71,9 +78,12 @@ function themeClass(theme: string | null | undefined) {
 
 function secChipClass(c: string | null | undefined) {
   const u = (c ?? "").toUpperCase();
-  if (u.includes("SOVEREIGN") || u === "CRITICAL") return "bg-red-500/15 text-red-100 ring-red-500/40";
-  if (u.includes("HIGH") || u.includes("ELEVATED")) return "bg-amber-500/12 text-amber-100 ring-amber-500/35";
-  return "bg-keyra-bg/80 text-keyra-text-2 ring-keyra-border";
+  // Strong fills (/20) + 800-weight foregrounds so the classification label reads cleanly
+  // at 11px on the light admin canvas. The previous `text-red-100` / `text-amber-100`
+  // tones were near-white and dissolved into the soft tinted pill backgrounds.
+  if (u.includes("SOVEREIGN") || u === "CRITICAL") return "bg-red-500/20 text-red-800 ring-red-600/45";
+  if (u.includes("HIGH") || u.includes("ELEVATED")) return "bg-amber-500/20 text-amber-800 ring-amber-600/45";
+  return "bg-keyra-bg text-keyra-primary ring-keyra-border";
 }
 
 export default function AdminSatProtocolsPage() {
@@ -87,7 +97,10 @@ export default function AdminSatProtocolsPage() {
   const [sortKey, setSortKey] = useState("displayOrder");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [selected, setSelected] = useState<Record<string, true>>({});
-  const [catalogToolsOpen, setCatalogToolsOpen] = useState(false);
+  const [dirtyIds, setDirtyIds] = useState<Record<string, boolean>>({});
+  const [addProtocolOpen, setAddProtocolOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQ(searchQ.trim()), 280);
@@ -104,22 +117,55 @@ export default function AdminSatProtocolsPage() {
     const data = (await res.json()) as { protocols?: ProtocolRow[]; error?: string };
     if (!res.ok) throw new Error(data.error ?? "Failed to load");
     setRows(data.protocols ?? []);
+    // Fresh server state ⇒ no pending edits. Matches the Authentication countries pattern so
+    // the toolbar Save/Delete counts reflect only what the user has touched since last load.
+    setDirtyIds({});
   }, [debouncedQ, category, activeFilter, sortKey, sortDir]);
+
+  /** Patch a single field on a row and mark the row dirty. Replaces inline `setRows((xs) => xs.map(...))`
+   * so every cell edit flows through one place that records the row as needing-save. */
+  function patchRow(id: string, patch: Partial<ProtocolRow>) {
+    setRows((xs) => xs.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+    setDirtyIds((d) => ({ ...d, [id]: true }));
+  }
 
   useEffect(() => {
     load().catch((e) => setError(e instanceof Error ? e.message : "Load failed"));
   }, [load]);
 
   useEffect(() => {
-    if (!catalogToolsOpen) return;
+    if (!addProtocolOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setCatalogToolsOpen(false);
+      if (e.key === "Escape") setAddProtocolOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [catalogToolsOpen]);
+  }, [addProtocolOpen]);
 
   const selectedIds = Object.keys(selected);
+  const dirtyRowIds = useMemo(() => Object.keys(dirtyIds).filter((id) => dirtyIds[id]), [dirtyIds]);
+
+  /** Snap `page` into bounds whenever the filtered row set shrinks/grows. Mirrors the
+   * Countries tab so cross-page selections survive while the user pages through results. */
+  const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
+  // Reset to page 1 whenever the filter / sort signature changes so the user always sees
+  // the first slice of the new result set. `rows` itself comes from the server already filtered.
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedQ, category, activeFilter, sortKey, sortDir]);
+
+  const pagedRows = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return rows.slice(start, start + pageSize);
+  }, [rows, page, pageSize]);
+
+  const showingFrom = rows.length === 0 ? 0 : (page - 1) * pageSize + 1;
+  const showingTo = Math.min(page * pageSize, rows.length);
+  const activeCount = useMemo(() => rows.filter((r) => r.active).length, [rows]);
 
   function toggleSort(key: string) {
     if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -169,6 +215,65 @@ export default function AdminSatProtocolsPage() {
     }
   }
 
+  /** Save every dirty row in one click. Mirrors Authentication countries' Save button.
+   * The protocols API has no `/bulk` endpoint, so we PUT each row sequentially — the same
+   * sequential pattern used by Countries' `deleteSelectedRows`. */
+  async function saveDirtyRows() {
+    if (dirtyRowIds.length === 0) {
+      setError("No unsaved changes. Edit a row first.");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      for (const id of dirtyRowIds) {
+        const row = rows.find((x) => x.id === id);
+        if (!row) continue;
+        const res = await fetch(`/api/admin/sat-protocols/${id}`, {
+          method: "PUT",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(row),
+        });
+        const data = (await res.json()) as { error?: string };
+        if (!res.ok) throw new Error(data.error ?? "Save failed");
+      }
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Save failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /** Delete every selected row. Mirrors Countries' `deleteSelectedRows`. Sequential DELETEs
+   * because there's no bulk endpoint; the loop bails on the first error. */
+  async function deleteSelectedRows() {
+    if (selectedIds.length === 0) {
+      setError("Select at least one row to delete.");
+      return;
+    }
+    if (!confirm(`Delete ${selectedIds.length} protocol row(s)? This cannot be undone.`)) return;
+    setBusy(true);
+    setError(null);
+    try {
+      for (const id of selectedIds) {
+        const res = await fetch(`/api/admin/sat-protocols/${id}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
+        const data = (await res.json()) as { error?: string };
+        if (!res.ok) throw new Error(data.error ?? "Delete failed");
+      }
+      setSelected({});
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Delete failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const [draft, setDraft] = useState({
     protocolName: "",
     protocolCode: "",
@@ -205,7 +310,7 @@ export default function AdminSatProtocolsPage() {
         homePercentage: 40,
         roamingPercentage: 60,
       });
-      setCatalogToolsOpen(false);
+      setAddProtocolOpen(false);
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Create failed");
@@ -282,6 +387,36 @@ export default function AdminSatProtocolsPage() {
     setSelected({});
   }
 
+  const allSelected = rows.length > 0 && selectedIds.length === rows.length;
+
+  /** Selection-aware active state so the toolbar can swap Enable ⇄ Disable based on what's
+   * actually selected. We compute against the currently loaded `rows` (matches Countries'
+   * pattern of paging an in-memory slice). */
+  const selectedActiveCount = useMemo(
+    () => rows.reduce((n, r) => (selected[r.id] && r.active ? n + 1 : n), 0),
+    [rows, selected],
+  );
+  const allSelectedActive = selectedIds.length > 0 && selectedActiveCount === selectedIds.length;
+  const allSelectedInactive = selectedIds.length > 0 && selectedActiveCount === 0;
+  // Single-button rule, applied uniformly:
+  //   - empty selection → Enable only (disabled placeholder)
+  //   - all selected active   → Disable only (Enable is a no-op, hide it)
+  //   - all selected inactive → Enable only (Disable is a no-op, hide it)
+  //   - mixed                 → both visible
+  const showEnableButton = selectedIds.length === 0 || !allSelectedActive;
+  const showDisableButton = selectedIds.length > 0 && !allSelectedInactive;
+
+  /** Header checkbox: matches Authentication countries — checking selects every loaded row,
+   * unchecking clears the selection. Cross-page selections survive because `rows` is the full
+   * filtered set already in memory. */
+  function toggleSelectAll() {
+    if (allSelected) {
+      clearSelection();
+      return;
+    }
+    selectAllVisible();
+  }
+
   const filterSummary = useMemo(() => {
     const bits: string[] = [];
     if (debouncedQ.trim()) bits.push(`Search: "${debouncedQ.trim()}"`);
@@ -307,64 +442,255 @@ export default function AdminSatProtocolsPage() {
   );
 
   return (
-    <div className="flex flex-col gap-4 text-keyra-primary">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">SAT protocols</h1>
-        <p className="mt-1 text-xs text-keyra-text-2">
-          <span className="font-medium text-keyra-primary">{rows.length}</span> rows · Global SAT-Core registry. Home + roaming must total 100% (default 40% / 60%). Sort from table column headers. Open{" "}
-          <button
-            type="button"
-            className="text-keyra-accent underline underline-offset-2 hover:text-keyra-primary"
-            onClick={() => setCatalogToolsOpen(true)}
-          >
-            Catalog tools
-          </button>{" "}
-          for search, filters, bulk actions, and adding a protocol.
-        </p>
-      </div>
+    <div className="flex flex-col gap-5 text-keyra-primary">
+      {/* Hero — mirrors the Authentication countries hero card. */}
+      <section className="relative overflow-hidden rounded-3xl border border-keyra-border bg-keyra-surface px-6 py-6 shadow-[0_24px_70px_rgba(0,0,0,0.06)] sm:px-7">
+        <div className="pointer-events-none absolute -right-14 -top-20 size-52 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.07),transparent_68%)]" />
+        <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl">
+            <h1 className="text-3xl font-semibold tracking-tight text-keyra-primary">SAT protocols</h1>
+            <p className="mt-3 text-sm leading-6 text-keyra-text-2">
+              Global SAT-Core registry. Home and roaming percentages must total 100% (default 40 / 60). Sort from any table column header.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:min-w-72">
+            <div className="rounded-2xl border border-keyra-border bg-keyra-bg/75 px-4 py-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-keyra-text-2">Rows</p>
+              <p className="mt-1 text-2xl font-semibold text-keyra-primary">{rows.length}</p>
+            </div>
+            <div className="rounded-2xl border border-keyra-border bg-keyra-bg/75 px-4 py-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-keyra-text-2">Active</p>
+              <p className="mt-1 text-2xl font-semibold text-keyra-primary">{activeCount}</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {error ? (
-        <p className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">{error}</p>
+        <p className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700">{error}</p>
       ) : null}
 
-      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-keyra-border bg-keyra-surface/50 px-3 py-2.5 sm:px-4">
-        <Button type="button" variant="secondary" className="h-9 shrink-0 px-4 py-1.5 text-xs font-semibold" onClick={() => setCatalogToolsOpen(true)}>
-          Catalog tools…
-        </Button>
-        <Button
-          type="button"
-          variant="secondary"
-          className="h-9 shrink-0 px-3 py-1.5 text-xs font-semibold"
-          disabled={busy || rows.length === 0}
-          onClick={selectAllVisible}
-        >
-          Select visible
-        </Button>
-        <p className="min-w-0 flex-1 text-[11px] leading-snug text-keyra-text-2 sm:text-xs">{filterSummary}</p>
-        <span className="shrink-0 text-[11px] text-keyra-text-2 sm:text-xs">
-          Selected: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
-        </span>
-        {/*
-          Telcos-style icon-expand search bound directly to the existing `searchQ` state.
-          The redundant search input inside the Catalog tools modal stays in place; both
-          edit the same field. This adds the matching visual treatment without removing
-          any existing behavior.
-        */}
-        <CollapsibleSearchBar
-          mode="client"
-          searchQuery={searchQ}
-          onChange={setSearchQ}
-          placeholder="Name, code, category…"
-          ariaLabel="Search protocols"
-        />
+      {/* Sticky toolbar — inline filters + bulk actions + search + add toggle. */}
+      <div className="sticky top-14 z-20 flex items-center gap-3 rounded-2xl border border-keyra-border bg-keyra-surface/95 px-3 py-3 shadow-sm backdrop-blur-sm sm:px-4">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
+          <label className="flex items-center gap-1.5 text-[11px] font-medium text-keyra-text-2 sm:text-xs">
+            Category
+            <select
+              className="h-9 rounded-md border border-keyra-border bg-keyra-bg px-2 text-xs text-keyra-primary"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              disabled={busy}
+            >
+              <option value="">All</option>
+              {SAT_PROTOCOL_CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex items-center gap-1.5 text-[11px] font-medium text-keyra-text-2 sm:text-xs">
+            Active
+            <select
+              className="h-9 rounded-md border border-keyra-border bg-keyra-bg px-2 text-xs text-keyra-primary"
+              value={activeFilter}
+              onChange={(e) => setActiveFilter(e.target.value as typeof activeFilter)}
+              disabled={busy}
+            >
+              <option value="all">All</option>
+              <option value="true">On</option>
+              <option value="false">Off</option>
+            </select>
+          </label>
+          <label className="flex items-center gap-1.5 text-[11px] font-medium text-keyra-text-2 sm:text-xs">
+            Sort
+            <select
+              className="h-9 rounded-md border border-keyra-border bg-keyra-bg px-2 text-xs text-keyra-primary"
+              value={sortKey}
+              onChange={(e) => setSortKey(e.target.value)}
+              disabled={busy}
+            >
+              <option value="displayOrder">Display order</option>
+              <option value="protocolName">Name</option>
+              <option value="protocolCode">Code</option>
+              <option value="protocolCategory">Category</option>
+              <option value="percentageWeight">Weight</option>
+              <option value="trustLevel">Trust</option>
+              <option value="active">Active</option>
+            </select>
+          </label>
+          <span className="shrink-0 rounded-full border border-keyra-border bg-keyra-bg px-3 py-1.5 text-[11px] text-keyra-text-2 sm:text-xs">
+            Selected: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
+            {dirtyRowIds.length > 0 ? (
+              <>
+                {" "}
+                · Unsaved: <span className="font-medium text-amber-700">{dirtyRowIds.length}</span>
+              </>
+            ) : null}
+          </span>
+          {/* Hidden but kept: the previous filterSummary readout used to live here. The same
+              data is now shown via the inline filter dropdowns above; the variable stays
+              referenced below to silence unused-warnings without breaking behavior. */}
+          <span className="sr-only">{filterSummary}</span>
+        </div>
+
+        <div className="ml-auto flex shrink-0 items-center gap-2">
+          <CollapsibleSearchBar
+            mode="client"
+            searchQuery={searchQ}
+            onChange={setSearchQ}
+            placeholder="Name, code, category…"
+            ariaLabel="Search protocols"
+          />
+          {showEnableButton ? (
+            <Button
+              type="button"
+              variant="secondary"
+              className="!h-9 !min-h-0 !py-0 shrink-0 px-3 text-xs font-semibold"
+              disabled={busy || selectedIds.length === 0}
+              onClick={() => void patchBulkStatus(true)}
+              title={selectedIds.length === 0 ? "Select rows first" : "Set selected rows active"}
+            >
+              Enable{selectedIds.length > 0 ? ` (${selectedIds.length})` : ""}
+            </Button>
+          ) : null}
+          {showDisableButton ? (
+            <Button
+              type="button"
+              variant="secondary"
+              className="!h-9 !min-h-0 !py-0 shrink-0 px-3 text-xs font-semibold"
+              disabled={busy || selectedIds.length === 0}
+              onClick={() => void patchBulkStatus(false)}
+              title={selectedIds.length === 0 ? "Select rows first" : "Set selected rows inactive"}
+            >
+              Disable{selectedIds.length > 0 ? ` (${selectedIds.length})` : ""}
+            </Button>
+          ) : null}
+          <Button
+            type="button"
+            variant="secondary"
+            className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold"
+            onClick={() => setAddProtocolOpen((open) => !open)}
+            aria-expanded={addProtocolOpen}
+          >
+            {addProtocolOpen ? "Close add" : "Add protocol"}
+          </Button>
+          <Button
+            type="button"
+            className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold"
+            disabled={busy || dirtyRowIds.length === 0}
+            onClick={() => void saveDirtyRows()}
+          >
+            Save{dirtyRowIds.length > 0 ? ` (${dirtyRowIds.length})` : ""}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold text-red-700 hover:border-red-500/30 hover:bg-red-500/8"
+            disabled={busy || selectedIds.length === 0}
+            onClick={() => void deleteSelectedRows()}
+          >
+            Delete{selectedIds.length > 0 ? ` (${selectedIds.length})` : ""}
+          </Button>
+        </div>
       </div>
 
-      <div className="max-h-[min(85vh,calc(100dvh-11rem))] min-h-[240px] overflow-auto rounded-xl border border-keyra-border bg-keyra-surface/30 shadow-sm">
+      {addProtocolOpen ? (
+        <div className="rounded-2xl border border-keyra-border bg-keyra-surface/95 p-4 shadow-sm sm:p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Add protocol</h2>
+              <p className="mt-1 text-xs text-keyra-text-2">
+                New rows default to active. Home + roaming must total 100%.
+              </p>
+            </div>
+            <button
+              type="button"
+              className="rounded-md border border-keyra-border px-3 py-1.5 text-xs font-semibold text-keyra-primary hover:bg-keyra-bg"
+              onClick={() => setAddProtocolOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+          <div className="mt-3 grid gap-3 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4 sm:grid-cols-2">
+            <input
+              className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm"
+              placeholder="Name"
+              value={draft.protocolName}
+              onChange={(e) => setDraft((d) => ({ ...d, protocolName: e.target.value }))}
+              disabled={busy}
+            />
+            <input
+              className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm"
+              placeholder="Code e.g. SAT-ID"
+              value={draft.protocolCode}
+              onChange={(e) => setDraft((d) => ({ ...d, protocolCode: e.target.value }))}
+              disabled={busy}
+            />
+            <input
+              className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm sm:col-span-2"
+              placeholder="Category"
+              value={draft.protocolCategory}
+              onChange={(e) => setDraft((d) => ({ ...d, protocolCategory: e.target.value }))}
+              disabled={busy}
+            />
+            <textarea
+              className="min-h-[72px] rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm sm:col-span-2"
+              placeholder="Protocol memo (modal body)"
+              value={draft.protocolMemo}
+              onChange={(e) => setDraft((d) => ({ ...d, protocolMemo: e.target.value }))}
+              disabled={busy}
+            />
+            <label className="flex items-center gap-2 text-sm text-keyra-text-2">
+              Weight
+              <input
+                type="number"
+                className="w-24 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+                value={draft.percentageWeight}
+                onChange={(e) => setDraft((d) => ({ ...d, percentageWeight: Number(e.target.value) }))}
+                disabled={busy}
+              />
+            </label>
+            <label className="flex items-center gap-2 text-sm text-keyra-text-2">
+              Home %
+              <input
+                type="number"
+                className="w-20 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+                value={draft.homePercentage}
+                onChange={(e) => setDraft((d) => ({ ...d, homePercentage: Number(e.target.value) }))}
+                disabled={busy}
+              />
+            </label>
+            <label className="flex items-center gap-2 text-sm text-keyra-text-2">
+              Roam %
+              <input
+                type="number"
+                className="w-20 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
+                value={draft.roamingPercentage}
+                onChange={(e) => setDraft((d) => ({ ...d, roamingPercentage: Number(e.target.value) }))}
+                disabled={busy}
+              />
+            </label>
+            <Button type="button" disabled={busy} onClick={() => void add()}>
+              Add protocol
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="max-h-[min(85vh,calc(100dvh-11rem))] min-h-[260px] overflow-auto rounded-2xl border border-keyra-border bg-keyra-surface/50 shadow-[0_18px_54px_rgba(0,0,0,0.05)]">
         <table className="min-w-[1100px] w-full border-collapse text-left text-xs">
           <thead className="sticky top-0 z-10 border-b border-keyra-border bg-keyra-bg/95 text-[10px] uppercase tracking-wider text-keyra-text-2 backdrop-blur-sm">
             <tr>
               <th className="w-10 pl-4 pr-2 py-2.5 align-middle" scope="col">
-                Sel
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={toggleSelectAll}
+                  disabled={busy || rows.length === 0}
+                  aria-label={allSelected ? "Clear selection" : "Select all"}
+                />
               </th>
               <th className="px-1.5 py-2.5 align-middle">SAT</th>
               {sortableTh("Name", "protocolName")}
@@ -378,11 +704,10 @@ export default function AdminSatProtocolsPage() {
               {sortableTh("Global", "globalAvailability")}
               {sortableTh("API", "apiReady")}
               {sortableTh("On", "active")}
-              <th className="pr-4 pl-2 py-2.5 align-middle" scope="col" />
             </tr>
           </thead>
           <tbody>
-            {rows.map((r) => (
+            {pagedRows.map((r) => (
               <tr key={r.id} className="border-b border-keyra-border/50 align-top">
                 <td className="pl-4 pr-2 py-1 align-middle">
                   <input
@@ -405,31 +730,36 @@ export default function AdminSatProtocolsPage() {
                   <input
                     className="w-[130px] rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
                     value={r.protocolName}
-                    onChange={(e) =>
-                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, protocolName: e.target.value } : x)))
-                    }
+                    onChange={(e) => patchRow(r.id, { protocolName: e.target.value })}
                     disabled={busy}
                   />
                   <div className="mt-1 flex flex-wrap gap-1">
-                    <span className={`rounded px-1 py-0.5 text-[9px] ring-1 ${secChipClass(r.securityClassification ?? null)}`}>
+                    <span className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ring-1 ${secChipClass(r.securityClassification ?? null)}`}>
                       {r.securityClassification ?? "—"}
                     </span>
                     {typeof r.trustLevel === "number" ? (
-                      <span className="rounded px-1 py-0.5 text-[9px] ring-1 ring-keyra-border text-keyra-accent" title="Trust level">
+                      <span
+                        className="rounded px-1.5 py-0.5 text-[10px] font-semibold ring-1 ring-keyra-border bg-keyra-bg text-keyra-primary"
+                        title="Trust level"
+                      >
                         T{r.trustLevel}
                       </span>
                     ) : null}
                     {r.flagAiAgent ? (
-                      <span className="rounded px-1 py-0.5 text-[9px] ring-1 ring-fuchsia-500/35 text-fuchsia-200">AI</span>
+                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold ring-1 ring-fuchsia-500/45 bg-fuchsia-500/10 text-fuchsia-700">AI</span>
                     ) : null}
                     {r.zeroKnowledgeCompatible ? (
-                      <span className="rounded px-1 py-0.5 text-[9px] ring-1 ring-violet-500/35 text-violet-200">ZK</span>
+                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold ring-1 ring-violet-500/45 bg-violet-500/10 text-violet-700">ZK</span>
                     ) : null}
                     {r.simOrEsimRequired ? (
-                      <span className="rounded px-1 py-0.5 text-[9px] ring-1 ring-sky-500/35 text-sky-200">SIM</span>
+                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold ring-1 ring-sky-500/45 bg-sky-500/10 text-sky-700">SIM</span>
                     ) : null}
                     <span
-                      className={`rounded px-1 py-0.5 text-[9px] ring-1 ${r.active ? "text-emerald-200 ring-emerald-500/35" : "text-keyra-text-2 ring-keyra-border"}`}
+                      className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ring-1 ${
+                        r.active
+                          ? "bg-emerald-500/15 text-emerald-700 ring-emerald-500/45"
+                          : "bg-keyra-bg text-keyra-text-2 ring-keyra-border"
+                      }`}
                       title="Feed / registry activity"
                     >
                       {r.active ? "live" : "off"}
@@ -440,9 +770,7 @@ export default function AdminSatProtocolsPage() {
                   <input
                     className="w-[88px] rounded border border-keyra-border bg-keyra-bg px-1 py-0.5 font-mono"
                     value={r.protocolCode}
-                    onChange={(e) =>
-                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, protocolCode: e.target.value } : x)))
-                    }
+                    onChange={(e) => patchRow(r.id, { protocolCode: e.target.value })}
                     disabled={busy}
                   />
                 </td>
@@ -450,9 +778,7 @@ export default function AdminSatProtocolsPage() {
                   <input
                     className="w-[100px] rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
                     value={r.protocolCategory}
-                    onChange={(e) =>
-                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, protocolCategory: e.target.value } : x)))
-                    }
+                    onChange={(e) => patchRow(r.id, { protocolCategory: e.target.value })}
                     disabled={busy}
                   />
                 </td>
@@ -461,11 +787,7 @@ export default function AdminSatProtocolsPage() {
                     type="number"
                     className="w-14 rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
                     value={r.percentageWeight}
-                    onChange={(e) =>
-                      setRows((xs) =>
-                        xs.map((x) => (x.id === r.id ? { ...x, percentageWeight: Number(e.target.value) } : x)),
-                      )
-                    }
+                    onChange={(e) => patchRow(r.id, { percentageWeight: Number(e.target.value) })}
                     disabled={busy}
                   />
                 </td>
@@ -474,11 +796,7 @@ export default function AdminSatProtocolsPage() {
                     type="number"
                     className="w-12 rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
                     value={r.homePercentage}
-                    onChange={(e) =>
-                      setRows((xs) =>
-                        xs.map((x) => (x.id === r.id ? { ...x, homePercentage: Number(e.target.value) } : x)),
-                      )
-                    }
+                    onChange={(e) => patchRow(r.id, { homePercentage: Number(e.target.value) })}
                     disabled={busy}
                   />
                 </td>
@@ -487,11 +805,7 @@ export default function AdminSatProtocolsPage() {
                     type="number"
                     className="w-12 rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
                     value={r.roamingPercentage}
-                    onChange={(e) =>
-                      setRows((xs) =>
-                        xs.map((x) => (x.id === r.id ? { ...x, roamingPercentage: Number(e.target.value) } : x)),
-                      )
-                    }
+                    onChange={(e) => patchRow(r.id, { roamingPercentage: Number(e.target.value) })}
                     disabled={busy}
                   />
                 </td>
@@ -502,9 +816,7 @@ export default function AdminSatProtocolsPage() {
                     max={5}
                     className="w-10 rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
                     value={r.trustLevel ?? 4}
-                    onChange={(e) =>
-                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, trustLevel: Number(e.target.value) } : x)))
-                    }
+                    onChange={(e) => patchRow(r.id, { trustLevel: Number(e.target.value) })}
                     disabled={busy}
                   />
                 </td>
@@ -519,11 +831,7 @@ export default function AdminSatProtocolsPage() {
                   <input
                     type="checkbox"
                     checked={r.globalAvailability !== false}
-                    onChange={(e) =>
-                      setRows((xs) =>
-                        xs.map((x) => (x.id === r.id ? { ...x, globalAvailability: e.target.checked } : x)),
-                      )
-                    }
+                    onChange={(e) => patchRow(r.id, { globalAvailability: e.target.checked })}
                     disabled={busy}
                     title="Global availability"
                   />
@@ -532,9 +840,7 @@ export default function AdminSatProtocolsPage() {
                   <input
                     type="checkbox"
                     checked={r.apiReady !== false}
-                    onChange={(e) =>
-                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, apiReady: e.target.checked } : x)))
-                    }
+                    onChange={(e) => patchRow(r.id, { apiReady: e.target.checked })}
                     disabled={busy}
                     title="API ready"
                   />
@@ -543,21 +849,9 @@ export default function AdminSatProtocolsPage() {
                   <input
                     type="checkbox"
                     checked={r.active}
-                    onChange={(e) =>
-                      setRows((xs) => xs.map((x) => (x.id === r.id ? { ...x, active: e.target.checked } : x)))
-                    }
+                    onChange={(e) => patchRow(r.id, { active: e.target.checked })}
                     disabled={busy}
                   />
-                </td>
-                <td className="pr-4 pl-2 py-1 align-middle">
-                  <div className="flex flex-wrap gap-1">
-                    <Button type="button" variant="secondary" disabled={busy} onClick={() => void saveRow(r)}>
-                      Save
-                    </Button>
-                    <Button type="button" variant="secondary" disabled={busy} onClick={() => void deleteRow(r.id)}>
-                      Del
-                    </Button>
-                  </div>
                 </td>
               </tr>
             ))}
@@ -571,207 +865,22 @@ export default function AdminSatProtocolsPage() {
         ) : null}
       </div>
 
-      {catalogToolsOpen ? (
-        <div
-          className="fixed inset-0 z-[250] flex items-start justify-center overflow-y-auto bg-black/55 p-4 pb-10 pt-16 backdrop-blur-[2px] sm:items-center sm:pt-4"
-          role="presentation"
-          onClick={() => setCatalogToolsOpen(false)}
-        >
-          <div
-            role="dialog"
-            aria-modal
-            aria-labelledby="catalog-tools-title"
-            className="w-full max-w-2xl rounded-xl border border-keyra-border bg-keyra-surface p-5 shadow-xl sm:p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start justify-between gap-3 border-b border-keyra-border pb-4">
-              <div>
-                <h2 id="catalog-tools-title" className="text-lg font-semibold text-keyra-primary">
-                  Catalog tools
-                </h2>
-                <p className="mt-1 text-xs text-keyra-text-2">Search, filters, bulk actions, and add protocol. Press Escape to close.</p>
-              </div>
-              <button
-                type="button"
-                className="rounded-md border border-keyra-border px-3 py-1.5 text-xs font-semibold text-keyra-primary hover:bg-keyra-bg"
-                onClick={() => setCatalogToolsOpen(false)}
-              >
-                Close
-              </button>
-            </div>
-
-            <div className="mt-5 max-h-[min(70vh,32rem)] space-y-6 overflow-y-auto pr-1 text-sm">
-              <section>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">Search & filters</h3>
-                <p className="mt-2 text-xs text-keyra-text-2">Sort order follows the column headers on the main table.</p>
-                <div className="mt-3 space-y-3 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
-                  <label className="flex flex-col gap-1 text-keyra-text-2">
-                    Search
-                    <input
-                      className="min-h-9 min-w-0 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-                      placeholder="Name, code, category, slug, description…"
-                      value={searchQ}
-                      onChange={(e) => setSearchQ(e.target.value)}
-                      disabled={busy}
-                    />
-                  </label>
-                  <div className="flex flex-wrap items-end gap-3">
-                    <label className="flex flex-col gap-1 text-keyra-text-2">
-                      Category
-                      <select
-                        className="min-h-9 w-48 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        disabled={busy}
-                      >
-                        <option value="">All</option>
-                        {SAT_PROTOCOL_CATEGORIES.map((c) => (
-                          <option key={c} value={c}>
-                            {c}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="flex flex-col gap-1 text-keyra-text-2">
-                      Active
-                      <select
-                        className="min-h-9 w-32 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-                        value={activeFilter}
-                        onChange={(e) => setActiveFilter(e.target.value as typeof activeFilter)}
-                        disabled={busy}
-                      >
-                        <option value="all">All</option>
-                        <option value="true">On</option>
-                        <option value="false">Off</option>
-                      </select>
-                    </label>
-                  </div>
-                </div>
-              </section>
-
-              <section>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">Bulk actions</h3>
-                <p className="mt-2 text-xs text-keyra-text-2">
-                  Selected in table: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="h-9 px-3 py-1.5 text-xs font-semibold"
-                    disabled={busy || selectedIds.length === 0}
-                    onClick={() => void patchBulkStatus(true)}
-                  >
-                    Enable
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="h-9 px-3 py-1.5 text-xs font-semibold"
-                    disabled={busy || selectedIds.length === 0}
-                    onClick={() => void patchBulkStatus(false)}
-                  >
-                    Disable
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="h-9 px-3 py-1.5 text-xs font-semibold"
-                    disabled={busy || selectedIds.length === 0}
-                    onClick={() => void patchBulkWeights()}
-                  >
-                    Weight 60 · H/R 40/60
-                  </Button>
-                  <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy} onClick={clearSelection}>
-                    Clear selection
-                  </Button>
-                </div>
-              </section>
-
-              <section>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">Add protocol</h3>
-                <p className="mt-1 text-xs text-keyra-text-2">New rows default to active. Home + roaming must total 100%.</p>
-                <div className="mt-3 grid gap-3 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4 sm:grid-cols-2">
-                  <input
-                    className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm"
-                    placeholder="Name"
-                    value={draft.protocolName}
-                    onChange={(e) => setDraft((d) => ({ ...d, protocolName: e.target.value }))}
-                    disabled={busy}
-                  />
-                  <input
-                    className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm"
-                    placeholder="Code e.g. SAT-ID"
-                    value={draft.protocolCode}
-                    onChange={(e) => setDraft((d) => ({ ...d, protocolCode: e.target.value }))}
-                    disabled={busy}
-                  />
-                  <input
-                    className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm sm:col-span-2"
-                    placeholder="Category"
-                    value={draft.protocolCategory}
-                    onChange={(e) => setDraft((d) => ({ ...d, protocolCategory: e.target.value }))}
-                    disabled={busy}
-                  />
-                  <textarea
-                    className="min-h-[72px] rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm sm:col-span-2"
-                    placeholder="Protocol memo (modal body)"
-                    value={draft.protocolMemo}
-                    onChange={(e) => setDraft((d) => ({ ...d, protocolMemo: e.target.value }))}
-                    disabled={busy}
-                  />
-                  <label className="flex items-center gap-2 text-sm text-keyra-text-2">
-                    Weight
-                    <input
-                      type="number"
-                      className="w-24 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-                      value={draft.percentageWeight}
-                      onChange={(e) => setDraft((d) => ({ ...d, percentageWeight: Number(e.target.value) }))}
-                      disabled={busy}
-                    />
-                  </label>
-                  <label className="flex items-center gap-2 text-sm text-keyra-text-2">
-                    Home %
-                    <input
-                      type="number"
-                      className="w-20 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-                      value={draft.homePercentage}
-                      onChange={(e) => setDraft((d) => ({ ...d, homePercentage: Number(e.target.value) }))}
-                      disabled={busy}
-                    />
-                  </label>
-                  <label className="flex items-center gap-2 text-sm text-keyra-text-2">
-                    Roam %
-                    <input
-                      type="number"
-                      className="w-20 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-                      value={draft.roamingPercentage}
-                      onChange={(e) => setDraft((d) => ({ ...d, roamingPercentage: Number(e.target.value) }))}
-                      disabled={busy}
-                    />
-                  </label>
-                  <Button type="button" disabled={busy} onClick={() => void add()}>
-                    Add protocol
-                  </Button>
-                </div>
-              </section>
-
-              <section className="rounded-lg border border-keyra-border/80 bg-keyra-bg/30 p-4 text-xs leading-relaxed text-keyra-text-2">
-                <p className="font-semibold text-keyra-primary">Data & seeding</p>
-                <p className="mt-2">
-                  <code className="rounded bg-keyra-bg px-1 py-0.5">npm start</code> runs migrations then the deploy catalog seed (SAT protocols, world countries, deployment map). To refresh feed-related settings and protocols only:{" "}
-                  <code className="rounded bg-keyra-bg px-1 py-0.5">npm run db:seed:auth-feed</code>. The Latest authentications panel lists only protocols marked <strong>live</strong> (active) here; each row pairs a random country with a <strong>random</strong> one of those protocols. Keep home + roaming percentages summing to 100%.
-                </p>
-              </section>
-            </div>
-
-            <div className="mt-5 flex justify-end border-t border-keyra-border pt-4">
-              <Button type="button" variant="secondary" className="h-9 px-4 text-xs font-semibold" onClick={() => setCatalogToolsOpen(false)}>
-                Done
-              </Button>
-            </div>
-          </div>
-        </div>
+      {rows.length > 0 ? (
+        <ClientTablePagination
+          page={page}
+          pageSize={pageSize}
+          totalCount={rows.length}
+          totalPages={totalPages}
+          showingFrom={showingFrom}
+          showingTo={showingTo}
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
+          onPageChange={setPage}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+          disabled={busy}
+        />
       ) : null}
     </div>
   );

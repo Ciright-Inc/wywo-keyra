@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { RowActions } from "@/components/admin/RowActions";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { buildListHref } from "@/lib/admin/listSearchParams";
 
@@ -27,6 +28,8 @@ type Props = {
   countryOptions: SelectOption[];
   telcoOptions: SelectOption[];
   showCreate: boolean;
+  /** Mirrors the server-side mutate check — gates the trash icon. */
+  canDelete: boolean;
   /** Server action bound from the parent Server Component */
   createAccessDomainRule: (formData: FormData) => Promise<void>;
 };
@@ -42,11 +45,37 @@ export function AccessDomainRulesDirectoryClient({
   countryOptions,
   telcoOptions,
   showCreate,
+  canDelete,
   createAccessDomainRule,
 }: Props) {
   const hasSearch = searchQuery.trim().length > 0;
   const [createOpen, setCreateOpen] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const router = useRouter();
   const { page, pageSize, totalCount } = pagination;
+
+  /** Delete an access domain rule via the server route. Auth/audit/revalidate server-side. */
+  async function handleDelete(id: string, label: string) {
+    if (!confirm(`Delete access rule for "${label}"? This cannot be undone.`)) return;
+    setDeletingId(id);
+    setDeleteError(null);
+    try {
+      const res = await fetch(`/api/admin/deployments/access-domain-rules/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(data.error ?? `Delete failed (${res.status})`);
+      }
+      router.refresh();
+    } catch (e) {
+      setDeleteError(e instanceof Error ? e.message : "Delete failed");
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   const inputClass =
     "mt-1 h-10 w-full rounded-lg border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary shadow-sm outline-none transition focus-visible:border-black/25 focus-visible:keyra-focus disabled:opacity-60";
@@ -167,6 +196,12 @@ export function AccessDomainRulesDirectoryClient({
         ) : null}
       </div>
 
+      {deleteError ? (
+        <p className="mt-3 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700">
+          {deleteError}
+        </p>
+      ) : null}
+
       <div className="mt-3 overflow-hidden rounded-2xl border border-keyra-border bg-keyra-surface/45 shadow-[0_12px_36px_rgba(0,0,0,0.03)]">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[40rem] text-left text-sm">
@@ -176,7 +211,7 @@ export function AccessDomainRulesDirectoryClient({
                 <th className="px-3 py-2">Domain</th>
                 <th className="px-3 py-2">Method</th>
                 <th className="px-3 py-2">Active</th>
-                <th className="px-3 py-2 text-right">Edit</th>
+                <th className="w-px whitespace-nowrap px-2 py-2 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
@@ -189,24 +224,29 @@ export function AccessDomainRulesDirectoryClient({
                   </td>
                 </tr>
               ) : (
-                rules.map((r) => (
-                  <tr key={r.id} className="transition hover:bg-keyra-surface">
-                    <td className="max-w-[18rem] truncate px-3 py-2 font-mono text-xs text-keyra-text-2">
-                      {r.targetType} · {r.targetId}
-                    </td>
-                    <td className="px-3 py-2 font-medium text-keyra-primary">{r.allowedEmailDomain}</td>
-                    <td className="px-3 py-2 text-keyra-text-2">{r.verificationMethod}</td>
-                    <td className="px-3 py-2 text-keyra-text-2">{r.isActive ? "Yes" : "No"}</td>
-                    <td className="px-3 py-2 text-right">
-                      <Link
-                        href={`/admin/deployments/access-domain-rules/${r.id}`}
-                        className="text-sm font-medium text-keyra-accent underline-offset-4 transition hover:underline"
-                      >
-                        View
-                      </Link>
-                    </td>
-                  </tr>
-                ))
+                rules.map((r) => {
+                  const isDeleting = deletingId === r.id;
+                  return (
+                    <tr key={r.id} className={`transition hover:bg-keyra-surface ${isDeleting ? "opacity-60" : ""}`}>
+                      <td className="max-w-[18rem] truncate px-3 py-2 font-mono text-xs text-keyra-text-2">
+                        {r.targetType} · {r.targetId}
+                      </td>
+                      <td className="px-3 py-2 font-medium text-keyra-primary">{r.allowedEmailDomain}</td>
+                      <td className="px-3 py-2 text-keyra-text-2">{r.verificationMethod}</td>
+                      <td className="px-3 py-2 text-keyra-text-2">{r.isActive ? "Yes" : "No"}</td>
+                      <td className="w-px whitespace-nowrap px-2 py-2 text-right">
+                        <RowActions
+                          editHref={`/admin/deployments/access-domain-rules/${r.id}`}
+                          editAriaLabel={`Edit rule for ${r.allowedEmailDomain}`}
+                          canDelete={canDelete}
+                          deleteAriaLabel={`Delete rule for ${r.allowedEmailDomain}`}
+                          onDelete={() => void handleDelete(r.id, r.allowedEmailDomain)}
+                          isDeleting={isDeleting}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

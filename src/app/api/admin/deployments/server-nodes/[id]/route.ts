@@ -75,3 +75,56 @@ export async function PATCH(req: Request, context: { params: Promise<Params> }) 
 
   return NextResponse.json({ serverNode: updated });
 }
+
+/**
+ * Hard delete a server node. No FK refs point at ServerNode, so this is a plain `delete`
+ * after the same auth pipeline used by PATCH.
+ */
+export async function DELETE(req: Request, context: { params: Promise<Params> }) {
+  const auth = await requireDeploymentAuth(req);
+  if (auth instanceof Response) return auth;
+  const d = denyIfReadOnly(auth);
+  if (d) return d;
+  const d2 = denyIfComplianceOnlyWriter(auth);
+  if (d2) return d2;
+
+  const { id } = await context.params;
+  const existing = await prisma.serverNode.findUnique({ where: { id } });
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  const allowed = await canMutateServerAsset(auth, existing.targetType, existing.targetId, {
+    country: (cid) =>
+      prisma.countryDeployment.findUnique({
+        where: { id: cid },
+        select: { id: true, regionId: true },
+      }),
+    telco: (tid) =>
+      prisma.telcoDeployment.findUnique({
+        where: { id: tid },
+        select: {
+          id: true,
+          countryId: true,
+          country: { select: { id: true, regionId: true } },
+        },
+      }),
+  });
+  if (!allowed) {
+    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+  }
+
+  await prisma.serverNode.delete({ where: { id } });
+
+  await writeAudit({
+    entityType: "ServerNode",
+    entityId: id,
+    action: "DELETE",
+    payload: {
+      fqdn: existing.fqdn,
+      targetType: existing.targetType,
+      targetId: existing.targetId,
+    },
+  });
+  revalidateDeploymentsAfterMutation();
+
+  return NextResponse.json({ ok: true });
+}

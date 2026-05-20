@@ -111,6 +111,7 @@ export default async function AdminServerNodesPage({ searchParams }: { searchPar
       countryOptions={countries.map((c) => ({ id: c.id, label: `${c.name} (${c.iso2})` }))}
       telcoOptions={telcos.map((t) => ({ id: t.id, label: `${t.name} (${t.country.iso2})` }))}
       showCreate={showCreate}
+      canDelete={canMutate}
       createServerNode={createServerNodeFromForm}
     />
   );

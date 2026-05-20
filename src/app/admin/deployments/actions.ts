@@ -59,6 +59,8 @@ export async function createRegion(formData: FormData) {
   });
   revalidatePublicDeployments();
   revalidatePath("/admin/deployments/regions");
+  /** Match Telcos UX: drop the user back at the list so the new row is visible. */
+  redirect("/admin/deployments/regions");
 }
 
 export async function updateRegion(formData: FormData) {
@@ -197,6 +199,8 @@ export async function createCountry(formData: FormData) {
     payload: { iso2, countrySubdomain },
   });
   revalidateDeploymentSurfaces();
+  /** Match Telcos UX: drop the user back at the list so the new row is visible. */
+  redirect("/admin/deployments/countries");
 }
 
 export async function updateCountry(formData: FormData) {
@@ -504,6 +508,8 @@ export async function createServerNode(formData: FormData) {
   });
   await writeAudit({ entityType: "ServerNode", entityId: created.id, action: "CREATE", payload: { fqdn } });
   revalidateDeploymentSurfaces();
+  /** Match Telcos UX: drop the user back at the list so the new row is visible. */
+  redirect("/admin/deployments/server-nodes");
 }
 
 export async function createServerNodeFromForm(formData: FormData) {
@@ -588,6 +594,8 @@ export async function createAccessDomainRule(formData: FormData) {
     payload: { allowedEmailDomain },
   });
   revalidateDeploymentSurfaces();
+  /** Match Telcos UX: drop the user back at the list so the new row is visible. */
+  redirect("/admin/deployments/access-domain-rules");
 }
 
 export async function createAccessDomainRuleFromForm(formData: FormData) {

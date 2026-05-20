@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { StatusHistoryTargetType } from "@prisma/client";
+import { StatusHistoryTargetType, TargetType } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { readJsonObject } from "@/app/api/keyra/_routeHelpers";
 import {
@@ -96,4 +96,63 @@ export async function PATCH(req: Request, context: { params: Promise<Params> }) 
   revalidateDeploymentsAfterMutation();
 
   return NextResponse.json({ telco: updated });
+}
+
+/**
+ * Hard delete a telco row.
+ *
+ * The Telco model has no incoming FK constraints pointing at it (Country → Telco cascades
+ * the other direction; downstream tables like ServerNode / AccessDomainRule / AccessRequest
+ * are *polymorphic* — they hold `targetType + targetId` strings with no foreign key). That
+ * means a bare `delete` would succeed but leave orphan rows pointing at a vanished telco.
+ *
+ * We sweep those polymorphic dependents in the same transaction so the data stays
+ * consistent. StatusHistory rows are intentionally kept as an audit trail.
+ */
+export async function DELETE(req: Request, context: { params: Promise<Params> }) {
+  const auth = await requireDeploymentAuth(req);
+  if (auth instanceof Response) return auth;
+  const d = denyIfReadOnly(auth);
+  if (d) return d;
+  const d2 = denyIfComplianceOnlyWriter(auth);
+  if (d2) return d2;
+
+  const { id } = await context.params;
+  const existing = await prisma.telcoDeployment.findUnique({
+    where: { id },
+    include: { country: { select: { id: true, regionId: true } } },
+  });
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  if (!canPatchTelco(auth, existing, existing.country)) {
+    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.serverNode.deleteMany({
+      where: { targetType: TargetType.TELCO, targetId: id },
+    });
+    await tx.accessDomainRule.deleteMany({
+      where: { targetType: TargetType.TELCO, targetId: id },
+    });
+    await tx.serverAccessRequest.deleteMany({
+      where: { targetType: TargetType.TELCO, targetId: id },
+    });
+    await tx.telcoDeployment.delete({ where: { id } });
+  });
+
+  await writeAudit({
+    entityType: "TelcoDeployment",
+    entityId: id,
+    action: "DELETE",
+    payload: {
+      name: existing.name,
+      slug: existing.slug,
+      countryId: existing.countryId,
+      telcoSubdomain: existing.telcoSubdomain,
+    },
+  });
+  revalidateDeploymentsAfterMutation();
+
+  return NextResponse.json({ ok: true });
 }

@@ -55,3 +55,76 @@ export async function PATCH(req: Request, context: { params: Promise<Params> }) 
 
   return NextResponse.json({ region: updated });
 }
+
+/**
+ * Hard delete a region.
+ *
+ * `Region → Country → Telco` cascade via `onDelete: Cascade`, so deleting a region also
+ * removes all its countries and their telcos. We additionally sweep polymorphic dependents
+ * (ServerNode, AccessDomainRule, ServerAccessRequest) for both the deleted countries and
+ * telcos so no orphan rows are left pointing at vanished IDs.
+ */
+export async function DELETE(req: Request, context: { params: Promise<Params> }) {
+  const auth = await requireDeploymentAuth(req);
+  if (auth instanceof Response) return auth;
+  const d = denyIfReadOnly(auth);
+  if (d) return d;
+  const d2 = denyIfComplianceOnlyWriter(auth);
+  if (d2) return d2;
+
+  const { id } = await context.params;
+  const existing = await prisma.region.findUnique({
+    where: { id },
+    include: {
+      countries: {
+        select: {
+          id: true,
+          telcos: { select: { id: true } },
+        },
+      },
+    },
+  });
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!canPatchRegion(auth, id)) {
+    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+  }
+
+  const countryIds = existing.countries.map((c) => c.id);
+  const telcoIds = existing.countries.flatMap((c) => c.telcos.map((t) => t.id));
+
+  await prisma.$transaction(async (tx) => {
+    if (countryIds.length > 0) {
+      await tx.serverNode.deleteMany({
+        where: { targetType: "COUNTRY", targetId: { in: countryIds } },
+      });
+      await tx.accessDomainRule.deleteMany({
+        where: { targetType: "COUNTRY", targetId: { in: countryIds } },
+      });
+      await tx.serverAccessRequest.deleteMany({
+        where: { targetType: "COUNTRY", targetId: { in: countryIds } },
+      });
+    }
+    if (telcoIds.length > 0) {
+      await tx.serverNode.deleteMany({
+        where: { targetType: "TELCO", targetId: { in: telcoIds } },
+      });
+      await tx.accessDomainRule.deleteMany({
+        where: { targetType: "TELCO", targetId: { in: telcoIds } },
+      });
+      await tx.serverAccessRequest.deleteMany({
+        where: { targetType: "TELCO", targetId: { in: telcoIds } },
+      });
+    }
+    await tx.region.delete({ where: { id } });
+  });
+
+  await writeAudit({
+    entityType: "Region",
+    entityId: id,
+    action: "DELETE",
+    payload: { name: existing.name, slug: existing.slug, cascadedCountries: countryIds.length, cascadedTelcos: telcoIds.length },
+  });
+  revalidateDeploymentsAfterMutation();
+
+  return NextResponse.json({ ok: true });
+}

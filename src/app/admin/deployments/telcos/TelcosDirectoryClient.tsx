@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { RowActions } from "@/components/admin/RowActions";
 
 const STATUS_OPTIONS = ["IDENTIFIED", "INSTITUTIONAL_AWARENESS", "TVIP", "OPERATIONAL"] as const;
 
@@ -71,6 +72,8 @@ type Props = {
   searchQuery: string;
   countries: CountryOption[];
   showCreate: boolean;
+  /** Mirrors the server-side `canMutate` check — gates per-row delete buttons. */
+  canDelete: boolean;
   /** Server action bound from the parent Server Component */
   createTelco: (formData: FormData) => Promise<void>;
 };
@@ -83,16 +86,44 @@ export function TelcosDirectoryClient({
   searchQuery,
   countries,
   showCreate,
+  canDelete,
   createTelco,
 }: Props) {
   const hasSearch = searchQuery.trim().length > 0;
   const [createOpen, setCreateOpen] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(hasSearch);
   const [qInput, setQInput] = useState(searchQuery);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
   const { page, pageSize, totalCount, totalPages, showingFrom, showingTo } = pagination;
   const canUseCreate = showCreate && countries.length > 0;
+
+  /** Hard-delete via the new `DELETE /api/admin/deployments/telcos/[id]` route. The server
+   * route enforces the same `canPatchTelco` check, sweeps polymorphic dependents in a
+   * transaction, writes an audit row, and triggers cache revalidation. We only need to
+   * confirm with the user and refresh the route on success. */
+  async function handleDelete(id: string, name: string) {
+    if (!confirm(`Delete telco "${name}"? This cannot be undone.`)) return;
+    setDeletingId(id);
+    setDeleteError(null);
+    try {
+      const res = await fetch(`/api/admin/deployments/telcos/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(data.error ?? `Delete failed (${res.status})`);
+      }
+      router.refresh();
+    } catch (e) {
+      setDeleteError(e instanceof Error ? e.message : "Delete failed");
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   const pagerItems = useMemo(() => pageNumbers(page, totalPages), [page, totalPages]);
 
@@ -356,6 +387,13 @@ export function TelcosDirectoryClient({
       </div>
 
 
+      {/* Delete-error banner — surfaced above the table so it's visible without scrolling. */}
+      {deleteError ? (
+        <p className="mt-3 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700">
+          {deleteError}
+        </p>
+      ) : null}
+
       {/* Table */}
       <div className="mt-3 overflow-hidden rounded-2xl border border-keyra-border bg-keyra-surface/45 shadow-[0_12px_36px_rgba(0,0,0,0.03)]">
         <div className="overflow-x-auto">
@@ -367,7 +405,7 @@ export function TelcosDirectoryClient({
                 <th className="px-3 py-2">Subdomain</th>
                 <th className="px-3 py-2">Status</th>
                 <th className="px-3 py-2">Published</th>
-                <th className="px-3 py-2 text-right">Edit</th>
+                <th className="w-px whitespace-nowrap px-2 py-2 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
@@ -380,30 +418,35 @@ export function TelcosDirectoryClient({
                   </td>
                 </tr>
               ) : (
-                telcos.map((t) => (
-                  <tr key={t.id} className="transition hover:bg-keyra-surface">
-                    <td className="px-3 py-2 font-medium text-keyra-primary">{t.name}</td>
-                    <td className="px-3 py-2 text-keyra-text-2">
-                      {t.country.name}{" "}
-                      <span className="text-keyra-text-2/80">({t.country.iso2})</span>
-                    </td>
-                    <td className="max-w-[10rem] truncate px-3 py-2 font-mono text-xs text-keyra-text-2">{t.telcoSubdomain}</td>
-                    <td className="px-3 py-2">
-                      <span className="inline-flex rounded-full border border-keyra-border bg-keyra-bg px-2 py-0.5 text-xs font-medium text-keyra-primary">
-                        {t.status}
-                      </span>
-                    </td>
-                    <td className="px-3 py-2 text-keyra-text-2">{t.isPublished ? "Yes" : "No"}</td>
-                    <td className="px-3 py-2 text-right">
-                      <Link
-                        href={`/admin/deployments/telcos/${t.id}`}
-                        className="text-sm font-medium text-keyra-accent underline-offset-4 transition hover:underline"
-                      >
-                        View
-                      </Link>
-                    </td>
-                  </tr>
-                ))
+                telcos.map((t) => {
+                  const isDeleting = deletingId === t.id;
+                  return (
+                    <tr key={t.id} className={`transition hover:bg-keyra-surface ${isDeleting ? "opacity-60" : ""}`}>
+                      <td className="px-3 py-2 font-medium text-keyra-primary">{t.name}</td>
+                      <td className="px-3 py-2 text-keyra-text-2">
+                        {t.country.name}{" "}
+                        <span className="text-keyra-text-2/80">({t.country.iso2})</span>
+                      </td>
+                      <td className="max-w-[10rem] truncate px-3 py-2 font-mono text-xs text-keyra-text-2">{t.telcoSubdomain}</td>
+                      <td className="px-3 py-2">
+                        <span className="inline-flex rounded-full border border-keyra-border bg-keyra-bg px-2 py-0.5 text-xs font-medium text-keyra-primary">
+                          {t.status}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2 text-keyra-text-2">{t.isPublished ? "Yes" : "No"}</td>
+                      <td className="w-px whitespace-nowrap px-2 py-2 text-right">
+                        <RowActions
+                          editHref={`/admin/deployments/telcos/${t.id}`}
+                          editAriaLabel={`Edit ${t.name}`}
+                          canDelete={canDelete}
+                          deleteAriaLabel={`Delete ${t.name}`}
+                          onDelete={() => void handleDelete(t.id, t.name)}
+                          isDeleting={isDeleting}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

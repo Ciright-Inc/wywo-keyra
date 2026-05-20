@@ -107,6 +107,7 @@ export default async function AdminTelcosPage({ searchParams }: { searchParams: 
       searchQuery={searchQuery}
       countries={countries}
       showCreate={showCreate}
+      canDelete={canMutate}
       createTelco={createTelco}
     />
   );

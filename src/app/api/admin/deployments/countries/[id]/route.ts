@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { StatusHistoryTargetType } from "@prisma/client";
+import { StatusHistoryTargetType, TargetType } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { readJsonObject } from "@/app/api/keyra/_routeHelpers";
 import {
@@ -94,4 +94,59 @@ export async function PATCH(req: Request, context: { params: Promise<Params> }) 
   revalidateDeploymentsAfterMutation();
 
   return NextResponse.json({ country: updated });
+}
+
+/**
+ * Hard delete a country deployment.
+ *
+ * `Country → Telco` cascades, so we additionally sweep polymorphic dependents (ServerNode,
+ * AccessDomainRule, ServerAccessRequest) targeting both this country and every telco that
+ * cascades away with it. Status history rows are intentionally left in place (audit trail).
+ */
+export async function DELETE(req: Request, context: { params: Promise<Params> }) {
+  const auth = await requireDeploymentAuth(req);
+  if (auth instanceof Response) return auth;
+  const d = denyIfReadOnly(auth);
+  if (d) return d;
+  const d2 = denyIfComplianceOnlyWriter(auth);
+  if (d2) return d2;
+
+  const { id } = await context.params;
+  const existing = await prisma.countryDeployment.findUnique({
+    where: { id },
+    include: { telcos: { select: { id: true } } },
+  });
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!canPatchCountry(auth, existing)) {
+    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+  }
+
+  const telcoIds = existing.telcos.map((t) => t.id);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.serverNode.deleteMany({ where: { targetType: TargetType.COUNTRY, targetId: id } });
+    await tx.accessDomainRule.deleteMany({ where: { targetType: TargetType.COUNTRY, targetId: id } });
+    await tx.serverAccessRequest.deleteMany({ where: { targetType: TargetType.COUNTRY, targetId: id } });
+    if (telcoIds.length > 0) {
+      await tx.serverNode.deleteMany({ where: { targetType: TargetType.TELCO, targetId: { in: telcoIds } } });
+      await tx.accessDomainRule.deleteMany({ where: { targetType: TargetType.TELCO, targetId: { in: telcoIds } } });
+      await tx.serverAccessRequest.deleteMany({ where: { targetType: TargetType.TELCO, targetId: { in: telcoIds } } });
+    }
+    await tx.countryDeployment.delete({ where: { id } });
+  });
+
+  await writeAudit({
+    entityType: "CountryDeployment",
+    entityId: id,
+    action: "DELETE",
+    payload: {
+      name: existing.name,
+      iso2: existing.iso2,
+      countrySubdomain: existing.countrySubdomain,
+      cascadedTelcos: telcoIds.length,
+    },
+  });
+  revalidateDeploymentsAfterMutation();
+
+  return NextResponse.json({ ok: true });
 }

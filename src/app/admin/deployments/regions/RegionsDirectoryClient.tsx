@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { RowActions } from "@/components/admin/RowActions";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { buildListHref } from "@/lib/admin/listSearchParams";
 
@@ -22,6 +23,8 @@ type Props = {
   defaultPageSize: number;
   searchQuery: string;
   showCreate: boolean;
+  /** Mirrors the server-side mutate check — gates the trash icon. */
+  canDelete: boolean;
   /** Server action bound from the parent Server Component */
   createRegion: (formData: FormData) => Promise<void>;
 };
@@ -35,11 +38,43 @@ export function RegionsDirectoryClient({
   defaultPageSize,
   searchQuery,
   showCreate,
+  canDelete,
   createRegion,
 }: Props) {
   const hasSearch = searchQuery.trim().length > 0;
   const [createOpen, setCreateOpen] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const router = useRouter();
   const { page, pageSize, totalCount } = pagination;
+
+  /** Delete a region via the server route. The route handles cascade + audit + revalidate;
+   * client just confirms (with cascade warning) and refreshes. */
+  async function handleDelete(id: string, name: string) {
+    if (
+      !confirm(
+        `Delete region "${name}"? This also deletes every country and telco under it. This cannot be undone.`,
+      )
+    )
+      return;
+    setDeletingId(id);
+    setDeleteError(null);
+    try {
+      const res = await fetch(`/api/admin/deployments/regions/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(data.error ?? `Delete failed (${res.status})`);
+      }
+      router.refresh();
+    } catch (e) {
+      setDeleteError(e instanceof Error ? e.message : "Delete failed");
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   const inputClass =
     "mt-1 h-10 w-full rounded-lg border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary shadow-sm outline-none transition focus-visible:border-black/25 focus-visible:keyra-focus disabled:opacity-60";
@@ -141,6 +176,12 @@ export function RegionsDirectoryClient({
         ) : null}
       </div>
 
+      {deleteError ? (
+        <p className="mt-3 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700">
+          {deleteError}
+        </p>
+      ) : null}
+
       {/* Table */}
       <div className="mt-3 overflow-hidden rounded-2xl border border-keyra-border bg-keyra-surface/45 shadow-[0_12px_36px_rgba(0,0,0,0.03)]">
         <div className="overflow-x-auto">
@@ -151,7 +192,7 @@ export function RegionsDirectoryClient({
                 <th className="px-3 py-2">Slug</th>
                 <th className="px-3 py-2">Map</th>
                 <th className="px-3 py-2">Published</th>
-                <th className="px-3 py-2 text-right">Edit</th>
+                <th className="w-px whitespace-nowrap px-2 py-2 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
@@ -164,22 +205,27 @@ export function RegionsDirectoryClient({
                   </td>
                 </tr>
               ) : (
-                regions.map((r) => (
-                  <tr key={r.id} className="transition hover:bg-keyra-surface">
-                    <td className="px-3 py-2 font-medium text-keyra-primary">{r.name}</td>
-                    <td className="px-3 py-2 text-keyra-text-2">{r.slug}</td>
-                    <td className="px-3 py-2 text-keyra-text-2">{r.mapKey}</td>
-                    <td className="px-3 py-2 text-keyra-text-2">{r.isPublished ? "Yes" : "No"}</td>
-                    <td className="px-3 py-2 text-right">
-                      <Link
-                        href={`/admin/deployments/regions/${r.id}`}
-                        className="text-sm font-medium text-keyra-accent underline-offset-4 transition hover:underline"
-                      >
-                        Edit
-                      </Link>
-                    </td>
-                  </tr>
-                ))
+                regions.map((r) => {
+                  const isDeleting = deletingId === r.id;
+                  return (
+                    <tr key={r.id} className={`transition hover:bg-keyra-surface ${isDeleting ? "opacity-60" : ""}`}>
+                      <td className="px-3 py-2 font-medium text-keyra-primary">{r.name}</td>
+                      <td className="px-3 py-2 text-keyra-text-2">{r.slug}</td>
+                      <td className="px-3 py-2 text-keyra-text-2">{r.mapKey}</td>
+                      <td className="px-3 py-2 text-keyra-text-2">{r.isPublished ? "Yes" : "No"}</td>
+                      <td className="w-px whitespace-nowrap px-2 py-2 text-right">
+                        <RowActions
+                          editHref={`/admin/deployments/regions/${r.id}`}
+                          editAriaLabel={`Edit ${r.name}`}
+                          canDelete={canDelete}
+                          deleteAriaLabel={`Delete ${r.name}`}
+                          onDelete={() => void handleDelete(r.id, r.name)}
+                          isDeleting={isDeleting}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

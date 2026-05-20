@@ -3,8 +3,12 @@
 import type { AuthenticationCountry } from "@prisma/client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { ClientTablePagination } from "@/components/admin/ClientTablePagination";
 
 type SortKey = "priority" | "weight" | "name" | "iso2" | "updated";
+
+const DEFAULT_PAGE_SIZE = 25;
+const PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
 
 function fmtDate(d: Date | string): string {
   try {
@@ -32,6 +36,12 @@ export default function AdminAuthCountriesPage() {
   const [busy, setBusy] = useState(false);
   const [addCountryOpen, setAddCountryOpen] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
+  /** Client-side paging over the already-loaded `rows`. Server fetch returns everything matching
+   * the current filters in one pass, so paging here is just a render slice — keeps cross-page
+   * `selected`/`dirtyIds` state intact and lets users edit rows on page 1, jump to page 3, edit
+   * more, then Save once. */
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
@@ -61,6 +71,12 @@ export default function AdminAuthCountriesPage() {
   useEffect(() => {
     load().catch((e) => setError(e instanceof Error ? e.message : "Load failed"));
   }, [load]);
+
+  /** Reset to page 1 whenever the active filter/search/sort changes — otherwise typing a new
+   * search while sitting on e.g. page 4 would show an empty slice until the user clicks back. */
+  useEffect(() => {
+    setPage(1);
+  }, [q, region, subRegion, activeFilter, authFilter, weightMin, weightMax, sortBy]);
 
   useEffect(() => {
     const t = setTimeout(() => setQ(qInput.trim()), 280);
@@ -106,6 +122,21 @@ export default function AdminAuthCountriesPage() {
   const selectedIds = useMemo(() => Object.keys(selected).filter((id) => selected[id]), [selected]);
   const dirtyRowIds = useMemo(() => Object.keys(dirtyIds).filter((id) => dirtyIds[id]), [dirtyIds]);
   const allSelected = rows.length > 0 && selectedIds.length === rows.length;
+
+  /** Snap `page` into bounds whenever the filtered row set shrinks/grows. Runs after `load()`
+   * replaces `rows`, when the filter chips change, or when the user picks a new `pageSize`. */
+  const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
+  const pagedRows = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return rows.slice(start, start + pageSize);
+  }, [rows, page, pageSize]);
+
+  const showingFrom = rows.length === 0 ? 0 : (page - 1) * pageSize + 1;
+  const showingTo = Math.min(page * pageSize, rows.length);
 
   function rowToUpdatePayload(r: AuthenticationCountry) {
     return {
@@ -399,15 +430,11 @@ export default function AdminAuthCountriesPage() {
         <div className="pointer-events-none absolute -right-14 -top-20 size-52 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.07),transparent_68%)]" />
         <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-keyra-text-2">
-              Latest authentications
-            </p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-keyra-primary">
+            <h1 className="text-3xl font-semibold tracking-tight text-keyra-primary">
               Authentication countries
             </h1>
             <p className="mt-3 text-sm leading-6 text-keyra-text-2">
               Manage country eligibility, weighting, and feed visibility for authentication events.
-              Use the filters below to narrow rows, or click <strong>Add country</strong> to insert a new entry.
             </p>
           </div>
 
@@ -643,7 +670,7 @@ export default function AdminAuthCountriesPage() {
             </tr>
           </thead>
           <tbody>
-            {rows.map((r) => (
+            {pagedRows.map((r) => (
               <CountryEditorRow
                 key={r.id}
                 row={r}
@@ -663,6 +690,24 @@ export default function AdminAuthCountriesPage() {
           </p>
         ) : null}
       </div>
+
+      {rows.length > 0 ? (
+        <ClientTablePagination
+          page={page}
+          pageSize={pageSize}
+          totalCount={rows.length}
+          totalPages={totalPages}
+          showingFrom={showingFrom}
+          showingTo={showingTo}
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
+          onPageChange={setPage}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+          disabled={busy}
+        />
+      ) : null}
 
     </div>
   );
@@ -790,3 +835,4 @@ function CountryEditorRow({
     </tr>
   );
 }
+

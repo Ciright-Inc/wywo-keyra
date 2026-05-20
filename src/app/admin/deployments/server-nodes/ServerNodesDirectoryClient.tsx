@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { RowActions } from "@/components/admin/RowActions";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { buildListHref } from "@/lib/admin/listSearchParams";
 
@@ -27,6 +28,8 @@ type Props = {
   countryOptions: SelectOption[];
   telcoOptions: SelectOption[];
   showCreate: boolean;
+  /** Mirrors the server-side mutate check — gates the trash icon. */
+  canDelete: boolean;
   /** Server action bound from the parent Server Component */
   createServerNode: (formData: FormData) => Promise<void>;
 };
@@ -42,11 +45,37 @@ export function ServerNodesDirectoryClient({
   countryOptions,
   telcoOptions,
   showCreate,
+  canDelete,
   createServerNode,
 }: Props) {
   const hasSearch = searchQuery.trim().length > 0;
   const [createOpen, setCreateOpen] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const router = useRouter();
   const { page, pageSize, totalCount } = pagination;
+
+  /** Delete a server node via the server route. Auth/audit/revalidate happen server-side. */
+  async function handleDelete(id: string, label: string) {
+    if (!confirm(`Delete server node "${label}"? This cannot be undone.`)) return;
+    setDeletingId(id);
+    setDeleteError(null);
+    try {
+      const res = await fetch(`/api/admin/deployments/server-nodes/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(data.error ?? `Delete failed (${res.status})`);
+      }
+      router.refresh();
+    } catch (e) {
+      setDeleteError(e instanceof Error ? e.message : "Delete failed");
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   const inputClass =
     "mt-1 h-10 w-full rounded-lg border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary shadow-sm outline-none transition focus-visible:border-black/25 focus-visible:keyra-focus disabled:opacity-60";
@@ -187,6 +216,12 @@ export function ServerNodesDirectoryClient({
         ) : null}
       </div>
 
+      {deleteError ? (
+        <p className="mt-3 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700">
+          {deleteError}
+        </p>
+      ) : null}
+
       <div className="mt-3 overflow-hidden rounded-2xl border border-keyra-border bg-keyra-surface/45 shadow-[0_12px_36px_rgba(0,0,0,0.03)]">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[36rem] text-left text-sm">
@@ -196,7 +231,7 @@ export function ServerNodesDirectoryClient({
                 <th className="px-3 py-2">Env</th>
                 <th className="px-3 py-2">Target</th>
                 <th className="px-3 py-2">Status</th>
-                <th className="px-3 py-2 text-right">Edit</th>
+                <th className="w-px whitespace-nowrap px-2 py-2 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
@@ -209,28 +244,33 @@ export function ServerNodesDirectoryClient({
                   </td>
                 </tr>
               ) : (
-                nodes.map((n) => (
-                  <tr key={n.id} className="transition hover:bg-keyra-surface">
-                    <td className="px-3 py-2 font-medium text-keyra-primary">{n.fqdn}</td>
-                    <td className="px-3 py-2 text-keyra-text-2">{n.environment}</td>
-                    <td className="max-w-[18rem] truncate px-3 py-2 font-mono text-xs text-keyra-text-2">
-                      {n.targetType} · {n.targetId}
-                    </td>
-                    <td className="px-3 py-2">
-                      <span className="inline-flex rounded-full border border-keyra-border bg-keyra-bg px-2 py-0.5 text-xs font-medium text-keyra-primary">
-                        {n.status}
-                      </span>
-                    </td>
-                    <td className="px-3 py-2 text-right">
-                      <Link
-                        href={`/admin/deployments/server-nodes/${n.id}`}
-                        className="text-sm font-medium text-keyra-accent underline-offset-4 transition hover:underline"
-                      >
-                        View
-                      </Link>
-                    </td>
-                  </tr>
-                ))
+                nodes.map((n) => {
+                  const isDeleting = deletingId === n.id;
+                  return (
+                    <tr key={n.id} className={`transition hover:bg-keyra-surface ${isDeleting ? "opacity-60" : ""}`}>
+                      <td className="px-3 py-2 font-medium text-keyra-primary">{n.fqdn}</td>
+                      <td className="px-3 py-2 text-keyra-text-2">{n.environment}</td>
+                      <td className="max-w-[18rem] truncate px-3 py-2 font-mono text-xs text-keyra-text-2">
+                        {n.targetType} · {n.targetId}
+                      </td>
+                      <td className="px-3 py-2">
+                        <span className="inline-flex rounded-full border border-keyra-border bg-keyra-bg px-2 py-0.5 text-xs font-medium text-keyra-primary">
+                          {n.status}
+                        </span>
+                      </td>
+                      <td className="w-px whitespace-nowrap px-2 py-2 text-right">
+                        <RowActions
+                          editHref={`/admin/deployments/server-nodes/${n.id}`}
+                          editAriaLabel={`Edit ${n.fqdn}`}
+                          canDelete={canDelete}
+                          deleteAriaLabel={`Delete ${n.fqdn}`}
+                          onDelete={() => void handleDelete(n.id, n.fqdn)}
+                          isDeleting={isDeleting}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

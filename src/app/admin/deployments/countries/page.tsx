@@ -95,6 +95,7 @@ export default async function AdminCountriesPage({ searchParams }: { searchParam
       searchQuery={searchQuery}
       regions={regions}
       showCreate={showCreate}
+      canDelete={canMutate}
       createCountry={createCountry}
     />
   );

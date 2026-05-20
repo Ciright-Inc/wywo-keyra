@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { assertAdminServer } from "@/lib/assertAdminServer";
 import { regionWhereFromAuth } from "@/lib/deployments/adminContext";
 import { createRegion } from "@/app/admin/deployments/actions";
-import { canCreateRegion } from "@/lib/deployments/adminAuthz";
+import { canCreateRegion, isComplianceReviewer, isReadOnlyRole } from "@/lib/deployments/adminAuthz";
 import { parsePage, parsePageSize, parseSearchQuery } from "@/lib/admin/listSearchParams";
 import { RegionsDirectoryClient } from "./RegionsDirectoryClient";
 
@@ -53,6 +53,10 @@ export default async function AdminRegionsPage({ searchParams }: { searchParams:
   });
 
   const showCreate = auth.kind === "legacy_super" || (auth.kind === "user" && canCreateRegion(auth));
+  /** Same gate the DELETE route enforces: read-only and compliance-reviewer roles cannot delete. */
+  const canDelete =
+    auth.kind === "legacy_super" ||
+    (auth.kind === "user" && !isReadOnlyRole(auth) && !isComplianceReviewer(auth));
 
   const showingFrom = totalCount === 0 ? 0 : (page - 1) * pageSize + 1;
   const showingTo = Math.min(page * pageSize, totalCount);
@@ -71,6 +75,7 @@ export default async function AdminRegionsPage({ searchParams }: { searchParams:
       defaultPageSize={DEFAULT_PAGE_SIZE}
       searchQuery={searchQuery}
       showCreate={showCreate}
+      canDelete={canDelete}
       createRegion={createRegion}
     />
   );
