@@ -38,7 +38,7 @@ export function AudienceLaneSwitcher({
 
   const innerRowClass =
     variant === "bar"
-      ? "grid w-full min-w-0 grid-cols-3 items-center justify-items-center gap-x-0 gap-y-0 sm:flex sm:w-full sm:flex-wrap sm:justify-center sm:gap-2"
+      ? "grid w-full min-w-0 grid-cols-2 items-center justify-items-center gap-x-0 gap-y-0 sm:flex sm:w-full sm:flex-wrap sm:justify-center sm:gap-2"
       : `flex w-full min-w-0 flex-wrap items-center gap-1 sm:gap-2 ${rowJustify}`;
 
   const pillActive =
