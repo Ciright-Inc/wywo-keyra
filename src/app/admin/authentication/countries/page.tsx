@@ -1,7 +1,7 @@
 "use client";
 
 import type { AuthenticationCountry } from "@prisma/client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 
 type SortKey = "priority" | "weight" | "name" | "iso2" | "updated";
@@ -27,9 +27,12 @@ export default function AdminAuthCountriesPage() {
   const [weightMin, setWeightMin] = useState("");
   const [weightMax, setWeightMax] = useState("");
   const [selected, setSelected] = useState<Record<string, boolean>>({});
+  const [dirtyIds, setDirtyIds] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [catalogToolsOpen, setCatalogToolsOpen] = useState(false);
+  const [searchExpanded, setSearchExpanded] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
     setError(null);
@@ -52,11 +55,34 @@ export default function AdminAuthCountriesPage() {
     if (!res.ok) throw new Error(data.error ?? "Failed to load");
     setRows(data.countries ?? []);
     setSelected({});
+    setDirtyIds({});
   }, [sortBy, q, region, subRegion, activeFilter, authFilter, weightMin, weightMax]);
 
   useEffect(() => {
     load().catch((e) => setError(e instanceof Error ? e.message : "Load failed"));
   }, [load]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setQ(qInput.trim()), 280);
+    return () => clearTimeout(t);
+  }, [qInput]);
+
+  useEffect(() => {
+    if (searchExpanded) {
+      const t = setTimeout(() => searchInputRef.current?.focus(), 180);
+      return () => clearTimeout(t);
+    }
+    return undefined;
+  }, [searchExpanded]);
+
+  function toggleSearchPanel() {
+    setSearchExpanded((open) => !open);
+  }
+
+  function collapseSearch(clearQuery = false) {
+    if (clearQuery) setQInput("");
+    setSearchExpanded(false);
+  }
 
   useEffect(() => {
     if (!catalogToolsOpen) return;
@@ -69,6 +95,8 @@ export default function AdminAuthCountriesPage() {
 
   function patchRow(id: string, patch: Partial<AuthenticationCountry>) {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+    setDirtyIds((d) => ({ ...d, [id]: true }));
+    setSelected((s) => ({ ...s, [id]: true }));
   }
 
   function toggleSelect(id: string) {
@@ -76,7 +104,32 @@ export default function AdminAuthCountriesPage() {
   }
 
   const selectedIds = useMemo(() => Object.keys(selected).filter((id) => selected[id]), [selected]);
+  const dirtyRowIds = useMemo(() => Object.keys(dirtyIds).filter((id) => dirtyIds[id]), [dirtyIds]);
   const allSelected = rows.length > 0 && selectedIds.length === rows.length;
+
+  function rowToUpdatePayload(r: AuthenticationCountry) {
+    return {
+      id: r.id,
+      countryName: r.countryName,
+      officialName: r.officialName,
+      iso2: r.iso2,
+      iso3: r.iso3,
+      isoNumeric: r.isoNumeric,
+      region: r.region,
+      subRegion: r.subRegion,
+      capitalCity: r.capitalCity,
+      flagEmoji: r.flagEmoji,
+      phoneCountryCode: r.phoneCountryCode,
+      currencyCode: r.currencyCode,
+      currencyName: r.currencyName,
+      primaryLanguage: r.primaryLanguage,
+      active: r.active,
+      authenticationEnabled: r.authenticationEnabled,
+      percentageWeight: r.percentageWeight,
+      displayPriority: r.displayPriority,
+      notes: r.notes,
+    };
+  }
 
   function toggleSelectAll() {
     if (allSelected) {
@@ -88,34 +141,23 @@ export default function AdminAuthCountriesPage() {
     setSelected(next);
   }
 
-  async function saveRow(r: AuthenticationCountry) {
+  async function saveDirtyRows() {
+    if (dirtyRowIds.length === 0) {
+      setError("No unsaved changes. Edit a row first.");
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/authentication-countries/${r.id}`, {
-        method: "PUT",
+      const updates = dirtyRowIds
+        .map((id) => rows.find((x) => x.id === id))
+        .filter(Boolean)
+        .map((r) => rowToUpdatePayload(r!));
+      const res = await fetch("/api/admin/authentication-countries/bulk", {
+        method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          countryName: r.countryName,
-          officialName: r.officialName,
-          iso2: r.iso2,
-          iso3: r.iso3,
-          isoNumeric: r.isoNumeric,
-          region: r.region,
-          subRegion: r.subRegion,
-          capitalCity: r.capitalCity,
-          flagEmoji: r.flagEmoji,
-          phoneCountryCode: r.phoneCountryCode,
-          currencyCode: r.currencyCode,
-          currencyName: r.currencyName,
-          primaryLanguage: r.primaryLanguage,
-          active: r.active,
-          authenticationEnabled: r.authenticationEnabled,
-          percentageWeight: r.percentageWeight,
-          displayPriority: r.displayPriority,
-          notes: r.notes,
-        }),
+        body: JSON.stringify({ updates }),
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Save failed");
@@ -135,36 +177,15 @@ export default function AdminAuthCountriesPage() {
     setBusy(true);
     setError(null);
     try {
-      const updates = selectedIds.map((id) => {
-        const r = rows.find((x) => x.id === id);
-        if (!r) return null;
-        return {
-          id: r.id,
-          countryName: r.countryName,
-          officialName: r.officialName,
-          iso2: r.iso2,
-          iso3: r.iso3,
-          isoNumeric: r.isoNumeric,
-          region: r.region,
-          subRegion: r.subRegion,
-          capitalCity: r.capitalCity,
-          flagEmoji: r.flagEmoji,
-          phoneCountryCode: r.phoneCountryCode,
-          currencyCode: r.currencyCode,
-          currencyName: r.currencyName,
-          primaryLanguage: r.primaryLanguage,
-          active: r.active,
-          authenticationEnabled: r.authenticationEnabled,
-          percentageWeight: r.percentageWeight,
-          displayPriority: r.displayPriority,
-          notes: r.notes,
-        };
-      });
+      const updates = selectedIds
+        .map((id) => rows.find((x) => x.id === id))
+        .filter(Boolean)
+        .map((r) => rowToUpdatePayload(r!));
       const res = await fetch("/api/admin/authentication-countries/bulk", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ updates: updates.filter(Boolean) }),
+        body: JSON.stringify({ updates }),
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Bulk save failed");
@@ -190,6 +211,14 @@ export default function AdminAuthCountriesPage() {
         return { ...r, percentageWeight: (Math.max(0, r.percentageWeight) / sum) * 100 };
       }),
     );
+    setDirtyIds((d) => {
+      const next = { ...d };
+      for (const id of selectedIds) {
+        const r = rows.find((x) => x.id === id);
+        if (r?.active && r.authenticationEnabled) next[id] = true;
+      }
+      return next;
+    });
   }
 
   async function bulkSetActive(active: boolean) {
@@ -286,17 +315,23 @@ export default function AdminAuthCountriesPage() {
     }
   }
 
-  async function deleteRow(id: string) {
-    if (!confirm("Delete this country row?")) return;
+  async function deleteSelectedRows() {
+    if (selectedIds.length === 0) {
+      setError("Select at least one row to delete.");
+      return;
+    }
+    if (!confirm(`Delete ${selectedIds.length} country row(s)? This cannot be undone.`)) return;
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/authentication-countries/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      const data = (await res.json()) as { error?: string };
-      if (!res.ok) throw new Error(data.error ?? "Delete failed");
+      for (const id of selectedIds) {
+        const res = await fetch(`/api/admin/authentication-countries/${id}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
+        const data = (await res.json()) as { error?: string };
+        if (!res.ok) throw new Error(data.error ?? "Delete failed");
+      }
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Delete failed");
@@ -380,7 +415,7 @@ export default function AdminAuthCountriesPage() {
               >
                 Catalog tools
               </button>{" "}
-              for search, filters, bulk actions, and adding a country.
+              for filters, bulk actions, and adding a country. Use the search icon beside Save to filter rows.
             </p>
           </div>
 
@@ -401,14 +436,98 @@ export default function AdminAuthCountriesPage() {
         <p className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700">{error}</p>
       ) : null}
 
-      <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-keyra-border bg-keyra-surface/75 px-3 py-3 shadow-sm sm:px-4">
-        <Button type="button" variant="secondary" className="h-9 shrink-0 px-4 py-1.5 text-xs font-semibold" onClick={() => setCatalogToolsOpen(true)}>
-          Catalog tools…
-        </Button>
-        <p className="min-w-0 flex-1 text-[11px] leading-snug text-keyra-text-2 sm:text-xs">{filterSummary}</p>
-        <span className="shrink-0 rounded-full border border-keyra-border bg-keyra-bg px-3 py-1.5 text-[11px] text-keyra-text-2 sm:text-xs">
-          Selected: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
-        </span>
+      <div className="sticky top-14 z-20 flex items-center gap-3 rounded-2xl border border-keyra-border bg-keyra-surface/95 px-3 py-3 shadow-sm backdrop-blur-sm sm:px-4">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
+          <Button type="button" variant="secondary" className="h-9 shrink-0 px-4 py-1.5 text-xs font-semibold" onClick={() => setCatalogToolsOpen(true)}>
+            Catalog tools…
+          </Button>
+          <p className="min-w-0 text-[11px] leading-snug text-keyra-text-2 sm:text-xs">{filterSummary}</p>
+          <span className="shrink-0 rounded-full border border-keyra-border bg-keyra-bg px-3 py-1.5 text-[11px] text-keyra-text-2 sm:text-xs">
+            Selected: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
+            {dirtyRowIds.length > 0 ? (
+              <>
+                {" "}
+                · Unsaved: <span className="font-medium text-amber-700">{dirtyRowIds.length}</span>
+              </>
+            ) : null}
+          </span>
+        </div>
+
+        <div className="ml-auto flex shrink-0 items-center gap-2">
+          <div className="flex items-center">
+            <button
+              type="button"
+              className={`inline-flex size-9 shrink-0 items-center justify-center rounded-lg border transition duration-300 ${
+                searchExpanded || q.trim()
+                  ? "border-black/20 bg-keyra-bg text-keyra-primary ring-1 ring-black/10"
+                  : "border-keyra-border bg-keyra-bg text-keyra-text-2 hover:border-black/20 hover:text-keyra-primary"
+              }`}
+              onClick={toggleSearchPanel}
+              aria-label={searchExpanded ? "Collapse search" : "Expand search"}
+              aria-expanded={searchExpanded}
+              disabled={busy}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+                <circle cx="11" cy="11" r="7" />
+                <path d="M20 20 16.65 16.65" />
+              </svg>
+            </button>
+            <div
+              className={`grid transition-[grid-template-columns] duration-300 ease-out ${
+                searchExpanded ? "grid-cols-[1fr] ml-2" : "grid-cols-[0fr] ml-0"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <div className="relative">
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    value={qInput}
+                    onChange={(e) => setQInput(e.target.value)}
+                    placeholder="Name, ISO, region…"
+                    autoComplete="off"
+                    disabled={busy}
+                    aria-label="Search countries"
+                    className={`h-9 rounded-lg border border-keyra-border bg-keyra-bg py-0 pl-3 text-sm text-keyra-primary outline-none transition-opacity duration-300 focus-visible:border-black/25 focus-visible:keyra-focus ${
+                      searchExpanded ? "w-44 pr-8 opacity-100 sm:w-56" : "w-44 pointer-events-none opacity-0 sm:w-56"
+                    }`}
+                  />
+                  {searchExpanded ? (
+                    <button
+                      type="button"
+                      className="absolute right-1.5 top-1/2 inline-flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-keyra-text-2 transition hover:bg-keyra-surface hover:text-keyra-primary"
+                      onClick={() => collapseSearch(true)}
+                      aria-label="Clear search and collapse"
+                      disabled={busy}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
+                        <path d="M18 6 6 18M6 6l12 12" />
+                      </svg>
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold"
+            disabled={busy || dirtyRowIds.length === 0}
+            onClick={() => void saveDirtyRows()}
+          >
+            Save{dirtyRowIds.length > 0 ? ` (${dirtyRowIds.length})` : ""}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold text-red-700 hover:border-red-500/30 hover:bg-red-500/8"
+            disabled={busy || selectedIds.length === 0}
+            onClick={() => void deleteSelectedRows()}
+          >
+            Delete{selectedIds.length > 0 ? ` (${selectedIds.length})` : ""}
+          </Button>
+        </div>
       </div>
 
       <div className="max-h-[min(85vh,calc(100dvh-11rem))] min-h-[260px] overflow-auto rounded-2xl border border-keyra-border bg-keyra-surface/50 shadow-[0_18px_54px_rgba(0,0,0,0.05)]">
@@ -432,7 +551,6 @@ export default function AdminAuthCountriesPage() {
               <th className="px-2 py-2.5 align-middle">Wt</th>
               <th className="px-2 py-2.5 align-middle">Pri</th>
               <th className="px-2 py-2.5 align-middle">Updated</th>
-              <th className="pr-4 pl-2 py-2.5 align-middle" scope="col" />
             </tr>
           </thead>
           <tbody>
@@ -441,10 +559,9 @@ export default function AdminAuthCountriesPage() {
                 key={r.id}
                 row={r}
                 selected={Boolean(selected[r.id])}
+                dirty={Boolean(dirtyIds[r.id])}
                 onToggleSelect={() => toggleSelect(r.id)}
                 onChange={patchRow}
-                onSave={() => void saveRow(r)}
-                onDelete={() => void deleteRow(r.id)}
                 disabled={busy}
               />
             ))}
@@ -476,7 +593,7 @@ export default function AdminAuthCountriesPage() {
                 <h2 id="catalog-tools-title" className="text-lg font-semibold text-keyra-primary">
                   Catalog tools
                 </h2>
-                <p className="mt-1 text-xs text-keyra-text-2">Search, filters, bulk actions, and add country. Press Escape to close.</p>
+                <p className="mt-1 text-xs text-keyra-text-2">Filters, bulk actions, and add country. Press Escape to close.</p>
               </div>
               <button
                 type="button"
@@ -489,23 +606,8 @@ export default function AdminAuthCountriesPage() {
 
             <div className="mt-5 max-h-[min(70vh,32rem)] space-y-6 overflow-y-auto pr-1 text-sm">
               <section>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">Search & filters</h3>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-keyra-text-2">Filters</h3>
                 <div className="mt-3 space-y-3 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
-                  <label className="flex flex-col gap-1 text-keyra-text-2">
-                    Search
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                      <input
-                        className="min-h-9 min-w-0 flex-1 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-                        value={qInput}
-                        onChange={(e) => setQInput(e.target.value)}
-                        placeholder="Name, ISO, region…"
-                        disabled={busy}
-                      />
-                      <Button type="button" variant="secondary" className="h-9 shrink-0 px-3 py-1.5 text-xs font-semibold" disabled={busy} onClick={() => setQ(qInput)}>
-                        Apply search
-                      </Button>
-                    </div>
-                  </label>
                   <div className="grid gap-3 sm:grid-cols-2">
                     <label className="flex flex-col gap-1 text-keyra-text-2">
                       Region (exact)
@@ -619,8 +721,8 @@ export default function AdminAuthCountriesPage() {
                     <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={normalizeSelectedActiveWeights}>
                       Normalize weights
                     </Button>
-                    <Button type="button" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || selectedIds.length === 0} onClick={() => void bulkSave()}>
-                      Bulk save
+                    <Button type="button" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy || dirtyRowIds.length === 0} onClick={() => void saveDirtyRows()}>
+                      Save changes
                     </Button>
                     <Button type="button" variant="secondary" className="h-9 px-3 py-1.5 text-xs font-semibold" disabled={busy} onClick={() => void resetAllWeights()}>
                       Reset all weights to 5
@@ -671,8 +773,7 @@ export default function AdminAuthCountriesPage() {
                 <p className="mt-2">
                   <code className="rounded bg-keyra-bg px-1 py-0.5">npm start</code> runs migrations then the deploy catalog seed (world countries, deployment map regions/countries/telcos, SAT protocols). Manual:{" "}
                   <code className="rounded bg-keyra-bg px-1 py-0.5">npm run db:seed:world-countries</code>. Re-runnable; preserves weights unless{" "}
-                  <code className="rounded bg-keyra-bg px-1 py-0.5">RESET_AUTH_COUNTRY_WEIGHTS=1</code>. The feed uses rows that are{" "}
-                  <strong>active</strong> and <strong>authentication enabled</strong>; weights normalize at generation.
+                  <code className="rounded bg-keyra-bg px-1 py-0.5">RESET_AUTH_COUNTRY_WEIGHTS=1</code>. The homepage Latest authentications panel only picks countries that are both <strong>live</strong> (ACTIVE) and <strong>authentication enabled</strong> (AUTH); weights normalize at generation.
                 </p>
               </section>
             </div>
@@ -692,24 +793,26 @@ export default function AdminAuthCountriesPage() {
 function CountryEditorRow({
   row,
   selected,
+  dirty,
   onToggleSelect,
   onChange,
-  onSave,
-  onDelete,
   disabled,
 }: {
   row: AuthenticationCountry;
   selected: boolean;
+  dirty: boolean;
   onToggleSelect: () => void;
   onChange: (id: string, patch: Partial<AuthenticationCountry>) => void;
-  onSave: () => void | Promise<void>;
-  onDelete: () => void | Promise<void>;
   disabled: boolean;
 }) {
   const inp =
     "h-8 min-h-8 w-full rounded-md border border-keyra-border bg-keyra-bg px-2 py-1 text-[11px] leading-tight text-keyra-primary placeholder:text-keyra-text-2/50";
   return (
-    <tr className="border-b border-keyra-border/50 align-middle transition-colors hover:bg-keyra-bg/40">
+    <tr
+      className={`border-b border-keyra-border/50 align-middle transition-colors hover:bg-keyra-bg/40 ${
+        dirty ? "bg-amber-500/5 ring-1 ring-inset ring-amber-500/20" : selected ? "bg-keyra-bg/50" : ""
+      }`}
+    >
       <td className="w-10 pl-4 pr-2 py-1.5 align-middle">
         <input type="checkbox" checked={selected} onChange={onToggleSelect} disabled={disabled} aria-label={`Select ${row.countryName}`} className="size-3.5 accent-keyra-accent" />
       </td>
@@ -806,16 +909,6 @@ function CountryEditorRow({
         />
       </td>
       <td className="whitespace-nowrap px-2 py-1.5 align-middle text-[10px] text-keyra-text-2">{fmtDate(row.updatedAt)}</td>
-      <td className="pr-4 pl-2 py-1.5 align-middle">
-        <div className="flex flex-col gap-1 sm:flex-row sm:flex-wrap">
-          <Button type="button" variant="secondary" className="h-8 px-2.5 py-1 text-[11px] font-semibold" disabled={disabled} onClick={() => void onSave()}>
-            Save
-          </Button>
-          <Button type="button" variant="secondary" className="h-8 px-2.5 py-1 text-[11px] font-semibold" disabled={disabled} onClick={() => void onDelete()}>
-            Delete
-          </Button>
-        </div>
-      </td>
     </tr>
   );
 }

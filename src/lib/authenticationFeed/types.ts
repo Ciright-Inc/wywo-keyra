@@ -28,6 +28,7 @@ export type FeedProtocolInput = {
   protocolName: string;
   protocolCategory: string;
   active: boolean;
+  /** Registry / admin weighting; Latest authentications picks uniformly among active protocols (not by this field). */
   percentageWeight: number;
   homePercentage: number;
   roamingPercentage: number;

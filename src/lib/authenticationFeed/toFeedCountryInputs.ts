@@ -1,7 +1,7 @@
 import type { AuthenticationCountry } from "@prisma/client";
 import type { FeedCountryInput } from "@/lib/authenticationFeed/types";
 
-/** Map DB rows to feed inputs: only active + authentication-enabled; `region` line uses sub-region when present. */
+/** Map DB rows to feed inputs: homepage panel only uses rows that are **live** (`active`) and **AUTH** (`authenticationEnabled`). `region` uses sub-region when present. */
 export function toFeedCountryInputs(countries: AuthenticationCountry[]): FeedCountryInput[] {
   return countries
     .filter((c) => c.active && c.authenticationEnabled)

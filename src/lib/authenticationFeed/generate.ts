@@ -3,6 +3,10 @@ import type { FeedCountryInput, FeedProtocolInput, LatestAuthRecord } from "@/li
 import { nextMaskedReference } from "@/lib/authenticationFeed/mask";
 import { normalizeActiveWeights, weightedPickById } from "@/lib/authenticationFeed/weights";
 
+function pickUniform<T>(items: T[], random: () => number): T {
+  return items[Math.floor(random() * items.length)]!;
+}
+
 function makeRng(): () => number {
   return () => randomBytes(4).readUInt32BE(0) / 0xffff_ffff;
 }
@@ -27,15 +31,18 @@ export function generateLatestAuthBatch(params: {
 }): { records: LatestAuthRecord[]; pairKeysAdded: string[]; poolResetCount: number } {
   const random = makeRng();
   const activeCountries = params.countries.filter(
-    (c) => c.active && (c.authenticationEnabled === undefined || c.authenticationEnabled),
+    (c) =>
+      c.active &&
+      /* Mapper passes explicit false when AUTH is off; undefined treats as eligible for backwards compat */
+      (c.authenticationEnabled === undefined || c.authenticationEnabled),
   );
+  // Protocols: only `active` rows; session/batch should use `toFeedProtocolInputs`.
   const activeProtocols = params.protocols.filter((p) => p.active);
   if (!activeCountries.length || !activeProtocols.length) {
     return { records: [], pairKeysAdded: [], poolResetCount: 0 };
   }
 
   const cw = normalizeActiveWeights(activeCountries);
-  const pw = normalizeActiveWeights(activeProtocols);
 
   const records: LatestAuthRecord[] = [];
   const pairKeysAdded: string[] = [];
@@ -50,7 +57,7 @@ export function generateLatestAuthBatch(params: {
       }
 
       const country = weightedPickById(activeCountries, cw, random);
-      const protocol = weightedPickById(activeProtocols, pw, random);
+      const protocol = pickUniform(activeProtocols, random);
       const pairKey = `${country.iso2.toUpperCase()}:${protocol.protocolCode}`;
 
       if (params.pairsUsed.size < params.uniquenessLimit && params.pairsUsed.has(pairKey)) {

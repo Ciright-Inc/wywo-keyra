@@ -8,6 +8,7 @@ import {
 } from "@/lib/authenticationFeed/feedSessionDb";
 import { loadFeedGenerationAssets } from "@/lib/authenticationFeed/loadAssets";
 import { toFeedCountryInputs } from "@/lib/authenticationFeed/toFeedCountryInputs";
+import { toFeedProtocolInputs } from "@/lib/authenticationFeed/toFeedProtocolInputs";
 import { fingerprintFromRequest } from "@/lib/authenticationFeed/mask";
 import { wrapPublicFeedJson } from "@/lib/authenticationFeed/publicFeedPayload";
 import { isPostgresDatabaseUrlConfigured } from "@/lib/postgresEnv";
@@ -52,16 +53,7 @@ export async function GET(req: Request) {
   const { sessionUuid, expiresAt } = await createAuthenticationFeedSession(fp);
 
   const countryInputs = toFeedCountryInputs(countries);
-  const protocolInputs = protocols.map((p) => ({
-    id: p.id,
-    protocolCode: p.protocolCode,
-    protocolName: p.protocolName,
-    protocolCategory: p.protocolCategory,
-    active: p.active,
-    percentageWeight: p.percentageWeight,
-    homePercentage: p.homePercentage,
-    roamingPercentage: p.roamingPercentage,
-  }));
+  const protocolInputs = toFeedProtocolInputs(protocols);
 
   const max = settings.maxRecordsPerSession;
   const initial = Math.min(settings.initialRecordsCount, settings.batchSize, max);

@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { assertAdminServer } from "@/lib/assertAdminServer";
 import { countryWhereFromAuth } from "@/lib/deployments/adminContext";
@@ -7,8 +8,31 @@ import { TelcosDirectoryClient } from "./TelcosDirectoryClient";
 
 const DEFAULT_PAGE_SIZE = 25;
 const PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
+const SEARCH_QUERY_MAX_LEN = 120;
 
-type Search = { page?: string; perPage?: string };
+type Search = { page?: string; perPage?: string; q?: string };
+
+function parseSearchQuery(raw: string | undefined): string {
+  const s = typeof raw === "string" ? raw.trim() : "";
+  return s.slice(0, SEARCH_QUERY_MAX_LEN);
+}
+
+function telcoSearchWhere(query: string): Prisma.TelcoDeploymentWhereInput | undefined {
+  const q = query.trim();
+  if (!q) return undefined;
+  return {
+    OR: [
+      { name: { contains: q, mode: "insensitive" } },
+      { slug: { contains: q, mode: "insensitive" } },
+      { telcoSubdomain: { contains: q, mode: "insensitive" } },
+      { officialDomain: { contains: q, mode: "insensitive" } },
+      { statusNote: { contains: q, mode: "insensitive" } },
+      { country: { name: { contains: q, mode: "insensitive" } } },
+      { country: { iso2: { contains: q, mode: "insensitive" } } },
+      { country: { iso3: { contains: q, mode: "insensitive" } } },
+    ],
+  };
+}
 
 function parsePage(raw: string | undefined): number {
   const n = parseInt(raw ?? "1", 10);
@@ -24,12 +48,14 @@ export default async function AdminTelcosPage({ searchParams }: { searchParams: 
   const sp = await searchParams;
   const pageSize = parsePageSize(sp.perPage);
   let page = parsePage(sp.page);
+  const searchQuery = parseSearchQuery(sp.q);
+  const telcoWhere = telcoSearchWhere(searchQuery);
 
   const auth = await assertAdminServer();
 
   const cw = await countryWhereFromAuth(auth);
   const [totalCount, countries] = await Promise.all([
-    prisma.telcoDeployment.count(),
+    prisma.telcoDeployment.count({ where: telcoWhere }),
     prisma.countryDeployment.findMany({
       where: cw ?? {},
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
@@ -42,6 +68,7 @@ export default async function AdminTelcosPage({ searchParams }: { searchParams: 
 
   /** Full catalog paging; create/edit still enforced per-row in actions and detail pages. */
   const telcos = await prisma.telcoDeployment.findMany({
+    where: telcoWhere,
     orderBy: [{ createdAt: "desc" }, { sortOrder: "asc" }, { name: "asc" }],
     skip: (page - 1) * pageSize,
     take: pageSize,
@@ -77,6 +104,7 @@ export default async function AdminTelcosPage({ searchParams }: { searchParams: 
       }}
       pageSizeOptions={PAGE_SIZE_OPTIONS}
       defaultPageSize={DEFAULT_PAGE_SIZE}
+      searchQuery={searchQuery}
       countries={countries}
       showCreate={showCreate}
       createTelco={createTelco}

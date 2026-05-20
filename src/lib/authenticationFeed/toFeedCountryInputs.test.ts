@@ -27,7 +27,7 @@ function row(over: Partial<AuthenticationCountry> & Pick<AuthenticationCountry, 
 }
 
 describe("toFeedCountryInputs", () => {
-  it("drops inactive and authentication-disabled rows", () => {
+  it("drops rows unless both active and authentication-enabled", () => {
     const out = toFeedCountryInputs([
       row({ id: "1", iso2: "US", countryName: "United States", region: "Americas", active: false, authenticationEnabled: true }),
       row({

@@ -295,8 +295,9 @@ model AuthenticationCountry {
   currencyCode            String?  @db.VarChar(3)
   currencyName            String?  @db.Text
   primaryLanguage         String?  @db.Text
+  /** Catalog row “live”; homepage Latest authentications requires this **and** `authenticationEnabled`. */
   active                  Boolean  @default(true)
-  /** When false, country is excluded from weighted feed selection (still visible in admin). */
+  /** AUTH column in admin; homepage Latest authentications requires this **and** `active`. */
   authenticationEnabled   Boolean  @default(true)
   /** Relative weight before normalization to 100% in the feed engine. Default 5 for global seed. */
   percentageWeight        Float    @default(5)
@@ -311,7 +312,7 @@ model AuthenticationCountry {
   @@index([displayPriority])
 }
 
-/** SAT protocol rows for weighted demo feed + protocol detail modal (global SAT-Core registry). */
+/** SAT protocol registry + Latest authentications feed pool + protocol detail modal (global SAT-Core). */
 model SatProtocol {
   id                   String   @id @default(cuid())
   protocolName         String
@@ -321,8 +322,9 @@ model SatProtocol {
   protocolCategory     String
   shortDescription     String?  @db.Text
   longDescription      String?  @db.Text
+  /** When true (“live” in admin), protocol is eligible for the public Latest authentications feed (uniform random among actives). */
   active               Boolean  @default(true)
-  /** Feed selection weight (normalized with other active protocols). */
+  /** Admin/registry weight; feed does not bias by this field. */
   percentageWeight     Float    @default(60)
   protocolMemo         String   @default("")
   protocolUrlEnabled   Boolean  @default(false)

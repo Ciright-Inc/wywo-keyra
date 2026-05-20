@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: process.cwd(),
   },
+  /**
+   * Allow LAN dev access (e.g. opening the dev server from your phone or another machine on the
+   * same network at http://192.168.x.x:3030). Without this, Next.js 16 blocks HMR, RSC payloads,
+   * and Server Actions on non-localhost origins, which makes auth-protected pages bounce back to
+   * /admin/login even after a successful POST to /api/admin/auth/login.
+   * Add or remove hosts as needed; localhost / 127.0.0.1 are trusted automatically.
+   */
+  allowedDevOrigins: ["192.168.0.12", "192.168.0.0/16"],
   experimental: {
     turbopackFileSystemCacheForBuild: false,
   },

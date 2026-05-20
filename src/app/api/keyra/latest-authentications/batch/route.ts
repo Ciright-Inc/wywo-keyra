@@ -9,6 +9,7 @@ import {
 } from "@/lib/authenticationFeed/feedSessionDb";
 import { loadFeedGenerationAssets } from "@/lib/authenticationFeed/loadAssets";
 import { toFeedCountryInputs } from "@/lib/authenticationFeed/toFeedCountryInputs";
+import { toFeedProtocolInputs } from "@/lib/authenticationFeed/toFeedProtocolInputs";
 import { wrapPublicFeedJson } from "@/lib/authenticationFeed/publicFeedPayload";
 import { isPostgresDatabaseUrlConfigured } from "@/lib/postgresEnv";
 import { cookies } from "next/headers";
@@ -64,16 +65,7 @@ export async function GET(req: Request) {
   const pairs = pairsUsedFromJson(session.pairsUsedJson);
 
   const countryInputs = toFeedCountryInputs(countries);
-  const protocolInputs = protocols.map((p) => ({
-    id: p.id,
-    protocolCode: p.protocolCode,
-    protocolName: p.protocolName,
-    protocolCategory: p.protocolCategory,
-    active: p.active,
-    percentageWeight: p.percentageWeight,
-    homePercentage: p.homePercentage,
-    roamingPercentage: p.roamingPercentage,
-  }));
+  const protocolInputs = toFeedProtocolInputs(protocols);
 
   const { records, poolResetCount } = generateLatestAuthBatch({
     countries: countryInputs,

@@ -746,7 +746,7 @@ export default function AdminSatProtocolsPage() {
                 <p className="font-semibold text-keyra-primary">Data & seeding</p>
                 <p className="mt-2">
                   <code className="rounded bg-keyra-bg px-1 py-0.5">npm start</code> runs migrations then the deploy catalog seed (SAT protocols, world countries, deployment map). To refresh feed-related settings and protocols only:{" "}
-                  <code className="rounded bg-keyra-bg px-1 py-0.5">npm run db:seed:auth-feed</code>. The feed reflects rows marked <strong>live</strong> (active) in this table; keep home + roaming percentages summing to 100%.
+                  <code className="rounded bg-keyra-bg px-1 py-0.5">npm run db:seed:auth-feed</code>. The Latest authentications panel lists only protocols marked <strong>live</strong> (active) here; each row pairs a random country with a <strong>random</strong> one of those protocols. Keep home + roaming percentages summing to 100%.
                 </p>
               </section>
             </div>
