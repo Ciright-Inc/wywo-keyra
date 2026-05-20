@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { AudienceLaneSwitcher } from "@/components/governance/AudienceLaneSwitcher";
-import { getKeyraEcosystemAppLinks, type KeyraEcosystemAppLink } from "@/lib/keyraAppUrls";
+import { getKeyraEcosystemAppLinks, keyraGovernmentsUrl, keyraPartnersUrl, type KeyraEcosystemAppLink } from "@/lib/keyraAppUrls";
 
 const links = [
   { href: "/#problem", label: "Why identity" },
@@ -68,9 +67,6 @@ export function SiteFooter() {
               Choose the experience that matches your context — consumer protection, enterprise deployment, or
               partner tooling.
             </p>
-            <div className="mt-4">
-              <AudienceLaneSwitcher variant="footer" />
-            </div>
             <Link
               href="/"
               className="mt-5 inline-flex text-sm font-semibold text-keyra-primary underline-offset-4 transition hover:underline"
@@ -118,6 +114,26 @@ export function SiteFooter() {
                   {appLinksRight.map((item) => (
                     <FooterAppLinkItem key={item.id} item={item} linkClass={linkClass} />
                   ))}
+                  <li className="min-w-0 mt-2">
+                    <div className="flex flex-row flex-wrap gap-2">
+                      <a
+                        href={keyraGovernmentsUrl()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center rounded-full border border-keyra-border bg-keyra-surface/80 px-3 py-1.5 text-[11px] font-medium text-keyra-primary transition hover:bg-keyra-surface"
+                      >
+                        Governments
+                      </a>
+                      <a
+                        href={keyraPartnersUrl()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center rounded-full border border-keyra-border bg-keyra-surface/80 px-3 py-1.5 text-[11px] font-medium text-keyra-primary transition hover:bg-keyra-surface"
+                      >
+                        Partners
+                      </a>
+                    </div>
+                  </li>
                 </ul>
               </div>
             </nav>

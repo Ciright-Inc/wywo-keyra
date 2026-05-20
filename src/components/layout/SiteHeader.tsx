@@ -75,7 +75,7 @@ export function SiteHeader() {
 
         {!isAdminRoute ? (
           <nav
-            className="relative hidden min-h-0 min-w-0 lg:col-start-2 lg:row-start-1 lg:flex lg:items-center lg:justify-center lg:mr-0"
+            className="relative hidden min-h-0 min-w-0 lg:col-start-2 lg:row-start-1 lg:flex lg:items-center lg:justify-end lg:mr-0"
             aria-label="Primary"
             style={{ lineHeight: "1.5" }}
           >
@@ -128,7 +128,7 @@ export function SiteHeader() {
 
           {isAdminLoginRoute ? null : (
             <div
-              className="flex min-w-0 shrink-0 flex-row flex-nowrap items-stretch rounded-[var(--keyra-radius-pill)] border border-keyra-border bg-keyra-surface/90 p-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md sm:p-0 -ml-4"
+              className="flex min-w-0 shrink-0 flex-row flex-nowrap items-stretch rounded-[var(--keyra-radius-pill)] border border-keyra-border bg-keyra-surface/90 p-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md sm:p-0 mr-2"
               aria-label="Access Get Started and Be Protected Online"
             >
               {isProtectedAdminRoute ? (
@@ -143,11 +143,10 @@ export function SiteHeader() {
                 <>
                   <a
                     href={accessHref}
-                    className="flex shrink-0 items-center whitespace-nowrap px-1.5 py-2 text-xs font-medium leading-none text-keyra-accent transition duration-300 ease-out hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-2 sm:text-sm"
+                    className="flex shrink-0 items-center whitespace-nowrap rounded-full bg-keyra-accent px-4 py-1.5 text-xs font-semibold leading-none text-white transition duration-300 ease-out hover:bg-keyra-accent/90 hover:shadow-sm sm:px-5 sm:text-sm"
                   >
                     Access
                   </a>
-                  <div className="my-1.5 w-px shrink-0 self-stretch bg-keyra-border" aria-hidden />
                 </>
               ) : null}
             </div>
@@ -156,7 +155,6 @@ export function SiteHeader() {
           <KeyraAppLauncher />
         </div>
       </div>
-      {!isAdminRoute ? <AudienceLaneSwitcher /> : null}
     </header>
   );
 }

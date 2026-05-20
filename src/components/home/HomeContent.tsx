@@ -3,159 +3,92 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { KeyraHomeGlobe } from "@/components/home/KeyraHomeGlobe";
-import {
-  KeyraGlobeLiveActivityPanel,
-  KeyraGlobeLiveStatPanel,
-} from "@/components/home/KeyraGlobeLivePanels";
 import { HomeRegistrationCTAs } from "@/components/registration/HomeRegistrationCTAs";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { PageIntentRibbon } from "@/components/trust/PageIntentRibbon";
-import { HeroCosmicBackdrop } from "@/components/trust/HeroCosmicBackdrop";
 import { NarrativeSection } from "@/components/home/narrative/NarrativeSection";
 
 const easeTrust = [0.22, 0.61, 0.36, 1] as const;
 
-function SignalDot({
-  style,
-  delay = "0s",
-  size = 6,
-}: {
-  style: React.CSSProperties;
-  delay?: string;
-  size?: number;
-}) {
-  return (
-    <span
-      className="animate-keyra-signal absolute rounded-full"
-      style={{
-        width: size,
-        height: size,
-        background:
-          "radial-gradient(circle at 30% 30%, rgba(158,199,220,0.82), rgba(158,199,220,0.1) 55%, rgba(158,199,220,0) 70%)",
-        boxShadow: "0 0 14px rgba(158,199,220,0.1), 0 0 36px rgba(120,140,175,0.06)",
-        animationDelay: delay,
-        ...style,
-      }}
-      aria-hidden
-    />
-  );
-}
 
 export function HomeContent() {
   return (
     <>
       {/* SECTION 1 — HERO */}
-      <section className="keyra-band--light relative min-h-[min(92vh,58rem)] scroll-mt-44 overflow-hidden border-b border-keyra-border px-[var(--keyra-space-section-x)] py-[var(--keyra-space-section-y)] lg:scroll-mt-24">
-        <HeroCosmicBackdrop variant="marketing">
-          <SignalDot style={{ left: "14%", top: "28%" }} delay="0.1s" />
-          <SignalDot style={{ left: "26%", top: "42%" }} delay="1.1s" size={7} />
-          <SignalDot style={{ left: "38%", top: "31%" }} delay="0.7s" />
-          <SignalDot style={{ left: "49%", top: "52%" }} delay="1.8s" size={8} />
-          <SignalDot style={{ left: "57%", top: "34%" }} delay="0.3s" />
-          <SignalDot style={{ left: "66%", top: "46%" }} delay="1.4s" size={7} />
-          <SignalDot style={{ left: "78%", top: "33%" }} delay="0.9s" />
-          <SignalDot style={{ left: "84%", top: "55%" }} delay="2.1s" size={8} />
-          <SignalDot style={{ left: "31%", top: "62%" }} delay="2.6s" />
-          <SignalDot style={{ left: "62%", top: "68%" }} delay="1.9s" size={7} />
-        </HeroCosmicBackdrop>
+      <section className="relative min-h-screen overflow-hidden bg-white text-slate-900">
+        <div className="pointer-events-none absolute inset-0" aria-hidden style={{background:"radial-gradient(ellipse 55% 90% at 18% 55%,rgba(241,245,249,0.8) 0%,rgba(255,255,255,0.6) 40%,transparent 80%)"}} />
+        <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.04]" aria-hidden style={{backgroundImage:"url('/image.png')",filter:"blur(60px)"}} />
 
-        <div className="relative z-10 mx-auto flex w-full min-w-0 max-w-6xl flex-col gap-10 py-6 sm:min-h-[54vh] lg:min-h-[56vh] lg:gap-12 lg:py-2">
-          <header className="relative z-10 w-full min-w-0 lg:pt-2">
-            <motion.p
-              className="keyra-eyebrow"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, ease: easeTrust }}
-            >
-              Sovereign trust infrastructure
-            </motion.p>
-            <div className="mt-5 max-w-[min(100%,52rem)]">
-              <h1 className="keyra-display-hero text-balance">
-                <motion.span
-                  className="inline-block"
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, ease: easeTrust }}
-                >
-                  Be Protected Online.
-                </motion.span>
-              </h1>
-              <motion.p
-                className="mt-7 max-w-xl text-pretty text-[17px] leading-[1.65] text-keyra-text-2 sm:text-[19px] sm:leading-[1.62]"
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.08, ease: easeTrust }}
-              >
-                The internet finally became trustworthy — calm, deterministic identity for people,
-                institutions, and verified intelligence.
-              </motion.p>
-            </div>
+        <div className="relative z-10 mx-auto max-w-[1440px] px-12 py-16 lg:px-20 lg:py-24">
+          <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6,ease:easeTrust}}>
+            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-500">Sovereign trust infrastructure</p>
+            <h1 className="mt-5 text-[clamp(3rem,5.5vw,5.8rem)] font-semibold leading-[1.05] tracking-[-0.03em]">Be Protected Online.</h1>
+            <p className="mt-5 max-w-lg text-[15px] leading-[1.65] text-slate-400">The internet finally became trustworthy — calm, deterministic identity for people, institutions, and verified intelligence.</p>
+          </motion.div>
 
-            <motion.div
-              className="mt-10 w-full min-w-0 sm:mt-12"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.16, ease: easeTrust }}
-            >
-              <PageIntentRibbon
-                tone="onSurface"
-                who="Households, professionals, and institutions who live and work online."
-                problem="Identity is fragmented; fraud and synthetic deception are routine."
-                nextAction="Continue below, or sign in to manage your Keyra account."
-              />
-            </motion.div>
-          </header>
-
-          <div className="grid min-h-0 w-full grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(240px,0.95fr)] lg:gap-12">
-            <div className="relative z-10 w-full min-w-0 max-w-3xl">
-              <motion.div
-                className="w-full min-w-0"
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.18, ease: easeTrust }}
-              >
-                <HomeRegistrationCTAs />
-              </motion.div>
-
-              <motion.p
-                className="mt-10 text-sm leading-relaxed text-keyra-text-2"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.26, ease: easeTrust }}
-              >
-                Post-password verification. Carrier-aware signals. Cryptographic orchestration — quiet,
-                precise, inevitable.{" "}
-                <span className="text-keyra-primary">Be Protected Online.</span>
-              </motion.p>
-            </div>
-
-            <div className="pointer-events-auto relative z-0 flex w-full max-w-[min(100%,580px)] justify-center justify-self-center lg:max-w-[580px] lg:justify-self-end lg:pt-1">
-              <div
-                className="keyra-globe-stage relative box-border flex w-full flex-col gap-3 lg:block lg:min-h-[min(500px,62vw)] lg:px-3 lg:pb-7 lg:pt-5"
-                suppressHydrationWarning
-              >
-                <KeyraGlobeLiveStatPanel />
-                <div className="relative order-2 mx-auto w-full max-w-[320px] sm:max-w-[380px] lg:absolute lg:left-1/2 lg:top-1/2 lg:max-w-[460px] lg:-translate-x-1/2 lg:-translate-y-1/2">
-                  <div
-                    className="pointer-events-none absolute -inset-3 rounded-full opacity-90 blur-md sm:-inset-4"
-                    style={{
-                      background:
-                        "radial-gradient(circle at 35% 25%, rgba(158,199,220,0.11), transparent 58%), radial-gradient(circle at 70% 80%, rgba(110,130,168,0.07), transparent 55%)",
-                    }}
-                    aria-hidden
-                  />
-                  <div
-                    className="relative mx-auto aspect-square w-full overflow-hidden rounded-full shadow-[0_24px_80px_rgba(0,0,0,0.32)] lg:aspect-auto lg:h-[460px] lg:w-[min(100%-24px,460px)] lg:max-w-[460px]"
-                    suppressHydrationWarning
-                  >
-                    <KeyraHomeGlobe className="block h-full w-full touch-pan-y" />
-                  </div>
+          <div className="mt-16 flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
+            {/* LEFT: Globe */}
+            <div className="relative lg:w-[42%] lg:-ml-16 xl:-ml-24">
+              <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" aria-hidden style={{width:"120%",height:"120%",background:"radial-gradient(circle,rgba(59,130,246,0.12) 0%,rgba(37,99,235,0.03) 50%,transparent 70%)",filter:"blur(40px)"}} />
+              <div className="relative mx-auto w-full max-w-[520px] lg:max-w-none">
+                <div className="relative aspect-square w-full overflow-hidden rounded-full">
+                  <KeyraHomeGlobe className="block h-full w-full touch-pan-y" />
                 </div>
-                <KeyraGlobeLiveActivityPanel />
               </div>
             </div>
+
+            {/* CENTER: Timeline */}
+            <div className="lg:w-[30%] lg:pt-4">
+              <div className="flex gap-5">
+                <div className="relative flex flex-col items-center pt-2">
+                  <div className="absolute inset-y-0 w-px bg-slate-200" />
+                  <div className="relative z-10 h-2 w-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+                  <div className="relative z-10 mt-[88px] h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+                  <div className="relative z-10 mt-[88px] h-2 w-2 rounded-full bg-slate-500 shadow-[0_0_10px_rgba(100,116,139,0.5)]" />
+                </div>
+                <div className="flex flex-col gap-6">
+                  {[{l:"Who this is for",t:"Households, professionals, and institutions who live and work online."},{l:"Problem",t:"Identity is fragmented; fraud and synthetic deception are routine."},{l:"What to do next",t:"Continue below, or sign in to manage your Keyra account."}].map((item,i)=>(
+                    <motion.div key={item.l} className="rounded-xl border border-slate-200/80 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.2+i*0.08,ease:easeTrust}}>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">{item.l}</p>
+                      <p className="mt-2 text-[13px] leading-[1.6] text-slate-600">{item.t}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT: Widgets */}
+            <div className="flex flex-col gap-3 lg:w-[22%] lg:pt-4">
+              <motion.div className="rounded-xl border border-slate-200/80 bg-white/60 p-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.35,ease:easeTrust}}>
+                <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Global verification signals</p>
+                <p className="mt-3 font-mono text-[1.65rem] font-semibold leading-none tracking-tight tabular-nums text-slate-900">2,801,077</p>
+                <div className="mt-3 flex gap-5">
+                  <div><p className="font-mono text-xs font-medium tabular-nums text-slate-900">4,822</p><p className="text-[10px] text-slate-500">Per second</p></div>
+                  <div><p className="font-mono text-xs font-medium tabular-nums text-slate-900">289,320</p><p className="text-[10px] text-slate-500">Per minute</p></div>
+                </div>
+                <div className="mt-3 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-2 text-center"><span className="text-[11px] text-slate-500">Global numbers verified — live by region</span></div>
+              </motion.div>
+              <motion.div className="rounded-xl border border-slate-200/80 bg-white/60 p-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.42,ease:easeTrust}}>
+                <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Latest authentications</p>
+                <div className="mt-3 space-y-2.5">
+                  {["Ireland • SIM verified","Germany • eSIM enrolled","USA • Carrier signal"].map(l=>(<div key={l} className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]" /><span className="text-[12px] text-slate-500">{l}</span></div>))}
+                </div>
+              </motion.div>
+            </div>
           </div>
+
+          {/* BOTTOM: 4-column cards */}
+          <motion.div className="mt-20 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6,delay:0.5,ease:easeTrust}}>
+            {[{t:"Protect Your Identity",d:"Secure your personal identity, mobile device, and digital presence with Keyra.",h:"/signup",c:"text-blue-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]"},{t:"Protect Your Family",d:"Create a protected family identity registry for every family member.",h:"/app/family",c:"text-emerald-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]"},{t:"Secure Your Organization",d:"Protect your company domains, data, and team identities.",h:"/contact",c:"text-violet-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(167,139,250,0.5)]"},{t:"Partner With Keyra",d:"Join Keyra as a telecom, technology, or service partner.",h:"/partners",c:"text-orange-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(251,146,60,0.5)]"}].map(item=>(
+              <Link key={item.t} href={item.h} className="group block">
+                <div className="h-full rounded-xl border border-slate-200/70 bg-white p-6 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md">
+                  <h3 className="text-[15px] font-semibold leading-snug text-slate-900">{item.t}</h3>
+                  <p className="mt-2 text-[13px] leading-[1.6] text-slate-500">{item.d}</p>
+                  <span className={`mt-5 inline-flex items-center gap-1 text-[13px] font-medium ${item.c} transition-all duration-300`}>Begin<span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span></span>
+                </div>
+              </Link>
+            ))}
+          </motion.div>
         </div>
       </section>
 
@@ -174,7 +107,7 @@ export function HomeContent() {
             "Humans and agents blurred.",
             "Institutions needed proof, not patches.",
           ].map((line) => (
-            <Card key={line} className="border-keyra-border/80 bg-[rgba(255,255,255,0.02)] px-6 py-5 shadow-none backdrop-blur-[2px]">
+            <Card key={line} className="border-keyra-border/80 bg-white px-6 py-5 shadow-none">
               <p className="text-[15px] font-medium leading-snug tracking-tight text-keyra-primary sm:text-[16px]">
                 {line}
               </p>
@@ -353,11 +286,9 @@ export function HomeContent() {
         style={{ background: "linear-gradient(to bottom, #f0f2f5, #e8eaf0)" }}
         aria-labelledby="finale-heading"
       >
-        {/* Strong ambient glow behind card */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] h-[95%] rounded-full opacity-70 blur-[80px]" style={{ background: "radial-gradient(circle at center, rgba(255,255,255,0.95), transparent 60%)" }} aria-hidden />
         
         <div className="mx-auto max-w-4xl relative">
-          <div className="overflow-hidden rounded-[32px] border-[rgba(255,255,255,0.9)] bg-[rgba(255,255,255,0.95)] backdrop-blur-[20px] shadow-[0_32px_80px_rgba(0,0,0,0.12),0_16px_40px_rgba(0,0,0,0.08)] px-8 py-16 text-center sm:px-16 sm:py-16 md:px-20 md:py-20 transition-all duration-[0.35s] ease hover:-translate-y-2 hover:shadow-[0_40px_100px_rgba(0,0,0,0.15),0_20px_50px_rgba(0,0,0,0.1)]">
+          <div className="overflow-hidden rounded-[32px] border-[rgba(255,255,255,0.9)] bg-white shadow-[0_32px_80px_rgba(0,0,0,0.12),0_16px_40px_rgba(0,0,0,0.08)] px-8 py-16 text-center sm:px-16 sm:py-16 md:px-20 md:py-20 transition-all duration-[0.35s] ease hover:-translate-y-2 hover:shadow-[0_40px_100px_rgba(0,0,0,0.15),0_20px_50px_rgba(0,0,0,0.1)]">
             <p className="keyra-eyebrow">Final statement</p>
             <h2 id="finale-heading" className="keyra-display-finale mx-auto mt-4 max-w-[18ch] text-balance">
               Be Protected Online.

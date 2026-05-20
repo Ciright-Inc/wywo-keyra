@@ -9,11 +9,9 @@ import { AudienceLaneSwitcher } from "@/components/governance/AudienceLaneSwitch
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 
 const nav = [
-  { href: "/#problem", label: "Why identity" },
-  { href: "/#missing-layer", label: "The shift" },
-  { href: "/#for", label: "Who it's for" },
-  { href: "/#global", label: "Global" },
-  { href: "/developers", label: "Developers" },
+  { href: "/#for", label: "Consumer" },
+  { href: "/governments", label: "Governments" },
+  { href: "/partners", label: "Partners" },
 ];
 
 export function SiteHeader() {

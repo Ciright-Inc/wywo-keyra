@@ -43,6 +43,16 @@ export function keyraPressUrl(): string {
   return trimSlash(process.env.NEXT_PUBLIC_PRESS_URL?.trim() || "https://press.keyra.ie");
 }
 
+/** governments.keyra.ie */
+export function keyraGovernmentsUrl(): string {
+  return trimSlash(process.env.NEXT_PUBLIC_GOVERNMENTS_URL?.trim() || "https://governments.keyra.ie");
+}
+
+/** partners.keyra.ie */
+export function keyraPartnersUrl(): string {
+  return trimSlash(process.env.NEXT_PUBLIC_PARTNERS_URL?.trim() || "https://partners.keyra.ie");
+}
+
 /** This marketing site (e.g. https://keyra.ie or http://localhost:3030). */
 export function keyraMarketingOrigin(): string {
   return trimSlash(
@@ -101,6 +111,13 @@ export function getKeyraEcosystemAppLinks(): KeyraEcosystemAppLink[] {
       href: keyraSettingsPortalUrl(),
     },
     {
+      id: "trust",
+      label: "Trust",
+      description: "Trust & assurance",
+      href: keyraMarketingPath("/trust"),
+      internalPath: "/trust",
+    },
+    {
       id: "affiliates",
       label: "Affiliates",
       description: "Affiliate program",
@@ -111,13 +128,6 @@ export function getKeyraEcosystemAppLinks(): KeyraEcosystemAppLink[] {
       label: "Press",
       description: "Press room",
       href: keyraPressUrl(),
-    },
-    {
-      id: "trust",
-      label: "Trust",
-      description: "Trust & assurance",
-      href: keyraMarketingPath("/trust"),
-      internalPath: "/trust",
     },
     {
       id: "global",
