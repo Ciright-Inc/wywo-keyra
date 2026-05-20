@@ -3,6 +3,13 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
 import { cn } from "./cn";
 
+/**
+ * Input — label + field + helper/error stack.
+ *
+ * Spec: agent.md §0.7. Field uses `.ds-text-input` (8px radius, hairline border,
+ * 16px text to prevent iOS zoom, 2px ink border on focus). Error state turns the
+ * border red and surfaces the message in spec-error styling.
+ */
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
   hint?: ReactNode;
@@ -20,12 +27,9 @@ export function Input({
   const describedBy = hint || error ? `${id}-help` : undefined;
 
   return (
-    <div className="space-y-2">
+    <div>
       {label ? (
-        <label
-          htmlFor={id}
-          className="block text-[14px] font-medium text-keyra-text"
-        >
+        <label htmlFor={id} className="ds-input-label">
           {label}
         </label>
       ) : null}
@@ -33,25 +37,14 @@ export function Input({
         id={id}
         aria-invalid={Boolean(error) || undefined}
         aria-describedby={describedBy}
-        className={cn(
-          "h-12 w-full rounded-[var(--keyra-radius-card)] border bg-keyra-surface px-4 text-[16px] text-keyra-text placeholder:text-keyra-text-2/70 transition duration-200 focus-visible:outline-none focus-visible:keyra-focus",
-          error ? "border-keyra-primary" : "border-keyra-border",
-          className,
-        )}
+        className={cn("ds-text-input", error ? "is-error" : "", className)}
         {...props}
       />
       {hint || error ? (
-        <p
-          id={describedBy}
-          className={cn(
-            "text-[14px] leading-relaxed",
-            error ? "font-medium text-keyra-primary" : "text-keyra-text-2",
-          )}
-        >
+        <p id={describedBy} className={error ? "ds-input-error" : "ds-input-helper"}>
           {error ?? hint}
         </p>
       ) : null}
     </div>
   );
 }
-

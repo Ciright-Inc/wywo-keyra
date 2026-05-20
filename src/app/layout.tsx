@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Montserrat } from "next/font/google";
 import { cookies, headers } from "next/headers";
 import "./globals.css";
 import { HeaderNoSSR } from "@/components/layout/HeaderNoSSR";
@@ -19,6 +19,16 @@ import { RailwayPlausibleScripts } from "@/components/analytics/RailwayPlausible
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+});
+
+/**
+ * Montserrat — accent face for numerics, IDs, timestamps (agent.md §0.1).
+ * Loaded with Inter; `--font-montserrat` is exposed for `.ds-numeric`.
+ */
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const viewport: Viewport = {
@@ -66,10 +76,27 @@ export default async function RootLayout({
     <html
       lang="en-IE"
       data-keyra-lane={designLane}
-      className={`${inter.variable} h-full antialiased`}
+      className={`${inter.variable} ${montserrat.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
+        {/* Material Symbols Outlined — single icon family for the whole app (agent.md TR-10).
+            Render with `<span className="material-symbols-outlined">name</span>`.
+            `display=optional` avoids invisible-text FOUT on slow networks. */}
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=optional"
+        />
         <PlausibleScripts />
         <RailwayPlausibleScripts />
       </head>

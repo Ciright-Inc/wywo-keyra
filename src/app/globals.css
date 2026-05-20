@@ -157,6 +157,63 @@
   --keyra-z-overlay: 250;
   --keyra-z-drawer: 260;
   --keyra-z-toast: 400;
+
+  /* ------------------------------------------------------------------------ */
+  /* Design-system tokens (agent.md) — canonical names, mirror --color-* hexes */
+  /* ------------------------------------------------------------------------ */
+  /* Surfaces */
+  --ds-canvas:           var(--color-canvas);          /* #ffffff */
+  --ds-canvas-soft:      var(--color-canvas-soft);     /* #fafafa */
+  --ds-surface-card:     var(--color-surface-card);    /* #ffffff */
+  --ds-surface-strong:   var(--color-surface-strong);  /* #f0f0f3 */
+  --ds-surface-dark:     var(--color-surface-dark);    /* #171717 */
+
+  /* Borders */
+  --ds-hairline:         var(--color-hairline);        /* #f0f0f3 */
+  --ds-hairline-soft:    var(--color-hairline-soft);   /* #f5f5f7 */
+  --ds-hairline-strong:  var(--color-hairline-strong); /* #dcdee0 */
+
+  /* Text */
+  --ds-ink:              var(--color-ink);             /* #171717 */
+  --ds-body:             var(--color-body);            /* #60646c */
+  --ds-muted:            var(--color-muted);           /* #999999 */
+  --ds-muted-soft:       var(--color-muted-soft);      /* #cccccc */
+  --ds-on-primary:       var(--color-on-primary);      /* #ffffff */
+  --ds-on-dark:          var(--color-on-dark);         /* #ffffff */
+
+  /* Action / link */
+  --ds-primary:          var(--color-primary);         /* #000000 */
+  --ds-primary-active:   var(--color-primary-active);  /* #1a1a1a */
+  --ds-text-link:        var(--color-text-link);       /* #0d74ce */
+  --ds-text-link-2:      var(--color-text-link-secondary); /* #476cff */
+
+  /* Semantic — note: spec wants strong #dc2626 for error; keep --color-semantic-error
+   * (#eb8e90) as a legacy alias and add the spec-strict --ds-error alongside. */
+  --ds-success:          #16a34a;
+  --ds-error:            #dc2626;
+  --ds-warning:          #ab6400;
+
+  /* Radii (agent.md §0.3) */
+  --ds-radius-xs:   4px;
+  --ds-radius-sm:   6px;
+  --ds-radius-md:   8px;   /* buttons, inputs, dropdowns */
+  --ds-radius-lg:  12px;   /* cards, modals, toasts */
+  --ds-radius-xl:  16px;   /* hero media */
+  --ds-radius-pill: 9999px;
+
+  /* Elevation (agent.md §0.4 — ONE shadow only) */
+  --ds-shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.04);
+
+  /* Motion (agent.md §0.5 — 150–220ms ease) */
+  --ds-motion-fast: 150ms;
+  --ds-motion-base: 200ms;
+  --ds-motion-slow: 220ms;
+  --ds-ease:        ease;
+
+  /* Typography family handles (agent.md §0.1) */
+  --ds-font-sans:   var(--font-inter), Inter, -apple-system, system-ui, sans-serif;
+  --ds-font-accent: var(--font-montserrat), Montserrat, ui-sans-serif, system-ui, sans-serif;
+  --ds-font-mono:   var(--keyra-font-mono);
 }
 
 /* Site header shell — Expo-inspired marketing chrome */
@@ -611,3 +668,355 @@ html[data-keyra-lane="developer"] .keyra-code-block {
     transition: none;
   }
 }
+
+/* ========================================================================== */
+/* Design-system utility classes (agent.md)                                   */
+/* All `.ds-*` classes are opt-in and inherit from --ds-* tokens.             */
+/* ========================================================================== */
+
+/* ----- Typography (website scale) ----------------------------------------- */
+.ds-display-mega {
+  font-family: var(--ds-font-sans);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--ds-ink);
+}
+.ds-display-xl {
+  font-family: var(--ds-font-sans);
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--ds-ink);
+}
+.ds-display-lg {
+  font-family: var(--ds-font-sans);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--ds-ink);
+}
+.ds-display-md {
+  font-family: var(--ds-font-sans);
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--ds-ink);
+}
+/* Dashboard page-title size — agent.md §2.2 */
+.ds-display-sm {
+  font-family: var(--ds-font-sans);
+  font-size: 1.375rem; /* 22px */
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--ds-ink);
+}
+.ds-title-md {
+  font-family: var(--ds-font-sans);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ds-ink);
+}
+.ds-title-sm {
+  font-family: var(--ds-font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ds-ink);
+}
+.ds-body-md {
+  font-family: var(--ds-font-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ds-body);
+}
+.ds-body-sm {
+  font-family: var(--ds-font-sans);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ds-body);
+}
+.ds-caption {
+  font-family: var(--ds-font-sans);
+  font-size: 0.8125rem; /* 13px */
+  line-height: 1.4;
+  color: var(--ds-muted);
+}
+.ds-caption-uppercase {
+  font-family: var(--ds-font-sans);
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ds-body);
+}
+.ds-numeric {
+  font-family: var(--ds-font-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ----- Buttons (agent.md §0.6) -------------------------------------------- */
+.ds-btn-primary,
+.ds-btn-secondary,
+.ds-btn-tertiary,
+.ds-btn-destructive {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 10px 18px;
+  font-family: var(--ds-font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: var(--ds-radius-md);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background-color var(--ds-motion-base) var(--ds-ease),
+    border-color var(--ds-motion-base) var(--ds-ease),
+    color var(--ds-motion-base) var(--ds-ease),
+    transform var(--ds-motion-fast) var(--ds-ease);
+}
+
+.ds-btn-primary {
+  background: var(--ds-primary);
+  color: var(--ds-on-primary);
+  border: none;
+}
+.ds-btn-primary:hover  { background: var(--ds-primary-active); }
+.ds-btn-primary:active { transform: translateY(1px); }
+
+.ds-btn-secondary {
+  background: var(--ds-surface-card);
+  color: var(--ds-ink);
+  border: 1px solid var(--ds-hairline-strong);
+}
+.ds-btn-secondary:hover  { background: var(--ds-canvas-soft); }
+.ds-btn-secondary:active { transform: translateY(1px); }
+
+.ds-btn-destructive {
+  background: var(--ds-surface-card);
+  color: var(--ds-error);
+  border: 1px solid var(--ds-hairline-strong);
+}
+.ds-btn-destructive:hover  { background: var(--ds-canvas-soft); }
+.ds-btn-destructive:active { transform: translateY(1px); }
+
+.ds-btn-tertiary {
+  background: transparent;
+  color: var(--ds-text-link);
+  border: none;
+  min-height: auto;
+  padding: 8px 0;
+}
+.ds-btn-tertiary:hover { color: var(--ds-text-link-2); }
+
+.ds-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  color: var(--ds-ink);
+  border: none;
+  border-radius: var(--ds-radius-md);
+  cursor: pointer;
+  transition: background-color var(--ds-motion-base) var(--ds-ease);
+}
+.ds-btn-icon:hover { background: var(--ds-canvas-soft); }
+
+/* Compact 32px variant for dashboard toolbars (agent.md §2.4) */
+.ds-btn-primary.is-sm,
+.ds-btn-secondary.is-sm,
+.ds-btn-destructive.is-sm {
+  min-height: 32px;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: var(--ds-radius-sm);
+}
+
+/* Disabled — uniform across variants */
+.ds-btn-primary:disabled,
+.ds-btn-secondary:disabled,
+.ds-btn-tertiary:disabled,
+.ds-btn-destructive:disabled,
+.ds-btn-icon:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ----- Inputs (agent.md §0.7, §2.7) --------------------------------------- */
+.ds-text-input {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 16px;
+  background: var(--ds-surface-card);
+  color: var(--ds-ink);
+  font-family: var(--ds-font-sans);
+  font-size: 16px; /* 16px prevents iOS zoom */
+  line-height: 1.4;
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-md);
+  outline: none;
+  transition:
+    border-color var(--ds-motion-base) var(--ds-ease),
+    background-color var(--ds-motion-base) var(--ds-ease);
+}
+.ds-text-input::placeholder { color: var(--ds-muted-soft); }
+.ds-text-input:focus {
+  border-width: 2px;
+  border-color: var(--ds-ink);
+  padding: 11px 15px; /* compensate for thicker border */
+}
+.ds-text-input[aria-invalid="true"],
+.ds-text-input.is-error {
+  border-color: var(--ds-error);
+}
+.ds-text-input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+/* Dashboard-density variant */
+.ds-text-input.is-sm {
+  min-height: 36px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+.ds-text-input.is-sm:focus { padding: 7px 11px; }
+
+.ds-input-label {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--ds-font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ds-ink);
+}
+.ds-input-helper {
+  margin-top: 4px;
+  font-family: var(--ds-font-sans);
+  font-size: 12px;
+  color: var(--ds-body);
+}
+.ds-input-error {
+  margin-top: 4px;
+  font-family: var(--ds-font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ds-error);
+}
+
+/* ----- Cards & panels (agent.md §0.8) ------------------------------------- */
+.ds-feature-card {
+  background: var(--ds-surface-card);
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-lg);
+  padding: 24px;
+  transition: box-shadow var(--ds-motion-base) var(--ds-ease);
+}
+.ds-feature-card:hover { box-shadow: var(--ds-shadow-soft); }
+
+.ds-panel {
+  background: var(--ds-surface-card);
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-lg);
+  padding: clamp(20px, 3vw, 28px);
+}
+
+/* Dashboard-density card padding (agent.md §2.5) */
+.ds-feature-card.is-dashboard,
+.ds-panel.is-dashboard {
+  padding: 20px;
+}
+
+.ds-feature-card-dark {
+  background: var(--ds-surface-dark);
+  color: var(--ds-on-dark);
+  border: 1px solid var(--ds-surface-dark);
+  border-radius: var(--ds-radius-lg);
+  padding: 24px;
+}
+
+/* ----- Badge / chip (agent.md §0.9) --------------------------------------- */
+.ds-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: var(--ds-surface-strong);
+  color: var(--ds-ink);
+  font-family: var(--ds-font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--ds-radius-pill);
+}
+
+/* ----- Inline link (agent.md §0.10) --------------------------------------- */
+.ds-text-link {
+  color: var(--ds-text-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--ds-motion-base) var(--ds-ease);
+}
+.ds-text-link:hover { color: var(--ds-text-link-2); }
+
+/* ----- Focus ring (agent.md §0.7 — global fallback) ----------------------- */
+.ds-focus,
+.ds-focus:focus-visible {
+  outline: 2px solid var(--ds-ink);
+  outline-offset: 3px;
+}
+
+/* ----- Surface helpers ---------------------------------------------------- */
+.ds-surface-canvas       { background: var(--ds-canvas); }
+.ds-surface-canvas-soft  { background: var(--ds-canvas-soft); }
+.ds-surface-strong       { background: var(--ds-surface-strong); }
+.ds-surface-dark         { background: var(--ds-surface-dark); color: var(--ds-on-dark); }
+
+/* ========================================================================== */
+/* Spec-compliance fixes to legacy .keyra-card (agent.md TR-5, TR-8)         */
+/* TR-5: no glassmorphism — remove backdrop-blur (was a no-op anyway on the   */
+/*       opaque white card, but the rule is explicit).                        */
+/* TR-8: hover changes ONE property — drop the border-color shift on hover.   */
+/* Soften hover shadow to the single canonical --ds-shadow-soft.              */
+/* ========================================================================== */
+.keyra-card {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.keyra-card:hover {
+  box-shadow: var(--ds-shadow-soft);
+  border-color: var(--color-hairline-strong);
+}
+
+/* prefers-reduced-motion already drops transition on .keyra-card above. */
+@media (prefers-reduced-motion: reduce) {
+  .ds-btn-primary,
+  .ds-btn-secondary,
+  .ds-btn-tertiary,
+  .ds-btn-destructive,
+  .ds-btn-icon,
+  .ds-text-input,
+  .ds-feature-card,
+  .ds-text-link {
+    transition: none;
+  }
+}
+

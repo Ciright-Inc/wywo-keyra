@@ -10,6 +10,12 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "./cn";
 
+/**
+ * Toast — transient notification stack docked bottom-right.
+ *
+ * Spec: agent.md TR-2 (12px radius), TR-6 (single soft shadow), TR-7 (semantic
+ * color goes on the left accent bar / icon only, never on the toast body or text).
+ */
 type ToastKind = "success" | "error" | "info";
 
 type ToastItem = {
@@ -24,6 +30,13 @@ type ToastApi = {
 };
 
 const ToastContext = createContext<ToastApi | null>(null);
+
+/** Left-accent color carries the semantic meaning — body/text stay neutral. */
+const accentBarClass: Record<ToastKind, string> = {
+  success: "before:bg-[var(--ds-success)]",
+  error: "before:bg-[var(--ds-error)]",
+  info: "before:bg-[var(--ds-ink)]",
+};
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<ToastItem[]>([]);
@@ -52,20 +65,14 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               exit={{ opacity: 0, y: 12, scale: 0.98 }}
               transition={{ duration: 0.2 }}
               className={cn(
-                "rounded-[var(--keyra-radius-card)] border bg-keyra-surface p-4 shadow-[var(--keyra-shadow-card)]",
-                t.kind === "success" && "border-keyra-border",
-                t.kind === "error" && "border-keyra-border",
-                t.kind === "info" && "border-keyra-border",
+                "relative overflow-hidden rounded-[var(--ds-radius-lg)] border border-[var(--ds-hairline-strong)] bg-[var(--ds-surface-card)] p-4 pl-5 shadow-[var(--ds-shadow-soft)]",
+                "before:absolute before:inset-y-0 before:left-0 before:w-1",
+                accentBarClass[t.kind],
               )}
+              role={t.kind === "error" ? "alert" : "status"}
             >
-              <p className="text-[14px] font-semibold text-keyra-primary">
-                {t.title}
-              </p>
-              {t.message ? (
-                <p className="mt-1 text-[14px] leading-relaxed text-keyra-text-2">
-                  {t.message}
-                </p>
-              ) : null}
+              <p className="ds-title-sm">{t.title}</p>
+              {t.message ? <p className="mt-1 ds-body-sm">{t.message}</p> : null}
             </motion.div>
           ))}
         </AnimatePresence>
@@ -81,4 +88,3 @@ export function useToast() {
   }
   return ctx;
 }
-

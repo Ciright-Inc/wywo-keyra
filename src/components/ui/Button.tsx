@@ -1,88 +1,59 @@
 "use client";
 
-
-
 import type { ButtonHTMLAttributes } from "react";
-
 import { cn } from "./cn";
 
+/**
+ * Button — single source of truth for CTAs across the app.
+ *
+ * Spec: agent.md §0.6 / TR-1 / TR-2.
+ *
+ *  • `primary`   = solid `#000` background, white text, 8px radius. Hover swaps to `#1a1a1a`.
+ *  • `secondary` = white surface, `#dcdee0` hairline border, ink text. Hover swaps to `#fafafa`.
+ *  • `ghost`     = transparent + link-blue text (mapped to spec "tertiary"). Hover swaps to `#476cff`.
+ *  • `destructive` = white surface, hairline border, error-red text (rare).
+ *
+ * Sizes:
+ *  • `md` (default) — 40px tall, 14/500, the canonical CTA.
+ *  • `lg`           — 48px tall, wider padding (legacy variant, kept for source compat).
+ *  • `sm`           — 32px tall, 13/500, 6px radius — dashboard toolbars.
+ *
+ * Hover changes exactly one visual property (TR-8). No shadow at rest or hover.
+ * Public API unchanged from the previous version so every consumer keeps working.
+ */
+type Variant = "primary" | "secondary" | "ghost" | "destructive";
 
-
-type Variant = "primary" | "secondary" | "ghost";
-
-type Size = "md" | "lg";
-
-
+type Size = "sm" | "md" | "lg";
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-
   variant?: Variant;
-
   size?: Size;
-
 };
 
-
-
-const base =
-
-  "inline-flex items-center justify-center select-none whitespace-nowrap rounded-[var(--keyra-radius-pill)] px-5 py-3 text-[16px] font-semibold transition duration-300 ease-out focus-visible:outline-none focus-visible:keyra-focus disabled:opacity-50 disabled:pointer-events-none";
-
-
-
-const variants: Record<Variant, string> = {
-
-  primary:
-
-    "bg-[var(--keyra-action)] text-[var(--keyra-action-text)] border border-[var(--keyra-action-border)] transition duration-300 ease-out hover:border-[rgba(255,255,255,0.14)] hover:bg-[rgba(255,255,255,0.06)] active:bg-[rgba(255,255,255,0.04)]",
-
-  secondary:
-
-    "bg-transparent text-keyra-primary border border-keyra-border hover:border-keyra-primary",
-
-  ghost:
-
-    "bg-[rgba(255,255,255,0.04)] text-keyra-primary border border-keyra-border transition duration-300 ease-out hover:border-[rgba(255,255,255,0.12)] hover:bg-[rgba(255,255,255,0.05)]",
-
+const variantClass: Record<Variant, string> = {
+  primary: "ds-btn-primary",
+  secondary: "ds-btn-secondary",
+  ghost: "ds-btn-tertiary",
+  destructive: "ds-btn-destructive",
 };
 
-
-
-const sizes: Record<Size, string> = {
-
-  md: "h-12",
-
-  lg: "h-14 px-7 text-[16px]",
-
+/** Extra Tailwind to layer on top of the base `.ds-btn-*` recipe for non-canonical sizes. */
+const sizeClass: Record<Size, string> = {
+  sm: "is-sm",
+  md: "",
+  lg: "min-h-12 px-6 text-[15px]",
 };
-
-
 
 export function Button({
-
   className,
-
   variant = "primary",
-
   size = "md",
-
   ...props
-
 }: ButtonProps) {
-
   return (
-
     <button
-
-      className={cn(base, variants[variant], sizes[size], className)}
-
+      className={cn(variantClass[variant], sizeClass[size], className)}
       {...props}
-
     />
-
   );
-
 }
-
-
-
