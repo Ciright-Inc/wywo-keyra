@@ -9,6 +9,15 @@ import type { NextConfig } from "next";
  * use `npm run dev:turbo` when you want Turbopack.
  */
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "s3.us-east-1.amazonaws.com",
+        pathname: "/hrm.keyra.ie/**",
+      },
+    ],
+  },
   /** Monorepo / multiple lockfiles: always treat this app directory as the Turbopack root (avoids wrong chunk graph in CI). */
   turbopack: {
     root: process.cwd(),

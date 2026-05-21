@@ -1,11 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { GlobalVerificationSignalsLive } from "@/components/home/GlobalVerificationSignalsLive";
 import { cn } from "@/components/ui/cn";
-
-const formatNumber = (value: number) =>
-  value.toLocaleString("en", { maximumFractionDigits: 0 });
 
 const TELEMETRY_ROWS = [
   { city: "Johannesburg", method: "SAT-ID", badge: "S.A.T." },
@@ -17,52 +14,6 @@ const panelBase = "keyra-card keyra-card--media-hud box-border";
 
 const labelEyebrow =
   "text-[0.52rem] font-medium uppercase tracking-[0.16em] text-keyra-text-2/90";
-
-function LiveStatsInner() {
-  const [total, setTotal] = useState(2_157_774);
-  const [perSecond, setPerSecond] = useState(4_822);
-  const [perMinute, setPerMinute] = useState(289_320);
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setPerSecond((prev) => {
-        const jitter = Math.round((Math.random() - 0.5) * 90);
-        const next = Math.max(3600, prev + jitter);
-        setPerMinute(next * 60);
-        setTotal((current) => current + next);
-        return next;
-      });
-    }, 5000);
-
-    return () => window.clearInterval(interval);
-  }, []);
-
-  return (
-    <>
-      <div className="mt-0.5 text-[clamp(0.95rem,0.85vw+0.65rem,1.12rem)] font-semibold leading-none tracking-[var(--keyra-tracking-head)] text-keyra-primary">
-        {formatNumber(total)}
-      </div>
-      <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-1.5 lg:gap-x-2 lg:gap-y-1.5">
-        <div>
-          <strong className="block text-[clamp(0.58rem,0.2vw+0.48rem,0.68rem)] font-medium text-keyra-primary/95">
-            {formatNumber(perSecond)}
-          </strong>
-          <span className="mt-0.5 block text-[clamp(0.45rem,0.15vw+0.38rem,0.52rem)] text-keyra-text-2 lg:mt-px">
-            Per second
-          </span>
-        </div>
-        <div>
-          <strong className="block text-[clamp(0.58rem,0.2vw+0.48rem,0.68rem)] font-medium text-keyra-primary/95">
-            {formatNumber(perMinute)}
-          </strong>
-          <span className="mt-0.5 block text-[clamp(0.45rem,0.15vw+0.38rem,0.52rem)] text-keyra-text-2 lg:mt-px">
-            Per minute
-          </span>
-        </div>
-      </div>
-    </>
-  );
-}
 
 type PanelProps = { className?: string };
 
@@ -78,7 +29,7 @@ export function KeyraGlobeLiveStatPanel({ className = "" }: PanelProps) {
       aria-label="Global verification signals"
     >
       <p className={cn("mb-1", labelEyebrow)}>Global verification signals</p>
-      <LiveStatsInner />
+      <GlobalVerificationSignalsLive variant="globe" />
       <Link
         href="/global-deployment"
         className={cn(
