@@ -40,18 +40,18 @@ export function NarrativeSection({
         <CinematicReveal depth="foreground">
           <p className="keyra-eyebrow">{eyebrow}</p>
         </CinematicReveal>
-        <CinematicReveal depth="midground" delay={0.06} className="mt-4 w-full max-w-4xl">
+        <CinematicReveal depth="midground" delay={0.06} className="mt-3 w-full max-w-4xl">
           <h2 id={`${id}-title`} className="keyra-display-hero text-balance">
             {title}
           </h2>
         </CinematicReveal>
         {lead ? (
-          <CinematicReveal depth="background" delay={0.12} className="mt-6 w-full max-w-2xl">
+          <CinematicReveal depth="background" delay={0.12} className="mt-4 w-full max-w-2xl">
             <p className="keyra-prose text-pretty sm:text-lg">{lead}</p>
           </CinematicReveal>
         ) : null}
         {children ? (
-          <CinematicReveal depth="background" delay={0.18} className="mt-12 w-full">
+          <CinematicReveal depth="background" delay={0.18} className="mt-8 w-full">
             {children}
           </CinematicReveal>
         ) : null}

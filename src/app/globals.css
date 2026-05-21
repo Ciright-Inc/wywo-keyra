@@ -127,7 +127,7 @@
   --keyra-text-display-sm: clamp(1.375rem, 1rem + 1.5vw, 1.375rem);
   --keyra-text-display: var(--keyra-text-display-lg);
 
-  /* Spacing scale (rem) - 96px section rhythm */
+  /* Spacing scale (rem) */
   --keyra-space-1: 0.25rem;
   --keyra-space-2: 0.5rem;
   --keyra-space-3: 0.75rem;
@@ -137,7 +137,9 @@
   --keyra-space-8: 2rem;
   --keyra-space-10: 2.5rem;
   --keyra-space-12: 3rem;
-  --keyra-space-section: 6rem;
+  --keyra-space-section: 2.5rem;
+  --keyra-space-section-lg: 3.5rem;
+  --keyra-space-section-x: clamp(20px, 4vw, 48px);
 
   /* Motion — cinematic layers (Trust Layer doctrine) */
   --keyra-motion-fg: 300ms;
@@ -337,12 +339,19 @@ body {
   color: var(--color-text-link);
 }
 
-/* Section rhythm — 96px section rhythm per Expo spec */
+/* Section rhythm — compact vertical padding (matches home finale) */
 .keyra-section {
   padding-left: var(--keyra-space-section-x);
   padding-right: var(--keyra-space-section-x);
   padding-top: var(--keyra-space-section);
   padding-bottom: var(--keyra-space-section);
+}
+
+@media (min-width: 640px) {
+  .keyra-section {
+    padding-top: var(--keyra-space-section-lg);
+    padding-bottom: var(--keyra-space-section-lg);
+  }
 }
 
 /* Full-bleed bands — white / black section alternation (editorial contrast) */
@@ -558,6 +567,59 @@ html[data-keyra-lane="developer"] .keyra-code-block {
 .keyra-card:hover {
   box-shadow: var(--keyra-shadow-hover);
   border-color: rgba(0, 0, 0, 0.14);
+}
+
+/* Home page — visible 2px border + layered shadow on all content boxes */
+.keyra-home-card {
+  border-width: 2px !important;
+  border-color: var(--color-hairline-strong) !important;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.06) !important;
+}
+
+.keyra-home-card:hover {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.1),
+    0 12px 32px rgba(0, 0, 0, 0.08) !important;
+}
+
+.keyra-band--dark .keyra-home-card:not(.keyra-surface-light) {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.28),
+    0 8px 24px rgba(0, 0, 0, 0.22) !important;
+}
+
+.keyra-band--dark .keyra-home-card:not(.keyra-surface-light):hover {
+  border-color: rgba(255, 255, 255, 0.36) !important;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.32),
+    0 12px 32px rgba(0, 0, 0, 0.26) !important;
+}
+
+.keyra-band--dark .keyra-home-card.keyra-surface-light {
+  border-color: var(--color-hairline-strong) !important;
+}
+
+.keyra-home-panel {
+  border: 2px solid var(--color-hairline-strong);
+  border-radius: var(--keyra-radius-card);
+  background: var(--color-surface-card);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.06);
+  transition:
+    box-shadow var(--ds-motion-base) var(--ds-ease),
+    border-color var(--ds-motion-base) var(--ds-ease);
+}
+
+.keyra-home-panel:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.1),
+    0 12px 32px rgba(0, 0, 0, 0.08);
 }
 
 .keyra-focus {

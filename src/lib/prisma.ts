@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-const PRISMA_CLIENT_SCHEMA_VERSION = "deployment-app-genspark-url-v2";
+const PRISMA_CLIENT_SCHEMA_VERSION = "deployment-app-category-v3";
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
   prismaClientSchemaVersion?: string;
