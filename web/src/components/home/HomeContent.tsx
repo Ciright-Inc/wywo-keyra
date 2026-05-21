@@ -92,12 +92,11 @@ export function HomeContent() {
               </div>
 
               <motion.div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6,delay:0.5,ease:easeTrust}}>
-                {[{t:"Protect Your Identity",d:"Secure your personal identity, mobile device, and digital presence with Keyra.",h:"/signup",c:"text-blue-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]"},{t:"Protect Your Family",d:"Create a protected family identity registry for every family member.",h:"/app/family",c:"text-emerald-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]"},{t:"Secure Your Organization",d:"Protect your company domains, data, and team identities.",h:"/contact",c:"text-violet-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(167,139,250,0.5)]"},{t:"Partner With Keyra",d:"Join Keyra as a telecom, technology, or service partner.",h:"/partners",c:"text-orange-400",g:"group-hover:drop-shadow-[0_0_8px_rgba(251,146,60,0.5)]"}].map(item=>(
+                {[{t:"Protect Your Identity",d:"Secure your personal identity, mobile device, and digital presence with Keyra.",h:"/signup"},{t:"Protect Your Family",d:"Create a protected family identity registry for every family member.",h:"/app/family"},{t:"Secure Your Organization",d:"Protect your company domains, data, and team identities.",h:"/contact"},{t:"Partner With Keyra",d:"Join Keyra as a telecom, technology, or service partner.",h:"/partners"}].map(item=>(
                   <Link key={item.t} href={item.h} className="group block">
                     <div className="h-full rounded-xl border border-slate-200/70 bg-white p-6 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md">
                       <h3 className="text-[15px] font-semibold leading-snug text-slate-900">{item.t}</h3>
                       <p className="mt-2 text-[13px] leading-[1.6] text-slate-500">{item.d}</p>
-                      <span className={`mt-5 inline-flex items-center gap-1 text-[13px] font-medium ${item.c} transition-all duration-300`}>Begin<span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span></span>
                     </div>
                   </Link>
                 ))}

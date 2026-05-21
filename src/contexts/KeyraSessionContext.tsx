@@ -20,6 +20,33 @@ const defaultUser: KeyraSessionUser = {
   phoneE164: "",
 };
 
+async function fetchKeyraCookieSession(): Promise<KeyraSessionUser | null> {
+  try {
+    const res = await fetch("/api/keyra/session/me", {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { user?: KeyraSessionUser | null };
+    return data.user ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function clearKeyraCookieSession(): Promise<void> {
+  try {
+    await fetch("/api/keyra/session/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch {
+    // ignore
+  }
+}
+
 async function fetchSessionUser(signal?: AbortSignal): Promise<KeyraSessionUser | null> {
   let payload: { authenticated: boolean; user?: { phone?: string } | null } | null = null;
   const controller = new AbortController();
@@ -61,11 +88,22 @@ async function fetchSessionUser(signal?: AbortSignal): Promise<KeyraSessionUser 
     }
   }
 
+  const keyraCookieUser = await fetchKeyraCookieSession();
+
   if (!payload?.authenticated || !payload?.user?.phone) {
+    if (keyraCookieUser) {
+      await clearKeyraCookieSession();
+    }
     return null;
   }
+
   const phone = payload.user.phone.startsWith("+") ? payload.user.phone : `+${payload.user.phone}`;
-  return { phoneE164: phone };
+  return {
+    phoneE164: phone,
+    displayName: keyraCookieUser?.displayName,
+    email: keyraCookieUser?.email,
+    country: keyraCookieUser?.country,
+  };
 }
 
 type KeyraSessionContextValue = {
@@ -101,8 +139,16 @@ export function KeyraSessionProvider({
     try {
       const next = await fetchSessionUser(controller.signal);
       setUserState((prev) => {
-        if (next === null && prev === null) return prev;
-        if (next?.phoneE164 && next.phoneE164 === prev?.phoneE164) return prev;
+        if (next === null) return null;
+        if (
+          prev &&
+          next.phoneE164 === prev.phoneE164 &&
+          next.displayName === prev.displayName &&
+          next.email === prev.email &&
+          next.country === prev.country
+        ) {
+          return prev;
+        }
         return next;
       });
     } catch {
@@ -141,7 +187,10 @@ export function KeyraSessionProvider({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const onPageShow = () => {
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        fetchingRef.current = false;
+      }
       void fetchSession();
     };
     window.addEventListener("pageshow", onPageShow);
@@ -180,10 +229,13 @@ export function KeyraSessionProvider({
   }, []);
 
   const logout = useCallback(async () => {
-    await fetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    });
+    await Promise.all([
+      fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      }),
+      clearKeyraCookieSession(),
+    ]);
     setUserState(null);
     try {
       new BroadcastChannel(AUTH_CHANNEL).postMessage({ type: "logout" });

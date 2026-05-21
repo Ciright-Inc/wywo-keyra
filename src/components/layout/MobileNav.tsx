@@ -65,11 +65,11 @@ export function MobileNav() {
           <>
             <motion.div
               key="mobile-nav-backdrop"
-              className="fixed inset-x-0 bottom-0 top-44 z-[var(--keyra-z-overlay)] bg-black/40 backdrop-blur-[1px] lg:hidden"
+              className="fixed inset-x-0 bottom-0 top-44 z-[var(--keyra-z-overlay)] cursor-pointer bg-black/40 backdrop-blur-[1px] lg:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.12 }}
               aria-hidden
               onClick={() => setOpen(false)}
             />
@@ -77,10 +77,10 @@ export function MobileNav() {
               key="mobile-nav-panel"
               id="mobile-nav-panel"
               className="fixed left-0 right-0 top-44 z-[var(--keyra-z-drawer)] max-h-[min(75dvh,calc(100dvh-11rem))] overflow-y-auto border-b border-keyra-border bg-keyra-bg/98 px-4 py-4 shadow-lg backdrop-blur-md lg:hidden"
-              initial={{ opacity: 0, y: -8 }}
+              initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.12 }}
               aria-label="Mobile primary"
             >
               <ul className="flex flex-col gap-1">
@@ -92,7 +92,7 @@ export function MobileNav() {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => setOpen(false)}
-                        className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-primary hover:bg-keyra-surface"
+                        className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-primary transition-colors duration-150 active:bg-keyra-surface hover:bg-keyra-surface"
                       >
                         {item.label}
                       </a>
@@ -100,7 +100,7 @@ export function MobileNav() {
                       <Link
                         href={item.href}
                         onClick={() => setOpen(false)}
-                        className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-primary hover:bg-keyra-surface"
+                        className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-primary transition-colors duration-150 active:bg-keyra-surface hover:bg-keyra-surface"
                       >
                         {item.label}
                       </Link>
@@ -112,7 +112,7 @@ export function MobileNav() {
                     <a
                       href={accessHref}
                       onClick={() => setOpen(false)}
-                      className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-accent hover:bg-keyra-surface"
+                      className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-accent transition-colors duration-150 active:bg-keyra-surface hover:bg-keyra-surface"
                     >
                       Access
                     </a>
@@ -124,7 +124,7 @@ export function MobileNav() {
                       <Link
                         href="/app/profile"
                         onClick={() => setOpen(false)}
-                        className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-primary hover:bg-keyra-surface"
+                        className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-primary transition-colors duration-150 active:bg-keyra-surface hover:bg-keyra-surface"
                       >
                         Profile
                       </Link>
@@ -132,7 +132,7 @@ export function MobileNav() {
                     <li>
                       <button
                         type="button"
-                        className="block w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-keyra-primary hover:bg-keyra-surface"
+                        className="block w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-keyra-primary transition-colors duration-150 active:bg-keyra-surface hover:bg-keyra-surface"
                         onClick={async () => {
                           await logout();
                           setOpen(false);

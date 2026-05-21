@@ -78,7 +78,7 @@ export function SiteHeader() {
               <>
                 <Link
                   href="/login"
-                  className="flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-xs font-medium leading-none text-keyra-accent transition duration-300 ease-out hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-3 sm:text-sm"
+                  className="flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-xs font-medium leading-none text-keyra-accent transition-colors duration-150 ease-out active:bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-3 sm:text-sm"
                 >
                   Sign in
                 </Link>
@@ -86,7 +86,7 @@ export function SiteHeader() {
               </>
             ) : null}
             <Link href="/#get-protected" className="inline-flex min-w-0 shrink-0">
-              <span className="flex items-center whitespace-nowrap rounded-[var(--keyra-radius-pill)] bg-[var(--keyra-action)] px-2 py-2 text-xs font-medium leading-none text-keyra-primary ring-1 ring-[var(--keyra-action-border)] transition duration-300 ease-out hover:bg-[rgba(255,255,255,0.05)] sm:px-3 sm:text-sm">
+              <span className="flex items-center whitespace-nowrap rounded-[var(--keyra-radius-pill)] bg-[var(--keyra-action)] px-2 py-2 text-xs font-medium leading-none text-keyra-primary ring-1 ring-[var(--keyra-action-border)] transition-colors duration-150 ease-out active:bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.05)] sm:px-3 sm:text-sm">
                 <span className="sm:hidden">Get protected</span>
                 <span className="hidden sm:inline">Be Protected Online</span>
               </span>
