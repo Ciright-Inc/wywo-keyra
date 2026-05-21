@@ -18,6 +18,7 @@ import {
   combinePhoneParts,
   dialForPhoneCountryCode,
 } from "@/lib/phoneCountryOptions";
+import { useToast } from "@/components/ui/Toast";
 import { type FormEvent, useEffect, useState } from "react";
 
 const BORDER_OK =
@@ -34,13 +35,10 @@ function FieldError({ id, text }: { id: string; text: string }) {
 }
 
 export function ContactLeadForm() {
+  const { success, error } = useToast();
   const [subjects, setSubjects] = useState<CirightContactSubject[]>([]);
   const [subjectsReady, setSubjectsReady] = useState(false);
   const [pending, setPending] = useState(false);
-  const [feedback, setFeedback] = useState<
-    | { kind: "success"; text: string }
-    | null
-  >(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({});
 
@@ -77,7 +75,6 @@ export function ContactLeadForm() {
     e.preventDefault();
     const form = e.currentTarget;
     const fd = new FormData(form);
-    setFeedback(null);
     setFormError(null);
     setFieldErrors({});
 
@@ -130,6 +127,7 @@ export function ContactLeadForm() {
       });
 
       if (!result.ok) {
+        error("Could not send message", result.message);
         setFormError(result.message);
         if (result.fieldHints && Object.keys(result.fieldHints).length > 0) {
           setFieldErrors((prev) => {
@@ -143,10 +141,10 @@ export function ContactLeadForm() {
         return;
       }
 
-      setFeedback({
-        kind: "success",
-        text: "Thanks — your message was sent. We will be in touch soon.",
-      });
+      success(
+        "Message sent",
+        "Thanks — your message was sent. We will be in touch soon.",
+      );
       form.reset();
       const sel = form.querySelector<HTMLSelectElement>("#phoneCountry");
       if (sel) sel.value = DEFAULT_PHONE_COUNTRY_CODE;
@@ -158,11 +156,6 @@ export function ContactLeadForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-6" noValidate>
-      {feedback?.kind === "success" ? (
-        <p className="rounded-xl border border-keyra-border bg-keyra-surface px-4 py-3 text-sm text-keyra-text">
-          {feedback.text}
-        </p>
-      ) : null}
       {formError ? (
         <p
           className="rounded-xl border border-keyra-border bg-keyra-surface-2 px-4 py-3 text-sm text-keyra-text"
