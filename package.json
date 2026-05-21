@@ -20,6 +20,8 @@
     "db:seed:auth-feed": "tsx prisma/seedAuthenticationFeed.ts",
     "db:seed:deploy-catalog": "tsx prisma/seedDeployCatalog.ts",
     "db:seed:deployment-graph": "tsx prisma/seedDeploymentGraph.ts",
+    "db:import:telcos": "tsx prisma/importKeyraTelcosFromXlsx.ts",
+    "db:export:telcos-catalog": "tsx prisma/exportKeyraTelcosCatalog.ts",
     "db:seed:sat-protocols": "tsx prisma/seedSatProtocolRegistry.ts",
     "db:seed:world-countries": "tsx prisma/seedWorldAuthenticationCountries.ts",
     "import:sat-core": "tsx scripts/importSatCoreProtocols.ts",

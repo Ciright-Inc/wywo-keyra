@@ -1,17 +1,14 @@
 /**
  * Idempotent upsert of global deployment map rows (regions, countries, telcos) from
  * `prisma/data/deployment-seed.json`, plus every ISO-3166 alpha-2 territory from `world-countries`
- * (region: global-catalog, subdomain `{iso2}.keyra.ie`, not published by default) and a placeholder
- * telco per country that would otherwise have none — so the admin telcos UI lists all countries.
+ * (region: global-catalog, subdomain `{iso2}.keyra.ie`, not published by default).
+ * Real telco catalog rows come from `npm run db:import:telcos` (Excel import).
  * Safe on every production boot: does not wipe admins, audit, access rules, or server nodes
  * (those remain `prisma db seed` only).
  */
 import { DeploymentStatus, PrismaClient } from "@prisma/client";
 import { buildTelcoSubdomainForSeed, loadDeploymentSeed } from "./deploymentSeedData";
 import { allWorldCountriesWithIso2 } from "./worldCountriesIso";
-
-const PLACEHOLDER_TELCO_SLUG = "national-carriers";
-const PLACEHOLDER_TELCO_NAME = "National carriers (catalog)";
 
 export type DeploymentGraphSeedStats = {
   regionsUpserted: number;
@@ -190,47 +187,12 @@ export async function seedDeploymentGraph(prisma: PrismaClient): Promise<Deploym
     telcosUpserted++;
   }
 
-  let placeholderTelcosUpserted = 0;
-  for (const { id, countrySubdomain } of countryByIso2.values()) {
-    const existingCount = await prisma.telcoDeployment.count({ where: { countryId: id } });
-    if (existingCount > 0) continue;
-
-    const telcoSubdomain = buildTelcoSubdomainForSeed(countrySubdomain, PLACEHOLDER_TELCO_SLUG);
-    await prisma.telcoDeployment.upsert({
-      where: {
-        countryId_slug: {
-          countryId: id,
-          slug: PLACEHOLDER_TELCO_SLUG,
-        },
-      },
-      create: {
-        countryId: id,
-        name: PLACEHOLDER_TELCO_NAME,
-        slug: PLACEHOLDER_TELCO_SLUG,
-        subscribers: null,
-        subscribersDisplay: null,
-        telcoSubdomain,
-        officialDomain: null,
-        status: DeploymentStatus.IDENTIFIED,
-        sortOrder: 0,
-        isPublished: false,
-      },
-      update: {
-        name: PLACEHOLDER_TELCO_NAME,
-        telcoSubdomain,
-        status: DeploymentStatus.IDENTIFIED,
-        isPublished: false,
-      },
-    });
-    placeholderTelcosUpserted++;
-  }
-
   return {
     regionsUpserted,
     countriesUpserted,
     telcosUpserted,
     worldCatalogCountriesUpserted,
-    placeholderTelcosUpserted,
+    placeholderTelcosUpserted: 0,
   };
 }
 

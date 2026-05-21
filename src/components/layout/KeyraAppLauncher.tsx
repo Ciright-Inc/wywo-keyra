@@ -66,13 +66,12 @@ export function KeyraAppLauncher() {
 
   function refreshLauncherApps() {
     if (isAdminRoute) setApps([]);
-    fetch(`/api/admin/deployments/apps?surface=launcher&t=${Date.now()}`, {
+    fetch(`/api/deployments/apps/launcher?t=${Date.now()}`, {
       cache: "no-store",
-      credentials: "include",
     })
       .then((res) => (res.ok ? res.json() : null))
       .then((data: { apps?: LauncherApp[] } | null) => {
-        if (Array.isArray(data?.apps)) setApps(data.apps);
+        if (Array.isArray(data?.apps) && data.apps.length > 0) setApps(data.apps);
       })
       .catch(() => {
         if (!isAdminRoute) setApps(getKeyraAdminAppLinks());

@@ -1,0 +1,5417 @@
+{
+  "version": 1,
+  "source": "Telco details for Keyra.xlsx",
+  "rowCount": 541,
+  "telcos": [
+    {
+      "countryName": "Egypt",
+      "countryIso2": "EG",
+      "name": "Vodafone Egypt",
+      "slug": "vodafone",
+      "telcoSubdomain": "vodafone.egypt.keyra.ie",
+      "officialDomain": "https://web.vodafone.com.eg/",
+      "subscribers": 48500000,
+      "subscribersDisplay": "48.5M"
+    },
+    {
+      "countryName": "Egypt",
+      "countryIso2": "EG",
+      "name": "Orange Egypt",
+      "slug": "orange",
+      "telcoSubdomain": "orange.egypt.keyra.ie",
+      "officialDomain": "https://www.orange.eg/",
+      "subscribers": 30200000,
+      "subscribersDisplay": "30.2M"
+    },
+    {
+      "countryName": "Egypt",
+      "countryIso2": "EG",
+      "name": "Etisalat by e& Egypt",
+      "slug": "etisalat",
+      "telcoSubdomain": "etisalat.egypt.keyra.ie",
+      "officialDomain": "https://www.etisalat.eg/",
+      "subscribers": 28900000,
+      "subscribersDisplay": "28.9M"
+    },
+    {
+      "countryName": "Egypt",
+      "countryIso2": "EG",
+      "name": "WE",
+      "slug": "we",
+      "telcoSubdomain": "we.egypt.keyra.ie",
+      "officialDomain": "https://te.eg/",
+      "subscribers": 12500000,
+      "subscribersDisplay": "12.5M"
+    },
+    {
+      "countryName": "Eritrea",
+      "countryIso2": "ER",
+      "name": "EriTel",
+      "slug": "eritel",
+      "telcoSubdomain": "eritel.eritrea.keyra.ie",
+      "officialDomain": "https://www.eritel.com.er/",
+      "subscribers": 680000,
+      "subscribersDisplay": "680K"
+    },
+    {
+      "countryName": "Spain",
+      "countryIso2": "ES",
+      "name": "Movistar Spain",
+      "slug": "movistar",
+      "telcoSubdomain": "movistar.spain.keyra.ie",
+      "officialDomain": "https://www.movistar.es/",
+      "subscribers": 29300000,
+      "subscribersDisplay": "29.3M"
+    },
+    {
+      "countryName": "Spain",
+      "countryIso2": "ES",
+      "name": "Orange Spain",
+      "slug": "orange",
+      "telcoSubdomain": "orange.spain.keyra.ie",
+      "officialDomain": "https://www.orange.es/",
+      "subscribers": 18600000,
+      "subscribersDisplay": "18.6M"
+    },
+    {
+      "countryName": "Spain",
+      "countryIso2": "ES",
+      "name": "Vodafone Spain",
+      "slug": "vodafone",
+      "telcoSubdomain": "vodafone.spain.keyra.ie",
+      "officialDomain": "https://www.vodafone.es/",
+      "subscribers": 13600000,
+      "subscribersDisplay": "13.6M"
+    },
+    {
+      "countryName": "Spain",
+      "countryIso2": "ES",
+      "name": "Yoigo / MASMOVIL",
+      "slug": "yoigo",
+      "telcoSubdomain": "yoigo.spain.keyra.ie",
+      "officialDomain": "https://www.yoigo.com/",
+      "subscribers": 15800000,
+      "subscribersDisplay": "15.8M"
+    },
+    {
+      "countryName": "Estonia",
+      "countryIso2": "EE",
+      "name": "Telia Estonia",
+      "slug": "telia",
+      "telcoSubdomain": "telia.estonia.keyra.ie",
+      "officialDomain": "https://www.telia.ee/",
+      "subscribers": 1300000,
+      "subscribersDisplay": "1.3M"
+    },
+    {
+      "countryName": "Estonia",
+      "countryIso2": "EE",
+      "name": "Elisa Estonia",
+      "slug": "elisa",
+      "telcoSubdomain": "elisa.estonia.keyra.ie",
+      "officialDomain": "https://www.elisa.ee/",
+      "subscribers": 760000,
+      "subscribersDisplay": "760K"
+    },
+    {
+      "countryName": "Estonia",
+      "countryIso2": "EE",
+      "name": "Tele2 Estonia",
+      "slug": "tele2",
+      "telcoSubdomain": "tele2.estonia.keyra.ie",
+      "officialDomain": "https://www.tele2.ee/",
+      "subscribers": 620000,
+      "subscribersDisplay": "620K"
+    },
+    {
+      "countryName": "Ethiopia",
+      "countryIso2": "ET",
+      "name": "Ethio Telecom",
+      "slug": "ethio-telecom",
+      "telcoSubdomain": "ethio-telecom.ethiopia.keyra.ie",
+      "officialDomain": "https://www.ethiotelecom.et/",
+      "subscribers": 78000000,
+      "subscribersDisplay": "78M"
+    },
+    {
+      "countryName": "Ethiopia",
+      "countryIso2": "ET",
+      "name": "Safaricom Ethiopia",
+      "slug": "safaricom",
+      "telcoSubdomain": "safaricom.ethiopia.keyra.ie",
+      "officialDomain": "https://www.safaricom.et/",
+      "subscribers": 6200000,
+      "subscribersDisplay": "6.2M"
+    },
+    {
+      "countryName": "Finland",
+      "countryIso2": "FI",
+      "name": "Elisa",
+      "slug": "elisa",
+      "telcoSubdomain": "elisa.finland.keyra.ie",
+      "officialDomain": "https://elisa.fi/",
+      "subscribers": 2900000,
+      "subscribersDisplay": "2.9M"
+    },
+    {
+      "countryName": "Finland",
+      "countryIso2": "FI",
+      "name": "Telia Finland",
+      "slug": "telia",
+      "telcoSubdomain": "telia.finland.keyra.ie",
+      "officialDomain": "https://www.telia.fi/",
+      "subscribers": 2700000,
+      "subscribersDisplay": "2.7M"
+    },
+    {
+      "countryName": "Finland",
+      "countryIso2": "FI",
+      "name": "DNA",
+      "slug": "dna",
+      "telcoSubdomain": "dna.finland.keyra.ie",
+      "officialDomain": "https://www.dna.fi/",
+      "subscribers": 3600000,
+      "subscribersDisplay": "3.6M"
+    },
+    {
+      "countryName": "Fiji",
+      "countryIso2": "FJ",
+      "name": "Vodafone Fiji",
+      "slug": "vodafone",
+      "telcoSubdomain": "vodafone.fiji.keyra.ie",
+      "officialDomain": "https://www.vodafone.com.fj/",
+      "subscribers": 720000,
+      "subscribersDisplay": "720K"
+    },
+    {
+      "countryName": "Fiji",
+      "countryIso2": "FJ",
+      "name": "Digicel Fiji",
+      "slug": "digicel",
+      "telcoSubdomain": "digicel.fiji.keyra.ie",
+      "officialDomain": "https://www.digicelgroup.com/",
+      "subscribers": 410000,
+      "subscribersDisplay": "410K"
+    },
+    {
+      "countryName": "Falkland Islands",
+      "countryIso2": "FK",
+      "name": "Sure Falkland Islands",
+      "slug": "sure",
+      "telcoSubdomain": "sure.falkland-islands.keyra.ie",
+      "officialDomain": "https://www.sure.co.fk/",
+      "subscribers": 4200,
+      "subscribersDisplay": "4.2K"
+    },
+    {
+      "countryName": "Faroe Islands",
+      "countryIso2": "FO",
+      "name": "Føroya Tele",
+      "slug": "foroya-tele",
+      "telcoSubdomain": "foroya-tele.faroe-islands.keyra.ie",
+      "officialDomain": "https://www.ft.fo/",
+      "subscribers": 62000,
+      "subscribersDisplay": "62K"
+    },
+    {
+      "countryName": "Faroe Islands",
+      "countryIso2": "FO",
+      "name": "Hey by Nova",
+      "slug": "hey",
+      "telcoSubdomain": "hey.faroe-islands.keyra.ie",
+      "officialDomain": "https://www.hey.fo/",
+      "subscribers": 18000,
+      "subscribersDisplay": "18K"
+    },
+    {
+      "countryName": "Micronesia",
+      "countryIso2": "FM",
+      "name": "FSM Telecom",
+      "slug": "fsm-telecom",
+      "telcoSubdomain": "fsm-telecom.micronesia.keyra.ie",
+      "officialDomain": "https://www.fsmtc.fm/",
+      "subscribers": 34000,
+      "subscribersDisplay": "34K"
+    },
+    {
+      "countryName": "Gabon",
+      "countryIso2": "GA",
+      "name": "Airtel Gabon",
+      "slug": "airtel",
+      "telcoSubdomain": "airtel.gabon.keyra.ie",
+      "officialDomain": "https://www.airtel.ga/",
+      "subscribers": 1600000,
+      "subscribersDisplay": "1.6M"
+    },
+    {
+      "countryName": "Gabon",
+      "countryIso2": "GA",
+      "name": "Moov Africa Gabon Telecom",
+      "slug": "moov-africa",
+      "telcoSubdomain": "moov-africa.gabon.keyra.ie",
+      "officialDomain": "https://www.moov-africa.ga/",
+      "subscribers": 1100000,
+      "subscribersDisplay": "1.1M"
+    },
+    {
+      "countryName": "Georgia",
+      "countryIso2": "GE",
+      "name": "MagtiCom",
+      "slug": "magticom",
+      "telcoSubdomain": "magticom.georgia.keyra.ie",
+      "officialDomain": "https://www.magticom.ge/",
+      "subscribers": 3000000,
+      "subscribersDisplay": "3M"
+    },
+    {
+      "countryName": "Georgia",
+      "countryIso2": "GE",
+      "name": "Silknet",
+      "slug": "silknet",
+      "telcoSubdomain": "silknet.georgia.keyra.ie",
+      "officialDomain": "https://silknet.com/",
+      "subscribers": 1800000,
+      "subscribersDisplay": "1.8M"
+    },
+    {
+      "countryName": "Georgia",
+      "countryIso2": "GE",
+      "name": "Cellfie Mobile",
+      "slug": "cellfie",
+      "telcoSubdomain": "cellfie.georgia.keyra.ie",
+      "officialDomain": "https://cellfie.ge/",
+      "subscribers": 1300000,
+      "subscribersDisplay": "1.3M"
+    },
+    {
+      "countryName": "Guernsey",
+      "countryIso2": "GG",
+      "name": "Sure Guernsey",
+      "slug": "sure",
+      "telcoSubdomain": "sure.guernsey.keyra.ie",
+      "officialDomain": "https://www.sure.com/guernsey",
+      "subscribers": 42000,
+      "subscribersDisplay": "42K"
+    },
+    {
+      "countryName": "Ghana",
+      "countryIso2": "GH",
+      "name": "MTN Ghana",
+      "slug": "mtn",
+      "telcoSubdomain": "mtn.ghana.keyra.ie",
+      "officialDomain": "https://www.mtn.com.gh/",
+      "subscribers": 28600000,
+      "subscribersDisplay": "28.6M"
+    },
+    {
+      "countryName": "Ghana",
+      "countryIso2": "GH",
+      "name": "Telecel Ghana",
+      "slug": "telecel",
+      "telcoSubdomain": "telecel.ghana.keyra.ie",
+      "officialDomain": "https://telecel.com.gh/",
+      "subscribers": 9100000,
+      "subscribersDisplay": "9.1M"
+    },
+    {
+      "countryName": "Ghana",
+      "countryIso2": "GH",
+      "name": "AT Ghana",
+      "slug": "at-ghana",
+      "telcoSubdomain": "at-ghana.ghana.keyra.ie",
+      "officialDomain": "https://www.at.com.gh/",
+      "subscribers": 2300000,
+      "subscribersDisplay": "2.3M"
+    },
+    {
+      "countryName": "Gibraltar",
+      "countryIso2": "GI",
+      "name": "Gibtelecom",
+      "slug": "gibtelecom",
+      "telcoSubdomain": "gibtelecom.gibraltar.keyra.ie",
+      "officialDomain": "https://www.gibtele.com/",
+      "subscribers": 38000,
+      "subscribersDisplay": "38K"
+    },
+    {
+      "countryName": "Guinea",
+      "countryIso2": "GN",
+      "name": "Orange Guinea",
+      "slug": "orange",
+      "telcoSubdomain": "orange.guinea.keyra.ie",
+      "officialDomain": "https://www.orange.gn/",
+      "subscribers": 7200000,
+      "subscribersDisplay": "7.2M"
+    },
+    {
+      "countryName": "Guinea",
+      "countryIso2": "GN",
+      "name": "MTN Guinea",
+      "slug": "mtn",
+      "telcoSubdomain": "mtn.guinea.keyra.ie",
+      "officialDomain": "https://www.mtn.com/gn/",
+      "subscribers": 5100000,
+      "subscribersDisplay": "5.1M"
+    },
+    {
+      "countryName": "Guadeloupe",
+      "countryIso2": "GP",
+      "name": "Orange Caraïbe",
+      "slug": "orange-caraibe",
+      "telcoSubdomain": "orange-caraibe.guadeloupe.keyra.ie",
+      "officialDomain": "https://caraibe.orange.fr/",
+      "subscribers": 210000,
+      "subscribersDisplay": "210K"
+    },
+    {
+      "countryName": "Guadeloupe",
+      "countryIso2": "GP",
+      "name": "Digicel French Caribbean",
+      "slug": "digicel",
+      "telcoSubdomain": "digicel.guadeloupe.keyra.ie",
+      "officialDomain": "https://www.digicelgroup.com/",
+      "subscribers": 145000,
+      "subscribersDisplay": "145K"
+    },
+    {
+      "countryName": "Gambia",
+      "countryIso2": "GM",
+      "name": "Africell Gambia",
+      "slug": "africell",
+      "telcoSubdomain": "africell.gambia.keyra.ie",
+      "officialDomain": "https://www.africell.gm/",
+      "subscribers": 1300000,
+      "subscribersDisplay": "1.3M"
+    },
+    {
+      "countryName": "Gambia",
+      "countryIso2": "GM",
+      "name": "QCell",
+      "slug": "qcell",
+      "telcoSubdomain": "qcell.gambia.keyra.ie",
+      "officialDomain": "https://www.qcell.gm/",
+      "subscribers": 620000,
+      "subscribersDisplay": "620K"
+    },
+    {
+      "countryName": "Guinea-Bissau",
+      "countryIso2": "GW",
+      "name": "Orange Bissau",
+      "slug": "orange",
+      "telcoSubdomain": "orange.guinea-bissau.keyra.ie",
+      "officialDomain": "https://www.orange-bissau.com/",
+      "subscribers": 410000,
+      "subscribersDisplay": "410K"
+    },
+    {
+      "countryName": "Guinea-Bissau",
+      "countryIso2": "GW",
+      "name": "MTN / Telecel Guinea-Bissau",
+      "slug": "telecel",
+      "telcoSubdomain": "telecel.guinea-bissau.keyra.ie",
+      "officialDomain": "https://www.telecel.com/",
+      "subscribers": 290000,
+      "subscribersDisplay": "290K"
+    },
+    {
+      "countryName": "Japan",
+      "countryIso2": "JP",
+      "name": "KDDI au",
+      "slug": "kddi-au",
+      "telcoSubdomain": "kddi-au.japan.keyra.ie",
+      "officialDomain": "https://www.au.com/",
+      "subscribers": 65000000,
+      "subscribersDisplay": "65M"
+    },
+    {
+      "countryName": "Japan",
+      "countryIso2": "JP",
+      "name": "SoftBank",
+      "slug": "softbank",
+      "telcoSubdomain": "softbank.japan.keyra.ie",
+      "officialDomain": "https://www.softbank.jp/",
+      "subscribers": 56000000,
+      "subscribersDisplay": "56M"
+    },
+    {
+      "countryName": "Japan",
+      "countryIso2": "JP",
+      "name": "Rakuten Mobile",
+      "slug": "rakuten-mobile",
+      "telcoSubdomain": "rakuten-mobile.japan.keyra.ie",
+      "officialDomain": "https://network.mobile.rakuten.co.jp/",
+      "subscribers": 7600000,
+      "subscribersDisplay": "7.6M"
+    },
+    {
+      "countryName": "Saudi Arabia",
+      "countryIso2": "SA",
+      "name": "STC",
+      "slug": "stc",
+      "telcoSubdomain": "stc.saudi-arabia.keyra.ie",
+      "officialDomain": "https://www.stc.com.sa/",
+      "subscribers": 26700000,
+      "subscribersDisplay": "26.7M"
+    },
+    {
+      "countryName": "Saudi Arabia",
+      "countryIso2": "SA",
+      "name": "Mobily",
+      "slug": "mobily",
+      "telcoSubdomain": "mobily.saudi-arabia.keyra.ie",
+      "officialDomain": "https://www.mobily.com.sa/",
+      "subscribers": 11900000,
+      "subscribersDisplay": "11.9M"
+    },
+    {
+      "countryName": "Saudi Arabia",
+      "countryIso2": "SA",
+      "name": "Zain KSA",
+      "slug": "zain-ksa",
+      "telcoSubdomain": "zain-ksa.saudi-arabia.keyra.ie",
+      "officialDomain": "https://sa.zain.com/",
+      "subscribers": 8600000,
+      "subscribersDisplay": "8.6M"
+    },
+    {
+      "countryName": "United Kingdom",
+      "countryIso2": "GB",
+      "name": "EE",
+      "slug": "ee",
+      "telcoSubdomain": "ee.united-kingdom.keyra.ie",
+      "officialDomain": "https://ee.co.uk/",
+      "subscribers": 34600000,
+      "subscribersDisplay": "34.6M"
+    },
+    {
+      "countryName": "United Kingdom",
+      "countryIso2": "GB",
+      "name": "O2 UK",
+      "slug": "o2",
+      "telcoSubdomain": "o2.united-kingdom.keyra.ie",
+      "officialDomain": "https://www.o2.co.uk/",
+      "subscribers": 24500000,
+      "subscribersDisplay": "24.5M"
+    },
+    {
+      "countryName": "United Kingdom",
+      "countryIso2": "GB",
+      "name": "Vodafone UK",
+      "slug": "vodafone",
+      "telcoSubdomain": "vodafone.united-kingdom.keyra.ie",
+      "officialDomain": "https://www.vodafone.co.uk/",
+      "subscribers": 18200000,
+      "subscribersDisplay": "18.2M"
+    },
+    {
+      "countryName": "United Kingdom",
+      "countryIso2": "GB",
+      "name": "Three UK",
+      "slug": "three",
+      "telcoSubdomain": "three.united-kingdom.keyra.ie",
+      "officialDomain": "https://www.three.co.uk/",
+      "subscribers": 10800000,
+      "subscribersDisplay": "10.8M"
+    },
+    {
+      "countryName": "France",
+      "countryIso2": "FR",
+      "name": "Orange France",
+      "slug": "orange",
+      "telcoSubdomain": "orange.france.keyra.ie",
+      "officialDomain": "https://www.orange.fr/",
+      "subscribers": 38700000,
+      "subscribersDisplay": "38.7M"
+    },
+    {
+      "countryName": "France",
+      "countryIso2": "FR",
+      "name": "SFR",
+      "slug": "sfr",
+      "telcoSubdomain": "sfr.france.keyra.ie",
+      "officialDomain": "https://www.sfr.fr/",
+      "subscribers": 20900000,
+      "subscribersDisplay": "20.9M"
+    },
+    {
+      "countryName": "France",
+      "countryIso2": "FR",
+      "name": "Bouygues Telecom",
+      "slug": "bouygues-telecom",
+      "telcoSubdomain": "bouygues-telecom.france.keyra.ie",
+      "officialDomain": "https://www.bouyguestelecom.fr/",
+      "subscribers": 16400000,
+      "subscribersDisplay": "16.4M"
+    },
+    {
+      "countryName": "France",
+      "countryIso2": "FR",
+      "name": "Free Mobile",
+      "slug": "free-mobile",
+      "telcoSubdomain": "free-mobile.france.keyra.ie",
+      "officialDomain": "https://mobile.free.fr/",
+      "subscribers": 15100000,
+      "subscribersDisplay": "15.1M"
+    },
+    {
+      "countryName": "Qatar",
+      "countryIso2": "QA",
+      "name": "Ooredoo Qatar",
+      "slug": "ooredoo",
+      "telcoSubdomain": "ooredoo.qatar.keyra.ie",
+      "officialDomain": "https://www.ooredoo.qa/",
+      "subscribers": 3400000,
+      "subscribersDisplay": "3.4M"
+    },
+    {
+      "countryName": "Qatar",
+      "countryIso2": "QA",
+      "name": "Vodafone Qatar",
+      "slug": "vodafone",
+      "telcoSubdomain": "vodafone.qatar.keyra.ie",
+      "officialDomain": "https://www.vodafone.qa/",
+      "subscribers": 2100000,
+      "subscribersDisplay": "2.1M"
+    },
+    {
+      "countryName": "South Korea",
+      "countryIso2": "KR",
+      "name": "SK Telecom",
+      "slug": "sk-telecom",
+      "telcoSubdomain": "sk-telecom.south-korea.keyra.ie",
+      "officialDomain": "https://www.sktelecom.com/",
+      "subscribers": 31900000,
+      "subscribersDisplay": "31.9M"
+    },
+    {
+      "countryName": "South Korea",
+      "countryIso2": "KR",
+      "name": "KT",
+      "slug": "kt",
+      "telcoSubdomain": "kt.south-korea.keyra.ie",
+      "officialDomain": "https://www.kt.com/",
+      "subscribers": 25000000,
+      "subscribersDisplay": "25M"
+    },
+    {
+      "countryName": "South Korea",
+      "countryIso2": "KR",
+      "name": "LG U+",
+      "slug": "lg-uplus",
+      "telcoSubdomain": "lg-uplus.south-korea.keyra.ie",
+      "officialDomain": "https://www.lguplus.com/",
+      "subscribers": 19300000,
+      "subscribersDisplay": "19.3M"
+    },
+    {
+      "countryName": "Germany",
+      "countryIso2": "DE",
+      "name": "Deutsche Telekom",
+      "slug": "deutsche-telekom",
+      "telcoSubdomain": "deutsche-telekom.germany.keyra.ie",
+      "officialDomain": "https://www.telekom.com/",
+      "subscribers": 67300000,
+      "subscribersDisplay": "67.3M"
+    },
+    {
+      "countryName": "Germany",
+      "countryIso2": "DE",
+      "name": "Vodafone Germany",
+      "slug": "vodafone",
+      "telcoSubdomain": "vodafone.germany.keyra.ie",
+      "officialDomain": "https://www.vodafone.de/",
+      "subscribers": 30900000,
+      "subscribersDisplay": "30.9M"
+    },
+    {
+      "countryName": "Germany",
+      "countryIso2": "DE",
+      "name": "O2 Germany",
+      "slug": "o2",
+      "telcoSubdomain": "o2.germany.keyra.ie",
+      "officialDomain": "https://www.o2online.de/",
+      "subscribers": 45500000,
+      "subscribersDisplay": "45.5M"
+    },
+    {
+      "countryName": "Aruba",
+      "countryIso2": "AW",
+      "name": "SETAR",
+      "slug": "setar",
+      "telcoSubdomain": "setar.aruba.keyra.ie",
+      "officialDomain": "https://www.setar.aw/",
+      "subscribers": 135000,
+      "subscribersDisplay": "135K"
+    },
+    {
+      "countryName": "Afghanistan",
+      "countryIso2": "AF",
+      "name": "Afghan Wireless",
+      "slug": "afghan-wireless",
+      "telcoSubdomain": "afghan-wireless.afghanistan.keyra.ie",
+      "officialDomain": "https://www.awcc.com.af/",
+      "subscribers": 5000000,
+      "subscribersDisplay": "5M"
+    },
+    {
+      "countryName": "Afghanistan",
+      "countryIso2": "AF",
+      "name": "Roshan",
+      "slug": "roshan",
+      "telcoSubdomain": "roshan.afghanistan.keyra.ie",
+      "officialDomain": "https://www.roshan.af/",
+      "subscribers": 6500000,
+      "subscribersDisplay": "6.5M"
+    },
+    {
+      "countryName": "Afghanistan",
+      "countryIso2": "AF",
+      "name": "Etisalat Afghanistan",
+      "slug": "etisalat",
+      "telcoSubdomain": "etisalat.afghanistan.keyra.ie",
+      "officialDomain": "https://www.etisalat.af/",
+      "subscribers": 3000000,
+      "subscribersDisplay": "3M"
+    },
+    {
+      "countryName": "Angola",
+      "countryIso2": "AO",
+      "name": "Unitel",
+      "slug": "unitel",
+      "telcoSubdomain": "unitel.angola.keyra.ie",
+      "officialDomain": "https://www.unitel.ao/",
+      "subscribers": 20100000,
+      "subscribersDisplay": "20.1M"
+    },
+    {
+      "countryName": "Angola",
+      "countryIso2": "AO",
+      "name": "Africell Angola",
+      "slug": "africell",
+      "telcoSubdomain": "africell.angola.keyra.ie",
+      "officialDomain": "https://www.africell.ao/",
+      "subscribers": 5300000,
+      "subscribersDisplay": "5.3M"
+    },
+    {
+      "countryName": "Anguilla",
+      "countryIso2": "AI",
+      "name": "Flow Anguilla",
+      "slug": "flow",
+      "telcoSubdomain": "flow.anguilla.keyra.ie",
+      "officialDomain": "https://discoverflow.co/anguilla",
+      "subscribers": 18000,
+      "subscribersDisplay": "18K"
+    },
+    {
+      "countryName": "Åland Islands",
+      "countryIso2": "AX",
+      "name": "Ålcom Mobile",
+      "slug": "alcom-mobile",
+      "telcoSubdomain": "alcom-mobile.aland-islands.keyra.ie",
+      "officialDomain": "https://www.alcom.ax/",
+      "subscribers": 28000,
+      "subscribersDisplay": "28K"
+    },
+    {
+      "countryName": "Albania",
+      "countryIso2": "AL",
+      "name": "Vodafone Albania",
+      "slug": "vodafone",
+      "telcoSubdomain": "vodafone.albania.keyra.ie",
+      "officialDomain": "https://www.vodafone.al/",
+      "subscribers": 1800000,
+      "subscribersDisplay": "1.8M"
+    },
+    {
+      "countryName": "Albania",
+      "countryIso2": "AL",
+      "name": "One Albania",
+      "slug": "one-albania",
+      "telcoSubdomain": "one-albania.albania.keyra.ie",
+      "officialDomain": "https://www.one.al/",
+      "subscribers": 1500000,
+      "subscribersDisplay": "1.5M"
+    },
+    {
+      "countryName": "Andorra",
+      "countryIso2": "AD",
+      "name": "Andorra Telecom",
+      "slug": "andorra-telecom",
+      "telcoSubdomain": "andorra-telecom.andorra.keyra.ie",
+      "officialDomain": "https://www.andorratelecom.ad/",
+      "subscribers": 87000,
+      "subscribersDisplay": "87K"
+    },
+    {
+      "countryName": "Argentina",
+      "countryIso2": "AR",
+      "name": "Personal",
+      "slug": "personal",
+      "telcoSubdomain": "personal.argentina.keyra.ie",
+      "officialDomain": "https://www.personal.com.ar/",
+      "subscribers": 20500000,
+      "subscribersDisplay": "20.5M"
+    },
+    {
+      "countryName": "Argentina",
+      "countryIso2": "AR",
+      "name": "Claro Argentina",
+      "slug": "claro",
+      "telcoSubdomain": "claro.argentina.keyra.ie",
+      "officialDomain": "https://www.claro.com.ar/",
+      "subscribers": 23800000,
+      "subscribersDisplay": "23.8M"
+    },
+    {
+      "countryName": "Argentina",
+      "countryIso2": "AR",
+      "name": "Movistar Argentina",
+      "slug": "movistar",
+      "telcoSubdomain": "movistar.argentina.keyra.ie",
+      "officialDomain": "https://www.movistar.com.ar/",
+      "subscribers": 16800000,
+      "subscribersDisplay": "16.8M"
+    },
+    {
+      "countryName": "Armenia",
+      "countryIso2": "AM",
+      "name": "Viva Armenia",
+      "slug": "viva",
+      "telcoSubdomain": "viva.armenia.keyra.ie",
+      "officialDomain": "https://www.viva.am/",
+      "subscribers": 2200000,
+      "subscribersDisplay": "2.2M"
+    },
+    {
+      "countryName": "Armenia",
+      "countryIso2": "AM",
+      "name": "Team Telecom Armenia",
+      "slug": "team-telecom",
+      "telcoSubdomain": "team-telecom.armenia.keyra.ie",
+      "officialDomain": "https://www.telecomarmenia.am/",
+      "subscribers": 1200000,
+      "subscribersDisplay": "1.2M"
+    },
+    {
+      "countryName": "Armenia",
+      "countryIso2": "AM",
+      "name": "Ucom",
+      "slug": "ucom",
+      "telcoSubdomain": "ucom.armenia.keyra.ie",
+      "officialDomain": "https://www.ucom.am/",
+      "subscribers": 900000,
+      "subscribersDisplay": "900K"
+    },
+    {
+      "countryName": "American Samoa",
+      "countryIso2": "AS",
+      "name": "Bluesky Communications",
+      "slug": "bluesky",
+      "telcoSubdomain": "bluesky.american-samoa.keyra.ie",
+      "officialDomain": "https://www.bluesky.as/",
+      "subscribers": 35000,
+      "subscribersDisplay": "35K"
+    },
+    {
+      "countryName": "Antigua and Barbuda",
+      "countryIso2": "AG",
+      "name": "Flow Antigua",
+      "slug": "flow",
+      "telcoSubdomain": "flow.antigua-and-barbuda.keyra.ie",
+      "officialDomain": "https://discoverflow.co/antigua",
+      "subscribers": 85000,
+      "subscribersDisplay": "85K"
+    },
+    {
+      "countryName": "Antigua and Barbuda",
+      "countryIso2": "AG",
+      "name": "Digicel Antigua",
+      "slug": "digicel",
+      "telcoSubdomain": "digicel.antigua-and-barbuda.keyra.ie",
+      "officialDomain": "https://www.digicelgroup.com/",
+      "subscribers": 120000,
+      "subscribersDisplay": "120K"
+    },
+    {
+      "countryName": "Austria",
+      "countryIso2": "AT",
+      "name": "A1 Telekom Austria",
+      "slug": "a1",
+      "telcoSubdomain": "a1.austria.keyra.ie",
+      "officialDomain": "https://www.a1.net/",
+      "subscribers": 5900000,
+      "subscribersDisplay": "5.9M"
+    },
+    {
+      "countryName": "Austria",
+      "countryIso2": "AT",
+      "name": "Magenta Telekom",
+      "slug": "magenta-telekom",
+      "telcoSubdomain": "magenta-telekom.austria.keyra.ie",
+      "officialDomain": "https://www.magenta.at/",
+      "subscribers": 4300000,
+      "subscribersDisplay": "4.3M"
+    },
+    {
+      "countryName": "Austria",
+      "countryIso2": "AT",
+      "name": "Drei Austria",
+      "slug": "drei",
+      "telcoSubdomain": "drei.austria.keyra.ie",
+      "officialDomain": "https://www.drei.at/",
+      "subscribers": 4100000,
+      "subscribersDisplay": "4.1M"
+    },
+    {
+      "countryName": "Azerbaijan",
+      "countryIso2": "AZ",
+      "name": "Azercell",
+      "slug": "azercell",
+      "telcoSubdomain": "azercell.azerbaijan.keyra.ie",
+      "officialDomain": "https://www.azercell.com/",
+      "subscribers": 5100000,
+      "subscribersDisplay": "5.1M"
+    },
+    {
+      "countryName": "Azerbaijan",
+      "countryIso2": "AZ",
+      "name": "Bakcell",
+      "slug": "bakcell",
+      "telcoSubdomain": "bakcell.azerbaijan.keyra.ie",
+      "officialDomain": "https://www.bakcell.com/",
+      "subscribers": 3000000,
+      "subscribersDisplay": "3M"
+    },
+    {
+      "countryName": "Azerbaijan",
+      "countryIso2": "AZ",
+      "name": "Nar",
+      "slug": "nar",
+      "telcoSubdomain": "nar.azerbaijan.keyra.ie",
+      "officialDomain": "https://www.nar.az/",
+      "subscribers": 2200000,
+      "subscribersDisplay": "2.2M"
+    },
+    {
+      "countryName": "Burundi",
+      "countryIso2": "BI",
+      "name": "Econet Leo Burundi",
+      "slug": "econet-leo",
+      "telcoSubdomain": "econet-leo.burundi.keyra.ie",
+      "officialDomain": "https://www.econet.co.bw/",
+      "subscribers": 1800000,
+      "subscribersDisplay": "1.8M"
+    },
+    {
+      "countryName": "Burundi",
+      "countryIso2": "BI",
+      "name": "Lumitel",
+      "slug": "lumitel",
+      "telcoSubdomain": "lumitel.burundi.keyra.ie",
+      "officialDomain": "https://www.lumitel.bi/",
+      "subscribers": 2600000,
+      "subscribersDisplay": "2.6M"
+    },
+    {
+      "countryName": "Belgium",
+      "countryIso2": "BE",
+      "name": "Proximus",
+      "slug": "proximus",
+      "telcoSubdomain": "proximus.belgium.keyra.ie",
+      "officialDomain": "https://www.proximus.be/",
+      "subscribers": 6700000,
+      "subscribersDisplay": "6.7M"
+    },
+    {
+      "countryName": "Belgium",
+      "countryIso2": "BE",
+      "name": "Orange Belgium",
+      "slug": "orange",
+      "telcoSubdomain": "orange.belgium.keyra.ie",
+      "officialDomain": "https://www.orange.be/",
+      "subscribers": 3400000,
+      "subscribersDisplay": "3.4M"
+    },
+    {
+      "countryName": "Belgium",
+      "countryIso2": "BE",
+      "name": "Telenet/Base",
+      "slug": "telenet",
+      "telcoSubdomain": "telenet.belgium.keyra.ie",
+      "officialDomain": "https://www.telenet.be/",
+      "subscribers": 2500000,
+      "subscribersDisplay": "2.5M"
+    },
+    {
+      "countryName": "Benin",
+      "countryIso2": "BJ",
+      "name": "MTN Benin",
+      "slug": "mtn",
+      "telcoSubdomain": "mtn.benin.keyra.ie",
+      "officialDomain": "https://www.mtn.bj/",
+      "subscribers": 6800000,
+      "subscribersDisplay": "6.8M"
+    },
+    {
+      "countryName": "Benin",
+      "countryIso2": "BJ",
+      "name": "Moov Africa Benin",
+      "slug": "moov-africa",
+      "telcoSubdomain": "moov-africa.benin.keyra.ie",
+      "officialDomain": "https://www.moov-africa.bj/",
+      "subscribers": 4200000,
+      "subscribersDisplay": "4.2M"
+    },
+    {
+      "countryName": "Burkina Faso",
+      "countryIso2": "BF",
+      "name": "Orange Burkina Faso",
+      "slug": "orange",
+      "telcoSubdomain": "orange.burkina-faso.keyra.ie",
+      "officialDomain": "https://www.orange.bf/",
+      "subscribers": 11000000,
+      "subscribersDisplay": "11M"
+    },
+    {
+      "countryName": "Burkina Faso",
+      "countryIso2": "BF",
+      "name": "Moov Africa Burkina",
+      "slug": "moov-africa",
+      "telcoSubdomain": "moov-africa.burkina-faso.keyra.ie",
+      "officialDomain": "https://www.moov-africa.bf/",
+      "subscribers": 7600000,
+      "subscribersDisplay": "7.6M"
+    },
+    {
+      "countryName": "Bangladesh",
+      "countryIso2": "BD",
+      "name": "Grameenphone",
+      "slug": "grameenphone",
+      "telcoSubdomain": "grameenphone.bangladesh.keyra.ie",
+      "officialDomain": "https://www.grameenphone.com/",
+      "subscribers": 84100000,
+      "subscribersDisplay": "84.1M"
+    },
+    {
+      "countryName": "Bangladesh",
+      "countryIso2": "BD",
+      "name": "Robi",
+      "slug": "robi",
+      "telcoSubdomain": "robi.bangladesh.keyra.ie",
+      "officialDomain": "https://www.robi.com.bd/",
+      "subscribers": 58700000,
+      "subscribersDisplay": "58.7M"
+    },
+    {
+      "countryName": "Bangladesh",
+      "countryIso2": "BD",
+      "name": "Banglalink",
+      "slug": "banglalink",
+      "telcoSubdomain": "banglalink.bangladesh.keyra.ie",
+      "officialDomain": "https://www.banglalink.net/",
+      "subscribers": 43200000,
+      "subscribersDisplay": "43.2M"
+    },
+    {
+      "countryName": "Bangladesh",
+      "countryIso2": "BD",
+      "name": "Teletalk",
+      "slug": "teletalk",
+      "telcoSubdomain": "teletalk.bangladesh.keyra.ie",
+      "officialDomain": "https://www.teletalk.com.bd/",
+      "subscribers": 6900000,
+      "subscribersDisplay": "6.9M"
+    },
+    {
+      "countryName": "Bulgaria",
+      "countryIso2": "BG",
+      "name": "A1 Bulgaria",
+      "slug": "a1",
+      "telcoSubdomain": "a1.bulgaria.keyra.ie",
+      "officialDomain": "https://www.a1.bg/",
+      "subscribers": 4900000,
+      "subscribersDisplay": "4.9M"
+    },
+    {
+      "countryName": "Bulgaria",
+      "countryIso2": "BG",
+      "name": "Yettel Bulgaria",
+      "slug": "yettel",
+      "telcoSubdomain": "yettel.bulgaria.keyra.ie",
+      "officialDomain": "https://www.yettel.bg/",
+      "subscribers": 3200000,
+      "subscribersDisplay": "3.2M"
+    },
+    {
+      "countryName": "Bulgaria",
+      "countryIso2": "BG",
+      "name": "Vivacom",
+      "slug": "vivacom",
+      "telcoSubdomain": "vivacom.bulgaria.keyra.ie",
+      "officialDomain": "https://www.vivacom.bg/",
+      "subscribers": 3900000,
+      "subscribersDisplay": "3.9M"
+    },
+    {
+      "countryName": "Bahrain",
+      "countryIso2": "BH",
+      "name": "Batelco",
+      "slug": "batelco",
+      "telcoSubdomain": "batelco.bahrain.keyra.ie",
+      "officialDomain": "https://www.batelco.com/",
+      "subscribers": 1600000,
+      "subscribersDisplay": "1.6M"
+    },
+    {
+      "countryName": "Bahrain",
+      "countryIso2": "BH",
+      "name": "Zain Bahrain",
+      "slug": "zain",
+      "telcoSubdomain": "zain.bahrain.keyra.ie",
+      "officialDomain": "https://www.bh.zain.com/",
+      "subscribers": 1100000,
+      "subscribersDisplay": "1.1M"
+    },
+    {
+      "countryName": "Bahrain",
+      "countryIso2": "BH",
+      "name": "stc Bahrain",
+      "slug": "stc",
+      "telcoSubdomain": "stc.bahrain.keyra.ie",
+      "officialDomain": "https://www.stc.com.bh/",
+      "subscribers": 1000000,
+      "subscribersDisplay": "1M"
+    },
+    {
+      "countryName": "Bahamas",
+      "countryIso2": "BS",
+      "name": "BTC Bahamas",
+      "slug": "btc",
+      "telcoSubdomain": "btc.bahamas.keyra.ie",
+      "officialDomain": "https://www.btcbahamas.com/",
+      "subscribers": 290000,
+      "subscribersDisplay": "290K"
+    },
+    {
+      "countryName": "Bahamas",
+      "countryIso2": "BS",
+      "name": "Aliv",
+      "slug": "aliv",
+      "telcoSubdomain": "aliv.bahamas.keyra.ie",
+      "officialDomain": "https://www.bealiv.com/",
+      "subscribers": 210000,
+      "subscribersDisplay": "210K"
+    },
+    {
+      "countryName": "Bosnia and Herzegovina",
+      "countryIso2": "BA",
+      "name": "BH Telecom",
+      "slug": "bh-telecom",
+      "telcoSubdomain": "bh-telecom.bosnia-and-herzegovina.keyra.ie",
+      "officialDomain": "https://www.bhtelecom.ba/",
+      "subscribers": 1900000,
+      "subscribersDisplay": "1.9M"
+    },
+    {
+      "countryName": "Bosnia and Herzegovina",
+      "countryIso2": "BA",
+      "name": "HT Eronet",
+      "slug": "ht-eronet",
+      "telcoSubdomain": "ht-eronet.bosnia-and-herzegovina.keyra.ie",
+      "officialDomain": "https://www.hteronet.ba/",
+      "subscribers": 780000,
+      "subscribersDisplay": "780K"
+    },
+    {
+      "countryName": "Bosnia and Herzegovina",
+      "countryIso2": "BA",
+      "name": "Mtel",
+      "slug": "m-tel",
+      "telcoSubdomain": "m-tel.bosnia-and-herzegovina.keyra.ie",
+      "officialDomain": "https://www.mtel.ba/",
+      "subscribers": 1600000,
+      "subscribersDisplay": "1.6M"
+    },
+    {
+      "countryName": "Saint Barthélemy",
+      "countryIso2": "BL",
+      "name": "Orange Caraïbe",
+      "slug": "orange-caraibe",
+      "telcoSubdomain": "orange-caraibe.saint-barthelemy.keyra.ie",
+      "officialDomain": "https://caraibe.orange.fr/",
+      "subscribers": 35000,
+      "subscribersDisplay": "35K"
+    },
+    {
+      "countryName": "Saint Barthélemy",
+      "countryIso2": "BL",
+      "name": "Digicel French Caribbean",
+      "slug": "digicel",
+      "telcoSubdomain": "digicel.saint-barthelemy.keyra.ie",
+      "officialDomain": "https://www.digicelgroup.com/",
+      "subscribers": 22000,
+      "subscribersDisplay": "22K"
+    },
+    {
+      "countryName": "Saint Helena, Ascension and Tristan da Cunha",
+      "countryIso2": "SH",
+      "name": "Sure South Atlantic",
+      "slug": "sure",
+      "telcoSubdomain": "sure.saint-helena-ascension-and-tristan-da-cunha.keyra.ie",
+      "officialDomain": "https://www.sure.co.sh/",
+      "subscribers": 12000,
+      "subscribersDisplay": "12K"
+    },
+    {
+      "countryName": "Belarus",
+      "countryIso2": "BY",
+      "name": "A1 Belarus",
+      "slug": "a1",
+      "telcoSubdomain": "a1.belarus.keyra.ie",
+      "officialDomain": "https://www.a1.by/",
+      "subscribers": 4900000,
+      "subscribersDisplay": "4.9M"
+    },
+    {
+      "countryName": "Belarus",
+      "countryIso2": "BY",
+      "name": "MTS Belarus",
+      "slug": "mts",
+      "telcoSubdomain": "mts.belarus.keyra.ie",
+      "officialDomain": "https://www.mts.by/",
+      "subscribers": 5700000,
+      "subscribersDisplay": "5.7M"
+    },
+    {
+      "countryName": "Belarus",
+      "countryIso2": "BY",
+      "name": "life:) Belarus",
+      "slug": "life-belarus",
+      "telcoSubdomain": "life-belarus.belarus.keyra.ie",
+      "officialDomain": "https://life.com.by/",
+      "subscribers": 1500000,
+      "subscribersDisplay": "1.5M"
+    },
+    {
+      "countryName": "Belize",
+      "countryIso2": "BZ",
+      "name": "Digi Belize",
+      "slug": "digi",
+      "telcoSubdomain": "digi.belize.keyra.ie",
+      "officialDomain": "https://www.livedigi.com/",
+      "subscribers": 320000,
+      "subscribersDisplay": "320K"
+    },
+    {
+      "countryName": "Belize",
+      "countryIso2": "BZ",
+      "name": "Smart Belize",
+      "slug": "smart",
+      "telcoSubdomain": "smart.belize.keyra.ie",
+      "officialDomain": "https://www.smart.com.bz/",
+      "subscribers": 210000,
+      "subscribersDisplay": "210K"
+    },
+    {
+      "countryName": "Bermuda",
+      "countryIso2": "BM",
+      "name": "One Communications",
+      "slug": "one-communications",
+      "telcoSubdomain": "one-communications.bermuda.keyra.ie",
+      "officialDomain": "https://www.onecomm.bm/",
+      "subscribers": 58000,
+      "subscribersDisplay": "58K"
+    },
+    {
+      "countryName": "Bermuda",
+      "countryIso2": "BM",
+      "name": "Digicel Bermuda",
+      "slug": "digicel",
+      "telcoSubdomain": "digicel.bermuda.keyra.ie",
+      "officialDomain": "https://www.digicelgroup.com/",
+      "subscribers": 42000,
+      "subscribersDisplay": "42K"
+    },
+    {
+      "countryName": "Bolivia",
+      "countryIso2": "BO",
+      "name": "Entel Bolivia",
+      "slug": "entel",
+      "telcoSubdomain": "entel.bolivia.keyra.ie",
+      "officialDomain": "https://www.entel.bo/",
+      "subscribers": 6800000,
+      "subscribersDisplay": "6.8M"
+    },
+    {
+      "countryName": "Bolivia",
+      "countryIso2": "BO",
+      "name": "Tigo Bolivia",
+      "slug": "tigo",
+      "telcoSubdomain": "tigo.bolivia.keyra.ie",
+      "officialDomain": "https://www.tigo.com.bo/",
+      "subscribers": 5600000,
+      "subscribersDisplay": "5.6M"
+    },
+    {
+      "countryName": "Bolivia",
+      "countryIso2": "BO",
+      "name": "Viva Bolivia",
+      "slug": "viva",
+      "telcoSubdomain": "viva.bolivia.keyra.ie",
+      "officialDomain": "https://www.nuevatel.com/",
+      "subscribers": 3100000,
+      "subscribersDisplay": "3.1M"
+    },
+    {
+      "countryName": "Caribbean Netherlands",
+      "countryIso2": "BQ",
+      "name": "Digicel Caribbean Netherlands",
+      "slug": "digicel",
+      "telcoSubdomain": "digicel.caribbean-netherlands.keyra.ie",
+      "officialDomain": "https://www.digicelgroup.com/",
+      "subscribers": 18000,
+      "subscribersDisplay": "18K"
+    },
+    {
+      "countryName": "Caribbean Netherlands",
+      "countryIso2": "BQ",
+      "name": "Flow Caribbean Netherlands",
+      "slug": "flow",
+      "telcoSubdomain": "flow.caribbean-netherlands.keyra.ie",
+      "officialDomain": "https://discoverflow.co/",
+      "subscribers": 14000,
+      "subscribersDisplay": "14K"
+    },
+    {
+      "countryName": "Barbados",
+      "countryIso2": "BB",
+      "name": "Flow Barbados",
+      "slug": "flow",
+      "telcoSubdomain": "flow.barbados.keyra.ie",
+      "officialDomain": "https://discoverflow.co/barbados",
+      "subscribers": 165000,
+      "subscribersDisplay": "165K"
+    },
+    {
+      "countryName": "Barbados",
+      "countryIso2": "BB",
+      "name": "Digicel Barbados",
+      "slug": "digicel",
+      "telcoSubdomain": "digicel.barbados.keyra.ie",
+      "officialDomain": "https://www.digicelgroup.com/",
+      "subscribers": 140000,
+      "subscribersDisplay": "140K"
+    },
+    {
+      "countryName": "Brunei",
+      "countryIso2": "BN",
+      "name": "DST",
+      "slug": "dst",
+      "telcoSubdomain": "dst.brunei.keyra.ie",
+      "officialDomain": "https://www.dst.com.bn/",
+      "subscribers": 430000,
+      "subscribersDisplay": "430K"
+    },
+    {
+      "countryName": "Brunei",
+      "countryIso2": "BN",
+      "name": "Progresif",
+      "slug": "progresif",
+      "telcoSubdomain": "progresif.brunei.keyra.ie",
+      "officialDomain": "https://www.progresif.com/",
+      "subscribers": 110000,
+      "subscribersDisplay": "110K"
+    },
+    {
+      "countryName": "Brunei",
+      "countryIso2": "BN",
+      "name": "imagine Mobile",
+      "slug": "imagine",
+      "telcoSubdomain": "imagine.brunei.keyra.ie",
+      "officialDomain": "https://imagine.com.bn/",
+      "subscribers": 95000,
+      "subscribersDisplay": "95K"
+    },
+    {
+      "countryName": "Bhutan",
+      "countryIso2": "BT",
+      "name": "Bhutan Telecom",
+      "slug": "bhutan-telecom",
+      "telcoSubdomain": "bhutan-telecom.bhutan.keyra.ie",
+      "officialDomain": "https://www.bt.bt/",
+      "subscribers": 720000,
+      "subscribersDisplay": "720K"
+    },
+    {
+      "countryName": "Bhutan",
+      "countryIso2": "BT",
+      "name": "TashiCell",
+      "slug": "tashicell",
+      "telcoSubdomain": "tashicell.bhutan.keyra.ie",
+      "officialDomain": "https://www.tashicell.com/",
+      "subscribers": 410000,
+      "subscribersDisplay": "410K"
+    },
+    {
+      "countryName": "Botswana",
+      "countryIso2": "BW",
+      "name": "Mascom",
+      "slug": "mascom",
+      "telcoSubdomain": "mascom.botswana.keyra.ie",
+      "officialDomain": "https://www.mascom.bw/",
+      "subscribers": 1900000,
+      "subscribersDisplay": "1.9M"
+    },
+    {
+      "countryName": "Botswana",
+      "countryIso2": "BW",
+      "name": "Orange Botswana",
+      "slug": "orange",
+      "telcoSubdomain": "orange.botswana.keyra.ie",
+      "officialDomain": "https://www.orange.co.bw/",
+      "subscribers": 1800000,
+      "subscribersDisplay": "1.8M"
+    },
+    {
+      "countryName": "Botswana",
+      "countryIso2": "BW",
+      "name": "BTC Mobile",
+      "slug": "btc",
+      "telcoSubdomain": "btc.botswana.keyra.ie",
+      "officialDomain": "https://www.btc.bw/",
+      "subscribers": 820000,
+      "subscribersDisplay": "820K"
+    },
+    {
+      "countryName": "Central African Republic",
+      "countryIso2": "CF",
+      "name": "Telecel CAR",
+      "slug": "telecel",
+      "telcoSubdomain": "telecel.central-african-republic.keyra.ie",
+      "officialDomain": "https://www.telecel.cf/",
+      "subscribers": 620000,
+      "subscribersDisplay": "620K"
+    },
+    {
+      "countryName": "Central African Republic",
+      "countryIso2": "CF",
+      "name": "Orange CAR",
+      "slug": "orange",
+      "telcoSubdomain": "orange.central-african-republic.keyra.ie",
+      "officialDomain": "https://www.orange.cf/",
+      "subscribers": 780000,
+      "subscribersDisplay": "780K"
+    },
+    {
+      "countryName": "Switzerland",
+      "countryIso2": "CH",
+      "name": "Swisscom",
+      "slug": "swisscom",
+      "telcoSubdomain": "swisscom.switzerland.keyra.ie",
+      "officialDomain": "https://www.swisscom.ch/",
+      "subscribers": 6400000,
+      "subscribersDisplay": "6.4M"
+    },
+    {
+      "countryName": "Switzerland",
+      "countryIso2": "CH",
+      "name": "Sunrise",
+      "slug": "sunrise",
+      "telcoSubdomain": "sunrise.switzerland.keyra.ie",
+      "officialDomain": "https://www.sunrise.ch/",
+      "subscribers": 3100000,
+      "subscribersDisplay": "3.1M"
+    },
+    {
+      "countryName": "Switzerland",
+      "countryIso2": "CH",
+      "name": "Salt",
+      "slug": "salt",
+      "telcoSubdomain": "salt.switzerland.keyra.ie",
+      "officialDomain": "https://www.salt.ch/",
+      "subscribers": 1600000,
+      "subscribersDisplay": "1.6M"
+    },
+    {
+      "countryName": "Chile",
+      "countryIso2": "CL",
+      "name": "Entel Chile",
+      "slug": "entel",
+      "telcoSubdomain": "entel.chile.keyra.ie",
+      "officialDomain": "https://www.entel.cl/",
+      "subscribers": 9700000,
+      "subscribersDisplay": "9.7M"
+    },
+    {
+      "countryName": "Chile",
+      "countryIso2": "CL",
+      "name": "Movistar Chile",
+      "slug": "movistar",
+      "telcoSubdomain": "movistar.chile.keyra.ie",
+      "officialDomain": "https://www.movistar.cl/",
+      "subscribers": 7600000,
+      "subscribersDisplay": "7.6M"
+    },
+    {
+      "countryName": "Chile",
+      "countryIso2": "CL",
+      "name": "Claro Chile",
+      "slug": "claro",
+      "telcoSubdomain": "claro.chile.keyra.ie",
+      "officialDomain": "https://www.clarochile.cl/",
+      "subscribers": 6200000,
+      "subscribersDisplay": "6.2M"
+    },
+    {
+      "countryName": "Chile",
+      "countryIso2": "CL",
+      "name": "WOM Chile",
+      "slug": "wom",
+      "telcoSubdomain": "wom.chile.keyra.ie",
+      "officialDomain": "https://www.wom.cl/",
+      "subscribers": 8200000,
+      "subscribersDisplay": "8.2M"
+    },
+    {
+      "countryName": "Ivory Coast",
+      "countryIso2": "CI",
+      "name": "Orange Côte d’Ivoire",
+      "slug": "orange",
+      "telcoSubdomain": "orange.ivory-coast.keyra.ie",
+      "officialDomain": "https://www.orange.ci/",
+      "subscribers": 16800000,
+      "subscribersDisplay": "16.8M"
+    },
+    {
+      "countryName": "Ivory Coast",
+      "countryIso2": "CI",
+      "name": "MTN Côte d’Ivoire",
+      "slug": "mtn",
+      "telcoSubdomain": "mtn.ivory-coast.keyra.ie",
+      "officialDomain": "https://www.mtn.ci/",
+      "subscribers": 14000000,
+      "subscribersDisplay": "14M"
+    },
+    {
+      "countryName": "Ivory Coast",
+      "countryIso2": "CI",
+      "name": "Moov Africa Côte d’Ivoire",
+      "slug": "moov-africa",
+      "telcoSubdomain": "moov-africa.ivory-coast.keyra.ie",
+      "officialDomain": "https://www.moov-africa.ci/",
+      "subscribers": 9100000,
+      "subscribersDisplay": "9.1M"
+    },
+    {
+      "countryName": "Cameroon",
+      "countryIso2": "CM",
+      "name": "MTN Cameroon",
+      "slug": "mtn",
+      "telcoSubdomain": "mtn.cameroon.keyra.ie",
+      "officialDomain": "https://www.mtn.cm/",
+      "subscribers": 12300000,
+      "subscribersDisplay": "12.3M"
+    },
+    {
+      "countryName": "Cameroon",
+      "countryIso2": "CM",
+      "name": "Orange Cameroon",
+      "slug": "orange",
+      "telcoSubdomain": "orange.cameroon.keyra.ie",
+      "officialDomain": "https://www.orange.cm/",
+      "subscribers": 11100000,
+      "subscribersDisplay": "11.1M"
+    },
+    {
+      "countryName": "DR Congo",
+      "countryIso2": "CD",
+      "name": "Vodacom Congo",
+      "slug": "vodacom",
+      "telcoSubdomain": "vodacom.dr-congo.keyra.ie",
+      "officialDomain": "https://www.vodacom.cd/",
+      "subscribers": 21000000,
+      "subscribersDisplay": "21M"
+    },
+    {
+      "countryName": "DR Congo",
+      "countryIso2": "CD",
+      "name": "Airtel DRC",
+      "slug": "airtel",
+      "telcoSubdomain": "airtel.dr-congo.keyra.ie",
+      "officialDomain": "https://www.airtel.cd/",
+      "subscribers": 16500000,
+      "subscribersDisplay": "16.5M"
+    },
+    {
+      "countryName": "DR Congo",
+      "countryIso2": "CD",
+      "name": "Orange DRC",
+      "slug": "orange",
+      "telcoSubdomain": "orange.dr-congo.keyra.ie",
+      "officialDomain": "https://www.orange.cd/",
+      "subscribers": 14800000,
+      "subscribersDisplay": "14.8M"
+    },
+    {
+      "countryName": "DR Congo",
+      "countryIso2": "CD",
+      "name": "Africell DRC",
+      "slug": "africell",
+      "telcoSubdomain": "africell.dr-congo.keyra.ie",
+      "officialDomain": "https://www.africell.cd/",
+      "subscribers": 7200000,
+      "subscribersDisplay": "7.2M"
+    },
+    {
+      "countryName": "Republic of the Congo",
+      "countryIso2": "CG",
+      "name": "MTN Congo",
+      "slug": "mtn",
+      "telcoSubdomain": "mtn.republic-of-the-congo.keyra.ie",
+      "officialDomain": "https://www.mtn.cg/",
+      "subscribers": 3200000,
+      "subscribersDisplay": "3.2M"
+    },
+    {
+      "countryName": "Republic of the Congo",
+      "countryIso2": "CG",
+      "name": "Airtel Congo",
+      "slug": "airtel",
+      "telcoSubdomain": "airtel.republic-of-the-congo.keyra.ie",
+      "officialDomain": "https://www.airtel.cg/",
+      "subscribers": 2900000,
+      "subscribersDisplay": "2.9M"
+    },
+    {
+      "countryName": "Cook Islands",
+      "countryIso2": "CK",
+      "name": "Vodafone Cook Islands",
+      "slug": "vodafone",
+      "telcoSubdomain": "vodafone.cook-islands.keyra.ie",
+      "officialDomain": "https://www.vodafone.co.ck/",
+      "subscribers": 18000,
+      "subscribersDisplay": "18K"
+    },
+    {
+      "countryName": "Colombia",
+      "countryIso2": "CO",
+      "name": "Claro Colombia",
+      "slug": "claro",
+      "telcoSubdomain": "claro.colombia.keyra.ie",
+      "officialDomain": "https://www.claro.com.co/",
+      "subscribers": 41000000,
+      "subscribersDisplay": "41M"
+    },
+    {
+      "countryName": "Colombia",
+      "countryIso2": "CO",
+      "name": "Movistar Colombia",
+      "slug": "movistar",
+      "telcoSubdomain": "movistar.colombia.keyra.ie",
+      "officialDomain": "https://www.movistar.co/",
+      "subscribers": 24700000,
+      "subscribersDisplay": "24.7M"
+    },
+    {
+      "countryName": "Colombia",
+      "countryIso2": "CO",
+      "name": "Tigo Colombia",
+      "slug": "tigo",
+      "telcoSubdomain": "tigo.colombia.keyra.ie",
+      "officialDomain": "https://www.tigo.com.co/",
+      "subscribers": 18400000,
+      "subscribersDisplay": "18.4M"
+    },
+    {
+      "countryName": "Colombia",
+      "countryIso2": "CO",
+      "name": "WOM Colombia",
+      "slug": "wom",
+      "telcoSubdomain": "wom.colombia.keyra.ie",
+      "officialDomain": "https://www.wom.co/",
+      "subscribers": 7300000,
+      "subscribersDisplay": "7.3M"
+    },
+    {
+      "countryName": "Comoros",
+      "countryIso2": "KM",
+      "name": "Comores Telecom",
+      "slug": "comores-telecom",
+      "telcoSubdomain": "comores-telecom.comoros.keyra.ie",
+      "officialDomain": "https://www.comorestelecom.km/",
+      "subscribers": 420000,
+      "subscribersDisplay": "420K"
+    },
+    {
+      "countryName": "Comoros",
+      "countryIso2": "KM",
+      "name": "Telma Comoros",
+      "slug": "telma",
+      "telcoSubdomain": "telma.comoros.keyra.ie",
+      "officialDomain": "https://www.telma.km/",
+      "subscribers": 310000,
+      "subscribersDisplay": "310K"
+    },
+    {
+      "countryName": "Cape Verde",
+      "countryIso2": "CV",
+      "name": "CVMóvel",
+      "slug": "cvmovel",
+      "telcoSubdomain": "cvmovel.cape-verde.keyra.ie",
+      "officialDomain": "https://www.cvtelecom.cv/",
+      "subscribers": 390000,
+      "subscribersDisplay": "390K"
+    },
+    {
+      "countryName": "Cape Verde",
+      "countryIso2": "CV",
+      "name": "Unitel T+",
+      "slug": "unitel-t",
+      "telcoSubdomain": "unitel-t.cape-verde.keyra.ie",
+      "officialDomain": "https://www.uniteltmais.cv/",
+      "subscribers": 280000,
+      "subscribersDisplay": "280K"
+    },
+    {
+      "countryName": "Costa Rica",
+      "countryIso2": "CR",
+      "name": "Kölbi",
+      "slug": "kolbi",
+      "telcoSubdomain": "kolbi.costa-rica.keyra.ie",
+      "officialDomain": "https://www.kolbi.cr/",
+      "subscribers": 4300000,
+      "subscribersDisplay": "4.3M"
+    },
+    {
+      "countryName": "Costa Rica",
+      "countryIso2": "CR",
+      "name": "Claro Costa Rica",
+      "slug": "claro",
+      "telcoSubdomain": "claro.costa-rica.keyra.ie",
+      "officialDomain": "https://www.claro.cr/",
+      "subscribers": 2500000,
+      "subscribersDisplay": "2.5M"
+    },
+    {
+      "countryName": "Costa Rica",
+      "countryIso2": "CR",
+      "name": "Liberty Costa Rica",
+      "slug": "liberty",
+      "telcoSubdomain": "liberty.costa-rica.keyra.ie",
+      "officialDomain": "https://www.libertycr.com/",
+      "subscribers": 1900000,
+      "subscribersDisplay": "1.9M"
+    },
+    {
+      "countryName": "Cuba",
+      "countryIso2": "CU",
+      "name": "Cubacel",
+      "slug": "cubacel",
+      "telcoSubdomain": "cubacel.cuba.keyra.ie",
+      "officialDomain": "https://www.etecsa.cu/",
+      "subscribers": 7800000,
+      "subscribersDisplay": "7.8M"
+    },
+    {
+      "countryName": "Curaçao",
+      "countryIso2": "CW",
+      "name": "Flow Curaçao",
+      "slug": "flow",
+      "telcoSubdomain": "flow.curacao.keyra.ie",
+      "officialDomain": "https://discoverflow.co/curacao",
+      "subscribers": 145000,
+      "subscribersDisplay": "145K"
+    },
+    {
+      "countryName": "Curaçao",
+      "countryIso2": "CW",
+      "name": "Digicel Curaçao",
+      "slug": "digicel",
+      "telcoSubdomain": "digicel.curacao.keyra.ie",
+      "officialDomain": "https://www.digicelgroup.com/",
+      "subscribers": 98000,
+      "subscribersDisplay": "98K"
+    },
+    {
+      "countryName": "Cayman Islands",
+      "countryIso2": "KY",
+      "name": "Flow Cayman",
+      "slug": "flow",
+      "telcoSubdomain": "flow.cayman-islands.keyra.ie",
+      "officialDomain": "https://discoverflow.co/cayman",
+      "subscribers": 52000,
+      "subscribersDisplay": "52K"
+    },
+    {
+      "countryName": "Cayman Islands",
+      "countryIso2": "KY",
+      "name": "Digicel Cayman",
+      "slug": "digicel",
+      "telcoSubdomain": "digicel.cayman-islands.keyra.ie",
+      "officialDomain": "https://www.digicelgroup.com/",
+      "subscribers": 41000,
+      "subscribersDisplay": "41K"
+    },
+    {
+      "countryName": "Cyprus",
+      "countryIso2": "CY",
+      "name": "Cyta",
+      "slug": "cyta",
+      "telcoSubdomain": "cyta.cyprus.keyra.ie",
+      "officialDomain": "https://www.cyta.com.cy/",
+      "subscribers": 930000,
+      "subscribersDisplay": "930K"
+    },
+    {
+      "countryName": "Cyprus",
+      "countryIso2": "CY",
+      "name": "Epic Cyprus",
+      "slug": "epic",
+      "telcoSubdomain": "epic.cyprus.keyra.ie",
+      "officialDomain": "https://www.epic.com.cy/",
+      "subscribers": 620000,
+      "subscribersDisplay": "620K"
+    },
+    {
+      "countryName": "Cyprus",
+      "countryIso2": "CY",
+      "name": "PrimeTel Mobile",
+      "slug": "primetel",
+      "telcoSubdomain": "primetel.cyprus.keyra.ie",
+      "officialDomain": "https://www.primetel.com.cy/",
+      "subscribers": 140000,
+      "subscribersDisplay": "140K"
+    },
+    {
+      "countryName": "Czechia",
+      "countryIso2": "CZ",
+      "name": "T-Mobile Czech Republic",
+      "slug": "t-mobile",
+      "telcoSubdomain": "t-mobile.czechia.keyra.ie",
+      "officialDomain": "https://www.t-mobile.cz/",
+      "subscribers": 6500000,
+      "subscribersDisplay": "6.5M"
+    },
+    {
+      "countryName": "Czechia",
+      "countryIso2": "CZ",
+      "name": "O2 Czech Republic",
+      "slug": "o2",
+      "telcoSubdomain": "o2.czechia.keyra.ie",
+      "officialDomain": "https://www.o2.cz/",
+      "subscribers": 6100000,
+      "subscribersDisplay": "6.1M"
+    },
+    {
+      "countryName": "Czechia",
+      "countryIso2": "CZ",
+      "name": "Vodafone Czech Republic",
+      "slug": "vodafone",
+      "telcoSubdomain": "vodafone.czechia.keyra.ie",
+      "officialDomain": "https://www.vodafone.cz/",
+      "subscribers": 4300000,
+      "subscribersDisplay": "4.3M"
+    },
+    {
+      "countryName": "Djibouti",
+      "countryIso2": "DJ",
+      "name": "Djibouti Telecom",
+      "slug": "djibouti-telecom",
+      "telcoSubdomain": "djibouti-telecom.djibouti.keyra.ie",
+      "officialDomain": "https://www.djiboutitelecom.dj/",
+      "subscribers": 390000,
+      "subscribersDisplay": "390K"
+    },
+    {
+      "countryName": "Dominica",
+      "countryIso2": "DM",
+      "name": "Flow Dominica",
+      "slug": "flow",
+      "telcoSubdomain": "flow.dominica.keyra.ie",
+      "officialDomain": "https://discoverflow.co/dominica",
+      "subscribers": 48000,
+      "subscribersDisplay": "48K"
+    },
+    {
+      "countryName": "Dominica",
+      "countryIso2": "DM",
+      "name": "Digicel Dominica",
+      "slug": "digicel",
+      "telcoSubdomain": "digicel.dominica.keyra.ie",
+      "officialDomain": "https://www.digicelgroup.com/",
+      "subscribers": 37000,
+      "subscribersDisplay": "37K"
+    },
+    {
+      "countryName": "Denmark",
+      "countryIso2": "DK",
+      "name": "TDC NET / YouSee Mobile",
+      "slug": "yousee",
+      "telcoSubdomain": "yousee.denmark.keyra.ie",
+      "officialDomain": "https://yousee.dk/",
+      "subscribers": 3100000,
+      "subscribersDisplay": "3.1M"
+    },
+    {
+      "countryName": "Denmark",
+      "countryIso2": "DK",
+      "name": "Telenor Denmark",
+      "slug": "telenor",
+      "telcoSubdomain": "telenor.denmark.keyra.ie",
+      "officialDomain": "https://www.telenor.dk/",
+      "subscribers": 1700000,
+      "subscribersDisplay": "1.7M"
+    },
+    {
+      "countryName": "Denmark",
+      "countryIso2": "DK",
+      "name": "Telia Denmark",
+      "slug": "telia",
+      "telcoSubdomain": "telia.denmark.keyra.ie",
+      "officialDomain": "https://www.telia.dk/",
+      "subscribers": 1600000,
+      "subscribersDisplay": "1.6M"
+    },
+    {
+      "countryName": "Denmark",
+      "countryIso2": "DK",
+      "name": "3 Denmark",
+      "slug": "3-denmark",
+      "telcoSubdomain": "3-denmark.denmark.keyra.ie",
+      "officialDomain": "https://www.3.dk/",
+      "subscribers": 1400000,
+      "subscribersDisplay": "1.4M"
+    },
+    {
+      "countryName": "Dominican Republic",
+      "countryIso2": "DO",
+      "name": "Claro Dominicana",
+      "slug": "claro",
+      "telcoSubdomain": "claro.dominican-republic.keyra.ie",
+      "officialDomain": "https://www.claro.com.do/",
+      "subscribers": 5400000,
+      "subscribersDisplay": "5.4M"
+    },
+    {
+      "countryName": "Dominican Republic",
+      "countryIso2": "DO",
+      "name": "Altice Dominicana",
+      "slug": "altice",
+      "telcoSubdomain": "altice.dominican-republic.keyra.ie",
+      "officialDomain": "https://www.altice.com.do/",
+      "subscribers": 4300000,
+      "subscribersDisplay": "4.3M"
+    },
+    {
+      "countryName": "Dominican Republic",
+      "countryIso2": "DO",
+      "name": "Viva Dominicana",
+      "slug": "viva",
+      "telcoSubdomain": "viva.dominican-republic.keyra.ie",
+      "officialDomain": "https://www.viva.com.do/",
+      "subscribers": 1100000,
+      "subscribersDisplay": "1.1M"
+    },
+    {
+      "countryName": "Algeria",
+      "countryIso2": "DZ",
+      "name": "Mobilis",
+      "slug": "mobilis",
+      "telcoSubdomain": "mobilis.algeria.keyra.ie",
+      "officialDomain": "https://www.mobilis.dz/",
+      "subscribers": 21000000,
+      "subscribersDisplay": "21M"
+    },
+    {
+      "countryName": "Algeria",
+      "countryIso2": "DZ",
+      "name": "Djezzy",
+      "slug": "djezzy",
+      "telcoSubdomain": "djezzy.algeria.keyra.ie",
+      "officialDomain": "https://www.djezzy.dz/",
+      "subscribers": 16000000,
+      "subscribersDisplay": "16M"
+    },
+    {
+      "countryName": "Algeria",
+      "countryIso2": "DZ",
+      "name": "Ooredoo Algeria",
+      "slug": "ooredoo",
+      "telcoSubdomain": "ooredoo.algeria.keyra.ie",
+      "officialDomain": "https://www.ooredoo.dz/",
+      "subscribers": 13500000,
+      "subscribersDisplay": "13.5M"
+    },
+    {
+      "countryName": "Ecuador",
+      "countryIso2": "EC",
+      "name": "Claro Ecuador",
+      "slug": "claro",
+      "telcoSubdomain": "claro.ecuador.keyra.ie",
+      "officialDomain": "https://www.claro.com.ec/",
+      "subscribers": 9500000,
+      "subscribersDisplay": "9.5M"
+    },
+    {
+      "countryName": "Ecuador",
+      "countryIso2": "EC",
+      "name": "Movistar Ecuador",
+      "slug": "movistar",
+      "telcoSubdomain": "movistar.ecuador.keyra.ie",
+      "officialDomain": "https://www.movistar.com.ec/",
+      "subscribers": 5200000,
+      "subscribersDisplay": "5.2M"
+    },
+    {
+      "countryName": "Ecuador",
+      "countryIso2": "EC",
+      "name": "CNT Mobile",
+      "slug": "cnt",
+      "telcoSubdomain": "cnt.ecuador.keyra.ie",
+      "officialDomain": "https://www.cnt.com.ec/",
+      "subscribers": 3100000,
+      "subscribersDisplay": "3.1M"
+    },
+    {
+      "countryName": "Equatorial Guinea",
+      "countryIso2": "GQ",
+      "name": "Getesa",
+      "slug": "getesa",
+      "telcoSubdomain": "getesa.equatorial-guinea.keyra.ie",
+      "officialDomain": "getesa.gq",
+      "subscribers": 380000,
+      "subscribersDisplay": "380K"
+    },
+    {
+      "countryName": "Equatorial Guinea",
+      "countryIso2": "GQ",
+      "name": "Muni",
+      "slug": "muni",
+      "telcoSubdomain": "muni.equatorial-guinea.keyra.ie",
+      "officialDomain": "muni-gq.com",
+      "subscribers": 120000,
+      "subscribersDisplay": "120K"
+    },
+    {
+      "countryName": "Greece",
+      "countryIso2": "GR",
+      "name": "Cosmote",
+      "slug": "cosmote",
+      "telcoSubdomain": "cosmote.greece.keyra.ie",
+      "officialDomain": "cosmote.gr",
+      "subscribers": 7900000,
+      "subscribersDisplay": "7.9M"
+    },
+    {
+      "countryName": "Greece",
+      "countryIso2": "GR",
+      "name": "Vodafone Greece",
+      "slug": "vodafone-greece",
+      "telcoSubdomain": "vodafone-greece.greece.keyra.ie",
+      "officialDomain": "vodafone.gr",
+      "subscribers": 4300000,
+      "subscribersDisplay": "4.3M"
+    },
+    {
+      "countryName": "Greece",
+      "countryIso2": "GR",
+      "name": "Nova",
+      "slug": "nova",
+      "telcoSubdomain": "nova.greece.keyra.ie",
+      "officialDomain": "nova.gr",
+      "subscribers": 3400000,
+      "subscribersDisplay": "3.4M"
+    },
+    {
+      "countryName": "Grenada",
+      "countryIso2": "GD",
+      "name": "Digicel Grenada",
+      "slug": "digicel-grenada",
+      "telcoSubdomain": "digicel-grenada.grenada.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 85000,
+      "subscribersDisplay": "85K"
+    },
+    {
+      "countryName": "Grenada",
+      "countryIso2": "GD",
+      "name": "FLOW Grenada",
+      "slug": "flow-grenada",
+      "telcoSubdomain": "flow-grenada.grenada.keyra.ie",
+      "officialDomain": "discoverflow.co",
+      "subscribers": 60000,
+      "subscribersDisplay": "60K"
+    },
+    {
+      "countryName": "Greenland",
+      "countryIso2": "GL",
+      "name": "Tusass",
+      "slug": "tusass",
+      "telcoSubdomain": "tusass.greenland.keyra.ie",
+      "officialDomain": "tusass.gl",
+      "subscribers": 56000,
+      "subscribersDisplay": "56K"
+    },
+    {
+      "countryName": "Guatemala",
+      "countryIso2": "GT",
+      "name": "Tigo Guatemala",
+      "slug": "tigo-guatemala",
+      "telcoSubdomain": "tigo-guatemala.guatemala.keyra.ie",
+      "officialDomain": "tigo.com.gt",
+      "subscribers": 12000000,
+      "subscribersDisplay": "12.0M"
+    },
+    {
+      "countryName": "Guatemala",
+      "countryIso2": "GT",
+      "name": "Claro Guatemala",
+      "slug": "claro-guatemala",
+      "telcoSubdomain": "claro-guatemala.guatemala.keyra.ie",
+      "officialDomain": "claro.com.gt",
+      "subscribers": 10500000,
+      "subscribersDisplay": "10.5M"
+    },
+    {
+      "countryName": "Guatemala",
+      "countryIso2": "GT",
+      "name": "Movistar Guatemala",
+      "slug": "movistar-guatemala",
+      "telcoSubdomain": "movistar-guatemala.guatemala.keyra.ie",
+      "officialDomain": "telefonica.com.gt",
+      "subscribers": 2100000,
+      "subscribersDisplay": "2.1M"
+    },
+    {
+      "countryName": "French Guiana",
+      "countryIso2": "GF",
+      "name": "Orange Caraïbe",
+      "slug": "orange-caraibe",
+      "telcoSubdomain": "orange-caraibe.french-guiana.keyra.ie",
+      "officialDomain": "orangecaraibe.com",
+      "subscribers": 280000,
+      "subscribersDisplay": "280K"
+    },
+    {
+      "countryName": "Guam",
+      "countryIso2": "GU",
+      "name": "GTA",
+      "slug": "gta",
+      "telcoSubdomain": "gta.guam.keyra.ie",
+      "officialDomain": "gta.net",
+      "subscribers": 85000,
+      "subscribersDisplay": "85K"
+    },
+    {
+      "countryName": "Guam",
+      "countryIso2": "GU",
+      "name": "IT&E",
+      "slug": "ite",
+      "telcoSubdomain": "ite.guam.keyra.ie",
+      "officialDomain": "ite.net",
+      "subscribers": 70000,
+      "subscribersDisplay": "70K"
+    },
+    {
+      "countryName": "Guyana",
+      "countryIso2": "GY",
+      "name": "GTT",
+      "slug": "gtt",
+      "telcoSubdomain": "gtt.guyana.keyra.ie",
+      "officialDomain": "gtt.co.gy",
+      "subscribers": 450000,
+      "subscribersDisplay": "450K"
+    },
+    {
+      "countryName": "Guyana",
+      "countryIso2": "GY",
+      "name": "Digicel Guyana",
+      "slug": "digicel-guyana",
+      "telcoSubdomain": "digicel-guyana.guyana.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 300000,
+      "subscribersDisplay": "300K"
+    },
+    {
+      "countryName": "Hong Kong",
+      "countryIso2": "HK",
+      "name": "CSL Mobile",
+      "slug": "csl-mobile",
+      "telcoSubdomain": "csl-mobile.hong-kong.keyra.ie",
+      "officialDomain": "hkcsl.com",
+      "subscribers": 4300000,
+      "subscribersDisplay": "4.3M"
+    },
+    {
+      "countryName": "Hong Kong",
+      "countryIso2": "HK",
+      "name": "SmarTone",
+      "slug": "smartone",
+      "telcoSubdomain": "smartone.hong-kong.keyra.ie",
+      "officialDomain": "smartone.com",
+      "subscribers": 2600000,
+      "subscribersDisplay": "2.6M"
+    },
+    {
+      "countryName": "Hong Kong",
+      "countryIso2": "HK",
+      "name": "China Mobile Hong Kong",
+      "slug": "china-mobile-hong-kong",
+      "telcoSubdomain": "china-mobile-hong-kong.hong-kong.keyra.ie",
+      "officialDomain": "cmhk.com",
+      "subscribers": 5200000,
+      "subscribersDisplay": "5.2M"
+    },
+    {
+      "countryName": "Hong Kong",
+      "countryIso2": "HK",
+      "name": "3 Hong Kong",
+      "slug": "3-hong-kong",
+      "telcoSubdomain": "3-hong-kong.hong-kong.keyra.ie",
+      "officialDomain": "three.com.hk",
+      "subscribers": 3100000,
+      "subscribersDisplay": "3.1M"
+    },
+    {
+      "countryName": "Honduras",
+      "countryIso2": "HN",
+      "name": "Tigo Honduras",
+      "slug": "tigo-honduras",
+      "telcoSubdomain": "tigo-honduras.honduras.keyra.ie",
+      "officialDomain": "tigo.com.hn",
+      "subscribers": 5800000,
+      "subscribersDisplay": "5.8M"
+    },
+    {
+      "countryName": "Honduras",
+      "countryIso2": "HN",
+      "name": "Claro Honduras",
+      "slug": "claro-honduras",
+      "telcoSubdomain": "claro-honduras.honduras.keyra.ie",
+      "officialDomain": "claro.com.hn",
+      "subscribers": 4500000,
+      "subscribersDisplay": "4.5M"
+    },
+    {
+      "countryName": "Croatia",
+      "countryIso2": "HR",
+      "name": "Hrvatski Telekom",
+      "slug": "hrvatski-telekom",
+      "telcoSubdomain": "hrvatski-telekom.croatia.keyra.ie",
+      "officialDomain": "hrvatskitelekom.hr",
+      "subscribers": 2300000,
+      "subscribersDisplay": "2.3M"
+    },
+    {
+      "countryName": "Croatia",
+      "countryIso2": "HR",
+      "name": "A1 Croatia",
+      "slug": "a1-croatia",
+      "telcoSubdomain": "a1-croatia.croatia.keyra.ie",
+      "officialDomain": "a1.hr",
+      "subscribers": 2100000,
+      "subscribersDisplay": "2.1M"
+    },
+    {
+      "countryName": "Croatia",
+      "countryIso2": "HR",
+      "name": "Telemach Croatia",
+      "slug": "telemach-croatia",
+      "telcoSubdomain": "telemach-croatia.croatia.keyra.ie",
+      "officialDomain": "telemach.hr",
+      "subscribers": 1100000,
+      "subscribersDisplay": "1.1M"
+    },
+    {
+      "countryName": "Haiti",
+      "countryIso2": "HT",
+      "name": "Digicel Haiti",
+      "slug": "digicel-haiti",
+      "telcoSubdomain": "digicel-haiti.haiti.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 4200000,
+      "subscribersDisplay": "4.2M"
+    },
+    {
+      "countryName": "Haiti",
+      "countryIso2": "HT",
+      "name": "Natcom",
+      "slug": "natcom",
+      "telcoSubdomain": "natcom.haiti.keyra.ie",
+      "officialDomain": "natcom.com.ht",
+      "subscribers": 1800000,
+      "subscribersDisplay": "1.8M"
+    },
+    {
+      "countryName": "Hungary",
+      "countryIso2": "HU",
+      "name": "Magyar Telekom",
+      "slug": "magyar-telekom",
+      "telcoSubdomain": "magyar-telekom.hungary.keyra.ie",
+      "officialDomain": "telekom.hu",
+      "subscribers": 5600000,
+      "subscribersDisplay": "5.6M"
+    },
+    {
+      "countryName": "Hungary",
+      "countryIso2": "HU",
+      "name": "Yettel Hungary",
+      "slug": "yettel-hungary",
+      "telcoSubdomain": "yettel-hungary.hungary.keyra.ie",
+      "officialDomain": "yettel.hu",
+      "subscribers": 3100000,
+      "subscribersDisplay": "3.1M"
+    },
+    {
+      "countryName": "Hungary",
+      "countryIso2": "HU",
+      "name": "Vodafone Hungary",
+      "slug": "vodafone-hungary",
+      "telcoSubdomain": "vodafone-hungary.hungary.keyra.ie",
+      "officialDomain": "vodafone.hu",
+      "subscribers": 2900000,
+      "subscribersDisplay": "2.9M"
+    },
+    {
+      "countryName": "Isle of Man",
+      "countryIso2": "IM",
+      "name": "Manx Telecom",
+      "slug": "manx-telecom",
+      "telcoSubdomain": "manx-telecom.isle-of-man.keyra.ie",
+      "officialDomain": "manxtelecom.com",
+      "subscribers": 85000,
+      "subscribersDisplay": "85K"
+    },
+    {
+      "countryName": "Iran",
+      "countryIso2": "IR",
+      "name": "MCI",
+      "slug": "mci",
+      "telcoSubdomain": "mci.iran.keyra.ie",
+      "officialDomain": "mci.ir",
+      "subscribers": 70000000,
+      "subscribersDisplay": "70.0M"
+    },
+    {
+      "countryName": "Iran",
+      "countryIso2": "IR",
+      "name": "MTN Irancell",
+      "slug": "mtn-irancell",
+      "telcoSubdomain": "mtn-irancell.iran.keyra.ie",
+      "officialDomain": "irancell.ir",
+      "subscribers": 50000000,
+      "subscribersDisplay": "50.0M"
+    },
+    {
+      "countryName": "Iran",
+      "countryIso2": "IR",
+      "name": "Rightel",
+      "slug": "rightel",
+      "telcoSubdomain": "rightel.iran.keyra.ie",
+      "officialDomain": "rightel.ir",
+      "subscribers": 12000000,
+      "subscribersDisplay": "12.0M"
+    },
+    {
+      "countryName": "Iraq",
+      "countryIso2": "IQ",
+      "name": "Zain Iraq",
+      "slug": "zain-iraq",
+      "telcoSubdomain": "zain-iraq.iraq.keyra.ie",
+      "officialDomain": "iq.zain.com",
+      "subscribers": 18000000,
+      "subscribersDisplay": "18.0M"
+    },
+    {
+      "countryName": "Iraq",
+      "countryIso2": "IQ",
+      "name": "Asiacell",
+      "slug": "asiacell",
+      "telcoSubdomain": "asiacell.iraq.keyra.ie",
+      "officialDomain": "asiacell.com",
+      "subscribers": 17000000,
+      "subscribersDisplay": "17.0M"
+    },
+    {
+      "countryName": "Iraq",
+      "countryIso2": "IQ",
+      "name": "Korek Telecom",
+      "slug": "korek-telecom",
+      "telcoSubdomain": "korek-telecom.iraq.keyra.ie",
+      "officialDomain": "korek.com",
+      "subscribers": 5000000,
+      "subscribersDisplay": "5.0M"
+    },
+    {
+      "countryName": "Iceland",
+      "countryIso2": "IS",
+      "name": "Síminn",
+      "slug": "siminn",
+      "telcoSubdomain": "siminn.iceland.keyra.ie",
+      "officialDomain": "siminn.is",
+      "subscribers": 390000,
+      "subscribersDisplay": "390K"
+    },
+    {
+      "countryName": "Iceland",
+      "countryIso2": "IS",
+      "name": "Nova Iceland",
+      "slug": "nova-iceland",
+      "telcoSubdomain": "nova-iceland.iceland.keyra.ie",
+      "officialDomain": "nova.is",
+      "subscribers": 250000,
+      "subscribersDisplay": "250K"
+    },
+    {
+      "countryName": "Iceland",
+      "countryIso2": "IS",
+      "name": "Vodafone Iceland",
+      "slug": "vodafone-iceland",
+      "telcoSubdomain": "vodafone-iceland.iceland.keyra.ie",
+      "officialDomain": "vodafone.is",
+      "subscribers": 210000,
+      "subscribersDisplay": "210K"
+    },
+    {
+      "countryName": "Israel",
+      "countryIso2": "IL",
+      "name": "Pelephone",
+      "slug": "pelephone",
+      "telcoSubdomain": "pelephone.israel.keyra.ie",
+      "officialDomain": "pelephone.co.il",
+      "subscribers": 2500000,
+      "subscribersDisplay": "2.5M"
+    },
+    {
+      "countryName": "Israel",
+      "countryIso2": "IL",
+      "name": "Partner",
+      "slug": "partner",
+      "telcoSubdomain": "partner.israel.keyra.ie",
+      "officialDomain": "partner.co.il",
+      "subscribers": 2900000,
+      "subscribersDisplay": "2.9M"
+    },
+    {
+      "countryName": "Israel",
+      "countryIso2": "IL",
+      "name": "Cellcom",
+      "slug": "cellcom",
+      "telcoSubdomain": "cellcom.israel.keyra.ie",
+      "officialDomain": "cellcom.co.il",
+      "subscribers": 3300000,
+      "subscribersDisplay": "3.3M"
+    },
+    {
+      "countryName": "Israel",
+      "countryIso2": "IL",
+      "name": "HOT Mobile",
+      "slug": "hot-mobile",
+      "telcoSubdomain": "hot-mobile.israel.keyra.ie",
+      "officialDomain": "hotmobile.co.il",
+      "subscribers": 1300000,
+      "subscribersDisplay": "1.3M"
+    },
+    {
+      "countryName": "Italy",
+      "countryIso2": "IT",
+      "name": "TIM",
+      "slug": "tim",
+      "telcoSubdomain": "tim.italy.keyra.ie",
+      "officialDomain": "tim.it",
+      "subscribers": 30000000,
+      "subscribersDisplay": "30.0M"
+    },
+    {
+      "countryName": "Italy",
+      "countryIso2": "IT",
+      "name": "Vodafone Italy",
+      "slug": "vodafone-italy",
+      "telcoSubdomain": "vodafone-italy.italy.keyra.ie",
+      "officialDomain": "vodafone.it",
+      "subscribers": 18000000,
+      "subscribersDisplay": "18.0M"
+    },
+    {
+      "countryName": "Italy",
+      "countryIso2": "IT",
+      "name": "WINDTRE",
+      "slug": "windtre",
+      "telcoSubdomain": "windtre.italy.keyra.ie",
+      "officialDomain": "windtre.it",
+      "subscribers": 27000000,
+      "subscribersDisplay": "27.0M"
+    },
+    {
+      "countryName": "Italy",
+      "countryIso2": "IT",
+      "name": "Iliad Italia",
+      "slug": "iliad-italia",
+      "telcoSubdomain": "iliad-italia.italy.keyra.ie",
+      "officialDomain": "iliad.it",
+      "subscribers": 11000000,
+      "subscribersDisplay": "11.0M"
+    },
+    {
+      "countryName": "Jamaica",
+      "countryIso2": "JM",
+      "name": "Digicel Jamaica",
+      "slug": "digicel-jamaica",
+      "telcoSubdomain": "digicel-jamaica.jamaica.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 2200000,
+      "subscribersDisplay": "2.2M"
+    },
+    {
+      "countryName": "Jamaica",
+      "countryIso2": "JM",
+      "name": "FLOW Jamaica",
+      "slug": "flow-jamaica",
+      "telcoSubdomain": "flow-jamaica.jamaica.keyra.ie",
+      "officialDomain": "discoverflow.co",
+      "subscribers": 1200000,
+      "subscribersDisplay": "1.2M"
+    },
+    {
+      "countryName": "Jersey",
+      "countryIso2": "JE",
+      "name": "JT",
+      "slug": "jt",
+      "telcoSubdomain": "jt.jersey.keyra.ie",
+      "officialDomain": "jtglobal.com",
+      "subscribers": 110000,
+      "subscribersDisplay": "110K"
+    },
+    {
+      "countryName": "Jersey",
+      "countryIso2": "JE",
+      "name": "Sure Jersey",
+      "slug": "sure-jersey",
+      "telcoSubdomain": "sure-jersey.jersey.keyra.ie",
+      "officialDomain": "sure.com",
+      "subscribers": 70000,
+      "subscribersDisplay": "70K"
+    },
+    {
+      "countryName": "Jordan",
+      "countryIso2": "JO",
+      "name": "Zain Jordan",
+      "slug": "zain-jordan",
+      "telcoSubdomain": "zain-jordan.jordan.keyra.ie",
+      "officialDomain": "jo.zain.com",
+      "subscribers": 7900000,
+      "subscribersDisplay": "7.9M"
+    },
+    {
+      "countryName": "Jordan",
+      "countryIso2": "JO",
+      "name": "Orange Jordan",
+      "slug": "orange-jordan",
+      "telcoSubdomain": "orange-jordan.jordan.keyra.ie",
+      "officialDomain": "orange.jo",
+      "subscribers": 6500000,
+      "subscribersDisplay": "6.5M"
+    },
+    {
+      "countryName": "Jordan",
+      "countryIso2": "JO",
+      "name": "Umniah",
+      "slug": "umniah",
+      "telcoSubdomain": "umniah.jordan.keyra.ie",
+      "officialDomain": "umniah.com",
+      "subscribers": 4100000,
+      "subscribersDisplay": "4.1M"
+    },
+    {
+      "countryName": "Kazakhstan",
+      "countryIso2": "KZ",
+      "name": "Kcell",
+      "slug": "kcell",
+      "telcoSubdomain": "kcell.kazakhstan.keyra.ie",
+      "officialDomain": "kcell.kz",
+      "subscribers": 7900000,
+      "subscribersDisplay": "7.9M"
+    },
+    {
+      "countryName": "Kazakhstan",
+      "countryIso2": "KZ",
+      "name": "Tele2 Kazakhstan",
+      "slug": "tele2-kazakhstan",
+      "telcoSubdomain": "tele2-kazakhstan.kazakhstan.keyra.ie",
+      "officialDomain": "tele2.kz",
+      "subscribers": 7000000,
+      "subscribersDisplay": "7.0M"
+    },
+    {
+      "countryName": "Kazakhstan",
+      "countryIso2": "KZ",
+      "name": "Beeline Kazakhstan",
+      "slug": "beeline-kazakhstan",
+      "telcoSubdomain": "beeline-kazakhstan.kazakhstan.keyra.ie",
+      "officialDomain": "beeline.kz",
+      "subscribers": 10600000,
+      "subscribersDisplay": "10.6M"
+    },
+    {
+      "countryName": "Kenya",
+      "countryIso2": "KE",
+      "name": "Safaricom",
+      "slug": "safaricom",
+      "telcoSubdomain": "safaricom.kenya.keyra.ie",
+      "officialDomain": "safaricom.co.ke",
+      "subscribers": 47000000,
+      "subscribersDisplay": "47.0M"
+    },
+    {
+      "countryName": "Kenya",
+      "countryIso2": "KE",
+      "name": "Airtel Kenya",
+      "slug": "airtel-kenya",
+      "telcoSubdomain": "airtel-kenya.kenya.keyra.ie",
+      "officialDomain": "airtelkenya.com",
+      "subscribers": 21000000,
+      "subscribersDisplay": "21.0M"
+    },
+    {
+      "countryName": "Kyrgyzstan",
+      "countryIso2": "KG",
+      "name": "Beeline Kyrgyzstan",
+      "slug": "beeline-kyrgyzstan",
+      "telcoSubdomain": "beeline-kyrgyzstan.kyrgyzstan.keyra.ie",
+      "officialDomain": "beeline.kg",
+      "subscribers": 3000000,
+      "subscribersDisplay": "3.0M"
+    },
+    {
+      "countryName": "Kyrgyzstan",
+      "countryIso2": "KG",
+      "name": "MegaCom",
+      "slug": "megacom",
+      "telcoSubdomain": "megacom.kyrgyzstan.keyra.ie",
+      "officialDomain": "megacom.kg",
+      "subscribers": 2500000,
+      "subscribersDisplay": "2.5M"
+    },
+    {
+      "countryName": "Cambodia",
+      "countryIso2": "KH",
+      "name": "Smart Axiata",
+      "slug": "smart-axiata",
+      "telcoSubdomain": "smart-axiata.cambodia.keyra.ie",
+      "officialDomain": "smart.com.kh",
+      "subscribers": 8000000,
+      "subscribersDisplay": "8.0M"
+    },
+    {
+      "countryName": "Cambodia",
+      "countryIso2": "KH",
+      "name": "Cellcard",
+      "slug": "cellcard",
+      "telcoSubdomain": "cellcard.cambodia.keyra.ie",
+      "officialDomain": "cellcard.com.kh",
+      "subscribers": 4000000,
+      "subscribersDisplay": "4.0M"
+    },
+    {
+      "countryName": "Cambodia",
+      "countryIso2": "KH",
+      "name": "Metfone",
+      "slug": "metfone",
+      "telcoSubdomain": "metfone.cambodia.keyra.ie",
+      "officialDomain": "metfone.com.kh",
+      "subscribers": 9000000,
+      "subscribersDisplay": "9.0M"
+    },
+    {
+      "countryName": "Kiribati",
+      "countryIso2": "KI",
+      "name": "ATHKL",
+      "slug": "athkl",
+      "telcoSubdomain": "athkl.kiribati.keyra.ie",
+      "officialDomain": "athkl.com.ki",
+      "subscribers": 25000,
+      "subscribersDisplay": "25K"
+    },
+    {
+      "countryName": "Saint Kitts and Nevis",
+      "countryIso2": "KN",
+      "name": "FLOW Saint Kitts and Nevis",
+      "slug": "flow-saint-kitts-and-nevis",
+      "telcoSubdomain": "flow-saint-kitts-and-nevis.saint-kitts-and-nevis.keyra.ie",
+      "officialDomain": "discoverflow.co",
+      "subscribers": 30000,
+      "subscribersDisplay": "30K"
+    },
+    {
+      "countryName": "Saint Kitts and Nevis",
+      "countryIso2": "KN",
+      "name": "Digicel Saint Kitts and Nevis",
+      "slug": "digicel-saint-kitts-and-nevis",
+      "telcoSubdomain": "digicel-saint-kitts-and-nevis.saint-kitts-and-nevis.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 45000,
+      "subscribersDisplay": "45K"
+    },
+    {
+      "countryName": "Kosovo",
+      "countryIso2": "XK",
+      "name": "IPKO",
+      "slug": "ipko",
+      "telcoSubdomain": "ipko.kosovo.keyra.ie",
+      "officialDomain": "ipko.com",
+      "subscribers": 800000,
+      "subscribersDisplay": "800K"
+    },
+    {
+      "countryName": "Kosovo",
+      "countryIso2": "XK",
+      "name": "Vala",
+      "slug": "vala",
+      "telcoSubdomain": "vala.kosovo.keyra.ie",
+      "officialDomain": "vala.net",
+      "subscribers": 900000,
+      "subscribersDisplay": "900K"
+    },
+    {
+      "countryName": "Kuwait",
+      "countryIso2": "KW",
+      "name": "Zain Kuwait",
+      "slug": "zain-kuwait",
+      "telcoSubdomain": "zain-kuwait.kuwait.keyra.ie",
+      "officialDomain": "kw.zain.com",
+      "subscribers": 2600000,
+      "subscribersDisplay": "2.6M"
+    },
+    {
+      "countryName": "Kuwait",
+      "countryIso2": "KW",
+      "name": "Ooredoo Kuwait",
+      "slug": "ooredoo-kuwait",
+      "telcoSubdomain": "ooredoo-kuwait.kuwait.keyra.ie",
+      "officialDomain": "ooredoo.com.kw",
+      "subscribers": 2900000,
+      "subscribersDisplay": "2.9M"
+    },
+    {
+      "countryName": "Kuwait",
+      "countryIso2": "KW",
+      "name": "stc Kuwait",
+      "slug": "stc-kuwait",
+      "telcoSubdomain": "stc-kuwait.kuwait.keyra.ie",
+      "officialDomain": "stc.com.kw",
+      "subscribers": 2300000,
+      "subscribersDisplay": "2.3M"
+    },
+    {
+      "countryName": "Laos",
+      "countryIso2": "LA",
+      "name": "Lao Telecom",
+      "slug": "lao-telecom",
+      "telcoSubdomain": "lao-telecom.laos.keyra.ie",
+      "officialDomain": "laotel.com",
+      "subscribers": 1600000,
+      "subscribersDisplay": "1.6M"
+    },
+    {
+      "countryName": "Laos",
+      "countryIso2": "LA",
+      "name": "Unitel Laos",
+      "slug": "unitel-laos",
+      "telcoSubdomain": "unitel-laos.laos.keyra.ie",
+      "officialDomain": "unitel.com.la",
+      "subscribers": 3200000,
+      "subscribersDisplay": "3.2M"
+    },
+    {
+      "countryName": "Laos",
+      "countryIso2": "LA",
+      "name": "ETL",
+      "slug": "etl",
+      "telcoSubdomain": "etl.laos.keyra.ie",
+      "officialDomain": "etl.com.la",
+      "subscribers": 500000,
+      "subscribersDisplay": "500K"
+    },
+    {
+      "countryName": "Lebanon",
+      "countryIso2": "LB",
+      "name": "touch",
+      "slug": "touch",
+      "telcoSubdomain": "touch.lebanon.keyra.ie",
+      "officialDomain": "touch.com.lb",
+      "subscribers": 2300000,
+      "subscribersDisplay": "2.3M"
+    },
+    {
+      "countryName": "Lebanon",
+      "countryIso2": "LB",
+      "name": "Alfa Lebanon",
+      "slug": "alfa-lebanon",
+      "telcoSubdomain": "alfa-lebanon.lebanon.keyra.ie",
+      "officialDomain": "alfa.com.lb",
+      "subscribers": 2100000,
+      "subscribersDisplay": "2.1M"
+    },
+    {
+      "countryName": "Liberia",
+      "countryIso2": "LR",
+      "name": "Lonestar Cell MTN",
+      "slug": "lonestar-cell-mtn",
+      "telcoSubdomain": "lonestar-cell-mtn.liberia.keyra.ie",
+      "officialDomain": "lonestarliberia.com",
+      "subscribers": 1800000,
+      "subscribersDisplay": "1.8M"
+    },
+    {
+      "countryName": "Liberia",
+      "countryIso2": "LR",
+      "name": "Orange Liberia",
+      "slug": "orange-liberia",
+      "telcoSubdomain": "orange-liberia.liberia.keyra.ie",
+      "officialDomain": "orange.com.lr",
+      "subscribers": 1600000,
+      "subscribersDisplay": "1.6M"
+    },
+    {
+      "countryName": "Libya",
+      "countryIso2": "LY",
+      "name": "Libyana",
+      "slug": "libyana",
+      "telcoSubdomain": "libyana.libya.keyra.ie",
+      "officialDomain": "libyana.ly",
+      "subscribers": 6500000,
+      "subscribersDisplay": "6.5M"
+    },
+    {
+      "countryName": "Libya",
+      "countryIso2": "LY",
+      "name": "Almadar Aljadeed",
+      "slug": "almadar-aljadeed",
+      "telcoSubdomain": "almadar-aljadeed.libya.keyra.ie",
+      "officialDomain": "المدار.ly",
+      "subscribers": 5200000,
+      "subscribersDisplay": "5.2M"
+    },
+    {
+      "countryName": "Saint Lucia",
+      "countryIso2": "LC",
+      "name": "Digicel Saint Lucia",
+      "slug": "digicel-saint-lucia",
+      "telcoSubdomain": "digicel-saint-lucia.saint-lucia.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 95000,
+      "subscribersDisplay": "95K"
+    },
+    {
+      "countryName": "Saint Lucia",
+      "countryIso2": "LC",
+      "name": "FLOW Saint Lucia",
+      "slug": "flow-saint-lucia",
+      "telcoSubdomain": "flow-saint-lucia.saint-lucia.keyra.ie",
+      "officialDomain": "discoverflow.co",
+      "subscribers": 70000,
+      "subscribersDisplay": "70K"
+    },
+    {
+      "countryName": "Liechtenstein",
+      "countryIso2": "LI",
+      "name": "FL1",
+      "slug": "fl1",
+      "telcoSubdomain": "fl1.liechtenstein.keyra.ie",
+      "officialDomain": "fl1.li",
+      "subscribers": 42000,
+      "subscribersDisplay": "42K"
+    },
+    {
+      "countryName": "Liechtenstein",
+      "countryIso2": "LI",
+      "name": "Salt Liechtenstein",
+      "slug": "salt-liechtenstein",
+      "telcoSubdomain": "salt-liechtenstein.liechtenstein.keyra.ie",
+      "officialDomain": "salt.li",
+      "subscribers": 28000,
+      "subscribersDisplay": "28K"
+    },
+    {
+      "countryName": "Sri Lanka",
+      "countryIso2": "LK",
+      "name": "Dialog Axiata",
+      "slug": "dialog-axiata",
+      "telcoSubdomain": "dialog-axiata.sri-lanka.keyra.ie",
+      "officialDomain": "dialog.lk",
+      "subscribers": 20000000,
+      "subscribersDisplay": "20.0M"
+    },
+    {
+      "countryName": "Sri Lanka",
+      "countryIso2": "LK",
+      "name": "Mobitel",
+      "slug": "mobitel",
+      "telcoSubdomain": "mobitel.sri-lanka.keyra.ie",
+      "officialDomain": "mobitel.lk",
+      "subscribers": 11000000,
+      "subscribersDisplay": "11.0M"
+    },
+    {
+      "countryName": "Sri Lanka",
+      "countryIso2": "LK",
+      "name": "Airtel Sri Lanka",
+      "slug": "airtel-sri-lanka",
+      "telcoSubdomain": "airtel-sri-lanka.sri-lanka.keyra.ie",
+      "officialDomain": "airtel.lk",
+      "subscribers": 5000000,
+      "subscribersDisplay": "5.0M"
+    },
+    {
+      "countryName": "Lesotho",
+      "countryIso2": "LS",
+      "name": "Vodacom Lesotho",
+      "slug": "vodacom-lesotho",
+      "telcoSubdomain": "vodacom-lesotho.lesotho.keyra.ie",
+      "officialDomain": "vodacom.co.ls",
+      "subscribers": 1800000,
+      "subscribersDisplay": "1.8M"
+    },
+    {
+      "countryName": "Lesotho",
+      "countryIso2": "LS",
+      "name": "Econet Telecom Lesotho",
+      "slug": "econet-telecom-lesotho",
+      "telcoSubdomain": "econet-telecom-lesotho.lesotho.keyra.ie",
+      "officialDomain": "etl.co.ls",
+      "subscribers": 1200000,
+      "subscribersDisplay": "1.2M"
+    },
+    {
+      "countryName": "Lithuania",
+      "countryIso2": "LT",
+      "name": "Telia Lithuania",
+      "slug": "telia-lithuania",
+      "telcoSubdomain": "telia-lithuania.lithuania.keyra.ie",
+      "officialDomain": "telia.lt",
+      "subscribers": 2200000,
+      "subscribersDisplay": "2.2M"
+    },
+    {
+      "countryName": "Lithuania",
+      "countryIso2": "LT",
+      "name": "Tele2 Lithuania",
+      "slug": "tele2-lithuania",
+      "telcoSubdomain": "tele2-lithuania.lithuania.keyra.ie",
+      "officialDomain": "tele2.lt",
+      "subscribers": 1900000,
+      "subscribersDisplay": "1.9M"
+    },
+    {
+      "countryName": "Lithuania",
+      "countryIso2": "LT",
+      "name": "Bitė Lietuva",
+      "slug": "bite-lietuva",
+      "telcoSubdomain": "bite-lietuva.lithuania.keyra.ie",
+      "officialDomain": "bite.lt",
+      "subscribers": 1500000,
+      "subscribersDisplay": "1.5M"
+    },
+    {
+      "countryName": "Luxembourg",
+      "countryIso2": "LU",
+      "name": "POST Luxembourg",
+      "slug": "post-luxembourg",
+      "telcoSubdomain": "post-luxembourg.luxembourg.keyra.ie",
+      "officialDomain": "post.lu",
+      "subscribers": 670000,
+      "subscribersDisplay": "670K"
+    },
+    {
+      "countryName": "Luxembourg",
+      "countryIso2": "LU",
+      "name": "Orange Luxembourg",
+      "slug": "orange-luxembourg",
+      "telcoSubdomain": "orange-luxembourg.luxembourg.keyra.ie",
+      "officialDomain": "orange.lu",
+      "subscribers": 350000,
+      "subscribersDisplay": "350K"
+    },
+    {
+      "countryName": "Luxembourg",
+      "countryIso2": "LU",
+      "name": "Tango",
+      "slug": "tango",
+      "telcoSubdomain": "tango.luxembourg.keyra.ie",
+      "officialDomain": "tango.lu",
+      "subscribers": 300000,
+      "subscribersDisplay": "300K"
+    },
+    {
+      "countryName": "Latvia",
+      "countryIso2": "LV",
+      "name": "LMT",
+      "slug": "lmt",
+      "telcoSubdomain": "lmt.latvia.keyra.ie",
+      "officialDomain": "lmt.lv",
+      "subscribers": 1400000,
+      "subscribersDisplay": "1.4M"
+    },
+    {
+      "countryName": "Latvia",
+      "countryIso2": "LV",
+      "name": "Tele2 Latvia",
+      "slug": "tele2-latvia",
+      "telcoSubdomain": "tele2-latvia.latvia.keyra.ie",
+      "officialDomain": "tele2.lv",
+      "subscribers": 1000000,
+      "subscribersDisplay": "1.0M"
+    },
+    {
+      "countryName": "Latvia",
+      "countryIso2": "LV",
+      "name": "Bite Latvia",
+      "slug": "bite-latvia",
+      "telcoSubdomain": "bite-latvia.latvia.keyra.ie",
+      "officialDomain": "bite.lv",
+      "subscribers": 800000,
+      "subscribersDisplay": "800K"
+    },
+    {
+      "countryName": "Macau",
+      "countryIso2": "MO",
+      "name": "CTM",
+      "slug": "ctm",
+      "telcoSubdomain": "ctm.macau.keyra.ie",
+      "officialDomain": "ctm.net",
+      "subscribers": 850000,
+      "subscribersDisplay": "850K"
+    },
+    {
+      "countryName": "Macau",
+      "countryIso2": "MO",
+      "name": "3 Macau",
+      "slug": "3-macau",
+      "telcoSubdomain": "3-macau.macau.keyra.ie",
+      "officialDomain": "three.com.mo",
+      "subscribers": 420000,
+      "subscribersDisplay": "420K"
+    },
+    {
+      "countryName": "Macau",
+      "countryIso2": "MO",
+      "name": "China Telecom Macau",
+      "slug": "china-telecom-macau",
+      "telcoSubdomain": "china-telecom-macau.macau.keyra.ie",
+      "officialDomain": "chinatelecom.com.mo",
+      "subscribers": 300000,
+      "subscribersDisplay": "300K"
+    },
+    {
+      "countryName": "Saint Martin",
+      "countryIso2": "MF",
+      "name": "Orange Caraïbe",
+      "slug": "orange-caraibe",
+      "telcoSubdomain": "orange-caraibe.saint-martin.keyra.ie",
+      "officialDomain": "orangecaraibe.com",
+      "subscribers": 85000,
+      "subscribersDisplay": "85K"
+    },
+    {
+      "countryName": "Saint Martin",
+      "countryIso2": "MF",
+      "name": "Dauphin Telecom",
+      "slug": "dauphin-telecom",
+      "telcoSubdomain": "dauphin-telecom.saint-martin.keyra.ie",
+      "officialDomain": "dauphintelecom.com",
+      "subscribers": 25000,
+      "subscribersDisplay": "25K"
+    },
+    {
+      "countryName": "Morocco",
+      "countryIso2": "MA",
+      "name": "Maroc Telecom",
+      "slug": "maroc-telecom",
+      "telcoSubdomain": "maroc-telecom.morocco.keyra.ie",
+      "officialDomain": "iam.ma",
+      "subscribers": 19000000,
+      "subscribersDisplay": "19.0M"
+    },
+    {
+      "countryName": "Morocco",
+      "countryIso2": "MA",
+      "name": "Orange Morocco",
+      "slug": "orange-morocco",
+      "telcoSubdomain": "orange-morocco.morocco.keyra.ie",
+      "officialDomain": "orange.ma",
+      "subscribers": 14000000,
+      "subscribersDisplay": "14.0M"
+    },
+    {
+      "countryName": "Morocco",
+      "countryIso2": "MA",
+      "name": "inwi",
+      "slug": "inwi",
+      "telcoSubdomain": "inwi.morocco.keyra.ie",
+      "officialDomain": "inwi.ma",
+      "subscribers": 11000000,
+      "subscribersDisplay": "11.0M"
+    },
+    {
+      "countryName": "Monaco",
+      "countryIso2": "MC",
+      "name": "Monaco Telecom",
+      "slug": "monaco-telecom",
+      "telcoSubdomain": "monaco-telecom.monaco.keyra.ie",
+      "officialDomain": "monaco-telecom.mc",
+      "subscribers": 45000,
+      "subscribersDisplay": "45K"
+    },
+    {
+      "countryName": "Moldova",
+      "countryIso2": "MD",
+      "name": "Orange Moldova",
+      "slug": "orange-moldova",
+      "telcoSubdomain": "orange-moldova.moldova.keyra.ie",
+      "officialDomain": "orange.md",
+      "subscribers": 2100000,
+      "subscribersDisplay": "2.1M"
+    },
+    {
+      "countryName": "Moldova",
+      "countryIso2": "MD",
+      "name": "Moldcell",
+      "slug": "moldcell",
+      "telcoSubdomain": "moldcell.moldova.keyra.ie",
+      "officialDomain": "moldcell.md",
+      "subscribers": 1500000,
+      "subscribersDisplay": "1.5M"
+    },
+    {
+      "countryName": "Moldova",
+      "countryIso2": "MD",
+      "name": "Unite",
+      "slug": "unite",
+      "telcoSubdomain": "unite.moldova.keyra.ie",
+      "officialDomain": "unite.md",
+      "subscribers": 500000,
+      "subscribersDisplay": "500K"
+    },
+    {
+      "countryName": "Madagascar",
+      "countryIso2": "MG",
+      "name": "Telma Madagascar",
+      "slug": "telma-madagascar",
+      "telcoSubdomain": "telma-madagascar.madagascar.keyra.ie",
+      "officialDomain": "telma.mg",
+      "subscribers": 12000000,
+      "subscribersDisplay": "12.0M"
+    },
+    {
+      "countryName": "Madagascar",
+      "countryIso2": "MG",
+      "name": "Orange Madagascar",
+      "slug": "orange-madagascar",
+      "telcoSubdomain": "orange-madagascar.madagascar.keyra.ie",
+      "officialDomain": "orange.mg",
+      "subscribers": 9000000,
+      "subscribersDisplay": "9.0M"
+    },
+    {
+      "countryName": "Madagascar",
+      "countryIso2": "MG",
+      "name": "Airtel Madagascar",
+      "slug": "airtel-madagascar",
+      "telcoSubdomain": "airtel-madagascar.madagascar.keyra.ie",
+      "officialDomain": "airtel.mg",
+      "subscribers": 6000000,
+      "subscribersDisplay": "6.0M"
+    },
+    {
+      "countryName": "Maldives",
+      "countryIso2": "MV",
+      "name": "Dhiraagu",
+      "slug": "dhiraagu",
+      "telcoSubdomain": "dhiraagu.maldives.keyra.ie",
+      "officialDomain": "dhiraagu.com.mv",
+      "subscribers": 620000,
+      "subscribersDisplay": "620K"
+    },
+    {
+      "countryName": "Maldives",
+      "countryIso2": "MV",
+      "name": "Ooredoo Maldives",
+      "slug": "ooredoo-maldives",
+      "telcoSubdomain": "ooredoo-maldives.maldives.keyra.ie",
+      "officialDomain": "ooredoo.mv",
+      "subscribers": 410000,
+      "subscribersDisplay": "410K"
+    },
+    {
+      "countryName": "Mexico",
+      "countryIso2": "MX",
+      "name": "Telcel",
+      "slug": "telcel",
+      "telcoSubdomain": "telcel.mexico.keyra.ie",
+      "officialDomain": "telcel.com",
+      "subscribers": 83500000,
+      "subscribersDisplay": "83.5M"
+    },
+    {
+      "countryName": "Mexico",
+      "countryIso2": "MX",
+      "name": "AT&T Mexico",
+      "slug": "att-mexico",
+      "telcoSubdomain": "att-mexico.mexico.keyra.ie",
+      "officialDomain": "att.com.mx",
+      "subscribers": 22500000,
+      "subscribersDisplay": "22.5M"
+    },
+    {
+      "countryName": "Mexico",
+      "countryIso2": "MX",
+      "name": "Movistar Mexico",
+      "slug": "movistar-mexico",
+      "telcoSubdomain": "movistar-mexico.mexico.keyra.ie",
+      "officialDomain": "movistar.com.mx",
+      "subscribers": 25000000,
+      "subscribersDisplay": "25.0M"
+    },
+    {
+      "countryName": "Marshall Islands",
+      "countryIso2": "MH",
+      "name": "NTA Telecom",
+      "slug": "nta-telecom",
+      "telcoSubdomain": "nta-telecom.marshall-islands.keyra.ie",
+      "officialDomain": "ntamar.com",
+      "subscribers": 18000,
+      "subscribersDisplay": "18K"
+    },
+    {
+      "countryName": "North Macedonia",
+      "countryIso2": "MK",
+      "name": "Македонски Телеком (Makedonski Telekom)",
+      "slug": "makedonski-telekom",
+      "telcoSubdomain": "makedonski-telekom.north-macedonia.keyra.ie",
+      "officialDomain": "telekom.mk",
+      "subscribers": 1200000,
+      "subscribersDisplay": "1.2M"
+    },
+    {
+      "countryName": "North Macedonia",
+      "countryIso2": "MK",
+      "name": "A1 Macedonia",
+      "slug": "a1-macedonia",
+      "telcoSubdomain": "a1-macedonia.north-macedonia.keyra.ie",
+      "officialDomain": "a1.mk",
+      "subscribers": 1100000,
+      "subscribersDisplay": "1.1M"
+    },
+    {
+      "countryName": "Mali",
+      "countryIso2": "ML",
+      "name": "Orange Mali",
+      "slug": "orange-mali",
+      "telcoSubdomain": "orange-mali.mali.keyra.ie",
+      "officialDomain": "orange.ml",
+      "subscribers": 12000000,
+      "subscribersDisplay": "12.0M"
+    },
+    {
+      "countryName": "Mali",
+      "countryIso2": "ML",
+      "name": "Moov Africa Mali",
+      "slug": "moov-africa-mali",
+      "telcoSubdomain": "moov-africa-mali.mali.keyra.ie",
+      "officialDomain": "moov-africa.ml",
+      "subscribers": 8000000,
+      "subscribersDisplay": "8.0M"
+    },
+    {
+      "countryName": "Malta",
+      "countryIso2": "MT",
+      "name": "GO Malta",
+      "slug": "go-malta",
+      "telcoSubdomain": "go-malta.malta.keyra.ie",
+      "officialDomain": "go.com.mt",
+      "subscribers": 500000,
+      "subscribersDisplay": "500K"
+    },
+    {
+      "countryName": "Malta",
+      "countryIso2": "MT",
+      "name": "Epic Malta",
+      "slug": "epic-malta",
+      "telcoSubdomain": "epic-malta.malta.keyra.ie",
+      "officialDomain": "epic.com.mt",
+      "subscribers": 350000,
+      "subscribersDisplay": "350K"
+    },
+    {
+      "countryName": "Myanmar",
+      "countryIso2": "MM",
+      "name": "MPT",
+      "slug": "mpt",
+      "telcoSubdomain": "mpt.myanmar.keyra.ie",
+      "officialDomain": "mpt.com.mm",
+      "subscribers": 25000000,
+      "subscribersDisplay": "25.0M"
+    },
+    {
+      "countryName": "Myanmar",
+      "countryIso2": "MM",
+      "name": "ATOM Myanmar",
+      "slug": "atom-myanmar",
+      "telcoSubdomain": "atom-myanmar.myanmar.keyra.ie",
+      "officialDomain": "atom.com.mm",
+      "subscribers": 10000000,
+      "subscribersDisplay": "10.0M"
+    },
+    {
+      "countryName": "Myanmar",
+      "countryIso2": "MM",
+      "name": "Ooredoo Myanmar",
+      "slug": "ooredoo-myanmar",
+      "telcoSubdomain": "ooredoo-myanmar.myanmar.keyra.ie",
+      "officialDomain": "ooredoo.com.mm",
+      "subscribers": 9000000,
+      "subscribersDisplay": "9.0M"
+    },
+    {
+      "countryName": "Montenegro",
+      "countryIso2": "ME",
+      "name": "One Montenegro",
+      "slug": "one-montenegro",
+      "telcoSubdomain": "one-montenegro.montenegro.keyra.ie",
+      "officialDomain": "one.me",
+      "subscribers": 350000,
+      "subscribersDisplay": "350K"
+    },
+    {
+      "countryName": "Montenegro",
+      "countryIso2": "ME",
+      "name": "Crnogorski Telekom",
+      "slug": "crnogorski-telekom",
+      "telcoSubdomain": "crnogorski-telekom.montenegro.keyra.ie",
+      "officialDomain": "telekom.me",
+      "subscribers": 400000,
+      "subscribersDisplay": "400K"
+    },
+    {
+      "countryName": "Montenegro",
+      "countryIso2": "ME",
+      "name": "MTEL Montenegro",
+      "slug": "mtel-montenegro",
+      "telcoSubdomain": "mtel-montenegro.montenegro.keyra.ie",
+      "officialDomain": "mtel.me",
+      "subscribers": 450000,
+      "subscribersDisplay": "450K"
+    },
+    {
+      "countryName": "Mongolia",
+      "countryIso2": "MN",
+      "name": "Unitel",
+      "slug": "unitel",
+      "telcoSubdomain": "unitel.mongolia.keyra.ie",
+      "officialDomain": "unitel.mn",
+      "subscribers": 2500000,
+      "subscribersDisplay": "2.5M"
+    },
+    {
+      "countryName": "Mongolia",
+      "countryIso2": "MN",
+      "name": "Mobicom",
+      "slug": "mobicom",
+      "telcoSubdomain": "mobicom.mongolia.keyra.ie",
+      "officialDomain": "mobicom.mn",
+      "subscribers": 1800000,
+      "subscribersDisplay": "1.8M"
+    },
+    {
+      "countryName": "Mongolia",
+      "countryIso2": "MN",
+      "name": "Skytel",
+      "slug": "skytel",
+      "telcoSubdomain": "skytel.mongolia.keyra.ie",
+      "officialDomain": "skytel.mn",
+      "subscribers": 700000,
+      "subscribersDisplay": "700K"
+    },
+    {
+      "countryName": "Northern Mariana Islands",
+      "countryIso2": "MP",
+      "name": "IT&E",
+      "slug": "ite",
+      "telcoSubdomain": "ite.northern-mariana-islands.keyra.ie",
+      "officialDomain": "ite.net",
+      "subscribers": 35000,
+      "subscribersDisplay": "35K"
+    },
+    {
+      "countryName": "Northern Mariana Islands",
+      "countryIso2": "MP",
+      "name": "Docomo Pacific",
+      "slug": "docomo-pacific",
+      "telcoSubdomain": "docomo-pacific.northern-mariana-islands.keyra.ie",
+      "officialDomain": "docomopacific.com",
+      "subscribers": 50000,
+      "subscribersDisplay": "50K"
+    },
+    {
+      "countryName": "Mozambique",
+      "countryIso2": "MZ",
+      "name": "Vodacom Mozambique",
+      "slug": "vodacom-mozambique",
+      "telcoSubdomain": "vodacom-mozambique.mozambique.keyra.ie",
+      "officialDomain": "vm.co.mz",
+      "subscribers": 12000000,
+      "subscribersDisplay": "12.0M"
+    },
+    {
+      "countryName": "Mozambique",
+      "countryIso2": "MZ",
+      "name": "Movitel",
+      "slug": "movitel",
+      "telcoSubdomain": "movitel.mozambique.keyra.ie",
+      "officialDomain": "movitel.co.mz",
+      "subscribers": 15000000,
+      "subscribersDisplay": "15.0M"
+    },
+    {
+      "countryName": "Mozambique",
+      "countryIso2": "MZ",
+      "name": "Tmcel",
+      "slug": "tmcel",
+      "telcoSubdomain": "tmcel.mozambique.keyra.ie",
+      "officialDomain": "tmcel.mz",
+      "subscribers": 4000000,
+      "subscribersDisplay": "4.0M"
+    },
+    {
+      "countryName": "Mauritania",
+      "countryIso2": "MR",
+      "name": "Mauritel",
+      "slug": "mauritel",
+      "telcoSubdomain": "mauritel.mauritania.keyra.ie",
+      "officialDomain": "mauritel.mr",
+      "subscribers": 2000000,
+      "subscribersDisplay": "2.0M"
+    },
+    {
+      "countryName": "Mauritania",
+      "countryIso2": "MR",
+      "name": "Mattel",
+      "slug": "mattel",
+      "telcoSubdomain": "mattel.mauritania.keyra.ie",
+      "officialDomain": "mattel.mr",
+      "subscribers": 1500000,
+      "subscribersDisplay": "1.5M"
+    },
+    {
+      "countryName": "Mauritania",
+      "countryIso2": "MR",
+      "name": "Chinguitel",
+      "slug": "chinguitel",
+      "telcoSubdomain": "chinguitel.mauritania.keyra.ie",
+      "officialDomain": "chinguitel.mr",
+      "subscribers": 1000000,
+      "subscribersDisplay": "1.0M"
+    },
+    {
+      "countryName": "Montserrat",
+      "countryIso2": "MS",
+      "name": "FLOW Montserrat",
+      "slug": "flow-montserrat",
+      "telcoSubdomain": "flow-montserrat.montserrat.keyra.ie",
+      "officialDomain": "discoverflow.co",
+      "subscribers": 6000,
+      "subscribersDisplay": "6K"
+    },
+    {
+      "countryName": "Martinique",
+      "countryIso2": "MQ",
+      "name": "Orange Caraïbe",
+      "slug": "orange-caraibe",
+      "telcoSubdomain": "orange-caraibe.martinique.keyra.ie",
+      "officialDomain": "orangecaraibe.com",
+      "subscribers": 250000,
+      "subscribersDisplay": "250K"
+    },
+    {
+      "countryName": "Martinique",
+      "countryIso2": "MQ",
+      "name": "Digicel French Caribbean",
+      "slug": "digicel-french-caribbean",
+      "telcoSubdomain": "digicel-french-caribbean.martinique.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 180000,
+      "subscribersDisplay": "180K"
+    },
+    {
+      "countryName": "Mauritius",
+      "countryIso2": "MU",
+      "name": "my.t",
+      "slug": "myt",
+      "telcoSubdomain": "myt.mauritius.keyra.ie",
+      "officialDomain": "telecom.mu",
+      "subscribers": 1200000,
+      "subscribersDisplay": "1.2M"
+    },
+    {
+      "countryName": "Mauritius",
+      "countryIso2": "MU",
+      "name": "Emtel",
+      "slug": "emtel",
+      "telcoSubdomain": "emtel.mauritius.keyra.ie",
+      "officialDomain": "emtel.com",
+      "subscribers": 900000,
+      "subscribersDisplay": "900K"
+    },
+    {
+      "countryName": "Malawi",
+      "countryIso2": "MW",
+      "name": "Airtel Malawi",
+      "slug": "airtel-malawi",
+      "telcoSubdomain": "airtel-malawi.malawi.keyra.ie",
+      "officialDomain": "airtel.mw",
+      "subscribers": 6500000,
+      "subscribersDisplay": "6.5M"
+    },
+    {
+      "countryName": "Malawi",
+      "countryIso2": "MW",
+      "name": "TNM",
+      "slug": "tnm",
+      "telcoSubdomain": "tnm.malawi.keyra.ie",
+      "officialDomain": "tnm.co.mw",
+      "subscribers": 5000000,
+      "subscribersDisplay": "5.0M"
+    },
+    {
+      "countryName": "Malaysia",
+      "countryIso2": "MY",
+      "name": "CelcomDigi",
+      "slug": "celcomdigi",
+      "telcoSubdomain": "celcomdigi.malaysia.keyra.ie",
+      "officialDomain": "celcomdigi.com",
+      "subscribers": 20600000,
+      "subscribersDisplay": "20.6M"
+    },
+    {
+      "countryName": "Malaysia",
+      "countryIso2": "MY",
+      "name": "Maxis",
+      "slug": "maxis",
+      "telcoSubdomain": "maxis.malaysia.keyra.ie",
+      "officialDomain": "maxis.com.my",
+      "subscribers": 12400000,
+      "subscribersDisplay": "12.4M"
+    },
+    {
+      "countryName": "Malaysia",
+      "countryIso2": "MY",
+      "name": "U Mobile",
+      "slug": "u-mobile",
+      "telcoSubdomain": "u-mobile.malaysia.keyra.ie",
+      "officialDomain": "u.com.my",
+      "subscribers": 9000000,
+      "subscribersDisplay": "9.0M"
+    },
+    {
+      "countryName": "Malaysia",
+      "countryIso2": "MY",
+      "name": "Unifi Mobile",
+      "slug": "unifi-mobile",
+      "telcoSubdomain": "unifi-mobile.malaysia.keyra.ie",
+      "officialDomain": "unifi.com.my",
+      "subscribers": 3000000,
+      "subscribersDisplay": "3.0M"
+    },
+    {
+      "countryName": "Mayotte",
+      "countryIso2": "YT",
+      "name": "Orange Mayotte",
+      "slug": "orange-mayotte",
+      "telcoSubdomain": "orange-mayotte.mayotte.keyra.ie",
+      "officialDomain": "orange.yt",
+      "subscribers": 160000,
+      "subscribersDisplay": "160K"
+    },
+    {
+      "countryName": "Mayotte",
+      "countryIso2": "YT",
+      "name": "SFR Mayotte",
+      "slug": "sfr-mayotte",
+      "telcoSubdomain": "sfr-mayotte.mayotte.keyra.ie",
+      "officialDomain": "sfr.yt",
+      "subscribers": 90000,
+      "subscribersDisplay": "90K"
+    },
+    {
+      "countryName": "Namibia",
+      "countryIso2": "NA",
+      "name": "MTC Namibia",
+      "slug": "mtc-namibia",
+      "telcoSubdomain": "mtc-namibia.namibia.keyra.ie",
+      "officialDomain": "mtc.com.na",
+      "subscribers": 2700000,
+      "subscribersDisplay": "2.7M"
+    },
+    {
+      "countryName": "Namibia",
+      "countryIso2": "NA",
+      "name": "Telecom Namibia (TN Mobile)",
+      "slug": "telecom-namibia",
+      "telcoSubdomain": "telecom-namibia.namibia.keyra.ie",
+      "officialDomain": "telecom.na",
+      "subscribers": 500000,
+      "subscribersDisplay": "500K"
+    },
+    {
+      "countryName": "New Caledonia",
+      "countryIso2": "NC",
+      "name": "OPT Mobilis",
+      "slug": "opt-mobilis",
+      "telcoSubdomain": "opt-mobilis.new-caledonia.keyra.ie",
+      "officialDomain": "mobilis.nc",
+      "subscribers": 280000,
+      "subscribersDisplay": "280K"
+    },
+    {
+      "countryName": "Niger",
+      "countryIso2": "NE",
+      "name": "Airtel Niger",
+      "slug": "airtel-niger",
+      "telcoSubdomain": "airtel-niger.niger.keyra.ie",
+      "officialDomain": "airtel.ne",
+      "subscribers": 13000000,
+      "subscribersDisplay": "13.0M"
+    },
+    {
+      "countryName": "Niger",
+      "countryIso2": "NE",
+      "name": "Zamani Telecom",
+      "slug": "zamani-telecom",
+      "telcoSubdomain": "zamani-telecom.niger.keyra.ie",
+      "officialDomain": "zamanitelecom.ne",
+      "subscribers": 2500000,
+      "subscribersDisplay": "2.5M"
+    },
+    {
+      "countryName": "Norfolk Island",
+      "countryIso2": "NF",
+      "name": "Norfolk Telecom",
+      "slug": "norfolk-telecom",
+      "telcoSubdomain": "norfolk-telecom.norfolk-island.keyra.ie",
+      "officialDomain": "norfolktelecom.com.nf",
+      "subscribers": 2000,
+      "subscribersDisplay": "2K"
+    },
+    {
+      "countryName": "Nicaragua",
+      "countryIso2": "NI",
+      "name": "Claro Nicaragua",
+      "slug": "claro-nicaragua",
+      "telcoSubdomain": "claro-nicaragua.nicaragua.keyra.ie",
+      "officialDomain": "claro.com.ni",
+      "subscribers": 5000000,
+      "subscribersDisplay": "5.0M"
+    },
+    {
+      "countryName": "Nicaragua",
+      "countryIso2": "NI",
+      "name": "Tigo Nicaragua",
+      "slug": "tigo-nicaragua",
+      "telcoSubdomain": "tigo-nicaragua.nicaragua.keyra.ie",
+      "officialDomain": "tigo.com.ni",
+      "subscribers": 4200000,
+      "subscribersDisplay": "4.2M"
+    },
+    {
+      "countryName": "Niue",
+      "countryIso2": "NU",
+      "name": "Telecom Niue",
+      "slug": "telecom-niue",
+      "telcoSubdomain": "telecom-niue.niue.keyra.ie",
+      "officialDomain": "telecomniue.com",
+      "subscribers": 1200,
+      "subscribersDisplay": "1.2K"
+    },
+    {
+      "countryName": "Netherlands",
+      "countryIso2": "NL",
+      "name": "KPN",
+      "slug": "kpn",
+      "telcoSubdomain": "kpn.netherlands.keyra.ie",
+      "officialDomain": "kpn.com",
+      "subscribers": 8600000,
+      "subscribersDisplay": "8.6M"
+    },
+    {
+      "countryName": "Netherlands",
+      "countryIso2": "NL",
+      "name": "Vodafone Netherlands",
+      "slug": "vodafone-netherlands",
+      "telcoSubdomain": "vodafone-netherlands.netherlands.keyra.ie",
+      "officialDomain": "vodafone.nl",
+      "subscribers": 5300000,
+      "subscribersDisplay": "5.3M"
+    },
+    {
+      "countryName": "Netherlands",
+      "countryIso2": "NL",
+      "name": "Odido",
+      "slug": "odido",
+      "telcoSubdomain": "odido.netherlands.keyra.ie",
+      "officialDomain": "odido.nl",
+      "subscribers": 6800000,
+      "subscribersDisplay": "6.8M"
+    },
+    {
+      "countryName": "Norway",
+      "countryIso2": "NO",
+      "name": "Telenor Norway",
+      "slug": "telenor-norway",
+      "telcoSubdomain": "telenor-norway.norway.keyra.ie",
+      "officialDomain": "telenor.no",
+      "subscribers": 3200000,
+      "subscribersDisplay": "3.2M"
+    },
+    {
+      "countryName": "Norway",
+      "countryIso2": "NO",
+      "name": "Telia Norway",
+      "slug": "telia-norway",
+      "telcoSubdomain": "telia-norway.norway.keyra.ie",
+      "officialDomain": "telia.no",
+      "subscribers": 2400000,
+      "subscribersDisplay": "2.4M"
+    },
+    {
+      "countryName": "Norway",
+      "countryIso2": "NO",
+      "name": "ice Norway",
+      "slug": "ice-norway",
+      "telcoSubdomain": "ice-norway.norway.keyra.ie",
+      "officialDomain": "ice.no",
+      "subscribers": 800000,
+      "subscribersDisplay": "800K"
+    },
+    {
+      "countryName": "Nepal",
+      "countryIso2": "NP",
+      "name": "Ncell",
+      "slug": "ncell",
+      "telcoSubdomain": "ncell.nepal.keyra.ie",
+      "officialDomain": "ncell.com.np",
+      "subscribers": 16000000,
+      "subscribersDisplay": "16.0M"
+    },
+    {
+      "countryName": "Nepal",
+      "countryIso2": "NP",
+      "name": "Nepal Telecom",
+      "slug": "nepal-telecom",
+      "telcoSubdomain": "nepal-telecom.nepal.keyra.ie",
+      "officialDomain": "ntc.net.np",
+      "subscribers": 21000000,
+      "subscribersDisplay": "21.0M"
+    },
+    {
+      "countryName": "Nauru",
+      "countryIso2": "NR",
+      "name": "Digicel Nauru",
+      "slug": "digicel-nauru",
+      "telcoSubdomain": "digicel-nauru.nauru.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 10000,
+      "subscribersDisplay": "10K"
+    },
+    {
+      "countryName": "New Zealand",
+      "countryIso2": "NZ",
+      "name": "Spark New Zealand",
+      "slug": "spark-new-zealand",
+      "telcoSubdomain": "spark-new-zealand.new-zealand.keyra.ie",
+      "officialDomain": "spark.co.nz",
+      "subscribers": 2600000,
+      "subscribersDisplay": "2.6M"
+    },
+    {
+      "countryName": "New Zealand",
+      "countryIso2": "NZ",
+      "name": "One New Zealand",
+      "slug": "one-new-zealand",
+      "telcoSubdomain": "one-new-zealand.new-zealand.keyra.ie",
+      "officialDomain": "one.nz",
+      "subscribers": 3300000,
+      "subscribersDisplay": "3.3M"
+    },
+    {
+      "countryName": "New Zealand",
+      "countryIso2": "NZ",
+      "name": "2degrees",
+      "slug": "2degrees",
+      "telcoSubdomain": "2degrees.new-zealand.keyra.ie",
+      "officialDomain": "2degrees.nz",
+      "subscribers": 1400000,
+      "subscribersDisplay": "1.4M"
+    },
+    {
+      "countryName": "Oman",
+      "countryIso2": "OM",
+      "name": "Omantel",
+      "slug": "omantel",
+      "telcoSubdomain": "omantel.oman.keyra.ie",
+      "officialDomain": "omantel.om",
+      "subscribers": 3800000,
+      "subscribersDisplay": "3.8M"
+    },
+    {
+      "countryName": "Oman",
+      "countryIso2": "OM",
+      "name": "Ooredoo Oman",
+      "slug": "ooredoo-oman",
+      "telcoSubdomain": "ooredoo-oman.oman.keyra.ie",
+      "officialDomain": "ooredoo.om",
+      "subscribers": 3200000,
+      "subscribersDisplay": "3.2M"
+    },
+    {
+      "countryName": "Oman",
+      "countryIso2": "OM",
+      "name": "Vodafone Oman",
+      "slug": "vodafone-oman",
+      "telcoSubdomain": "vodafone-oman.oman.keyra.ie",
+      "officialDomain": "vodafone.om",
+      "subscribers": 800000,
+      "subscribersDisplay": "800K"
+    },
+    {
+      "countryName": "Pakistan",
+      "countryIso2": "PK",
+      "name": "Jazz",
+      "slug": "jazz",
+      "telcoSubdomain": "jazz.pakistan.keyra.ie",
+      "officialDomain": "jazz.com.pk",
+      "subscribers": 71000000,
+      "subscribersDisplay": "71.0M"
+    },
+    {
+      "countryName": "Pakistan",
+      "countryIso2": "PK",
+      "name": "Zong",
+      "slug": "zong",
+      "telcoSubdomain": "zong.pakistan.keyra.ie",
+      "officialDomain": "zong.com.pk",
+      "subscribers": 51000000,
+      "subscribersDisplay": "51.0M"
+    },
+    {
+      "countryName": "Pakistan",
+      "countryIso2": "PK",
+      "name": "Telenor Pakistan",
+      "slug": "telenor-pakistan",
+      "telcoSubdomain": "telenor-pakistan.pakistan.keyra.ie",
+      "officialDomain": "telenor.com.pk",
+      "subscribers": 45000000,
+      "subscribersDisplay": "45.0M"
+    },
+    {
+      "countryName": "Pakistan",
+      "countryIso2": "PK",
+      "name": "Ufone",
+      "slug": "ufone",
+      "telcoSubdomain": "ufone.pakistan.keyra.ie",
+      "officialDomain": "ufone.com",
+      "subscribers": 25000000,
+      "subscribersDisplay": "25.0M"
+    },
+    {
+      "countryName": "Panama",
+      "countryIso2": "PA",
+      "name": "Tigo Panama",
+      "slug": "tigo-panama",
+      "telcoSubdomain": "tigo-panama.panama.keyra.ie",
+      "officialDomain": "tigo.com.pa",
+      "subscribers": 2500000,
+      "subscribersDisplay": "2.5M"
+    },
+    {
+      "countryName": "Panama",
+      "countryIso2": "PA",
+      "name": "Más Móvil Panama",
+      "slug": "mas-movil-panama",
+      "telcoSubdomain": "mas-movil-panama.panama.keyra.ie",
+      "officialDomain": "masmovilpanama.com",
+      "subscribers": 2200000,
+      "subscribersDisplay": "2.2M"
+    },
+    {
+      "countryName": "Panama",
+      "countryIso2": "PA",
+      "name": "Digicel Panama",
+      "slug": "digicel-panama",
+      "telcoSubdomain": "digicel-panama.panama.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 1000000,
+      "subscribersDisplay": "1.0M"
+    },
+    {
+      "countryName": "Peru",
+      "countryIso2": "PE",
+      "name": "Claro Peru",
+      "slug": "claro-peru",
+      "telcoSubdomain": "claro-peru.peru.keyra.ie",
+      "officialDomain": "claro.com.pe",
+      "subscribers": 13000000,
+      "subscribersDisplay": "13.0M"
+    },
+    {
+      "countryName": "Peru",
+      "countryIso2": "PE",
+      "name": "Movistar Peru",
+      "slug": "movistar-peru",
+      "telcoSubdomain": "movistar-peru.peru.keyra.ie",
+      "officialDomain": "movistar.com.pe",
+      "subscribers": 16000000,
+      "subscribersDisplay": "16.0M"
+    },
+    {
+      "countryName": "Peru",
+      "countryIso2": "PE",
+      "name": "Entel Peru",
+      "slug": "entel-peru",
+      "telcoSubdomain": "entel-peru.peru.keyra.ie",
+      "officialDomain": "entel.pe",
+      "subscribers": 10000000,
+      "subscribersDisplay": "10.0M"
+    },
+    {
+      "countryName": "Peru",
+      "countryIso2": "PE",
+      "name": "Bitel Peru",
+      "slug": "bitel-peru",
+      "telcoSubdomain": "bitel-peru.peru.keyra.ie",
+      "officialDomain": "bitel.com.pe",
+      "subscribers": 8000000,
+      "subscribersDisplay": "8.0M"
+    },
+    {
+      "countryName": "Philippines",
+      "countryIso2": "PH",
+      "name": "Globe Telecom",
+      "slug": "globe-telecom",
+      "telcoSubdomain": "globe-telecom.philippines.keyra.ie",
+      "officialDomain": "globe.com.ph",
+      "subscribers": 59000000,
+      "subscribersDisplay": "59.0M"
+    },
+    {
+      "countryName": "Philippines",
+      "countryIso2": "PH",
+      "name": "Smart Communications",
+      "slug": "smart-communications",
+      "telcoSubdomain": "smart-communications.philippines.keyra.ie",
+      "officialDomain": "smart.com.ph",
+      "subscribers": 67000000,
+      "subscribersDisplay": "67.0M"
+    },
+    {
+      "countryName": "Philippines",
+      "countryIso2": "PH",
+      "name": "DITO Telecommunity",
+      "slug": "dito-telecommunity",
+      "telcoSubdomain": "dito-telecommunity.philippines.keyra.ie",
+      "officialDomain": "dito.ph",
+      "subscribers": 13000000,
+      "subscribersDisplay": "13.0M"
+    },
+    {
+      "countryName": "Palau",
+      "countryIso2": "PW",
+      "name": "Palau National Communications Corp",
+      "slug": "palau-national-communications-corp",
+      "telcoSubdomain": "palau-national-communications-corp.palau.keyra.ie",
+      "officialDomain": "pnccpalau.com",
+      "subscribers": 18000,
+      "subscribersDisplay": "18K"
+    },
+    {
+      "countryName": "Papua New Guinea",
+      "countryIso2": "PG",
+      "name": "Digicel PNG",
+      "slug": "digicel-png",
+      "telcoSubdomain": "digicel-png.papua-new-guinea.keyra.ie",
+      "officialDomain": "digicelpng.com",
+      "subscribers": 3500000,
+      "subscribersDisplay": "3.5M"
+    },
+    {
+      "countryName": "Papua New Guinea",
+      "countryIso2": "PG",
+      "name": "bmobile",
+      "slug": "bmobile",
+      "telcoSubdomain": "bmobile.papua-new-guinea.keyra.ie",
+      "officialDomain": "bmobile.com.pg",
+      "subscribers": 900000,
+      "subscribersDisplay": "900K"
+    },
+    {
+      "countryName": "Poland",
+      "countryIso2": "PL",
+      "name": "Orange Poland",
+      "slug": "orange-poland",
+      "telcoSubdomain": "orange-poland.poland.keyra.ie",
+      "officialDomain": "orange.pl",
+      "subscribers": 17800000,
+      "subscribersDisplay": "17.8M"
+    },
+    {
+      "countryName": "Poland",
+      "countryIso2": "PL",
+      "name": "Play",
+      "slug": "play",
+      "telcoSubdomain": "play.poland.keyra.ie",
+      "officialDomain": "play.pl",
+      "subscribers": 15400000,
+      "subscribersDisplay": "15.4M"
+    },
+    {
+      "countryName": "Poland",
+      "countryIso2": "PL",
+      "name": "Plus",
+      "slug": "plus",
+      "telcoSubdomain": "plus.poland.keyra.ie",
+      "officialDomain": "plus.pl",
+      "subscribers": 12000000,
+      "subscribersDisplay": "12.0M"
+    },
+    {
+      "countryName": "Poland",
+      "countryIso2": "PL",
+      "name": "T-Mobile Poland",
+      "slug": "t-mobile-poland",
+      "telcoSubdomain": "t-mobile-poland.poland.keyra.ie",
+      "officialDomain": "t-mobile.pl",
+      "subscribers": 12200000,
+      "subscribersDisplay": "12.2M"
+    },
+    {
+      "countryName": "Puerto Rico",
+      "countryIso2": "PR",
+      "name": "Claro Puerto Rico",
+      "slug": "claro-puerto-rico",
+      "telcoSubdomain": "claro-puerto-rico.puerto-rico.keyra.ie",
+      "officialDomain": "claro.pr",
+      "subscribers": 1800000,
+      "subscribersDisplay": "1.8M"
+    },
+    {
+      "countryName": "Puerto Rico",
+      "countryIso2": "PR",
+      "name": "Liberty Puerto Rico",
+      "slug": "liberty-puerto-rico",
+      "telcoSubdomain": "liberty-puerto-rico.puerto-rico.keyra.ie",
+      "officialDomain": "libertypr.com",
+      "subscribers": 1100000,
+      "subscribersDisplay": "1.1M"
+    },
+    {
+      "countryName": "North Korea",
+      "countryIso2": "KP",
+      "name": "Koryolink",
+      "slug": "koryolink",
+      "telcoSubdomain": "koryolink.north-korea.keyra.ie",
+      "officialDomain": "koryolink.com.kp",
+      "subscribers": 6000000,
+      "subscribersDisplay": "6.0M"
+    },
+    {
+      "countryName": "Portugal",
+      "countryIso2": "PT",
+      "name": "MEO",
+      "slug": "meo",
+      "telcoSubdomain": "meo.portugal.keyra.ie",
+      "officialDomain": "meo.pt",
+      "subscribers": 6800000,
+      "subscribersDisplay": "6.8M"
+    },
+    {
+      "countryName": "Portugal",
+      "countryIso2": "PT",
+      "name": "Vodafone Portugal",
+      "slug": "vodafone-portugal",
+      "telcoSubdomain": "vodafone-portugal.portugal.keyra.ie",
+      "officialDomain": "vodafone.pt",
+      "subscribers": 4700000,
+      "subscribersDisplay": "4.7M"
+    },
+    {
+      "countryName": "Portugal",
+      "countryIso2": "PT",
+      "name": "NOS",
+      "slug": "nos",
+      "telcoSubdomain": "nos.portugal.keyra.ie",
+      "officialDomain": "nos.pt",
+      "subscribers": 4500000,
+      "subscribersDisplay": "4.5M"
+    },
+    {
+      "countryName": "Paraguay",
+      "countryIso2": "PY",
+      "name": "Tigo Paraguay",
+      "slug": "tigo-paraguay",
+      "telcoSubdomain": "tigo-paraguay.paraguay.keyra.ie",
+      "officialDomain": "tigo.com.py",
+      "subscribers": 4200000,
+      "subscribersDisplay": "4.2M"
+    },
+    {
+      "countryName": "Paraguay",
+      "countryIso2": "PY",
+      "name": "Personal Paraguay",
+      "slug": "personal-paraguay",
+      "telcoSubdomain": "personal-paraguay.paraguay.keyra.ie",
+      "officialDomain": "personal.com.py",
+      "subscribers": 3100000,
+      "subscribersDisplay": "3.1M"
+    },
+    {
+      "countryName": "Paraguay",
+      "countryIso2": "PY",
+      "name": "Claro Paraguay",
+      "slug": "claro-paraguay",
+      "telcoSubdomain": "claro-paraguay.paraguay.keyra.ie",
+      "officialDomain": "claro.com.py",
+      "subscribers": 2300000,
+      "subscribersDisplay": "2.3M"
+    },
+    {
+      "countryName": "Palestine",
+      "countryIso2": "PS",
+      "name": "Jawwal",
+      "slug": "jawwal",
+      "telcoSubdomain": "jawwal.palestine.keyra.ie",
+      "officialDomain": "jawwal.ps",
+      "subscribers": 3800000,
+      "subscribersDisplay": "3.8M"
+    },
+    {
+      "countryName": "Palestine",
+      "countryIso2": "PS",
+      "name": "Ooredoo Palestine",
+      "slug": "ooredoo-palestine",
+      "telcoSubdomain": "ooredoo-palestine.palestine.keyra.ie",
+      "officialDomain": "ooredoo.ps",
+      "subscribers": 1500000,
+      "subscribersDisplay": "1.5M"
+    },
+    {
+      "countryName": "French Polynesia",
+      "countryIso2": "PF",
+      "name": "Vini",
+      "slug": "vini",
+      "telcoSubdomain": "vini.french-polynesia.keyra.ie",
+      "officialDomain": "vini.pf",
+      "subscribers": 220000,
+      "subscribersDisplay": "220K"
+    },
+    {
+      "countryName": "French Polynesia",
+      "countryIso2": "PF",
+      "name": "Vodafone Cook Islands / French Pacific*",
+      "slug": "vodafone-french-pacific",
+      "telcoSubdomain": "vodafone-french-pacific.french-polynesia.keyra.ie",
+      "officialDomain": "vodafone.co.ck",
+      "subscribers": 45000,
+      "subscribersDisplay": "45K"
+    },
+    {
+      "countryName": "Réunion",
+      "countryIso2": "RE",
+      "name": "Orange Réunion",
+      "slug": "orange-reunion",
+      "telcoSubdomain": "orange-reunion.reunion.keyra.ie",
+      "officialDomain": "reunion.orange.fr",
+      "subscribers": 650000,
+      "subscribersDisplay": "650K"
+    },
+    {
+      "countryName": "Réunion",
+      "countryIso2": "RE",
+      "name": "SFR Réunion",
+      "slug": "sfr-reunion",
+      "telcoSubdomain": "sfr-reunion.reunion.keyra.ie",
+      "officialDomain": "sfr.re",
+      "subscribers": 400000,
+      "subscribersDisplay": "400K"
+    },
+    {
+      "countryName": "Romania",
+      "countryIso2": "RO",
+      "name": "Orange Romania",
+      "slug": "orange-romania",
+      "telcoSubdomain": "orange-romania.romania.keyra.ie",
+      "officialDomain": "orange.ro",
+      "subscribers": 9500000,
+      "subscribersDisplay": "9.5M"
+    },
+    {
+      "countryName": "Romania",
+      "countryIso2": "RO",
+      "name": "Vodafone Romania",
+      "slug": "vodafone-romania",
+      "telcoSubdomain": "vodafone-romania.romania.keyra.ie",
+      "officialDomain": "vodafone.ro",
+      "subscribers": 8900000,
+      "subscribersDisplay": "8.9M"
+    },
+    {
+      "countryName": "Romania",
+      "countryIso2": "RO",
+      "name": "Digi Mobil",
+      "slug": "digi-mobil",
+      "telcoSubdomain": "digi-mobil.romania.keyra.ie",
+      "officialDomain": "digi.ro",
+      "subscribers": 6000000,
+      "subscribersDisplay": "6.0M"
+    },
+    {
+      "countryName": "Russia",
+      "countryIso2": "RU",
+      "name": "MTS",
+      "slug": "mts",
+      "telcoSubdomain": "mts.russia.keyra.ie",
+      "officialDomain": "mts.ru",
+      "subscribers": 81000000,
+      "subscribersDisplay": "81.0M"
+    },
+    {
+      "countryName": "Russia",
+      "countryIso2": "RU",
+      "name": "MegaFon",
+      "slug": "megafon",
+      "telcoSubdomain": "megafon.russia.keyra.ie",
+      "officialDomain": "megafon.ru",
+      "subscribers": 76000000,
+      "subscribersDisplay": "76.0M"
+    },
+    {
+      "countryName": "Russia",
+      "countryIso2": "RU",
+      "name": "Beeline Russia",
+      "slug": "beeline-russia",
+      "telcoSubdomain": "beeline-russia.russia.keyra.ie",
+      "officialDomain": "beeline.ru",
+      "subscribers": 44000000,
+      "subscribersDisplay": "44.0M"
+    },
+    {
+      "countryName": "Russia",
+      "countryIso2": "RU",
+      "name": "Tele2 Russia",
+      "slug": "tele2-russia",
+      "telcoSubdomain": "tele2-russia.russia.keyra.ie",
+      "officialDomain": "t2.ru",
+      "subscribers": 48000000,
+      "subscribersDisplay": "48.0M"
+    },
+    {
+      "countryName": "Rwanda",
+      "countryIso2": "RW",
+      "name": "MTN Rwanda",
+      "slug": "mtn-rwanda",
+      "telcoSubdomain": "mtn-rwanda.rwanda.keyra.ie",
+      "officialDomain": "mtn.co.rw",
+      "subscribers": 7300000,
+      "subscribersDisplay": "7.3M"
+    },
+    {
+      "countryName": "Rwanda",
+      "countryIso2": "RW",
+      "name": "Airtel Rwanda",
+      "slug": "airtel-rwanda",
+      "telcoSubdomain": "airtel-rwanda.rwanda.keyra.ie",
+      "officialDomain": "airtel.co.rw",
+      "subscribers": 4500000,
+      "subscribersDisplay": "4.5M"
+    },
+    {
+      "countryName": "Sudan",
+      "countryIso2": "SD",
+      "name": "Zain Sudan",
+      "slug": "zain-sudan",
+      "telcoSubdomain": "zain-sudan.sudan.keyra.ie",
+      "officialDomain": "sd.zain.com",
+      "subscribers": 16000000,
+      "subscribersDisplay": "16.0M"
+    },
+    {
+      "countryName": "Sudan",
+      "countryIso2": "SD",
+      "name": "MTN Sudan",
+      "slug": "mtn-sudan",
+      "telcoSubdomain": "mtn-sudan.sudan.keyra.ie",
+      "officialDomain": "sudan.mtn.com",
+      "subscribers": 12000000,
+      "subscribersDisplay": "12.0M"
+    },
+    {
+      "countryName": "Sudan",
+      "countryIso2": "SD",
+      "name": "Sudani",
+      "slug": "sudani",
+      "telcoSubdomain": "sudani.sudan.keyra.ie",
+      "officialDomain": "sudani.sd",
+      "subscribers": 9000000,
+      "subscribersDisplay": "9.0M"
+    },
+    {
+      "countryName": "Senegal",
+      "countryIso2": "SN",
+      "name": "Orange Senegal",
+      "slug": "orange-senegal",
+      "telcoSubdomain": "orange-senegal.senegal.keyra.ie",
+      "officialDomain": "orange.sn",
+      "subscribers": 16000000,
+      "subscribersDisplay": "16.0M"
+    },
+    {
+      "countryName": "Senegal",
+      "countryIso2": "SN",
+      "name": "Yas Senegal",
+      "slug": "yas-senegal",
+      "telcoSubdomain": "yas-senegal.senegal.keyra.ie",
+      "officialDomain": "yas.sn",
+      "subscribers": 9000000,
+      "subscribersDisplay": "9.0M"
+    },
+    {
+      "countryName": "Svalbard and Jan Mayen",
+      "countryIso2": "SJ",
+      "name": "Telenor Svalbard",
+      "slug": "telenor-svalbard",
+      "telcoSubdomain": "telenor-svalbard.svalbard-and-jan-mayen.keyra.ie",
+      "officialDomain": "telenor.no",
+      "subscribers": 3000,
+      "subscribersDisplay": "3K"
+    },
+    {
+      "countryName": "Solomon Islands",
+      "countryIso2": "SB",
+      "name": "Our Telekom",
+      "slug": "our-telekom",
+      "telcoSubdomain": "our-telekom.solomon-islands.keyra.ie",
+      "officialDomain": "ourtelekom.com.sb",
+      "subscribers": 180000,
+      "subscribersDisplay": "180K"
+    },
+    {
+      "countryName": "Solomon Islands",
+      "countryIso2": "SB",
+      "name": "Bmobile Solomon Islands",
+      "slug": "bmobile-solomon-islands",
+      "telcoSubdomain": "bmobile-solomon-islands.solomon-islands.keyra.ie",
+      "officialDomain": "bmobile.com.sb",
+      "subscribers": 90000,
+      "subscribersDisplay": "90K"
+    },
+    {
+      "countryName": "Sierra Leone",
+      "countryIso2": "SL",
+      "name": "Orange Sierra Leone",
+      "slug": "orange-sierra-leone",
+      "telcoSubdomain": "orange-sierra-leone.sierra-leone.keyra.ie",
+      "officialDomain": "orange.sl",
+      "subscribers": 6500000,
+      "subscribersDisplay": "6.5M"
+    },
+    {
+      "countryName": "Sierra Leone",
+      "countryIso2": "SL",
+      "name": "Africell Sierra Leone",
+      "slug": "africell-sierra-leone",
+      "telcoSubdomain": "africell-sierra-leone.sierra-leone.keyra.ie",
+      "officialDomain": "africell.sl",
+      "subscribers": 5000000,
+      "subscribersDisplay": "5.0M"
+    },
+    {
+      "countryName": "El Salvador",
+      "countryIso2": "SV",
+      "name": "Tigo El Salvador",
+      "slug": "tigo-el-salvador",
+      "telcoSubdomain": "tigo-el-salvador.el-salvador.keyra.ie",
+      "officialDomain": "tigo.com.sv",
+      "subscribers": 4200000,
+      "subscribersDisplay": "4.2M"
+    },
+    {
+      "countryName": "El Salvador",
+      "countryIso2": "SV",
+      "name": "Claro El Salvador",
+      "slug": "claro-el-salvador",
+      "telcoSubdomain": "claro-el-salvador.el-salvador.keyra.ie",
+      "officialDomain": "claro.com.sv",
+      "subscribers": 3500000,
+      "subscribersDisplay": "3.5M"
+    },
+    {
+      "countryName": "El Salvador",
+      "countryIso2": "SV",
+      "name": "Digicel El Salvador",
+      "slug": "digicel-el-salvador",
+      "telcoSubdomain": "digicel-el-salvador.el-salvador.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 1200000,
+      "subscribersDisplay": "1.2M"
+    },
+    {
+      "countryName": "San Marino",
+      "countryIso2": "SM",
+      "name": "TIM San Marino",
+      "slug": "tim-san-marino",
+      "telcoSubdomain": "tim-san-marino.san-marino.keyra.ie",
+      "officialDomain": "telecomitalia.sm",
+      "subscribers": 35000,
+      "subscribersDisplay": "35K"
+    },
+    {
+      "countryName": "Somalia",
+      "countryIso2": "SO",
+      "name": "Hormuud Telecom",
+      "slug": "hormuud-telecom",
+      "telcoSubdomain": "hormuud-telecom.somalia.keyra.ie",
+      "officialDomain": "hormuud.com",
+      "subscribers": 4000000,
+      "subscribersDisplay": "4.0M"
+    },
+    {
+      "countryName": "Somalia",
+      "countryIso2": "SO",
+      "name": "Somtel",
+      "slug": "somtel",
+      "telcoSubdomain": "somtel.somalia.keyra.ie",
+      "officialDomain": "somtel.com",
+      "subscribers": 2500000,
+      "subscribersDisplay": "2.5M"
+    },
+    {
+      "countryName": "Somalia",
+      "countryIso2": "SO",
+      "name": "Nationlink Telecom",
+      "slug": "nationlink-telecom",
+      "telcoSubdomain": "nationlink-telecom.somalia.keyra.ie",
+      "officialDomain": "nationlinktel.com",
+      "subscribers": 1200000,
+      "subscribersDisplay": "1.2M"
+    },
+    {
+      "countryName": "Saint Pierre and Miquelon",
+      "countryIso2": "PM",
+      "name": "SPM Telecom",
+      "slug": "spm-telecom",
+      "telcoSubdomain": "spm-telecom.saint-pierre-and-miquelon.keyra.ie",
+      "officialDomain": "cheznoo.net",
+      "subscribers": 6000,
+      "subscribersDisplay": "6K"
+    },
+    {
+      "countryName": "Serbia",
+      "countryIso2": "RS",
+      "name": "Telekom Srbija (mts)",
+      "slug": "telekom-srbija",
+      "telcoSubdomain": "telekom-srbija.serbia.keyra.ie",
+      "officialDomain": "mts.rs",
+      "subscribers": 6700000,
+      "subscribersDisplay": "6.7M"
+    },
+    {
+      "countryName": "Serbia",
+      "countryIso2": "RS",
+      "name": "Yettel Serbia",
+      "slug": "yettel-serbia",
+      "telcoSubdomain": "yettel-serbia.serbia.keyra.ie",
+      "officialDomain": "yettel.rs",
+      "subscribers": 3000000,
+      "subscribersDisplay": "3.0M"
+    },
+    {
+      "countryName": "Serbia",
+      "countryIso2": "RS",
+      "name": "A1 Serbia",
+      "slug": "a1-serbia",
+      "telcoSubdomain": "a1-serbia.serbia.keyra.ie",
+      "officialDomain": "a1.rs",
+      "subscribers": 2500000,
+      "subscribersDisplay": "2.5M"
+    },
+    {
+      "countryName": "South Sudan",
+      "countryIso2": "SS",
+      "name": "MTN South Sudan",
+      "slug": "mtn-south-sudan",
+      "telcoSubdomain": "mtn-south-sudan.south-sudan.keyra.ie",
+      "officialDomain": "mtn.ss",
+      "subscribers": 2800000,
+      "subscribersDisplay": "2.8M"
+    },
+    {
+      "countryName": "South Sudan",
+      "countryIso2": "SS",
+      "name": "Zain South Sudan",
+      "slug": "zain-south-sudan",
+      "telcoSubdomain": "zain-south-sudan.south-sudan.keyra.ie",
+      "officialDomain": "zain.com",
+      "subscribers": 2200000,
+      "subscribersDisplay": "2.2M"
+    },
+    {
+      "countryName": "São Tomé and Príncipe",
+      "countryIso2": "ST",
+      "name": "CST",
+      "slug": "cst",
+      "telcoSubdomain": "cst.sao-tome-and-principe.keyra.ie",
+      "officialDomain": "cst.st",
+      "subscribers": 85000,
+      "subscribersDisplay": "85K"
+    },
+    {
+      "countryName": "São Tomé and Príncipe",
+      "countryIso2": "ST",
+      "name": "Unitel STP",
+      "slug": "unitel-stp",
+      "telcoSubdomain": "unitel-stp.sao-tome-and-principe.keyra.ie",
+      "officialDomain": "unitel.st",
+      "subscribers": 60000,
+      "subscribersDisplay": "60K"
+    },
+    {
+      "countryName": "Suriname",
+      "countryIso2": "SR",
+      "name": "Telesur",
+      "slug": "telesur",
+      "telcoSubdomain": "telesur.suriname.keyra.ie",
+      "officialDomain": "telesur.sr",
+      "subscribers": 450000,
+      "subscribersDisplay": "450K"
+    },
+    {
+      "countryName": "Suriname",
+      "countryIso2": "SR",
+      "name": "Digicel Suriname",
+      "slug": "digicel-suriname",
+      "telcoSubdomain": "digicel-suriname.suriname.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 300000,
+      "subscribersDisplay": "300K"
+    },
+    {
+      "countryName": "Slovakia",
+      "countryIso2": "SK",
+      "name": "Orange Slovakia",
+      "slug": "orange-slovakia",
+      "telcoSubdomain": "orange-slovakia.slovakia.keyra.ie",
+      "officialDomain": "orange.sk",
+      "subscribers": 2900000,
+      "subscribersDisplay": "2.9M"
+    },
+    {
+      "countryName": "Slovakia",
+      "countryIso2": "SK",
+      "name": "Slovak Telekom",
+      "slug": "slovak-telekom",
+      "telcoSubdomain": "slovak-telekom.slovakia.keyra.ie",
+      "officialDomain": "telekom.sk",
+      "subscribers": 2500000,
+      "subscribersDisplay": "2.5M"
+    },
+    {
+      "countryName": "Slovakia",
+      "countryIso2": "SK",
+      "name": "O2 Slovakia",
+      "slug": "o2-slovakia",
+      "telcoSubdomain": "o2-slovakia.slovakia.keyra.ie",
+      "officialDomain": "o2.sk",
+      "subscribers": 2200000,
+      "subscribersDisplay": "2.2M"
+    },
+    {
+      "countryName": "Slovakia",
+      "countryIso2": "SK",
+      "name": "4ka",
+      "slug": "4ka",
+      "telcoSubdomain": "4ka.slovakia.keyra.ie",
+      "officialDomain": "4ka.sk",
+      "subscribers": 700000,
+      "subscribersDisplay": "700K"
+    },
+    {
+      "countryName": "Slovenia",
+      "countryIso2": "SI",
+      "name": "Telekom Slovenije",
+      "slug": "telekom-slovenije",
+      "telcoSubdomain": "telekom-slovenije.slovenia.keyra.ie",
+      "officialDomain": "telekom.si",
+      "subscribers": 1000000,
+      "subscribersDisplay": "1.0M"
+    },
+    {
+      "countryName": "Slovenia",
+      "countryIso2": "SI",
+      "name": "A1 Slovenia",
+      "slug": "a1-slovenia",
+      "telcoSubdomain": "a1-slovenia.slovenia.keyra.ie",
+      "officialDomain": "a1.si",
+      "subscribers": 750000,
+      "subscribersDisplay": "750K"
+    },
+    {
+      "countryName": "Slovenia",
+      "countryIso2": "SI",
+      "name": "Telemach Slovenia",
+      "slug": "telemach-slovenia",
+      "telcoSubdomain": "telemach-slovenia.slovenia.keyra.ie",
+      "officialDomain": "telemach.si",
+      "subscribers": 700000,
+      "subscribersDisplay": "700K"
+    },
+    {
+      "countryName": "Sweden",
+      "countryIso2": "SE",
+      "name": "Telia Sweden",
+      "slug": "telia-sweden",
+      "telcoSubdomain": "telia-sweden.sweden.keyra.ie",
+      "officialDomain": "telia.se",
+      "subscribers": 5400000,
+      "subscribersDisplay": "5.4M"
+    },
+    {
+      "countryName": "Sweden",
+      "countryIso2": "SE",
+      "name": "Tele2 Sweden",
+      "slug": "tele2-sweden",
+      "telcoSubdomain": "tele2-sweden.sweden.keyra.ie",
+      "officialDomain": "tele2.se",
+      "subscribers": 4200000,
+      "subscribersDisplay": "4.2M"
+    },
+    {
+      "countryName": "Sweden",
+      "countryIso2": "SE",
+      "name": "Telenor Sweden",
+      "slug": "telenor-sweden",
+      "telcoSubdomain": "telenor-sweden.sweden.keyra.ie",
+      "officialDomain": "telenor.se",
+      "subscribers": 3000000,
+      "subscribersDisplay": "3.0M"
+    },
+    {
+      "countryName": "Sweden",
+      "countryIso2": "SE",
+      "name": "Tre Sweden",
+      "slug": "tre-sweden",
+      "telcoSubdomain": "tre-sweden.sweden.keyra.ie",
+      "officialDomain": "tre.se",
+      "subscribers": 2300000,
+      "subscribersDisplay": "2.3M"
+    },
+    {
+      "countryName": "Eswatini",
+      "countryIso2": "SZ",
+      "name": "MTN Eswatini",
+      "slug": "mtn-eswatini",
+      "telcoSubdomain": "mtn-eswatini.eswatini.keyra.ie",
+      "officialDomain": "mtn.co.sz",
+      "subscribers": 1100000,
+      "subscribersDisplay": "1.1M"
+    },
+    {
+      "countryName": "Eswatini",
+      "countryIso2": "SZ",
+      "name": "Eswatini Mobile",
+      "slug": "eswatini-mobile",
+      "telcoSubdomain": "eswatini-mobile.eswatini.keyra.ie",
+      "officialDomain": "emobile.co.sz",
+      "subscribers": 650000,
+      "subscribersDisplay": "650K"
+    },
+    {
+      "countryName": "Sint Maarten",
+      "countryIso2": "SX",
+      "name": "TelEm",
+      "slug": "telem",
+      "telcoSubdomain": "telem.sint-maarten.keyra.ie",
+      "officialDomain": "telem.sx",
+      "subscribers": 55000,
+      "subscribersDisplay": "55K"
+    },
+    {
+      "countryName": "Sint Maarten",
+      "countryIso2": "SX",
+      "name": "Chippie",
+      "slug": "chippie",
+      "telcoSubdomain": "chippie.sint-maarten.keyra.ie",
+      "officialDomain": "chippie.co",
+      "subscribers": 40000,
+      "subscribersDisplay": "40K"
+    },
+    {
+      "countryName": "Seychelles",
+      "countryIso2": "SC",
+      "name": "Cable & Wireless Seychelles",
+      "slug": "cable-wireless-seychelles",
+      "telcoSubdomain": "cable-wireless-seychelles.seychelles.keyra.ie",
+      "officialDomain": "cws.sc",
+      "subscribers": 110000,
+      "subscribersDisplay": "110K"
+    },
+    {
+      "countryName": "Seychelles",
+      "countryIso2": "SC",
+      "name": "Airtel Seychelles",
+      "slug": "airtel-seychelles",
+      "telcoSubdomain": "airtel-seychelles.seychelles.keyra.ie",
+      "officialDomain": "airtel.sc",
+      "subscribers": 65000,
+      "subscribersDisplay": "65K"
+    },
+    {
+      "countryName": "Syria",
+      "countryIso2": "SY",
+      "name": "Syriatel",
+      "slug": "syriatel",
+      "telcoSubdomain": "syriatel.syria.keyra.ie",
+      "officialDomain": "syriatel.sy",
+      "subscribers": 11000000,
+      "subscribersDisplay": "11.0M"
+    },
+    {
+      "countryName": "Syria",
+      "countryIso2": "SY",
+      "name": "MTN Syria",
+      "slug": "mtn-syria",
+      "telcoSubdomain": "mtn-syria.syria.keyra.ie",
+      "officialDomain": "mtn.com.sy",
+      "subscribers": 7000000,
+      "subscribersDisplay": "7.0M"
+    },
+    {
+      "countryName": "Turks and Caicos Islands",
+      "countryIso2": "TC",
+      "name": "FLOW Turks and Caicos",
+      "slug": "flow-turks-and-caicos",
+      "telcoSubdomain": "flow-turks-and-caicos.turks-and-caicos-islands.keyra.ie",
+      "officialDomain": "discoverflow.co",
+      "subscribers": 25000,
+      "subscribersDisplay": "25K"
+    },
+    {
+      "countryName": "Turks and Caicos Islands",
+      "countryIso2": "TC",
+      "name": "Digicel Turks and Caicos",
+      "slug": "digicel-turks-and-caicos",
+      "telcoSubdomain": "digicel-turks-and-caicos.turks-and-caicos-islands.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 18000,
+      "subscribersDisplay": "18K"
+    },
+    {
+      "countryName": "Chad",
+      "countryIso2": "TD",
+      "name": "Airtel Chad",
+      "slug": "airtel-chad",
+      "telcoSubdomain": "airtel-chad.chad.keyra.ie",
+      "officialDomain": "airtel.td",
+      "subscribers": 8000000,
+      "subscribersDisplay": "8.0M"
+    },
+    {
+      "countryName": "Chad",
+      "countryIso2": "TD",
+      "name": "Moov Africa Chad",
+      "slug": "moov-africa-chad",
+      "telcoSubdomain": "moov-africa-chad.chad.keyra.ie",
+      "officialDomain": "moov-africa.td",
+      "subscribers": 4500000,
+      "subscribersDisplay": "4.5M"
+    },
+    {
+      "countryName": "Togo",
+      "countryIso2": "TG",
+      "name": "Togocom",
+      "slug": "togocom",
+      "telcoSubdomain": "togocom.togo.keyra.ie",
+      "officialDomain": "togocom.tg",
+      "subscribers": 5500000,
+      "subscribersDisplay": "5.5M"
+    },
+    {
+      "countryName": "Togo",
+      "countryIso2": "TG",
+      "name": "Moov Africa Togo",
+      "slug": "moov-africa-togo",
+      "telcoSubdomain": "moov-africa-togo.togo.keyra.ie",
+      "officialDomain": "moov-africa.tg",
+      "subscribers": 3500000,
+      "subscribersDisplay": "3.5M"
+    },
+    {
+      "countryName": "Thailand",
+      "countryIso2": "TH",
+      "name": "AIS",
+      "slug": "ais",
+      "telcoSubdomain": "ais.thailand.keyra.ie",
+      "officialDomain": "ais.th",
+      "subscribers": 45000000,
+      "subscribersDisplay": "45.0M"
+    },
+    {
+      "countryName": "Thailand",
+      "countryIso2": "TH",
+      "name": "TrueMove H",
+      "slug": "truemove-h",
+      "telcoSubdomain": "truemove-h.thailand.keyra.ie",
+      "officialDomain": "true.th",
+      "subscribers": 34000000,
+      "subscribersDisplay": "34.0M"
+    },
+    {
+      "countryName": "Thailand",
+      "countryIso2": "TH",
+      "name": "NT Mobile",
+      "slug": "nt-mobile",
+      "telcoSubdomain": "nt-mobile.thailand.keyra.ie",
+      "officialDomain": "ntplc.co.th",
+      "subscribers": 4000000,
+      "subscribersDisplay": "4.0M"
+    },
+    {
+      "countryName": "Tajikistan",
+      "countryIso2": "TJ",
+      "name": "Tcell",
+      "slug": "tcell",
+      "telcoSubdomain": "tcell.tajikistan.keyra.ie",
+      "officialDomain": "tcell.tj",
+      "subscribers": 3500000,
+      "subscribersDisplay": "3.5M"
+    },
+    {
+      "countryName": "Tajikistan",
+      "countryIso2": "TJ",
+      "name": "MegaFon Tajikistan",
+      "slug": "megafon-tajikistan",
+      "telcoSubdomain": "megafon-tajikistan.tajikistan.keyra.ie",
+      "officialDomain": "megafon.tj",
+      "subscribers": 2500000,
+      "subscribersDisplay": "2.5M"
+    },
+    {
+      "countryName": "Tajikistan",
+      "countryIso2": "TJ",
+      "name": "Babilon-Mobile",
+      "slug": "babilon-mobile",
+      "telcoSubdomain": "babilon-mobile.tajikistan.keyra.ie",
+      "officialDomain": "babilon-m.tj",
+      "subscribers": 1800000,
+      "subscribersDisplay": "1.8M"
+    },
+    {
+      "countryName": "Tokelau",
+      "countryIso2": "TK",
+      "name": "Teletok",
+      "slug": "teletok",
+      "telcoSubdomain": "teletok.tokelau.keyra.ie",
+      "officialDomain": "teletok.net",
+      "subscribers": 1500,
+      "subscribersDisplay": "1.5K"
+    },
+    {
+      "countryName": "Turkmenistan",
+      "countryIso2": "TM",
+      "name": "Altyn Asyr",
+      "slug": "altyn-asyr",
+      "telcoSubdomain": "altyn-asyr.turkmenistan.keyra.ie",
+      "officialDomain": "tmcell.tm",
+      "subscribers": 3500000,
+      "subscribersDisplay": "3.5M"
+    },
+    {
+      "countryName": "Timor-Leste",
+      "countryIso2": "TL",
+      "name": "Telemor",
+      "slug": "telemor",
+      "telcoSubdomain": "telemor.timor-leste.keyra.ie",
+      "officialDomain": "telemor.tl",
+      "subscribers": 550000,
+      "subscribersDisplay": "550K"
+    },
+    {
+      "countryName": "Timor-Leste",
+      "countryIso2": "TL",
+      "name": "Telkomcel",
+      "slug": "telkomcel",
+      "telcoSubdomain": "telkomcel.timor-leste.keyra.ie",
+      "officialDomain": "telkomcel.tl",
+      "subscribers": 250000,
+      "subscribersDisplay": "250K"
+    },
+    {
+      "countryName": "Tonga",
+      "countryIso2": "TO",
+      "name": "Digicel Tonga",
+      "slug": "digicel-tonga",
+      "telcoSubdomain": "digicel-tonga.tonga.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 70000,
+      "subscribersDisplay": "70K"
+    },
+    {
+      "countryName": "Tonga",
+      "countryIso2": "TO",
+      "name": "Tonga Communications Corporation",
+      "slug": "tonga-communications-corporation",
+      "telcoSubdomain": "tonga-communications-corporation.tonga.keyra.ie",
+      "officialDomain": "tcc.to",
+      "subscribers": 40000,
+      "subscribersDisplay": "40K"
+    },
+    {
+      "countryName": "Trinidad and Tobago",
+      "countryIso2": "TT",
+      "name": "bmobile",
+      "slug": "bmobile",
+      "telcoSubdomain": "bmobile.trinidad-and-tobago.keyra.ie",
+      "officialDomain": "bmobile.co.tt",
+      "subscribers": 650000,
+      "subscribersDisplay": "650K"
+    },
+    {
+      "countryName": "Trinidad and Tobago",
+      "countryIso2": "TT",
+      "name": "Digicel Trinidad and Tobago",
+      "slug": "digicel-trinidad-and-tobago",
+      "telcoSubdomain": "digicel-trinidad-and-tobago.trinidad-and-tobago.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 900000,
+      "subscribersDisplay": "900K"
+    },
+    {
+      "countryName": "Tunisia",
+      "countryIso2": "TN",
+      "name": "Tunisie Telecom",
+      "slug": "tunisie-telecom",
+      "telcoSubdomain": "tunisie-telecom.tunisia.keyra.ie",
+      "officialDomain": "tunisietelecom.tn",
+      "subscribers": 6500000,
+      "subscribersDisplay": "6.5M"
+    },
+    {
+      "countryName": "Tunisia",
+      "countryIso2": "TN",
+      "name": "Ooredoo Tunisia",
+      "slug": "ooredoo-tunisia",
+      "telcoSubdomain": "ooredoo-tunisia.tunisia.keyra.ie",
+      "officialDomain": "ooredoo.tn",
+      "subscribers": 8000000,
+      "subscribersDisplay": "8.0M"
+    },
+    {
+      "countryName": "Tunisia",
+      "countryIso2": "TN",
+      "name": "Orange Tunisia",
+      "slug": "orange-tunisia",
+      "telcoSubdomain": "orange-tunisia.tunisia.keyra.ie",
+      "officialDomain": "orange.tn",
+      "subscribers": 4000000,
+      "subscribersDisplay": "4.0M"
+    },
+    {
+      "countryName": "Türkiye",
+      "countryIso2": "TR",
+      "name": "Turkcell",
+      "slug": "turkcell",
+      "telcoSubdomain": "turkcell.turkiye.keyra.ie",
+      "officialDomain": "turkcell.com.tr",
+      "subscribers": 43000000,
+      "subscribersDisplay": "43.0M"
+    },
+    {
+      "countryName": "Türkiye",
+      "countryIso2": "TR",
+      "name": "Vodafone Türkiye",
+      "slug": "vodafone-turkiye",
+      "telcoSubdomain": "vodafone-turkiye.turkiye.keyra.ie",
+      "officialDomain": "vodafone.com.tr",
+      "subscribers": 25000000,
+      "subscribersDisplay": "25.0M"
+    },
+    {
+      "countryName": "Türkiye",
+      "countryIso2": "TR",
+      "name": "Türk Telekom Mobile",
+      "slug": "turk-telekom-mobile",
+      "telcoSubdomain": "turk-telekom-mobile.turkiye.keyra.ie",
+      "officialDomain": "turktelekom.com.tr",
+      "subscribers": 26000000,
+      "subscribersDisplay": "26.0M"
+    },
+    {
+      "countryName": "Tuvalu",
+      "countryIso2": "TV",
+      "name": "Tuvalu Telecommunications Corporation",
+      "slug": "tuvalu-telecommunications-corporation",
+      "telcoSubdomain": "tuvalu-telecommunications-corporation.tuvalu.keyra.ie",
+      "officialDomain": "ttc.com.tv",
+      "subscribers": 12000,
+      "subscribersDisplay": "12K"
+    },
+    {
+      "countryName": "Taiwan",
+      "countryIso2": "TW",
+      "name": "Chunghwa Telecom",
+      "slug": "chunghwa-telecom",
+      "telcoSubdomain": "chunghwa-telecom.taiwan.keyra.ie",
+      "officialDomain": "cht.com.tw",
+      "subscribers": 11000000,
+      "subscribersDisplay": "11.0M"
+    },
+    {
+      "countryName": "Taiwan",
+      "countryIso2": "TW",
+      "name": "Taiwan Mobile",
+      "slug": "taiwan-mobile",
+      "telcoSubdomain": "taiwan-mobile.taiwan.keyra.ie",
+      "officialDomain": "taiwanmobile.com",
+      "subscribers": 9800000,
+      "subscribersDisplay": "9.8M"
+    },
+    {
+      "countryName": "Taiwan",
+      "countryIso2": "TW",
+      "name": "Far EasTone",
+      "slug": "far-eastone",
+      "telcoSubdomain": "far-eastone.taiwan.keyra.ie",
+      "officialDomain": "fetnet.net",
+      "subscribers": 9200000,
+      "subscribersDisplay": "9.2M"
+    },
+    {
+      "countryName": "Tanzania",
+      "countryIso2": "TZ",
+      "name": "Vodacom Tanzania",
+      "slug": "vodacom-tanzania",
+      "telcoSubdomain": "vodacom-tanzania.tanzania.keyra.ie",
+      "officialDomain": "vodacom.co.tz",
+      "subscribers": 17000000,
+      "subscribersDisplay": "17.0M"
+    },
+    {
+      "countryName": "Tanzania",
+      "countryIso2": "TZ",
+      "name": "Airtel Tanzania",
+      "slug": "airtel-tanzania",
+      "telcoSubdomain": "airtel-tanzania.tanzania.keyra.ie",
+      "officialDomain": "airtel.co.tz",
+      "subscribers": 21000000,
+      "subscribersDisplay": "21.0M"
+    },
+    {
+      "countryName": "Tanzania",
+      "countryIso2": "TZ",
+      "name": "Tigo Tanzania",
+      "slug": "tigo-tanzania",
+      "telcoSubdomain": "tigo-tanzania.tanzania.keyra.ie",
+      "officialDomain": "tigo.co.tz",
+      "subscribers": 18000000,
+      "subscribersDisplay": "18.0M"
+    },
+    {
+      "countryName": "Tanzania",
+      "countryIso2": "TZ",
+      "name": "Halotel",
+      "slug": "halotel",
+      "telcoSubdomain": "halotel.tanzania.keyra.ie",
+      "officialDomain": "halotel.co.tz",
+      "subscribers": 8000000,
+      "subscribersDisplay": "8.0M"
+    },
+    {
+      "countryName": "Uganda",
+      "countryIso2": "UG",
+      "name": "MTN Uganda",
+      "slug": "mtn-uganda",
+      "telcoSubdomain": "mtn-uganda.uganda.keyra.ie",
+      "officialDomain": "mtn.co.ug",
+      "subscribers": 20000000,
+      "subscribersDisplay": "20.0M"
+    },
+    {
+      "countryName": "Uganda",
+      "countryIso2": "UG",
+      "name": "Airtel Uganda",
+      "slug": "airtel-uganda",
+      "telcoSubdomain": "airtel-uganda.uganda.keyra.ie",
+      "officialDomain": "airtel.co.ug",
+      "subscribers": 15000000,
+      "subscribersDisplay": "15.0M"
+    },
+    {
+      "countryName": "Uganda",
+      "countryIso2": "UG",
+      "name": "Uganda Telecom",
+      "slug": "uganda-telecom",
+      "telcoSubdomain": "uganda-telecom.uganda.keyra.ie",
+      "officialDomain": "utl.co.ug",
+      "subscribers": 800000,
+      "subscribersDisplay": "800K"
+    },
+    {
+      "countryName": "Ukraine",
+      "countryIso2": "UA",
+      "name": "Kyivstar",
+      "slug": "kyivstar",
+      "telcoSubdomain": "kyivstar.ukraine.keyra.ie",
+      "officialDomain": "kyivstar.ua",
+      "subscribers": 24000000,
+      "subscribersDisplay": "24.0M"
+    },
+    {
+      "countryName": "Ukraine",
+      "countryIso2": "UA",
+      "name": "Vodafone Ukraine",
+      "slug": "vodafone-ukraine",
+      "telcoSubdomain": "vodafone-ukraine.ukraine.keyra.ie",
+      "officialDomain": "vodafone.ua",
+      "subscribers": 16000000,
+      "subscribersDisplay": "16.0M"
+    },
+    {
+      "countryName": "Ukraine",
+      "countryIso2": "UA",
+      "name": "lifecell",
+      "slug": "lifecell",
+      "telcoSubdomain": "lifecell.ukraine.keyra.ie",
+      "officialDomain": "lifecell.ua",
+      "subscribers": 9500000,
+      "subscribersDisplay": "9.5M"
+    },
+    {
+      "countryName": "Uruguay",
+      "countryIso2": "UY",
+      "name": "Antel",
+      "slug": "antel",
+      "telcoSubdomain": "antel.uruguay.keyra.ie",
+      "officialDomain": "antel.com.uy",
+      "subscribers": 2400000,
+      "subscribersDisplay": "2.4M"
+    },
+    {
+      "countryName": "Uruguay",
+      "countryIso2": "UY",
+      "name": "Movistar Uruguay",
+      "slug": "movistar-uruguay",
+      "telcoSubdomain": "movistar-uruguay.uruguay.keyra.ie",
+      "officialDomain": "movistar.com.uy",
+      "subscribers": 1500000,
+      "subscribersDisplay": "1.5M"
+    },
+    {
+      "countryName": "Uruguay",
+      "countryIso2": "UY",
+      "name": "Claro Uruguay",
+      "slug": "claro-uruguay",
+      "telcoSubdomain": "claro-uruguay.uruguay.keyra.ie",
+      "officialDomain": "claro.com.uy",
+      "subscribers": 1300000,
+      "subscribersDisplay": "1.3M"
+    },
+    {
+      "countryName": "Uzbekistan",
+      "countryIso2": "UZ",
+      "name": "Beeline Uzbekistan",
+      "slug": "beeline-uzbekistan",
+      "telcoSubdomain": "beeline-uzbekistan.uzbekistan.keyra.ie",
+      "officialDomain": "beeline.uz",
+      "subscribers": 17000000,
+      "subscribersDisplay": "17.0M"
+    },
+    {
+      "countryName": "Uzbekistan",
+      "countryIso2": "UZ",
+      "name": "Ucell",
+      "slug": "ucell",
+      "telcoSubdomain": "ucell.uzbekistan.keyra.ie",
+      "officialDomain": "ucell.uz",
+      "subscribers": 9000000,
+      "subscribersDisplay": "9.0M"
+    },
+    {
+      "countryName": "Uzbekistan",
+      "countryIso2": "UZ",
+      "name": "Uzmobile",
+      "slug": "uzmobile",
+      "telcoSubdomain": "uzmobile.uzbekistan.keyra.ie",
+      "officialDomain": "uzmobile.uz",
+      "subscribers": 8000000,
+      "subscribersDisplay": "8.0M"
+    },
+    {
+      "countryName": "Saint Vincent and the Grenadines",
+      "countryIso2": "VC",
+      "name": "Digicel Saint Vincent and the Grenadines",
+      "slug": "digicel-saint-vincent-and-the-grenadines",
+      "telcoSubdomain": "digicel-saint-vincent-and-the-grenadines.saint-vincent-and-the-grenadines.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 45000,
+      "subscribersDisplay": "45K"
+    },
+    {
+      "countryName": "Saint Vincent and the Grenadines",
+      "countryIso2": "VC",
+      "name": "FLOW Saint Vincent and the Grenadines",
+      "slug": "flow-saint-vincent-and-the-grenadines",
+      "telcoSubdomain": "flow-saint-vincent-and-the-grenadines.saint-vincent-and-the-grenadines.keyra.ie",
+      "officialDomain": "discoverflow.co",
+      "subscribers": 30000,
+      "subscribersDisplay": "30K"
+    },
+    {
+      "countryName": "Venezuela",
+      "countryIso2": "VE",
+      "name": "Movistar Venezuela",
+      "slug": "movistar-venezuela",
+      "telcoSubdomain": "movistar-venezuela.venezuela.keyra.ie",
+      "officialDomain": "movistar.com.ve",
+      "subscribers": 12000000,
+      "subscribersDisplay": "12.0M"
+    },
+    {
+      "countryName": "Venezuela",
+      "countryIso2": "VE",
+      "name": "Digitel",
+      "slug": "digitel",
+      "telcoSubdomain": "digitel.venezuela.keyra.ie",
+      "officialDomain": "digitel.com.ve",
+      "subscribers": 9000000,
+      "subscribersDisplay": "9.0M"
+    },
+    {
+      "countryName": "Venezuela",
+      "countryIso2": "VE",
+      "name": "Movilnet",
+      "slug": "movilnet",
+      "telcoSubdomain": "movilnet.venezuela.keyra.ie",
+      "officialDomain": "movilnet.com.ve",
+      "subscribers": 5000000,
+      "subscribersDisplay": "5.0M"
+    },
+    {
+      "countryName": "British Virgin Islands",
+      "countryIso2": "VG",
+      "name": "FLOW British Virgin Islands",
+      "slug": "flow-british-virgin-islands",
+      "telcoSubdomain": "flow-british-virgin-islands.british-virgin-islands.keyra.ie",
+      "officialDomain": "discoverflow.co",
+      "subscribers": 18000,
+      "subscribersDisplay": "18K"
+    },
+    {
+      "countryName": "British Virgin Islands",
+      "countryIso2": "VG",
+      "name": "Digicel BVI",
+      "slug": "digicel-bvi",
+      "telcoSubdomain": "digicel-bvi.british-virgin-islands.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 12000,
+      "subscribersDisplay": "12K"
+    },
+    {
+      "countryName": "United States Virgin Islands",
+      "countryIso2": "VI",
+      "name": "Liberty USVI",
+      "slug": "liberty-usvi",
+      "telcoSubdomain": "liberty-usvi.united-states-virgin-islands.keyra.ie",
+      "officialDomain": "libertyvi.com",
+      "subscribers": 85000,
+      "subscribersDisplay": "85K"
+    },
+    {
+      "countryName": "United States Virgin Islands",
+      "countryIso2": "VI",
+      "name": "Viya",
+      "slug": "viya",
+      "telcoSubdomain": "viya.united-states-virgin-islands.keyra.ie",
+      "officialDomain": "viya.vi",
+      "subscribers": 55000,
+      "subscribersDisplay": "55K"
+    },
+    {
+      "countryName": "Vietnam",
+      "countryIso2": "VN",
+      "name": "Viettel",
+      "slug": "viettel",
+      "telcoSubdomain": "viettel.vietnam.keyra.ie",
+      "officialDomain": "viettel.vn",
+      "subscribers": 70000000,
+      "subscribersDisplay": "70.0M"
+    },
+    {
+      "countryName": "Vietnam",
+      "countryIso2": "VN",
+      "name": "Vinaphone",
+      "slug": "vinaphone",
+      "telcoSubdomain": "vinaphone.vietnam.keyra.ie",
+      "officialDomain": "vinaphone.com.vn",
+      "subscribers": 30000000,
+      "subscribersDisplay": "30.0M"
+    },
+    {
+      "countryName": "Vietnam",
+      "countryIso2": "VN",
+      "name": "MobiFone",
+      "slug": "mobifone",
+      "telcoSubdomain": "mobifone.vietnam.keyra.ie",
+      "officialDomain": "mobifone.vn",
+      "subscribers": 25000000,
+      "subscribersDisplay": "25.0M"
+    },
+    {
+      "countryName": "Vanuatu",
+      "countryIso2": "VU",
+      "name": "Vodafone Vanuatu",
+      "slug": "vodafone-vanuatu",
+      "telcoSubdomain": "vodafone-vanuatu.vanuatu.keyra.ie",
+      "officialDomain": "vodafone.com.vu",
+      "subscribers": 140000,
+      "subscribersDisplay": "140K"
+    },
+    {
+      "countryName": "Vanuatu",
+      "countryIso2": "VU",
+      "name": "Digicel Vanuatu",
+      "slug": "digicel-vanuatu",
+      "telcoSubdomain": "digicel-vanuatu.vanuatu.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 120000,
+      "subscribersDisplay": "120K"
+    },
+    {
+      "countryName": "Wallis and Futuna",
+      "countryIso2": "WF",
+      "name": "Manuia",
+      "slug": "manuia",
+      "telcoSubdomain": "manuia.wallis-and-futuna.keyra.ie",
+      "officialDomain": "spt.wf",
+      "subscribers": 3000,
+      "subscribersDisplay": "3K"
+    },
+    {
+      "countryName": "Samoa",
+      "countryIso2": "WS",
+      "name": "Digicel Samoa",
+      "slug": "digicel-samoa",
+      "telcoSubdomain": "digicel-samoa.samoa.keyra.ie",
+      "officialDomain": "digicelgroup.com",
+      "subscribers": 110000,
+      "subscribersDisplay": "110K"
+    },
+    {
+      "countryName": "Samoa",
+      "countryIso2": "WS",
+      "name": "Vodafone Samoa",
+      "slug": "vodafone-samoa",
+      "telcoSubdomain": "vodafone-samoa.samoa.keyra.ie",
+      "officialDomain": "vodafone.ws",
+      "subscribers": 90000,
+      "subscribersDisplay": "90K"
+    },
+    {
+      "countryName": "Yemen",
+      "countryIso2": "YE",
+      "name": "Yemen Mobile",
+      "slug": "yemen-mobile",
+      "telcoSubdomain": "yemen-mobile.yemen.keyra.ie",
+      "officialDomain": "yemenmobile.com.ye",
+      "subscribers": 12000000,
+      "subscribersDisplay": "12.0M"
+    },
+    {
+      "countryName": "Yemen",
+      "countryIso2": "YE",
+      "name": "Sabafon",
+      "slug": "sabafon",
+      "telcoSubdomain": "sabafon.yemen.keyra.ie",
+      "officialDomain": "sabafon.com",
+      "subscribers": 8000000,
+      "subscribersDisplay": "8.0M"
+    },
+    {
+      "countryName": "Yemen",
+      "countryIso2": "YE",
+      "name": "YOU (MTN Yemen)",
+      "slug": "you-mtn-yemen",
+      "telcoSubdomain": "you-mtn-yemen.yemen.keyra.ie",
+      "officialDomain": "you.com.ye",
+      "subscribers": 7000000,
+      "subscribersDisplay": "7.0M"
+    },
+    {
+      "countryName": "Zambia",
+      "countryIso2": "ZM",
+      "name": "MTN Zambia",
+      "slug": "mtn-zambia",
+      "telcoSubdomain": "mtn-zambia.zambia.keyra.ie",
+      "officialDomain": "mtn.zm",
+      "subscribers": 9000000,
+      "subscribersDisplay": "9.0M"
+    },
+    {
+      "countryName": "Zambia",
+      "countryIso2": "ZM",
+      "name": "Airtel Zambia",
+      "slug": "airtel-zambia",
+      "telcoSubdomain": "airtel-zambia.zambia.keyra.ie",
+      "officialDomain": "airtel.co.zm",
+      "subscribers": 8000000,
+      "subscribersDisplay": "8.0M"
+    },
+    {
+      "countryName": "Zambia",
+      "countryIso2": "ZM",
+      "name": "Zamtel",
+      "slug": "zamtel",
+      "telcoSubdomain": "zamtel.zambia.keyra.ie",
+      "officialDomain": "zamtel.zm",
+      "subscribers": 3000000,
+      "subscribersDisplay": "3.0M"
+    },
+    {
+      "countryName": "Zimbabwe",
+      "countryIso2": "ZW",
+      "name": "Econet Wireless Zimbabwe",
+      "slug": "econet-wireless-zimbabwe",
+      "telcoSubdomain": "econet-wireless-zimbabwe.zimbabwe.keyra.ie",
+      "officialDomain": "econet.co.zw",
+      "subscribers": 14000000,
+      "subscribersDisplay": "14.0M"
+    },
+    {
+      "countryName": "Zimbabwe",
+      "countryIso2": "ZW",
+      "name": "NetOne",
+      "slug": "netone",
+      "telcoSubdomain": "netone.zimbabwe.keyra.ie",
+      "officialDomain": "netone.co.zw",
+      "subscribers": 5000000,
+      "subscribersDisplay": "5.0M"
+    },
+    {
+      "countryName": "Zimbabwe",
+      "countryIso2": "ZW",
+      "name": "Telecel Zimbabwe",
+      "slug": "telecel-zimbabwe",
+      "telcoSubdomain": "telecel-zimbabwe.zimbabwe.keyra.ie",
+      "officialDomain": "telecel.co.zw",
+      "subscribers": 2000000,
+      "subscribersDisplay": "2.0M"
+    }
+  ]
+}

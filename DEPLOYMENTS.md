@@ -77,7 +77,8 @@ npm run db:seed
    - **`npm run db:seed:deploy-catalog`** — idempotent catalog seed:
      - authentication feed + SAT protocol registry
      - **all `AuthenticationCountry` rows** from `world-countries` (unless `SKIP_WORLD_COUNTRIES_SEED=1`)
-     - **deployment map** (regions / countries / telcos), including **ISO-3166 catalog countries** and **placeholder telcos** where needed (unless `SKIP_DEPLOYMENT_GRAPH_SEED=1`)
+     - **deployment map** (regions / countries / telcos from `deployment-seed.json`), including **ISO-3166 catalog countries** (unless `SKIP_DEPLOYMENT_GRAPH_SEED=1`)
+     - **telco catalog** (~541 operators from `prisma/data/keyra-telcos-catalog.json`, upserted after countries; removes `national-carriers` placeholders — unless `SKIP_TELCO_CATALOG_SEED=1`)
    - **`next start`** — app
    Keep **`DATABASE_URL`** available at runtime. Do **not** set `SKIP_DEPLOY_CATALOG_SEED=1` on production unless you truly want to skip the whole catalog pass.
 4. **Full demo wipe + admins:** `npx prisma db seed` (loads `prisma/seed.ts` — resets deployment JSON graph, demo admins, then extends with the world catalog). Use Railway shell for one-off; set `SEED_ADMIN_PASSWORD` first if you do not want the default seed password.
@@ -89,7 +90,9 @@ npm run db:seed
 | `npm run db:migrate` | `prisma migrate dev` — create/apply migrations in development |
 | `npm run db:migrate:deploy` | `prisma migrate deploy` — apply pending migrations (also runs at container start) |
 | `npm run db:push` | Push schema without a migration (prototyping only) |
-| `npm run db:seed:deploy-catalog` | **Production boot:** idempotent auth countries + deployment map (+ world catalog telcos) — also run from `npm start` |
+| `npm run db:seed:deploy-catalog` | **Production boot:** idempotent auth countries + deployment map + telco catalog — also run from `npm start` |
+| `npm run db:export:telcos-catalog` | Regenerate `prisma/data/keyra-telcos-catalog.json` from `Telco details for Keyra.xlsx` (commit JSON after export) |
+| `npm run db:import:telcos` | One-off import directly from Excel (local dev; requires Python 3) |
 | `npm run db:seed` | Load deployment JSON + demo admins (destructive reset — use shell / one-off only) |
 
 ## Railway checklist

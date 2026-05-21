@@ -8,11 +8,13 @@
  * Skip entirely: SKIP_DEPLOY_CATALOG_SEED=1
  * Skip world countries only (faster cold start): SKIP_WORLD_COUNTRIES_SEED=1
  * Skip deployment map (regions / countries / telcos): SKIP_DEPLOYMENT_GRAPH_SEED=1
+ * Skip telco catalog import (541 operators from keyra-telcos-catalog.json): SKIP_TELCO_CATALOG_SEED=1
  */
 import { PrismaClient } from "@prisma/client";
 import { seedAdminUsersIfEmpty } from "./seedAdminUsersIfEmpty";
 import { seedAuthenticationFeed } from "./seedAuthenticationFeed";
 import { seedDeploymentGraph } from "./seedDeploymentGraph";
+import { importKeyraTelcosFromCatalog } from "./importKeyraTelcos";
 import { seedWorldAuthenticationCountries } from "./seedWorldAuthenticationCountries";
 
 async function main() {
@@ -38,6 +40,13 @@ async function main() {
     } else {
       const d = await seedDeploymentGraph(prisma);
       console.info("[seedDeployCatalog] Deployment map (regions / countries / telcos):", d);
+
+      if (process.env.SKIP_TELCO_CATALOG_SEED === "1") {
+        console.info("[seedDeployCatalog] SKIP_TELCO_CATALOG_SEED=1 — telco catalog import skipped.");
+      } else {
+        const telcos = await importKeyraTelcosFromCatalog(prisma);
+        console.info("[seedDeployCatalog] Telco catalog (keyra-telcos-catalog.json):", telcos);
+      }
     }
 
     const adminBoot = await seedAdminUsersIfEmpty(prisma);
