@@ -30,6 +30,27 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: Size;
 };
 
+/** Pulled: shared interaction + press feedback base classes. */
+const base =
+  "inline-flex items-center justify-center select-none whitespace-nowrap rounded-[var(--keyra-radius-pill)] px-5 py-3 text-[16px] font-semibold transition-colors duration-150 ease-out focus-visible:outline-none focus-visible:keyra-focus disabled:opacity-50 disabled:pointer-events-none touch-manipulation";
+
+/** Pulled: inline variant styles with active/press states. */
+const pulledVariants: Record<"primary" | "secondary" | "ghost", string> = {
+  primary:
+    "bg-[var(--keyra-action)] text-[var(--keyra-action-text)] border border-[var(--keyra-action-border)] hover:border-[rgba(255,255,255,0.14)] hover:bg-[rgba(255,255,255,0.06)] active:bg-[rgba(255,255,255,0.08)]",
+  secondary:
+    "bg-transparent text-keyra-primary border border-keyra-border hover:border-keyra-primary active:bg-[rgba(255,255,255,0.04)]",
+  ghost:
+    "bg-[rgba(255,255,255,0.04)] text-keyra-primary border border-keyra-border hover:border-[rgba(255,255,255,0.12)] hover:bg-[rgba(255,255,255,0.05)] active:bg-[rgba(255,255,255,0.08)]",
+};
+
+/** Pulled: legacy height sizing from remote main. */
+const pulledSizes: Record<"md" | "lg", string> = {
+  md: "h-12",
+  lg: "h-14 px-7 text-[16px]",
+};
+
+/** Local: design-system `.ds-btn-*` recipes. */
 const variantClass: Record<Variant, string> = {
   primary: "ds-btn-primary",
   secondary: "ds-btn-secondary",
@@ -37,7 +58,7 @@ const variantClass: Record<Variant, string> = {
   destructive: "ds-btn-destructive",
 };
 
-/** Extra Tailwind to layer on top of the base `.ds-btn-*` recipe for non-canonical sizes. */
+/** Local: extra Tailwind layered on `.ds-btn-*` for non-canonical sizes. */
 const sizeClass: Record<Size, string> = {
   sm: "is-sm",
   md: "",
@@ -50,9 +71,19 @@ export function Button({
   size = "md",
   ...props
 }: ButtonProps) {
+  const pulledVariant =
+    variant === "destructive" ? undefined : pulledVariants[variant];
+
   return (
     <button
-      className={cn(variantClass[variant], sizeClass[size], className)}
+      className={cn(
+        base,
+        pulledVariant,
+        variantClass[variant],
+        size !== "sm" ? pulledSizes[size] : undefined,
+        sizeClass[size],
+        className,
+      )}
       {...props}
     />
   );

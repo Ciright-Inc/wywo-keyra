@@ -11,7 +11,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "./cn";
 
 /**
- * Toast — transient notification stack docked bottom-right.
+ * Toast — transient notification stack docked top-right (below site header).
  *
  * Spec: agent.md TR-2 (12px radius), TR-6 (single soft shadow), TR-7 (semantic
  * color goes on the left accent bar / icon only, never on the toast body or text).
@@ -93,7 +93,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               role={t.kind === "error" ? "alert" : "status"}
             >
               <p className="ds-title-sm">{t.title}</p>
-              {t.message ? <p className="mt-1 ds-body-sm">{t.message}</p> : null}
+              {t.message ? (
+                <p className="ds-body-sm mt-1 text-[var(--ds-body)]">{t.message}</p>
+              ) : null}
             </motion.div>
           ))}
         </AnimatePresence>
