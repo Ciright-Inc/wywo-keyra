@@ -11,11 +11,6 @@ import { toFeedCountryInputs } from "@/lib/authenticationFeed/toFeedCountryInput
 import { toFeedProtocolInputs } from "@/lib/authenticationFeed/toFeedProtocolInputs";
 import { fingerprintFromRequest } from "@/lib/authenticationFeed/mask";
 import { wrapPublicFeedJson } from "@/lib/authenticationFeed/publicFeedPayload";
-import {
-  buildDemoSessionPayload,
-  getDemoLatestAuthRecords,
-  isServerFeedDemoMode,
-} from "@/lib/authenticationFeed/demoLatestAuthFeed";
 import { isPostgresDatabaseUrlConfigured } from "@/lib/postgresEnv";
 import { verifyTurnstileIfConfigured } from "@/lib/turnstileVerify";
 import { NextResponse } from "next/server";
