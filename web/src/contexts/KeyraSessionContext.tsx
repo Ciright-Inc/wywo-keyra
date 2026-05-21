@@ -56,6 +56,15 @@ export function KeyraSessionProvider({
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onPageShow = () => {
+      void refresh();
+    };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, [refresh]);
+
   const logout = useCallback(async () => {
     await fetch("/api/keyra/session/logout", {
       method: "POST",

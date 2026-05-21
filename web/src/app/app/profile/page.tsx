@@ -11,7 +11,11 @@ import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { formatPhoneDisplay } from "@/lib/keyraSessionDisplay";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+function trimField(value: string) {
+  return value.trim();
+}
 
 export default function AppProfilePage() {
   const router = useRouter();
@@ -37,8 +41,21 @@ export default function AppProfilePage() {
     setCountry(user.country ?? "");
   }, [user]);
 
+  const canSave = useMemo(() => {
+    const d = trimField(displayName);
+    const e = trimField(email);
+    const c = trimField(country);
+    const hasAnyValue = d !== "" || e !== "" || c !== "";
+    const isDirty =
+      d !== trimField(user?.displayName ?? "") ||
+      e !== trimField(user?.email ?? "") ||
+      c !== trimField(user?.country ?? "");
+    return hasAnyValue && isDirty;
+  }, [user, displayName, email, country]);
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!canSave) return;
     setError(null);
     setSaved(false);
     setPending(true);
@@ -138,7 +155,7 @@ export default function AppProfilePage() {
           </div>
 
           <div className="flex flex-wrap gap-3 pt-2">
-            <Button type="submit" disabled={pending}>
+            <Button type="submit" disabled={pending || !canSave}>
               {pending ? "Saving…" : "Save profile"}
             </Button>
             <Link href="/app" className="inline-flex">

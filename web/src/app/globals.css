@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "../../../src/styles/interactive-cursor.css";
 
 /**
  * Keyra — Global Design System (master)
@@ -519,7 +518,6 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   justify-content: center;
   background: rgba(0, 0, 0, 0.55);
   padding: var(--keyra-space-4);
-  cursor: pointer;
 }
 
 .keyra-modal-panel {
