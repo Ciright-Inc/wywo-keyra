@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ActiveAuthenticationCountriesWidget } from "@/components/home/ActiveAuthenticationCountriesWidget";
+import { ActiveSatProtocolsWidget } from "@/components/home/ActiveSatProtocolsWidget";
 import { KeyraHomeGlobe } from "@/components/home/KeyraHomeGlobe";
 import { HomeRegistrationCTAs } from "@/components/registration/HomeRegistrationCTAs";
 import { Button } from "@/components/ui/Button";
@@ -39,7 +41,7 @@ export function HomeContent() {
 
             {/* RIGHT: Timeline + widgets, then 4 CTAs directly below */}
             <div className="flex min-w-0 flex-col gap-8 lg:gap-10">
-              <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,15.5rem)] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,17.5rem)]">
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,15.5rem)] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
                 {/* Timeline */}
                 <div className="lg:pt-1">
                   <div className="flex flex-col gap-6">
@@ -82,12 +84,15 @@ export function HomeContent() {
                     </div>
                     <div className="mt-3 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-2 text-center"><span className="text-[11px] text-slate-500">Global numbers verified — live by region</span></div>
                   </motion.div>
-                  <motion.div className="rounded-xl border border-slate-200/80 bg-white/60 p-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.42,ease:easeTrust}}>
-                    <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Latest authentications</p>
-                    <div className="mt-3 space-y-2.5">
-                      {["Ireland • SIM verified","Germany • eSIM enrolled","USA • Carrier signal"].map(l=>(<div key={l} className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]" /><span className="text-[12px] text-slate-500">{l}</span></div>))}
-                    </div>
-                  </motion.div>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <motion.div className="rounded-xl border border-slate-200/80 bg-white/60 p-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.42,ease:easeTrust}}>
+                      <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Latest authentications</p>
+                      <ActiveAuthenticationCountriesWidget />
+                    </motion.div>
+                    <motion.div className="rounded-xl border border-slate-200/80 bg-white/60 p-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.48,ease:easeTrust}}>
+                      <ActiveSatProtocolsWidget />
+                    </motion.div>
+                  </div>
                 </div>
               </div>
 
