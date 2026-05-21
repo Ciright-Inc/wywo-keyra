@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { KeyraHomeLink } from "@/components/layout/KeyraHomeLink";
 import { getKeyraEcosystemAppLinks, type KeyraEcosystemAppLink } from "@/lib/keyraAppUrls";
 
 type SiteLink = { href: string; label: string; external?: boolean };
@@ -71,12 +72,9 @@ export function SiteFooter() {
               Choose the experience that matches your context — consumer protection, enterprise deployment, or
               partner tooling.
             </p>
-            <Link
-              href="/"
-              className="mt-5 inline-flex text-sm font-semibold text-keyra-primary underline-offset-4 transition hover:underline"
-            >
+            <KeyraHomeLink className="mt-5 inline-flex text-sm font-semibold text-keyra-primary underline-offset-4 transition hover:underline">
               Keyra home
-            </Link>
+            </KeyraHomeLink>
           </div>
 
           <div className="min-w-0">
