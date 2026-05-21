@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../styles/interactive-cursor.css";
 
 /**
  * Keyra — Global Design System (master)
@@ -593,6 +594,7 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   justify-content: center;
   background: rgba(0, 0, 0, 0.55);
   padding: var(--keyra-space-4);
+  cursor: pointer;
 }
 
 .keyra-modal-panel {
@@ -988,6 +990,7 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   color: var(--ds-text-link);
   text-decoration: underline;
   text-underline-offset: 2px;
+  cursor: pointer;
   transition: color var(--ds-motion-base) var(--ds-ease);
 }
 .ds-text-link:hover { color: var(--ds-text-link-2); }

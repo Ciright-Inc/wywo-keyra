@@ -65,7 +65,7 @@ export function MobileNav() {
           <>
             <motion.div
               key="mobile-nav-backdrop"
-              className="fixed inset-x-0 bottom-0 top-44 z-[var(--keyra-z-overlay)] bg-black/40 backdrop-blur-[1px] lg:hidden"
+              className="fixed inset-x-0 bottom-0 top-44 z-[var(--keyra-z-overlay)] cursor-pointer bg-black/40 backdrop-blur-[1px] lg:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

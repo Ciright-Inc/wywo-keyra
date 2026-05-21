@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../styles/keyra-theme.css";
+@import "../../../src/styles/interactive-cursor.css";
 
 :root {
   /* Expo-inspired color tokens */
