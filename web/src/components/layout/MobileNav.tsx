@@ -109,15 +109,6 @@ export function MobileNav() {
                 {user ? (
                   <>
                     <li>
-                      <Link
-                        href="/app/profile"
-                        onClick={() => setOpen(false)}
-                        className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-primary transition-colors duration-150 active:bg-keyra-surface hover:bg-keyra-surface"
-                      >
-                        Profile
-                      </Link>
-                    </li>
-                    <li>
                       <button
                         type="button"
                         className="block w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-keyra-primary transition-colors duration-150 active:bg-keyra-surface hover:bg-keyra-surface"
