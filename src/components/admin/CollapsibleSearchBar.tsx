@@ -98,7 +98,7 @@ export function CollapsibleSearchBar(props: Props) {
         onClick={() => setExpanded((open) => !open)}
         aria-label={expanded ? "Collapse search" : "Expand search"}
         aria-expanded={expanded}
-        className={`inline-flex size-9 shrink-0 items-center justify-center rounded-lg border transition duration-300 ${
+        className={`inline-flex size-9 shrink-0 items-center justify-center rounded-lg border transition-colors duration-150 active:bg-keyra-surface ${
           expanded || hasSearch
             ? "border-black/20 bg-keyra-bg text-keyra-primary ring-1 ring-black/10"
             : "border-keyra-border bg-keyra-bg text-keyra-text-2 hover:border-black/20 hover:text-keyra-primary"
@@ -119,7 +119,7 @@ export function CollapsibleSearchBar(props: Props) {
         </svg>
       </button>
       <div
-        className={`grid transition-[grid-template-columns] duration-300 ease-out ${
+        className={`grid transition-[grid-template-columns] duration-200 ease-out ${
           expanded ? "grid-cols-[1fr] ml-2" : "grid-cols-[0fr] ml-0"
         }`}
       >
@@ -133,7 +133,7 @@ export function CollapsibleSearchBar(props: Props) {
               placeholder={placeholder}
               autoComplete="off"
               aria-label={ariaLabel}
-              className={`h-9 rounded-lg border border-keyra-border bg-keyra-bg py-0 pl-3 text-sm text-keyra-primary outline-none transition-opacity duration-300 focus-visible:border-black/25 focus-visible:keyra-focus ${
+              className={`h-9 rounded-lg border border-keyra-border bg-keyra-bg py-0 pl-3 text-sm text-keyra-primary outline-none transition-opacity duration-200 focus-visible:border-black/25 focus-visible:keyra-focus ${
                 expanded ? "w-44 pr-8 opacity-100 sm:w-64" : "w-44 pointer-events-none opacity-0 sm:w-64"
               }`}
             />

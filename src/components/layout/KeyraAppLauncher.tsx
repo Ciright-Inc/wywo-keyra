@@ -112,7 +112,7 @@ export function KeyraAppLauncher() {
         aria-haspopup="menu"
         aria-label="Keyra apps"
         className={cn(
-          "flex h-10 w-10 items-center justify-center rounded-[var(--keyra-radius-pill)] border border-keyra-border transition duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-black/35",
+          "flex h-10 w-10 items-center justify-center rounded-[var(--keyra-radius-pill)] border border-keyra-border transition-colors duration-150 ease-out active:border-[rgba(255,255,255,0.14)] focus:outline-none focus-visible:ring-2 focus-visible:ring-black/35",
           "hover:border-black/14 hover:bg-black/[0.04]",
           open && "border-black/18 bg-black/[0.05]",
         )}

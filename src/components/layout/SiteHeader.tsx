@@ -90,7 +90,7 @@ export function SiteHeader() {
                   (item.href === pathname ||
                     item.href === `${pathname}${currentHash}` ||
                     (pathname === "/" && !currentHash && item.href === "/#problem"));
-                const linkClass = `relative inline-flex items-center justify-center whitespace-nowrap rounded-[9999px] px-4 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-all duration-250 ease-out ${
+                const linkClass = `relative inline-flex items-center justify-center whitespace-nowrap rounded-[9999px] px-4 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-colors duration-150 ease-out active:bg-black/[0.06] ${
                   isActive
                     ? "bg-black/[0.06] ring-1 ring-black/[0.12] shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
                     : "hover:bg-black/[0.03]"
@@ -156,7 +156,7 @@ export function SiteHeader() {
                 <button
                   type="button"
                   onClick={handleAdminSignOut}
-                  className="flex shrink-0 items-center whitespace-nowrap px-1.5 py-2 text-xs font-medium leading-none text-keyra-accent transition duration-300 ease-out hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-2 sm:text-sm"
+                  className="flex shrink-0 items-center whitespace-nowrap px-1.5 py-2 text-xs font-medium leading-none text-keyra-accent transition-colors duration-150 ease-out active:bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-2 sm:text-sm"
                 >
                   Sign out
                 </button>
@@ -164,7 +164,7 @@ export function SiteHeader() {
                 <>
                   <a
                     href={accessHref}
-                    className="flex shrink-0 items-center whitespace-nowrap rounded-full bg-keyra-accent px-4 py-1.5 text-xs font-semibold leading-none text-white transition duration-300 ease-out hover:bg-keyra-accent/90 hover:shadow-sm sm:px-5 sm:text-sm"
+                    className="flex shrink-0 items-center whitespace-nowrap rounded-full bg-keyra-accent px-4 py-1.5 text-xs font-semibold leading-none text-white transition-colors duration-150 ease-out active:bg-keyra-accent/80 hover:bg-keyra-accent/90 sm:px-5 sm:text-sm"
                   >
                     Access
                   </a>

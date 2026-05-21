@@ -12,15 +12,15 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const base =
-  "inline-flex items-center justify-center select-none whitespace-nowrap rounded-[var(--keyra-radius-pill)] px-5 py-3 text-[16px] font-semibold transition duration-300 ease-out focus-visible:outline-none focus-visible:keyra-focus disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center justify-center select-none whitespace-nowrap rounded-[var(--keyra-radius-pill)] px-5 py-3 text-[16px] font-semibold transition-colors duration-150 ease-out focus-visible:outline-none focus-visible:keyra-focus disabled:opacity-50 disabled:pointer-events-none touch-manipulation";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-[var(--keyra-action)] text-[var(--keyra-action-text)] border border-[var(--keyra-action-border)] transition duration-300 ease-out hover:border-[rgba(255,255,255,0.14)] hover:bg-[rgba(255,255,255,0.06)] active:bg-[rgba(255,255,255,0.04)]",
+    "bg-[var(--keyra-action)] text-[var(--keyra-action-text)] border border-[var(--keyra-action-border)] hover:border-[rgba(255,255,255,0.14)] hover:bg-[rgba(255,255,255,0.06)] active:bg-[rgba(255,255,255,0.08)]",
   secondary:
-    "bg-transparent text-keyra-primary border border-keyra-border hover:border-keyra-primary",
+    "bg-transparent text-keyra-primary border border-keyra-border hover:border-keyra-primary active:bg-[rgba(255,255,255,0.04)]",
   ghost:
-    "bg-[rgba(255,255,255,0.04)] text-keyra-primary border border-keyra-border transition duration-300 ease-out hover:border-[rgba(255,255,255,0.12)] hover:bg-[rgba(255,255,255,0.05)]",
+    "bg-[rgba(255,255,255,0.04)] text-keyra-primary border border-keyra-border hover:border-[rgba(255,255,255,0.12)] hover:bg-[rgba(255,255,255,0.05)] active:bg-[rgba(255,255,255,0.08)]",
 };
 
 const sizes: Record<Size, string> = {

@@ -551,8 +551,8 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   box-shadow: var(--keyra-shadow-card);
   backdrop-filter: blur(8px);
   transition:
-    box-shadow var(--keyra-motion-base) var(--keyra-ease-out),
-    border-color var(--keyra-motion-base) var(--keyra-ease-out);
+    box-shadow var(--ds-motion-base) var(--ds-ease),
+    border-color var(--ds-motion-base) var(--ds-ease);
 }
 
 .keyra-card:hover {
@@ -804,8 +804,7 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   transition:
     background-color var(--ds-motion-base) var(--ds-ease),
     border-color var(--ds-motion-base) var(--ds-ease),
-    color var(--ds-motion-base) var(--ds-ease),
-    transform var(--ds-motion-fast) var(--ds-ease);
+    color var(--ds-motion-base) var(--ds-ease);
 }
 
 .ds-btn-primary {
@@ -814,7 +813,14 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   border: none;
 }
 .ds-btn-primary:hover  { background: var(--ds-primary-active); }
-.ds-btn-primary:active { transform: translateY(1px); }
+.ds-btn-primary:active {
+  transform: translateY(1px);
+  transition:
+    background-color 0s,
+    border-color 0s,
+    color 0s,
+    transform 0s;
+}
 
 .ds-btn-secondary {
   background: var(--ds-surface-card);
@@ -822,7 +828,14 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   border: 1px solid var(--ds-hairline-strong);
 }
 .ds-btn-secondary:hover  { background: var(--ds-canvas-soft); }
-.ds-btn-secondary:active { transform: translateY(1px); }
+.ds-btn-secondary:active {
+  transform: translateY(1px);
+  transition:
+    background-color 0s,
+    border-color 0s,
+    color 0s,
+    transform 0s;
+}
 
 .ds-btn-destructive {
   background: var(--ds-surface-card);
@@ -830,7 +843,14 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   border: 1px solid var(--ds-hairline-strong);
 }
 .ds-btn-destructive:hover  { background: var(--ds-canvas-soft); }
-.ds-btn-destructive:active { transform: translateY(1px); }
+.ds-btn-destructive:active {
+  transform: translateY(1px);
+  transition:
+    background-color 0s,
+    border-color 0s,
+    color 0s,
+    transform 0s;
+}
 
 .ds-btn-tertiary {
   background: transparent;

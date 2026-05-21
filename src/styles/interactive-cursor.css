@@ -1,3 +1,13 @@
+/* Snappier taps: no double-tap zoom delay; instant press where supported */
+a[href],
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+input[type="button"]:not(:disabled),
+input[type="submit"]:not(:disabled),
+input[type="reset"]:not(:disabled) {
+  touch-action: manipulation;
+}
+
 /* Pointer (hand) cursor on clickable / interactive controls */
 a[href],
 area[href],

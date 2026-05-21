@@ -32,7 +32,7 @@ export function AccountMenu() {
         aria-expanded={open}
         aria-haspopup="menu"
         className={cn(
-          "flex h-10 max-w-[min(46vw,220px)] items-center gap-2 rounded-[var(--keyra-radius-pill)] border border-keyra-border px-3 text-left text-[13px] font-medium text-keyra-primary transition duration-300 ease-out hover:border-[rgba(255,255,255,0.14)] sm:max-w-[260px] sm:px-4 sm:text-sm",
+          "flex h-10 max-w-[min(46vw,220px)] items-center gap-2 rounded-[var(--keyra-radius-pill)] border border-keyra-border px-3 text-left text-[13px] font-medium text-keyra-primary transition-colors duration-150 ease-out active:border-[rgba(255,255,255,0.18)] hover:border-[rgba(255,255,255,0.14)] sm:max-w-[260px] sm:px-4 sm:text-sm",
         )}
         onClick={(e) => {
           e.stopPropagation();
