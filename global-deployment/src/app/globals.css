@@ -1,0 +1,675 @@
+@import "tailwindcss";
+
+/**
+ * Keyra — Global Design System (master)
+ *
+ * Expo-inspired design system with pure white canvas, sky-blue gradient hero,
+ * black primary CTAs, and Inter + JetBrains Mono typography.
+ *
+ * Three lanes (html[data-keyra-lane]):
+ * - consumer: public / app — light monochrome, editorial rhythm
+ * - enterprise: admin + global deployment — white field, black ink
+ * - developer: /developers — technical clarity, mono, tighter radii
+ *
+ * Lane is set SSR via middleware → x-keyra-design-lane → layout data-keyra-lane.
+ *
+ * Trust Layer doctrine — motion layers: foreground 300ms / midground 500ms / background 700ms
+ * (--keyra-motion-fg|mg|bg). Typography: .keyra-display-hero for sovereign editorial headlines.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Lane: ENTERPRISE (default tokens on :root)                                  */
+/* -------------------------------------------------------------------------- */
+:root {
+  /* Brand & Accent Colors */
+  --color-primary: #000000;
+  --color-primary-active: #1a1a1a;
+  --color-text-link: #0d74ce;
+  --color-text-link-secondary: #476cff;
+  --color-accent-link-bright: #47c2ff;
+
+  /* Surface Colors */
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #fafafa;
+  --color-surface-card: #ffffff;
+  --color-surface-strong: #f0f0f3;
+  --color-surface-dark: #171717;
+  --color-surface-dark-elevated: #1a1a1a;
+
+  /* Atmospheric Backdrop (Hero only) */
+  --color-gradient-sky-light: #cfe7ff;
+  --color-gradient-sky-mid: #a8c8e8;
+
+  /* Hairlines */
+  --color-hairline: #f0f0f3;
+  --color-hairline-soft: #f5f5f7;
+  --color-hairline-strong: #dcdee0;
+
+  /* Text Colors */
+  --color-ink: #171717;
+  --color-body: #60646c;
+  --color-body-strong: #171717;
+  --color-muted: #999999;
+  --color-muted-soft: #cccccc;
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: #b0b4ba;
+
+  /* Semantic Colors */
+  --color-accent-warning: #ab6400;
+  --color-accent-preview: #8145b5;
+  --color-semantic-success: #16a34a;
+  --color-semantic-error: #eb8e90;
+
+  /* Legacy Keyra tokens (mapped to new system) */
+  --keyra-bg: var(--color-canvas);
+  --keyra-surface: var(--color-canvas-soft);
+  --keyra-surface-2: var(--color-surface-strong);
+  --keyra-text: var(--color-ink);
+  --keyra-text-secondary: var(--color-body);
+  --keyra-white: #ffffff;
+
+  --keyra-canvas: var(--color-canvas);
+  --keyra-surface-light: var(--color-canvas-soft);
+  --keyra-surface-muted: var(--color-surface-strong);
+  --keyra-ink-on-light: var(--color-ink);
+  --keyra-ink-muted-on-light: var(--color-body);
+
+  --keyra-ink-mid: rgba(0, 0, 0, 0.45);
+  --keyra-ink-low: rgba(0, 0, 0, 0.38);
+
+  --keyra-accent: var(--color-primary);
+  --keyra-accent-2: var(--color-primary-active);
+
+  --keyra-primary: var(--color-ink);
+
+  --keyra-action: rgba(0, 0, 0, 0.07);
+  --keyra-action-border: rgba(0, 0, 0, 0.2);
+  --keyra-action-text: var(--keyra-text);
+
+  --keyra-border: var(--color-hairline);
+  --keyra-ring: rgba(0, 0, 0, 0.22);
+  --keyra-shadow-card: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --keyra-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* Border Radius */
+  --keyra-radius-none: 0px;
+  --keyra-radius-xs: 4px;
+  --keyra-radius-sm: 6px;
+  --keyra-radius-md: 8px;
+  --keyra-radius-lg: 12px;
+  --keyra-radius-xl: 16px;
+  --keyra-radius-xxl: 24px;
+  --keyra-radius-pill: 9999px;
+  --keyra-radius-card: var(--keyra-radius-lg);
+  --keyra-radius-sheet: var(--keyra-radius-xl);
+  --keyra-radius-cta: var(--keyra-radius-md);
+
+  /* Typography */
+  --keyra-tracking-head: -0.02em;
+  --keyra-leading-body: 1.5;
+
+  /* Typography scale (rem) - Inter at 600/400 */
+  --keyra-text-xs: 0.75rem;
+  --keyra-text-sm: 0.8125rem;
+  --keyra-text-md: 0.9375rem;
+  --keyra-text-base: 1rem;
+  --keyra-text-lg: 1.0625rem;
+  --keyra-text-xl: 1.25rem;
+  --keyra-text-2xl: 1.5rem;
+
+  /* Display typography - Inter 600 with negative letter-spacing */
+  --keyra-text-display-mega: clamp(4rem, 2.5rem + 4vw, 4rem);
+  --keyra-text-display-xl: clamp(3rem, 2rem + 3vw, 3rem);
+  --keyra-text-display-lg: clamp(2.25rem, 1.5rem + 2.5vw, 2.25rem);
+  --keyra-text-display-md: clamp(1.75rem, 1.2rem + 2vw, 1.75rem);
+  --keyra-text-display-sm: clamp(1.375rem, 1rem + 1.5vw, 1.375rem);
+  --keyra-text-display: var(--keyra-text-display-lg);
+
+  /* Spacing scale (rem) - 96px section rhythm */
+  --keyra-space-1: 0.25rem;
+  --keyra-space-2: 0.5rem;
+  --keyra-space-3: 0.75rem;
+  --keyra-space-4: 1rem;
+  --keyra-space-5: 1.25rem;
+  --keyra-space-6: 1.5rem;
+  --keyra-space-8: 2rem;
+  --keyra-space-10: 2.5rem;
+  --keyra-space-12: 3rem;
+  --keyra-space-section: 6rem;
+
+  /* Motion — cinematic layers (Trust Layer doctrine) */
+  --keyra-motion-fg: 300ms;
+  --keyra-motion-mg: 500ms;
+  --keyra-motion-bg: 700ms;
+  --keyra-motion-fast: 180ms;
+  --keyra-motion-base: 320ms;
+  --keyra-motion-slow: 520ms;
+  --keyra-ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Typography - Inter for sans, JetBrains Mono for code */
+  --keyra-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+  /* Elevation / stacking (governance — use instead of ad-hoc z-* where practical) */
+  --keyra-z-base: 0;
+  --keyra-z-sticky: 40;
+  --keyra-z-header: 200;
+  --keyra-z-overlay: 250;
+  --keyra-z-drawer: 260;
+  --keyra-z-toast: 400;
+}
+
+/* Site header shell — Expo-inspired marketing chrome */
+.keyra-site-header-shell {
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid var(--color-hairline);
+  background: color-mix(in srgb, var(--color-canvas) 90%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.keyra-site-header-shell--fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .keyra-site-header-shell {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--keyra-bg);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Lane: CONSUMER — Expo-inspired light monochrome, editorial rhythm           */
+/* -------------------------------------------------------------------------- */
+html[data-keyra-lane="consumer"] {
+  --keyra-bg: var(--color-canvas);
+  --keyra-surface: var(--color-canvas-soft);
+  --keyra-surface-2: var(--color-surface-strong);
+  --keyra-text: var(--color-ink);
+  --keyra-text-secondary: var(--color-body);
+  --keyra-accent: var(--color-primary);
+  --keyra-accent-2: var(--color-primary-active);
+  --keyra-action: rgba(0, 0, 0, 0.06);
+  --keyra-action-border: rgba(0, 0, 0, 0.18);
+  --keyra-border: var(--color-hairline);
+  --keyra-ring: rgba(0, 0, 0, 0.2);
+  --keyra-shadow-card: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --keyra-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --keyra-leading-body: 1.5;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Lane: DEVELOPER — technical clarity, JetBrains Mono, tighter UI             */
+/* -------------------------------------------------------------------------- */
+html[data-keyra-lane="developer"] {
+  --keyra-bg: var(--color-canvas);
+  --keyra-surface: var(--color-canvas-soft);
+  --keyra-surface-2: var(--color-surface-strong);
+  --keyra-text: var(--color-ink);
+  --keyra-text-secondary: var(--color-body);
+  --keyra-accent: var(--color-primary);
+  --keyra-accent-2: var(--color-primary-active);
+  --keyra-action: rgba(0, 0, 0, 0.07);
+  --keyra-action-border: rgba(0, 0, 0, 0.22);
+  --keyra-border: var(--color-hairline);
+  --keyra-ring: rgba(0, 0, 0, 0.22);
+  --keyra-radius-card: var(--keyra-radius-md);
+  --keyra-radius-sheet: var(--keyra-radius-lg);
+  --keyra-shadow-card: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+@theme inline {
+  --color-keyra-primary: var(--keyra-primary);
+  --color-keyra-bg: var(--keyra-bg);
+  --color-keyra-surface: var(--keyra-surface);
+  --color-keyra-text: var(--keyra-text);
+  --color-keyra-text-2: var(--keyra-text-secondary);
+  --color-keyra-border: var(--keyra-border);
+  --color-keyra-ring: var(--keyra-ring);
+  --color-keyra-accent: var(--keyra-accent);
+
+  --color-primary: var(--color-primary);
+  --color-text-link: var(--color-text-link);
+  --color-canvas: var(--color-canvas);
+  --color-surface-card: var(--color-surface-card);
+  --color-surface-dark: var(--color-surface-dark);
+  --color-ink: var(--color-ink);
+  --color-body: var(--color-body);
+  --color-muted: var(--color-muted);
+  --color-hairline: var(--color-hairline);
+  --color-hairline-strong: var(--color-hairline-strong);
+
+  --font-sans: var(--font-inter);
+  --font-mono: var(--keyra-font-mono);
+}
+
+html {
+  overflow-x: clip;
+}
+
+body {
+  background: var(--keyra-bg);
+  color: var(--keyra-text);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui,
+    sans-serif;
+  font-size: var(--keyra-text-base);
+  line-height: var(--keyra-leading-body);
+  overflow-x: clip;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Readable panels — light field typography */
+.keyra-readable-on-light {
+  color: var(--keyra-ink-on-light);
+}
+
+.keyra-readable-on-light :where(h1, h2, h3, h4, h5, h6):not([class*="text-"]) {
+  color: var(--keyra-ink-on-light);
+}
+
+.keyra-readable-on-light :where(p, li, dd, dt, label, td, th):not([class*="text-"]) {
+  color: var(--keyra-ink-muted-on-light);
+}
+
+.keyra-readable-on-light :where(a):not([class*="text-"]) {
+  color: var(--color-text-link);
+}
+
+/* Section rhythm — 96px section rhythm per Expo spec */
+.keyra-section {
+  padding-left: var(--keyra-space-section-x);
+  padding-right: var(--keyra-space-section-x);
+  padding-top: var(--keyra-space-section);
+  padding-bottom: var(--keyra-space-section);
+}
+
+/* Full-bleed bands — white / black section alternation (editorial contrast) */
+.keyra-band--light {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  --keyra-bg: var(--color-canvas);
+  --keyra-surface: var(--color-canvas-soft);
+  --keyra-primary: var(--color-ink);
+  --keyra-text: var(--color-ink);
+  --keyra-text-secondary: var(--color-body);
+  --keyra-border: var(--color-hairline);
+  --keyra-ring: rgba(0, 0, 0, 0.22);
+  --keyra-accent: var(--color-primary);
+  --keyra-accent-2: var(--color-primary-active);
+  --keyra-action: rgba(0, 0, 0, 0.07);
+  --keyra-action-border: rgba(0, 0, 0, 0.2);
+  --keyra-action-text: var(--color-ink);
+}
+
+.keyra-band--dark {
+  background: var(--color-surface-dark);
+  color: var(--color-on-dark);
+  --keyra-bg: var(--color-surface-dark);
+  --keyra-surface: rgba(255, 255, 255, 0.06);
+  --keyra-primary: var(--color-on-dark);
+  --keyra-text: var(--color-on-dark);
+  --keyra-text-secondary: rgba(255, 255, 255, 0.68);
+  --keyra-border: rgba(255, 255, 255, 0.14);
+  --keyra-ring: rgba(255, 255, 255, 0.35);
+  --keyra-accent: var(--color-on-dark);
+  --keyra-accent-2: rgba(255, 255, 255, 0.88);
+  --keyra-action: rgba(255, 255, 255, 0.12);
+  --keyra-action-border: rgba(255, 255, 255, 0.28);
+  --keyra-action-text: var(--color-on-dark);
+}
+
+.keyra-band--dark .keyra-card {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.07),
+    rgba(255, 255, 255, 0.03)
+  );
+  border-color: var(--keyra-border);
+  color: var(--keyra-text);
+}
+
+.keyra-band--dark .keyra-card:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* Readable HUD readouts over cinematic / dark media (e.g. globe) */
+.keyra-card.keyra-card--media-hud {
+  background: var(--keyra-bg);
+  color: var(--keyra-text);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.keyra-band--dark .keyra-card.keyra-card--media-hud {
+  box-shadow:
+    0 20px 64px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.keyra-band--dark .keyra-link:hover {
+  color: #ffffff;
+}
+
+/* Site footer — full-width black */
+.keyra-site-footer {
+  background: var(--color-surface-dark);
+  color: rgba(255, 255, 255, 0.88);
+  --keyra-bg: var(--color-surface-dark);
+  --keyra-surface: rgba(255, 255, 255, 0.07);
+  --keyra-primary: var(--color-on-dark);
+  --keyra-text: var(--color-on-dark);
+  --keyra-text-secondary: rgba(255, 255, 255, 0.65);
+  --keyra-border: rgba(255, 255, 255, 0.14);
+  --keyra-accent: var(--color-on-dark);
+  --keyra-accent-2: rgba(255, 255, 255, 0.88);
+  --keyra-ring: rgba(255, 255, 255, 0.35);
+  --keyra-action: rgba(255, 255, 255, 0.12);
+  --keyra-action-border: rgba(255, 255, 255, 0.28);
+  --keyra-action-text: var(--color-on-dark);
+}
+
+.keyra-site-footer-logo img {
+  filter: brightness(0) invert(1);
+  opacity: 0.95;
+}
+
+/* Hero with sky-blue gradient atmospheric wash (Expo-inspired) */
+.keyra-hero-band {
+  position: relative;
+  background: var(--color-canvas);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.keyra-hero-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    var(--color-gradient-sky-light) 0%,
+    var(--color-gradient-sky-mid) 40%,
+    transparent 70%
+  );
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.keyra-hero-band > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Typography — primary identity layer */
+.keyra-display {
+  font-size: var(--keyra-text-display);
+  font-weight: 600;
+  letter-spacing: var(--keyra-tracking-head);
+  line-height: 1.06;
+  color: var(--keyra-primary);
+}
+
+.keyra-display-hero {
+  font-size: clamp(2.65rem, 1.25rem + 4.8vw, 5.15rem);
+  font-weight: 600;
+  letter-spacing: -0.032em;
+  line-height: 1.02;
+  color: var(--keyra-primary);
+}
+
+.keyra-display-finale {
+  font-size: clamp(2.5rem, 1.2rem + 3.8vw, 4.5rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--keyra-primary);
+}
+
+.keyra-heading {
+  font-size: var(--keyra-text-2xl);
+  font-weight: 600;
+  letter-spacing: var(--keyra-tracking-head);
+  line-height: 1.15;
+  color: var(--keyra-primary);
+}
+
+@media (min-width: 640px) {
+  .keyra-heading {
+    font-size: clamp(1.75rem, 1.2rem + 1.2vw, 2.75rem);
+  }
+}
+
+.keyra-eyebrow {
+  font-size: var(--keyra-text-sm);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--keyra-text-secondary);
+}
+
+.keyra-prose {
+  font-size: var(--keyra-text-md);
+  line-height: var(--keyra-leading-body);
+  color: var(--keyra-text-secondary);
+  max-width: 42rem;
+}
+
+.keyra-code,
+html[data-keyra-lane="developer"] .keyra-code-block {
+  font-family: var(--keyra-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.keyra-card {
+  border-radius: var(--keyra-radius-card);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  box-shadow: var(--keyra-shadow-card);
+  backdrop-filter: blur(8px);
+  transition:
+    box-shadow var(--keyra-motion-base) var(--keyra-ease-out),
+    border-color var(--keyra-motion-base) var(--keyra-ease-out);
+}
+
+.keyra-card:hover {
+  box-shadow: var(--keyra-shadow-hover);
+  border-color: rgba(0, 0, 0, 0.14);
+}
+
+.keyra-focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px var(--keyra-ring);
+}
+
+.keyra-app-launcher-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.22) transparent;
+}
+
+.keyra-app-launcher-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.keyra-app-launcher-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.keyra-app-launcher-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 999px;
+}
+
+/* Unified modal language */
+.keyra-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  padding: var(--keyra-space-4);
+}
+
+.keyra-modal-panel {
+  max-height: min(80vh, 720px);
+  max-width: 32rem;
+  width: 100%;
+  overflow-y: auto;
+  border-radius: var(--keyra-radius-sheet);
+  border: 1px solid var(--keyra-border);
+  background: var(--keyra-surface);
+  padding: var(--keyra-space-6);
+  color: var(--keyra-text);
+  box-shadow: var(--keyra-shadow-hover);
+}
+
+@keyframes keyra-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(4px, -6px) scale(1.015);
+  }
+}
+
+@keyframes keyra-pulse-soft {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.68;
+  }
+}
+
+.animate-keyra-float {
+  animation: keyra-float 20s ease-in-out infinite;
+}
+
+.animate-keyra-float-delayed {
+  animation: keyra-float 22s ease-in-out infinite 3s;
+}
+
+.animate-keyra-pulse-soft {
+  animation: keyra-pulse-soft 11s ease-in-out infinite;
+}
+
+@keyframes keyra-signal {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.72;
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes keyra-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(5px, -6px);
+  }
+}
+
+.animate-keyra-signal {
+  animation: keyra-signal 7s ease-in-out infinite;
+}
+
+.animate-keyra-drift {
+  animation: keyra-drift 26s ease-in-out infinite;
+}
+
+@keyframes keyra-trust-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes keyra-trust-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.22);
+  }
+}
+
+@keyframes keyra-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.keyra-trust-pulse {
+  animation: keyra-trust-pulse 1.8s var(--keyra-ease-trust, cubic-bezier(0.22, 0.61, 0.36, 1)) infinite;
+}
+
+.keyra-trust-ring {
+  animation: keyra-trust-ring 2.4s var(--keyra-ease-trust, cubic-bezier(0.22, 0.61, 0.36, 1)) infinite;
+}
+
+.keyra-trust-ring-delay {
+  animation-delay: 0.55s;
+}
+
+.keyra-skeleton {
+  border-radius: var(--keyra-radius-md, 8px);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-strong) 0%,
+    var(--color-canvas-soft) 45%,
+    var(--color-surface-strong) 90%
+  );
+  background-size: 200% 100%;
+  animation: keyra-skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-keyra-float,
+  .animate-keyra-float-delayed,
+  .animate-keyra-pulse-soft,
+  .animate-keyra-signal,
+  .animate-keyra-drift {
+    animation: none !important;
+  }
+
+  .keyra-card {
+    transition: none;
+  }
+
+  .keyra-trust-pulse,
+  .keyra-trust-ring,
+  .keyra-skeleton {
+    animation: none !important;
+  }
+}

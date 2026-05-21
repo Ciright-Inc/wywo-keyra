@@ -1,0 +1,129 @@
+---
+description: KEYRA Trust Layer — FULL creative & systems doctrine (all SIM Project repos)
+alwaysApply: true
+---
+
+# KEYRA — Trust Layer of the Internet (FULL DOCTRINE)
+
+You are shaping **sovereign trust infrastructure**, not a marketing website and not cybersecurity SaaS.
+
+**Core emotional truth:** *“The internet finally became trustworthy.”*
+
+## What KEYRA is not
+- A cybersecurity company, authentication SaaS, telecom vendor, SaaS dashboard, or startup aesthetic.
+
+## What KEYRA is
+- Sovereign trust infrastructure; deterministic identity architecture; post-password verification infrastructure; human + AI trust orchestration; a global digital trust institution; calm infrastructure for the future internet.
+
+## Emotional benchmark (aspirational tone targets)
+Apple · Stripe · Linear · OpenAI · Arc · Notion · Rivian · Dieter Rams · Renaissance composition · Irish institutional elegance · Nordic restraint · cinematic stillness · architectural permanence.
+
+## Final feeling
+Timeless, calm, sovereign, inevitable, emotionally profound, globally scalable, technologically superior, psychologically reassuring, institutionally trusted, visually unforgettable — as if **civilization solved trust online**.
+
+---
+
+## MASTER CREATIVE DIRECTIVE
+
+Every pixel, spacing unit, animation, line-height, gradient, transition, hover, typography choice, mobile gesture, loading state, and moment of silence reinforces the core emotional truth.
+
+The interface must feel like **digital architecture**, **emotional composition**, **institutional psychology**, **cinematic trust orchestration** — not “UI.” Nothing decorative, arbitrary, or noisy; **every element earns its existence**.
+
+---
+
+## EMOTIONAL JOURNEY (user psychology)
+
+Guide the experience through: **Uncertainty → Reflection → Recognition → Calm → Trust → Certainty → Global significance → Future inevitability.** Like a **cinematic documentary** about the future of trust — scene progression, not generic webpage scrolling.
+
+---
+
+## ABSOLUTE RULES — NEVER
+Generic SaaS layouts; cybersecurity clichés; hacker / neon cyberpunk aesthetics; stock illustrations; cluttered dashboards; excessive borders; visual noise; heavy shadows; sharp aggressive contrast; meaningless gradients; generic icon packs; template spacing; default typography; robotic easing; excessive text density.
+
+## ABSOLUTE RULES — ALWAYS
+Editorial typography with optical rhythm; **whitespace as authority**; cinematic scroll; layered motion depth (foreground **300ms**, midground **500ms**, background **700ms**); organic, expensive easing; barely perceptible yet transformative motion; **mobile-first** (thumb ergonomics, vertical storytelling, type **recomposed** not scaled-down desktop); **AAA accessibility** without visual compromise; **`prefers-reduced-motion`** respected natively.
+
+---
+
+## VISUAL LANGUAGE
+Calm, premium, sovereign, emotionally intelligent, mathematically composed, architecturally restrained, globally institutional — closer to a **luxury museum installation** than a software company site.
+
+## COLOR PHILOSOPHY
+**Atmospheric warm white**, **sovereign deep blue**, **graphite mineral**, **restrained silver**, subtle ambient gradients. Whites never sterile; blues never default corporate. Light behaves like **architecture**, not flat fills. Avoid harsh black, gaming neon, high-saturation cyber palettes.
+
+## TYPOGRAPHY
+Oversized editorial type; cinematic line spacing; optical kerning; asymmetrical rhythm; intentional line breaks; breathing room; mathematical hierarchy; typographic silence. Headlines feel **experienced**, not merely read. Typography communicates **certainty**.
+
+## WHITESPACE
+Whitespace is **trust, confidence, restraint, calm, institutional authority**. Layout breathes like architecture: asymmetry, emotional silence, pauses, tension and release. Some sections stay almost empty — confidence requires restraint.
+
+## MOTION & SCROLL
+Atmospheric, cinematic, physically believable, emotionally intelligent — **no flashy animation**. Environmental parallax, atmospheric transitions, subtle signal choreography. Every transition feels **expensive**. Scrolling = **guided scenes**: anticipation, pause, release, clarity.
+
+---
+
+## MARKETING HOMEPAGE NARRATIVE (order)
+
+1. **Hero** — “The Trust Layer of the Internet.” Massive type, near silence, minimal UI, atmospheric trust motion.  
+2. **The Collapse** — The internet lost identity. Restrained, human, reflective.  
+3. **The Shift** — AI changed the internet forever; human + AI trust.  
+4. **The Problem** — Passwords / probabilistic trust / OTP failed.  
+5. **The Solution** — KEYRA restores deterministic trust.  
+6. **Trust visualization** — SIM/eSIM, carrier auth, cryptographic orchestration — **beautiful, not technical** (atmospheric signals, not engineering diagrams).  
+7. **Global infrastructure** — Carrier-scale, identity architecture, future trust systems.  
+8. **Human + AI trust** — Verified agents, humans, interactions.  
+9. **Developer platform** — Stripe-level elegance: minimal, API-first, sophisticated.  
+10. **Final statement** — “Be Protected Online.” Massive type, silence, stillness, confidence.
+
+---
+
+## PRODUCT VISUALIZATION
+Visualize **invisible** trust beautifully: atmospheric signal rendering, trust flow, identity pulse choreography, intelligent verification paths — **alive, calm, mathematically precise**. Avoid generic network graphics and security clipart.
+
+## MOBILE
+Mobile is **primary**: native-feeling, cinematic, tactile, luxurious; outdoor readability; OLED-friendly; touch comfort; finger occlusion aware.
+
+## INTERACTION
+Buttons feel **engineered**; hovers **emotionally soft**; touch **physical**; micro-interactions communicate trust, precision, predictability — nothing accidental.
+
+## ICONOGRAPHY
+**Proprietary** geometric system: timeless, civic, intelligent, engineered, globally institutional — not generic icon libraries.
+
+## DEPTH & ATMOSPHERE
+Environmental gradients; translucent trust surfaces; floating depth; ambient light diffusion — **atmospheric**, not mechanically layered.
+
+## ACCESSIBILITY
+World-class **without** visual compromise: contrast targets, dynamic scaling, motion sensitivity, screen readers, keyboard nav — accessibility feels **native**, not bolted on.
+
+## LOADING
+Never blank: atmospheric loading, trust-pulse transitions, elegant skeletons, environmental fades.
+
+## DEVELOPER SURFACES (docs / portals)
+Rival Stripe · Vercel · Linear · OpenAI: beautiful API presentation, code blocks with perfect syntax hierarchy, mathematical spacing, restrained dark transitions, SDK elegance.
+
+## DESIGN SYSTEM ENGINEERING
+Systematic **spacing, radius, timing, opacity, motion, typography scale, icons, responsive framework, component architecture** — nothing arbitrary.
+
+## TECHNICAL STACK (where applicable)
+Next.js, Tailwind, Framer Motion; premium rendering; cinematic animation architecture; reusable components; responsive-first; accessibility-first; smooth performance; modular composition.
+
+---
+
+## FINAL OUTCOME (visitor belief)
+
+They should believe this **matters**, is **inevitable**, is **bigger than cybersecurity**, is **sovereign-scale**, **globally institutional**, **trustworthy**, **calm**, **permanent**, **historically significant** — worthy of Apple-level review and institutional deployment.
+
+---
+
+## IMPLEMENTATION IN THIS MONOREPO
+
+1. **Portable CSS** — Use **`keyra-theme.css`** (Trust Layer tokens: sovereign silver-blue, graphite surfaces, `--keyra-motion-fg|mg|bg`, `.keyra-hero`, `.keyra-btn`, `.keyra-card`, `.keyra-display-trust`, `.keyra-eyebrow-trust`, `.keyra-prose-trust`). **Do not** reintroduce neon cyan (`#66e3ff`) for brand accents; use tokens.
+2. **Keyra + Keyra/web** — Use `--keyra-*`, `data-keyra-lane`, `.keyra-display`, `.keyra-display-hero`, `.keyra-eyebrow`, `.keyra-prose`, `.keyra-card`; Framer `FadeIn` / `CinematicReveal`; mirror **`Keyra/web`** when editing paired marketing files.
+3. **simsecure & subdomain apps** — Align heroes, CTAs, and nav links to tokens; replace hardcoded legacy accent hex where found.
+4. **Angular dashboard** — Map dashboard CSS variables to **`keyra-theme.css`** imports (`styles.scss` already imports `./keyra-theme.css`).
+5. **Backend / minimal UIs** — Apply doctrine to **any user-visible** frontend (e.g. auth admin UI); Node-only packages still follow naming and API clarity consistent with institutional tone.
+
+## Repos in this ecosystem
+`Keyra/`, `Keyra/web/`, `simsecure/`, `get-started-simsecure/`, `simsecure-developer/`, `my-account-ciright-pro/`, `setting-ciright/`, `press-ciright-pro/`, `dashboard-ciright-pro/`, `customer-hosted-login-demo/`, `simsecure-auth-backend/` (+ `frontend/`).
+
+When implementing, **prefer extending the shared theme** over one-off Tailwind hex. When touching marketing narrative, **preserve the ten-section arc** above unless product explicitly disagrees.
