@@ -1,7 +1,16 @@
 import { AppsDirectoryClient } from "./AppsDirectoryClient";
-import { listDeploymentApps, toDeploymentAppView } from "@/lib/deploymentApps";
+import { listDeploymentAppCategoryViews, listDeploymentApps, toDeploymentAppView } from "@/lib/deploymentApps";
 
 export default async function AdminDeploymentAppsPage() {
-  const apps = await listDeploymentApps();
-  return <AppsDirectoryClient initialApps={apps.map(toDeploymentAppView)} />;
+  const [apps, categories] = await Promise.all([
+    listDeploymentApps({ newestFirst: true }),
+    listDeploymentAppCategoryViews(),
+  ]);
+
+  return (
+    <AppsDirectoryClient
+      initialApps={apps.map(toDeploymentAppView)}
+      categories={categories.map((category) => category.name)}
+    />
+  );
 }

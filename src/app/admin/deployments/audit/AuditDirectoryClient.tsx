@@ -114,7 +114,7 @@ export function AuditDirectoryClient({
 
   return (
     <div>
-      <div className="rounded-2xl border border-keyra-border bg-keyra-surface/60 p-4 shadow-[0_12px_36px_rgba(0,0,0,0.04)] sm:p-5">
+      <div className="ds-panel is-dashboard">
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl">Audit</h1>

@@ -127,7 +127,9 @@ export function AdminDeploymentsShell({ children }: { children: ReactNode }) {
             </nav>
           </div>
         </aside>
-        <div className="min-w-0 flex-1 overflow-x-auto lg:min-h-0">{children}</div>
+        <div id="admin-deployments-main" className="relative min-w-0 flex-1 overflow-x-auto lg:min-h-0">
+          {children}
+        </div>
       </div>
     </div>
   );

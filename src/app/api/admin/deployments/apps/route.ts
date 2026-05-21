@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { readJsonObject } from "@/app/api/keyra/_routeHelpers";
 import { writeAudit } from "@/app/api/admin/deployments/_audit";
 import {
+  ensureDeploymentAppCategory,
   ensureDeploymentAppsSeeded,
   listDeploymentApps,
   normalizeDeploymentAppId,
@@ -37,11 +38,14 @@ export async function POST(req: Request) {
     label: typeof body.label === "string" ? body.label : "",
     description: typeof body.description === "string" ? body.description : "",
     href: typeof body.href === "string" ? body.href : "",
+    gensparkUrl: typeof body.gensparkUrl === "string" ? body.gensparkUrl : null,
     section: typeof body.section === "string" ? body.section : "",
     isPrivate: body.isPrivate === true,
     sortOrder: typeof body.sortOrder === "number" ? body.sortOrder : undefined,
   });
   if ("error" in parsed) return NextResponse.json({ error: parsed.error }, { status: 400 });
+
+  await ensureDeploymentAppCategory(parsed.section);
 
   const baseId = normalizeDeploymentAppId(parsed.label);
   if (!baseId) return NextResponse.json({ error: "App name cannot create a valid id." }, { status: 400 });
@@ -53,25 +57,34 @@ export async function POST(req: Request) {
     suffix += 1;
   }
 
-  const app = await prisma.deploymentApp.create({
-    data: {
-      id,
-      label: parsed.label,
-      description: parsed.description,
-      href: parsed.href,
-      section: parsed.section,
-      isPrivate: parsed.isPrivate,
-      sortOrder: parsed.sortOrder ?? 0,
-      isActive: true,
-    },
-  });
+  try {
+    const app = await prisma.deploymentApp.create({
+      data: {
+        id,
+        label: parsed.label,
+        description: parsed.description,
+        href: parsed.href,
+        gensparkUrl: parsed.gensparkUrl,
+        section: parsed.section,
+        isPrivate: parsed.isPrivate,
+        sortOrder: parsed.sortOrder ?? 0,
+        isActive: true,
+      },
+    });
 
-  await writeAudit({
-    entityType: "DeploymentApp",
-    entityId: app.id,
-    action: "CREATE",
-    payload: { label: app.label, href: app.href, isPrivate: app.isPrivate },
-  });
+    await writeAudit({
+      entityType: "DeploymentApp",
+      entityId: app.id,
+      action: "CREATE",
+      payload: { label: app.label, href: app.href, isPrivate: app.isPrivate },
+    });
 
-  return NextResponse.json({ app }, { status: 201 });
+    return NextResponse.json({ app }, { status: 201 });
+  } catch (err) {
+    console.error("[DeploymentApp POST]", err);
+    return NextResponse.json(
+      { error: "Failed to save app. If this persists, restart the dev server and try again." },
+      { status: 500 },
+    );
+  }
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { ensureDeploymentAppsSeeded, toDeploymentAppView } from "@/lib/deploymentApps";
+import { ensureDeploymentAppsSeeded, listDeploymentAppCategoryViews, toDeploymentAppView } from "@/lib/deploymentApps";
 import { AppForm } from "../../AppForm";
 
 type Params = {
@@ -11,7 +11,10 @@ type Params = {
 export default async function EditDeploymentAppPage({ params }: { params: Promise<Params> }) {
   const { appId } = await params;
   await ensureDeploymentAppsSeeded();
-  const app = await prisma.deploymentApp.findFirst({ where: { id: appId, isActive: true } });
+  const [app, categories] = await Promise.all([
+    prisma.deploymentApp.findFirst({ where: { id: appId, isActive: true } }),
+    listDeploymentAppCategoryViews(),
+  ]);
   if (!app) notFound();
 
   return (
@@ -30,7 +33,7 @@ export default async function EditDeploymentAppPage({ params }: { params: Promis
           Update the app details. Saved changes are stored in the database.
         </p>
 
-        <AppForm mode="edit" app={toDeploymentAppView(app)} />
+        <AppForm mode="edit" app={toDeploymentAppView(app)} categories={categories} />
       </div>
     </div>
   );

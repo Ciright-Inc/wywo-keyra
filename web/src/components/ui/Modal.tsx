@@ -4,6 +4,19 @@ import type { ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "./cn";
 
+/**
+ * Modal — single dialog primitive used across the app.
+ *
+ * Spec: agent.md TR-2 (12px radius), TR-5 (no glassmorphism — solid scrim, no backdrop-blur),
+ * TR-6 (the single soft shadow).
+ *
+ * Layouts:
+ *  • `legacy` — compact centered panel with optional title + footer.
+ *  • `sheet`  — taller multi-section panel with sticky header + scroll body + sticky footer.
+ *
+ * Both surfaces use `--ds-surface-card` (#fff), 1px hairline border, 12px radius,
+ * `--ds-shadow-soft` elevation. Backdrop is a solid 55%-black scrim — no blur.
+ */
 type ModalLayout = "legacy" | "sheet";
 
 export function Modal({
@@ -26,6 +39,8 @@ export function Modal({
   panelClassName?: string;
 }) {
   const ariaLabel = title ?? "Dialog";
+  const panelBase =
+    "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border border-[var(--ds-hairline-strong)] bg-[var(--ds-surface-card)] text-[var(--ds-ink)] shadow-[var(--ds-shadow-soft)] rounded-[var(--ds-radius-lg)]";
 
   return (
     <AnimatePresence>
@@ -36,10 +51,11 @@ export function Modal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
+          {/* Solid scrim, no backdrop-filter (TR-5). */}
           <button
             type="button"
             aria-label="Close dialog backdrop"
-            className="absolute inset-0 bg-keyra-bg/90 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/55"
             onClick={onClose}
           />
           <motion.div
@@ -47,9 +63,10 @@ export function Modal({
             aria-modal="true"
             aria-label={ariaLabel}
             className={cn(
+              panelBase,
               layout === "legacy"
-                ? "absolute left-1/2 top-1/2 w-[min(92vw,520px)] -translate-x-1/2 -translate-y-1/2 rounded-[var(--keyra-radius-sheet)] bg-keyra-surface p-6 shadow-[var(--keyra-shadow-hover)]"
-                : "absolute left-1/2 top-1/2 flex max-h-[min(92vh,880px)] w-[min(94vw,680px)] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-[var(--keyra-radius-sheet)] bg-keyra-surface shadow-[var(--keyra-shadow-hover)]",
+                ? "w-[min(92vw,520px)] p-6"
+                : "flex max-h-[min(92vh,880px)] w-[min(94vw,680px)] flex-col overflow-hidden",
               panelClassName,
             )}
             initial={{ opacity: 0, y: 10, scale: 0.98 }}
@@ -59,45 +76,34 @@ export function Modal({
           >
             {layout === "legacy" ? (
               <>
-                {title ? (
-                  <p className="text-[18px] font-semibold text-keyra-primary">
-                    {title}
-                  </p>
-                ) : null}
-                <div className={cn("text-keyra-text", title ? "mt-4" : "")}>
+                {title ? <p className="ds-title-md">{title}</p> : null}
+                <div className={cn("text-[var(--ds-body)]", title ? "mt-4" : "")}>
                   {children}
                 </div>
                 {footer ? <div className="mt-6">{footer}</div> : null}
               </>
             ) : (
               <>
-                <div className="flex shrink-0 items-start justify-between gap-4 border-b border-keyra-border px-6 py-5">
+                <div className="flex shrink-0 items-start justify-between gap-4 border-b border-[var(--ds-hairline-strong)] px-6 py-5">
                   <div className="min-w-0">
-                    {title ? (
-                      <p className="text-[18px] font-semibold text-keyra-primary">
-                        {title}
-                      </p>
-                    ) : null}
-                    {subtitle ? (
-                      <div className="mt-2 text-[14px] leading-relaxed text-keyra-text-2">
-                        {subtitle}
-                      </div>
-                    ) : null}
+                    {title ? <p className="ds-title-md">{title}</p> : null}
+                    {subtitle ? <div className="mt-2 ds-body-sm">{subtitle}</div> : null}
                   </div>
                   <button
                     type="button"
-                    className="rounded-lg px-2 py-1 text-[22px] leading-none text-keyra-text-2 transition hover:bg-[rgba(255,255,255,0.06)] hover:text-keyra-primary"
+                    className="ds-btn-icon -mr-2"
                     aria-label="Close"
                     onClick={onClose}
                   >
-                    ×
+                    {/* Plain glyph — Material Symbols Outlined isn't bundled in this build path. */}
+                    <span className="text-[20px] leading-none">×</span>
                   </button>
                 </div>
-                <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5 text-keyra-text">
+                <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5 text-[var(--ds-ink)]">
                   {children}
                 </div>
                 {footer ? (
-                  <div className="shrink-0 border-t border-keyra-border px-6 py-4">
+                  <div className="shrink-0 border-t border-[var(--ds-hairline-strong)] px-6 py-4">
                     {footer}
                   </div>
                 ) : null}

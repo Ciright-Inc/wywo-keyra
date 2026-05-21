@@ -468,7 +468,7 @@ export default function AdminSatProtocolsPage() {
       </section>
 
       {error ? (
-        <p className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700">{error}</p>
+        <p className="ds-admin-error-banner">{error}</p>
       ) : null}
 
       {/* Sticky toolbar — inline filters + bulk actions + search + add toggle. */}

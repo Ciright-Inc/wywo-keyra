@@ -100,7 +100,7 @@ export function AccessDomainRulesDirectoryClient({
 
   return (
     <div>
-      <div className="rounded-2xl border border-keyra-border bg-keyra-surface/60 p-4 shadow-[0_12px_36px_rgba(0,0,0,0.04)] sm:p-5">
+      <div className="ds-panel is-dashboard">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-2">
@@ -197,12 +197,12 @@ export function AccessDomainRulesDirectoryClient({
       </div>
 
       {deleteError ? (
-        <p className="mt-3 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700">
+        <p className="mt-3 ds-admin-error-banner">
           {deleteError}
         </p>
       ) : null}
 
-      <div className="mt-3 overflow-hidden rounded-2xl border border-keyra-border bg-keyra-surface/45 shadow-[0_12px_36px_rgba(0,0,0,0.03)]">
+      <div className="ds-table-wrap mt-3">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[40rem] text-left text-sm">
             <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">

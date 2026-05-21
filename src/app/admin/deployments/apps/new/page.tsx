@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { AppForm } from "../AppForm";
+import { listDeploymentAppCategoryViews } from "@/lib/deploymentApps";
 
-export default function NewDeploymentAppPage() {
+export default async function NewDeploymentAppPage() {
+  const categories = await listDeploymentAppCategoryViews();
+
   return (
     <div className="max-w-3xl">
       <Link
@@ -18,7 +21,7 @@ export default function NewDeploymentAppPage() {
           Add the app details here. Saved apps are stored in the database and appear on the Apps tab.
         </p>
 
-        <AppForm mode="create" />
+        <AppForm mode="create" categories={categories} />
       </div>
     </div>
   );

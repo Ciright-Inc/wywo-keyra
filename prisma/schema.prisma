@@ -254,6 +254,7 @@ model DeploymentApp {
   label       String
   description String   @db.Text
   href        String   @db.Text
+  gensparkUrl String?  @db.Text
   section     String   @default("Operations")
   sortOrder   Int      @default(0)
   isPrivate   Boolean  @default(false)
@@ -264,6 +265,13 @@ model DeploymentApp {
   @@index([section, sortOrder])
   @@index([isPrivate])
   @@index([isActive])
+}
+
+/** Registry of app category names (shown in create/edit app and filters). */
+model DeploymentAppCategory {
+  name      String   @id
+  sortOrder Int      @default(100)
+  createdAt DateTime @default(now())
 }
 
 /** Optional display profile for Keyra marketing / app session (keyed by phone from login). */

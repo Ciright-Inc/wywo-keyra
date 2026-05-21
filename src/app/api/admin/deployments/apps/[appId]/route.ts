@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { readJsonObject } from "@/app/api/keyra/_routeHelpers";
 import { writeAudit } from "@/app/api/admin/deployments/_audit";
 import {
+  ensureDeploymentAppCategory,
   ensureDeploymentAppsSeeded,
   validateDeploymentAppInput,
 } from "@/lib/deploymentApps";
@@ -39,36 +40,48 @@ export async function PUT(req: Request, { params }: { params: Promise<Params> })
     label: typeof body.label === "string" ? body.label : "",
     description: typeof body.description === "string" ? body.description : "",
     href: typeof body.href === "string" ? body.href : "",
+    gensparkUrl: typeof body.gensparkUrl === "string" ? body.gensparkUrl : null,
     section: typeof body.section === "string" ? body.section : "",
     isPrivate: body.isPrivate === true,
     sortOrder: typeof body.sortOrder === "number" ? body.sortOrder : undefined,
   });
   if ("error" in parsed) return NextResponse.json({ error: parsed.error }, { status: 400 });
 
+  await ensureDeploymentAppCategory(parsed.section);
+
   const exists = await prisma.deploymentApp.findFirst({ where: { id: appId, isActive: true }, select: { id: true } });
   if (!exists) return NextResponse.json({ error: "App not found." }, { status: 404 });
 
-  const app = await prisma.deploymentApp.update({
-    where: { id: appId },
-    data: {
-      label: parsed.label,
-      description: parsed.description,
-      href: parsed.href,
-      section: parsed.section,
-      isPrivate: parsed.isPrivate,
-      sortOrder: parsed.sortOrder ?? 0,
-      isActive: true,
-    },
-  });
+  try {
+    const app = await prisma.deploymentApp.update({
+      where: { id: appId },
+      data: {
+        label: parsed.label,
+        description: parsed.description,
+        href: parsed.href,
+        gensparkUrl: parsed.gensparkUrl,
+        section: parsed.section,
+        isPrivate: parsed.isPrivate,
+        sortOrder: parsed.sortOrder ?? 0,
+        isActive: true,
+      },
+    });
 
-  await writeAudit({
-    entityType: "DeploymentApp",
-    entityId: app.id,
-    action: "UPDATE",
-    payload: { label: app.label, href: app.href, isPrivate: app.isPrivate },
-  });
+    await writeAudit({
+      entityType: "DeploymentApp",
+      entityId: app.id,
+      action: "UPDATE",
+      payload: { label: app.label, href: app.href, isPrivate: app.isPrivate },
+    });
 
-  return NextResponse.json({ app });
+    return NextResponse.json({ app });
+  } catch (err) {
+    console.error("[DeploymentApp PUT]", err);
+    return NextResponse.json(
+      { error: "Failed to save app. If this persists, restart the dev server and try again." },
+      { status: 500 },
+    );
+  }
 }
 
 export async function DELETE(req: Request, { params }: { params: Promise<Params> }) {

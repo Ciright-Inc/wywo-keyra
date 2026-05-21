@@ -452,7 +452,7 @@ export default function AdminAuthCountriesPage() {
       </section>
 
       {error ? (
-        <p className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700">{error}</p>
+        <p className="ds-admin-error-banner">{error}</p>
       ) : null}
 
       <div className="sticky top-14 z-20 flex items-center gap-3 rounded-2xl border border-keyra-border bg-keyra-surface/95 px-3 py-3 shadow-sm backdrop-blur-sm sm:px-4">

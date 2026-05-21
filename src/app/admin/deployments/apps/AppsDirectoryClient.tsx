@@ -3,14 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import type { DeploymentAppView } from "@/lib/deploymentAppConstants";
+import {
+  ALL_APP_CATEGORIES_FILTER,
+  type DeploymentAppView,
+} from "@/lib/deploymentAppConstants";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
-
-const sectionDefinitions = [
-  { title: "Core apps" },
-  { title: "Media & engagement" },
-  { title: "Operations" },
-] as const;
+import { RowActions } from "@/components/admin/RowActions";
+import { GensparkSlidePanel } from "./GensparkSlidePanel";
 
 function AppListIcon({ label }: { label: string }) {
   return (
@@ -31,32 +30,75 @@ function AppListIcon({ label }: { label: string }) {
   );
 }
 
-export function AppsDirectoryClient({ initialApps }: { initialApps: DeploymentAppView[] }) {
+function CategoryChip({ label }: { label: string }) {
+  return (
+    <span className="ds-badge-pill inline-flex max-w-full shrink-0 truncate normal-case tracking-normal">
+      {label}
+    </span>
+  );
+}
+
+function GensparkIconButton({
+  label,
+  onClick,
+}: {
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      title="Open slides"
+      aria-label={`Open slides for ${label}`}
+      onClick={onClick}
+      className="inline-flex size-8 items-center justify-center rounded-md border border-keyra-border bg-keyra-bg text-keyra-primary transition hover:border-black/20 hover:bg-keyra-surface"
+    >
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        <path d="M12 3 9.5 8.5 4 11l5.5 2.5L12 19l2.5-5.5L20 11l-5.5-2.5Z" />
+        <path d="M5 3v4M3 5h4M19 17v4M17 19h4" />
+      </svg>
+    </button>
+  );
+}
+
+type Props = {
+  initialApps: DeploymentAppView[];
+  categories: string[];
+};
+
+export function AppsDirectoryClient({ initialApps, categories }: Props) {
   const [apps, setApps] = useState(initialApps);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState(ALL_APP_CATEGORIES_FILTER);
+  const [gensparkPanel, setGensparkPanel] = useState<{ url: string; label: string } | null>(null);
 
-  /** Case-insensitive substring match across label, description, href, and section. */
-  const filteredApps = useMemo(() => {
+  const visibleApps = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return apps;
-    return apps.filter((app) =>
-      [app.label, app.description, app.href, app.section].some((value) =>
+    return apps.filter((app) => {
+      if (categoryFilter !== ALL_APP_CATEGORIES_FILTER && app.section !== categoryFilter) {
+        return false;
+      }
+      if (!q) return true;
+      return [app.label, app.description, app.href, app.section, app.gensparkUrl].some((value) =>
         (value ?? "").toLowerCase().includes(q),
-      ),
-    );
-  }, [apps, query]);
+      );
+    });
+  }, [apps, query, categoryFilter]);
 
-  const sections = useMemo(
-    () =>
-      sectionDefinitions.map((section) => ({
-        title: section.title,
-        apps: filteredApps.filter((app) => app.section === section.title),
-      })),
-    [filteredApps],
-  );
   const hasSearch = query.trim().length > 0;
-  const totalVisible = filteredApps.length;
+  const hasCategoryFilter = categoryFilter !== ALL_APP_CATEGORIES_FILTER;
+  const totalVisible = visibleApps.length;
 
   async function deleteApp(app: DeploymentAppView) {
     if (!window.confirm(`Delete ${app.label}?`)) return;
@@ -85,15 +127,15 @@ export function AppsDirectoryClient({ initialApps }: { initialApps: DeploymentAp
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-2xl font-semibold text-keyra-primary">Apps</h1>
             <span className="rounded-full border border-keyra-border bg-keyra-surface px-3 py-1 text-xs font-medium text-keyra-text-2">
-              {hasSearch ? `${totalVisible} of ${apps.length}` : apps.length}
+              {hasSearch || hasCategoryFilter ? `${totalVisible} of ${apps.length}` : apps.length}
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <CollapsibleSearchBar
               mode="client"
               searchQuery={query}
               onChange={setQuery}
-              placeholder="Label, description, link, section…"
+              placeholder="Label, description, link, category…"
               ariaLabel="Search apps"
             />
             <Link
@@ -106,106 +148,122 @@ export function AppsDirectoryClient({ initialApps }: { initialApps: DeploymentAp
           </div>
         </div>
         <p className="mt-2 text-sm text-keyra-text-2">
-          Select an app to open its configured destination.
+          Select an app to open its configured destination. Newly created apps appear first.
         </p>
       </div>
 
-      {hasSearch && totalVisible === 0 ? (
-        <p className="mt-6 rounded-2xl border border-keyra-border bg-keyra-surface/50 px-4 py-6 text-center text-sm text-keyra-text-2">
-          No apps match your search. Try different keywords or clear the search.
-        </p>
-      ) : null}
-
-      <div className="mt-6 grid gap-3 xl:grid-cols-3">
-        {sections.map((section) => (
-          <section
-            key={section.title}
-            className="rounded-3xl border border-keyra-border bg-keyra-surface/45 p-2.5 shadow-[0_18px_54px_rgba(0,0,0,0.04)]"
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <label className="flex items-center gap-2 text-sm font-medium text-keyra-text-2">
+          <span>Category</span>
+          <select
+            value={categoryFilter}
+            onChange={(event) => setCategoryFilter(event.target.value)}
+            className="h-10 min-w-[12rem] rounded-2xl border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary outline-none focus-visible:keyra-focus"
+            aria-label="Filter apps by category"
           >
-            <div className="flex items-center justify-between px-2 pb-2 pt-1">
-              <h2 className="text-sm font-semibold text-keyra-primary">{section.title}</h2>
-              <span className="rounded-full border border-keyra-border bg-keyra-bg px-2 py-0.5 text-[11px] text-keyra-text-2">
-                {section.apps.length}
-              </span>
-            </div>
+            <option value={ALL_APP_CATEGORIES_FILTER}>All apps</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
 
-            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
-              {section.apps.map((app) => (
-                <div
-                  key={app.id}
-                  className="group rounded-2xl border border-keyra-border bg-keyra-surface/70 px-3 py-2.5 transition hover:border-keyra-accent/40 hover:bg-keyra-surface"
+      {totalVisible === 0 ? (
+        <p className="mt-6 rounded-2xl border border-keyra-border bg-keyra-surface/50 px-4 py-6 text-center text-sm text-keyra-text-2">
+          {hasSearch || hasCategoryFilter
+            ? "No apps match your filters. Try a different category or clear the search."
+            : "No apps yet. Create your first app to get started."}
+        </p>
+      ) : (
+        <div className="mt-6 rounded-3xl border border-keyra-border bg-keyra-surface/45 p-2.5 shadow-[0_18px_54px_rgba(0,0,0,0.04)] sm:p-3">
+          <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          {visibleApps.map((app) => {
+            const isDeleting = busyId === app.id;
+            return (
+            <li
+              key={app.id}
+              className={`group rounded-2xl border border-keyra-border bg-keyra-surface/70 px-3 py-3 transition hover:border-keyra-accent/40 hover:bg-keyra-surface sm:px-4 ${isDeleting ? "opacity-60" : ""}`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <a
+                  href={app.href}
+                  className="flex min-w-0 flex-1 items-start gap-3"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <a
-                      href={app.href}
-                      className="flex min-w-0 flex-1 items-center gap-2.5"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <AppListIcon label={app.label} />
-                      <div className="min-w-0">
-                        <div className="flex min-w-0 items-center gap-2">
-                          <h3 className="truncate text-sm font-semibold text-keyra-primary">{app.label}</h3>
-                          {app.isPrivate ? (
-                            <span className="shrink-0 rounded-full border border-keyra-border bg-keyra-bg px-1.5 py-0.5 text-[10px] font-medium text-keyra-text-2">
-                              Private
-                            </span>
-                          ) : null}
-                        </div>
-                        <p className="mt-1 truncate text-sm text-keyra-text-2">{app.description}</p>
-                      </div>
-                    </a>
-                    <div className="flex shrink-0 flex-col items-end gap-1">
-                      <a
-                        href={app.href}
-                        className="rounded-full p-1.5 text-keyra-accent transition group-hover:bg-[var(--keyra-action)] group-hover:text-keyra-primary"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Open ${app.label}`}
-                      >
-                        <svg
-                          className="block size-3 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                          aria-hidden
-                        >
-                          <path
-                            d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10"
-                            stroke="currentColor"
-                            strokeWidth="1.8"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </a>
-                      <div className="flex items-center gap-1">
-                        <Link
-                          href={`/admin/deployments/apps/${app.id}/edit`}
-                          className="rounded-full border border-keyra-border bg-keyra-bg px-2.5 py-1 text-[11px] font-medium text-keyra-primary transition hover:border-black/20 hover:bg-keyra-surface"
-                          aria-label={`Edit ${app.label}`}
-                          title={`Edit ${app.label}`}
-                        >
-                          Edit
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => deleteApp(app)}
-                          disabled={busyId === app.id}
-                          className="rounded-full border border-red-200 bg-red-50 px-2.5 py-1 text-[11px] font-medium text-red-700 transition hover:border-red-300 hover:bg-red-100 disabled:opacity-60"
-                          aria-label={`Delete ${app.label}`}
-                          title={`Delete ${app.label}`}
-                        >
-                          {busyId === app.id ? "Deleting..." : "Delete"}
-                        </button>
-                      </div>
+                  <AppListIcon label={app.label} />
+                  <div className="min-w-0">
+                    <div className="flex min-w-0 flex-wrap items-center gap-2">
+                      <h2 className="truncate text-sm font-semibold text-keyra-primary">{app.label}</h2>
+                      <CategoryChip label={app.section} />
+                      {app.isPrivate ? (
+                        <span className="shrink-0 rounded-full border border-keyra-border bg-keyra-bg px-1.5 py-0.5 text-[10px] font-medium text-keyra-text-2">
+                          Private
+                        </span>
+                      ) : null}
                     </div>
+                    <p className="mt-1.5 line-clamp-2 text-sm text-keyra-text-2">{app.description}</p>
+                  </div>
+                </a>
+                <div className="flex shrink-0 flex-col items-end gap-2">
+                  <a
+                    href={app.href}
+                    className="rounded-full p-1.5 text-keyra-accent transition group-hover:bg-[var(--keyra-action)] group-hover:text-keyra-primary"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Open ${app.label}`}
+                  >
+                    <svg
+                      className="block size-3 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      aria-hidden
+                    >
+                      <path
+                        d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </a>
+                  <div className="inline-flex items-center gap-1.5">
+                    {app.gensparkUrl ? (
+                      <GensparkIconButton
+                        label={app.label}
+                        onClick={() =>
+                          setGensparkPanel({ url: app.gensparkUrl!, label: app.label })
+                        }
+                      />
+                    ) : null}
+                    <RowActions
+                      editHref={`/admin/deployments/apps/${app.id}/edit`}
+                      editAriaLabel={`Edit ${app.label}`}
+                      canDelete
+                      deleteAriaLabel={`Delete ${app.label}`}
+                      onDelete={() => void deleteApp(app)}
+                      isDeleting={isDeleting}
+                    />
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
+              </div>
+            </li>
+            );
+          })}
+          </ul>
+        </div>
+      )}
+
+      <GensparkSlidePanel
+        open={gensparkPanel !== null}
+        url={gensparkPanel?.url ?? null}
+        label={gensparkPanel?.label ?? ""}
+        onClose={() => setGensparkPanel(null)}
+      />
     </div>
   );
 }
