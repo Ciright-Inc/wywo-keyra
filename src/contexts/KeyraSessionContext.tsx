@@ -20,20 +20,19 @@ const defaultUser: KeyraSessionUser = {
   phoneE164: "",
 };
 
-async function fetchKeyraCookieSession(): Promise<KeyraSessionUser | null> {
-  try {
-    const res = await fetch("/api/keyra/session/me", {
-      method: "GET",
-      credentials: "include",
-      cache: "no-store",
-      headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
-    });
-    if (!res.ok) return null;
-    const data = (await res.json()) as { user?: KeyraSessionUser | null };
-    return data.user ?? null;
-  } catch {
-    return null;
-  }
+type AuthSessionPayload = {
+  authenticated: boolean;
+  user?: { phone?: string; username?: string | null; fullName?: string | null } | null;
+};
+
+function authSessionDisplayName(
+  user: NonNullable<AuthSessionPayload["user"]>,
+): string | undefined {
+  const username = typeof user.username === "string" ? user.username.trim() : "";
+  if (username) return username;
+  const fullName = typeof user.fullName === "string" ? user.fullName.trim() : "";
+  if (fullName) return fullName;
+  return undefined;
 }
 
 async function clearKeyraCookieSession(): Promise<void> {
@@ -48,7 +47,7 @@ async function clearKeyraCookieSession(): Promise<void> {
 }
 
 async function fetchSessionUser(signal?: AbortSignal): Promise<KeyraSessionUser | null> {
-  let payload: { authenticated: boolean; user?: { phone?: string } | null } | null = null;
+  let payload: AuthSessionPayload | null = null;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), SESSION_TIMEOUT_MS);
 
@@ -88,21 +87,14 @@ async function fetchSessionUser(signal?: AbortSignal): Promise<KeyraSessionUser 
     }
   }
 
-  const keyraCookieUser = await fetchKeyraCookieSession();
-
   if (!payload?.authenticated || !payload?.user?.phone) {
-    if (keyraCookieUser) {
-      await clearKeyraCookieSession();
-    }
     return null;
   }
 
   const phone = payload.user.phone.startsWith("+") ? payload.user.phone : `+${payload.user.phone}`;
   return {
     phoneE164: phone,
-    displayName: keyraCookieUser?.displayName,
-    email: keyraCookieUser?.email,
-    country: keyraCookieUser?.country,
+    displayName: authSessionDisplayName(payload.user),
   };
 }
 

@@ -1,28 +1,20 @@
 import type { Metadata } from "next";
-import { FadeIn } from "@/components/motion/FadeIn";
+import { LegalDocument } from "@/components/legal/LegalDocument";
+import { PRIVACY_LAST_UPDATED, privacySections } from "@/lib/legalContent";
 
 export const metadata: Metadata = {
   title: "Privacy",
-  description: "Be Protected Online. Keyra privacy overview — respectful, clear, and restrained.",
+  description:
+    "Be Protected Online. Keyra privacy policy — how we collect, use, and protect identity and account information.",
 };
 
 export default function PrivacyPage() {
   return (
-    <div className="px-4 py-16 sm:px-6 sm:py-20">
-      <div className="mx-auto max-w-3xl">
-        <FadeIn>
-          <h1 className="text-4xl font-semibold tracking-tight text-keyra-primary">
-            Privacy
-          </h1>
-          <p className="mt-6 leading-relaxed text-keyra-ink">
-            <span className="text-keyra-primary">Be Protected Online.</span>{" "}
-            Keyra is built with privacy-respecting principles. A full policy will
-            appear here before launch. In the meantime, our commitment is
-            simple: collect only what helps protect your identity, explain it in
-            plain language, and give you meaningful control.
-          </p>
-        </FadeIn>
-      </div>
-    </div>
+    <LegalDocument
+      title="Privacy Policy"
+      lastUpdated={PRIVACY_LAST_UPDATED}
+      intro="This policy describes how Keyra handles personal information across our website, apps, and identity trust services."
+      sections={privacySections}
+    />
   );
 }
