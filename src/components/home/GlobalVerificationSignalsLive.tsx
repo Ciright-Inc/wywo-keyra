@@ -7,8 +7,8 @@ const formatNumber = (value: number) =>
   value.toLocaleString("en", { maximumFractionDigits: 0 });
 
 type GlobalVerificationSignalsLiveProps = {
-  /** `hero` matches the home page widget; `globe` matches globe overlay panels. */
-  variant?: "hero" | "globe";
+  /** `hero` / `bento` — home widgets; `globe` — globe overlay panels. */
+  variant?: "hero" | "bento" | "globe";
   className?: string;
 };
 
@@ -62,23 +62,35 @@ export function GlobalVerificationSignalsLive({
     );
   }
 
+  const compact = variant === "hero" || variant === "bento";
+
   return (
     <div className={cn(className)}>
-      <p className="mt-3 font-mono text-[1.65rem] font-semibold leading-none tracking-tight tabular-nums text-slate-900">
+      <p
+        className={cn(
+          "mt-3 font-mono font-semibold leading-none tracking-tight tabular-nums text-[var(--color-ink)]",
+          compact ? "text-[clamp(1.35rem,4vw,1.65rem)]" : "text-[1.65rem]",
+        )}
+      >
         {formatNumber(total)}
       </p>
-      <div className="mt-3 flex gap-5">
-        <div>
-          <p className="font-mono text-xs font-medium tabular-nums text-slate-900">
+      <div
+        className={cn(
+          "mt-3 gap-x-4 gap-y-2",
+          compact ? "grid grid-cols-2" : "flex flex-wrap gap-5",
+        )}
+      >
+        <div className="min-w-0">
+          <p className="font-mono text-xs font-medium tabular-nums text-[var(--color-ink)]">
             {formatNumber(perSecond)}
           </p>
-          <p className="text-[10px] text-slate-500">Per second</p>
+          <p className="text-[10px] text-[var(--color-body)]">Per second</p>
         </div>
-        <div>
-          <p className="font-mono text-xs font-medium tabular-nums text-slate-900">
+        <div className="min-w-0">
+          <p className="font-mono text-xs font-medium tabular-nums text-[var(--color-ink)]">
             {formatNumber(perMinute)}
           </p>
-          <p className="text-[10px] text-slate-500">Per minute</p>
+          <p className="text-[10px] text-[var(--color-body)]">Per minute</p>
         </div>
       </div>
     </div>

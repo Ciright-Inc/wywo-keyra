@@ -7,7 +7,7 @@ export default function OnboardingCompletePage() {
   return (
     <div className="bg-keyra-bg px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-[720px]">
-        <h1 className="text-[36px] font-bold tracking-tight text-keyra-primary sm:text-[44px]">
+        <h1 className="text-3xl font-bold tracking-tight text-keyra-primary sm:text-[36px] lg:text-[44px]">
           You’re protected
         </h1>
         <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-keyra-text-2 sm:text-[18px]">

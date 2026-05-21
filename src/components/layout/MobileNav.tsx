@@ -67,7 +67,7 @@ export function MobileNav() {
           <>
             <motion.div
               key="mobile-nav-backdrop"
-              className="fixed inset-x-0 bottom-0 top-44 z-[var(--keyra-z-overlay)] cursor-pointer bg-black/40 backdrop-blur-[1px] lg:hidden"
+              className="fixed inset-x-0 bottom-0 top-[var(--keyra-header-offset)] z-[var(--keyra-z-overlay)] cursor-pointer bg-black/40 backdrop-blur-[1px] lg:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -78,7 +78,7 @@ export function MobileNav() {
             <motion.nav
               key="mobile-nav-panel"
               id="mobile-nav-panel"
-              className="fixed left-0 right-0 top-44 z-[var(--keyra-z-drawer)] max-h-[min(75dvh,calc(100dvh-11rem))] overflow-y-auto border-b border-keyra-border bg-keyra-bg/98 px-4 py-4 shadow-lg backdrop-blur-md lg:hidden"
+              className="fixed left-0 right-0 top-[var(--keyra-header-offset)] z-[var(--keyra-z-drawer)] max-h-[min(75dvh,calc(100dvh-var(--keyra-header-offset)-1rem))] overflow-y-auto border-b border-keyra-border bg-keyra-bg/98 px-4 py-4 shadow-lg backdrop-blur-md lg:hidden"
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}

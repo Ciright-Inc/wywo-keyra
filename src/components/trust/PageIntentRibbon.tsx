@@ -34,11 +34,13 @@ export function PageIntentRibbon({
   const ddDefault = cosmic ? "text-zinc-100" : "text-keyra-primary";
   const ddAccent = cosmic ? "text-white" : "text-keyra-accent";
 
-  const sep = cosmic ? "sm:border-l sm:border-white/15 sm:pl-6" : "sm:border-l sm:border-black/10 sm:pl-6";
+  const sep = cosmic
+    ? "border-t border-white/15 pt-5 sm:border-t-0 sm:border-l sm:pl-6 sm:pt-0"
+    : "border-t border-black/10 pt-5 sm:border-t-0 sm:border-l sm:pl-6 sm:pt-0";
 
   return (
     <div className={shell} role="region" aria-label="Page intent">
-      <dl className={`grid gap-6 sm:grid-cols-3 ${cosmic ? "sm:gap-6" : "sm:gap-5"}`}>
+      <dl className={`grid grid-cols-1 gap-5 sm:grid-cols-3 sm:gap-6`}>
         <div className="min-w-0">
           <dt className={dt}>Who this is for</dt>
           <dd className={`${ddBase} ${ddDefault}`}>{who}</dd>

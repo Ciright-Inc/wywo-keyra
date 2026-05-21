@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import { cookies, headers } from "next/headers";
 import "./globals.css";
-import { HeaderNoSSR } from "@/components/layout/HeaderNoSSR";
+import { KeyraAppChrome } from "@/components/layout/KeyraAppChrome";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { KeyraSessionProvider } from "@/contexts/KeyraSessionContext";
 import {
@@ -13,7 +13,6 @@ import {
 import { KEYRA_LOGO_SRC } from "@/lib/keyraBrandAssets";
 import { LANE_HEADER, parseKeyraDesignLaneHeader } from "@/lib/keyraDesignLane";
 import { ToastProvider } from "@/components/ui/Toast";
-import { ElevenLabsHomeAgent } from "@/components/home/ElevenLabsHomeAgent";
 import { PlausibleScripts } from "@/components/analytics/PlausibleScripts";
 import { RailwayPlausibleScripts } from "@/components/analytics/RailwayPlausibleScripts";
 
@@ -107,11 +106,8 @@ export default async function RootLayout({
       >
         <ToastProvider>
           <KeyraSessionProvider initialUser={initialUser}>
-            <HeaderNoSSR />
-            <main className="min-w-0 flex-1">{children}</main>
-            <ElevenLabsHomeAgent />
+            <KeyraAppChrome footer={<SiteFooter />}>{children}</KeyraAppChrome>
           </KeyraSessionProvider>
-          <SiteFooter />
         </ToastProvider>
       </body>
     </html>

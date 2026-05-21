@@ -473,8 +473,8 @@ export default function AdminSatProtocolsPage() {
       ) : null}
 
       {/* Sticky toolbar — inline filters + bulk actions + search + add toggle. */}
-      <div className="sticky top-14 z-20 flex items-center gap-3 rounded-2xl border border-keyra-border bg-keyra-surface/95 px-3 py-3 shadow-sm backdrop-blur-sm sm:px-4">
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
+      <div className="sticky top-[var(--keyra-header-offset)] z-20 flex flex-col gap-3 rounded-2xl border border-keyra-border bg-keyra-surface/95 px-3 py-3 shadow-sm backdrop-blur-sm sm:flex-row sm:items-center sm:px-4 lg:top-14">
+        <div className="flex min-w-0 w-full flex-1 flex-wrap items-center gap-3 sm:w-auto">
           <label className="flex items-center gap-1.5 text-[11px] font-medium text-keyra-text-2 sm:text-xs">
             Category
             <select
@@ -536,7 +536,7 @@ export default function AdminSatProtocolsPage() {
           <span className="sr-only">{filterSummary}</span>
         </div>
 
-        <div className="ml-auto flex shrink-0 items-center gap-2">
+        <div className="flex w-full shrink-0 flex-wrap items-center justify-between gap-2 sm:ml-auto sm:w-auto sm:flex-nowrap sm:justify-end">
           <CollapsibleSearchBar
             mode="client"
             searchQuery={searchQ}
@@ -680,7 +680,7 @@ export default function AdminSatProtocolsPage() {
         </div>
       ) : null}
 
-      <div className="max-h-[min(85vh,calc(100dvh-11rem))] min-h-[260px] overflow-auto rounded-2xl border border-keyra-border bg-keyra-surface/50 shadow-[0_18px_54px_rgba(0,0,0,0.05)]">
+      <div className="max-h-[min(85vh,calc(100dvh-var(--keyra-header-offset)-8rem))] min-h-[260px] overflow-auto overscroll-x-contain rounded-2xl border border-keyra-border bg-keyra-surface/50 shadow-[0_18px_54px_rgba(0,0,0,0.05)]">
         <table className="min-w-[1100px] w-full border-collapse text-left text-xs">
           <thead className="sticky top-0 z-10 border-b border-keyra-border bg-keyra-bg/95 text-[10px] uppercase tracking-wider text-keyra-text-2 backdrop-blur-sm">
             <tr>

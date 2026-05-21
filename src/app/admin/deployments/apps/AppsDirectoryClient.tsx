@@ -158,7 +158,7 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
           <select
             value={categoryFilter}
             onChange={(event) => setCategoryFilter(event.target.value)}
-            className="h-10 min-w-[12rem] rounded-2xl border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary outline-none focus-visible:keyra-focus"
+            className="h-10 w-full min-w-0 rounded-2xl border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary outline-none focus-visible:keyra-focus sm:w-auto sm:min-w-[12rem]"
             aria-label="Filter apps by category"
           >
             <option value={ALL_APP_CATEGORIES_FILTER}>All apps</option>

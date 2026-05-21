@@ -70,7 +70,7 @@ export default function TrustPage() {
             </FadeIn>
           </div>
 
-          <FadeIn className="mx-auto mt-14 grid max-w-4xl gap-4 sm:grid-cols-3">
+          <FadeIn className="mx-auto mt-14 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-3">
             {[
               { label: "Calm", blurb: "Reassurance, not noise." },
               { label: "Authoritative", blurb: "A standard you can rely on." },

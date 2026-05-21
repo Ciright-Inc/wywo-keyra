@@ -221,7 +221,7 @@ export function ContactLeadForm() {
           >
             Phone number
           </span>
-          <div className="flex flex-row items-stretch gap-2">
+          <div className="flex flex-col items-stretch gap-2 sm:flex-row">
             <select
               name="phoneCountry"
               id="phoneCountry"
@@ -229,7 +229,7 @@ export function ContactLeadForm() {
               autoComplete="tel-country-code"
               aria-labelledby="phone-label"
               onChange={() => clearFieldError("phone")}
-              className={`w-[8.25rem] shrink-0 rounded-xl border bg-keyra-surface py-3 pl-2.5 pr-7 text-sm text-keyra-ink outline-none transition sm:w-36 ${
+              className={`w-full shrink-0 rounded-xl border bg-keyra-surface py-3 pl-2.5 pr-7 text-sm text-keyra-ink outline-none transition sm:w-36 ${
                 fieldErrors.phone ? BORDER_ERR : BORDER_OK
               }`}
             >

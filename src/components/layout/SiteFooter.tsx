@@ -80,7 +80,7 @@ export function SiteFooter() {
           <div className="min-w-0">
             <h2 className={sectionTitleClass}>On this site</h2>
             <nav className="mt-3" aria-label="Footer">
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-x-5">
+              <div className="grid grid-cols-1 gap-y-2 min-[400px]:grid-cols-2 min-[400px]:gap-x-4 sm:gap-x-5">
                 <ul className="flex min-w-0 flex-col gap-2">
                   {siteLinksLeft.map((link) => (
                     <li key={link.label} className="min-w-0">
@@ -130,7 +130,7 @@ export function SiteFooter() {
           <div className="min-w-0">
             <h2 className={sectionTitleClass}>Keyra apps</h2>
             <nav className="mt-3" aria-label="Keyra apps">
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-x-5">
+              <div className="grid grid-cols-1 gap-y-2 min-[400px]:grid-cols-2 min-[400px]:gap-x-4 sm:gap-x-5">
                 <ul className="flex min-w-0 flex-col gap-2">
                   {appLinksLeft.map((item) => (
                     <FooterAppLinkItem key={item.id} item={item} linkClass={linkClass} />

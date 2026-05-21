@@ -117,7 +117,7 @@ export function AccessRequestsClient() {
                 <td className="px-3 py-3 text-keyra-text-2">{r.verificationStatus}</td>
                 <td className="px-3 py-3 text-keyra-text-2">{r.approvalStatus}</td>
                 <td className="px-3 py-3 text-right">
-                  <div className="flex justify-end gap-2">
+                  <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-end">
                     <Button
                       type="button"
                       variant="ghost"

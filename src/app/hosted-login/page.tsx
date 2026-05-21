@@ -11,12 +11,12 @@ export default function HostedLoginPage() {
     <>
       <style>{`
         .hosted-login-root {
-          min-height: 100vh;
+          min-height: 100dvh;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 2rem 1.5rem;
+          padding: max(2rem, env(safe-area-inset-top)) 1.25rem max(2rem, env(safe-area-inset-bottom));
           font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
           background: radial-gradient(ellipse at top, #0f172a 0%, #020617 55%);
           color: #e2e8f0;

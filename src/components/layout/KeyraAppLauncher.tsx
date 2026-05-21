@@ -133,7 +133,7 @@ export function KeyraAppLauncher() {
           <p className="px-1 pb-2 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
             Keyra apps
           </p>
-          <ul className="keyra-app-launcher-scroll grid min-h-0 grid-cols-3 gap-2 overflow-y-auto pr-1">
+          <ul className="keyra-app-launcher-scroll grid min-h-0 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3">
             {tiles.map((item) => (
               <li key={item.id} className="min-w-0">
                 <a

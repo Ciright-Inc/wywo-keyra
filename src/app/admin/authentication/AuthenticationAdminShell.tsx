@@ -94,7 +94,7 @@ export function AuthenticationAdminShell({ children }: { children: ReactNode }) 
             </Link>
           </div>
         </aside>
-        <div className="min-w-0 flex-1 overflow-x-auto lg:min-h-0">{children}</div>
+        <div className="min-w-0 flex-1 lg:min-h-0">{children}</div>
       </div>
     </div>
   );

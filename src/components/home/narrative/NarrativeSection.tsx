@@ -33,10 +33,10 @@ export function NarrativeSection({
   return (
     <section
       id={id}
-      className={`keyra-section scroll-mt-44 lg:scroll-mt-24 ${bandClass} ${className}`}
+      className={`keyra-section scroll-mt-[var(--keyra-header-offset)] ${bandClass} ${className}`}
       aria-labelledby={`${id}-title`}
     >
-      <div className={`mx-auto flex max-w-6xl flex-col ${alignClass}`}>
+      <div className={`mx-auto flex w-full min-w-0 max-w-6xl flex-col ${alignClass}`}>
         <CinematicReveal depth="foreground">
           <p className="keyra-eyebrow">{eyebrow}</p>
         </CinematicReveal>

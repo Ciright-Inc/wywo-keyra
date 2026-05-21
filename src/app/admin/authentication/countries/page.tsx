@@ -455,8 +455,8 @@ export default function AdminAuthCountriesPage() {
         <p className="ds-admin-error-banner">{error}</p>
       ) : null}
 
-      <div className="sticky top-14 z-20 flex items-center gap-3 rounded-2xl border border-keyra-border bg-keyra-surface/95 px-3 py-3 shadow-sm backdrop-blur-sm sm:px-4">
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
+      <div className="sticky top-[var(--keyra-header-offset)] z-20 flex flex-col gap-3 rounded-2xl border border-keyra-border bg-keyra-surface/95 px-3 py-3 shadow-sm backdrop-blur-sm sm:flex-row sm:items-center sm:px-4 lg:top-14">
+        <div className="flex min-w-0 w-full flex-1 flex-wrap items-center gap-3 sm:w-auto">
           {/* Inline filters — moved out of the Catalog tools modal so they're always visible. */}
           <label className="flex items-center gap-1.5 text-[11px] font-medium text-keyra-text-2 sm:text-xs">
             Active
@@ -510,7 +510,7 @@ export default function AdminAuthCountriesPage() {
           </span>
         </div>
 
-        <div className="ml-auto flex shrink-0 items-center gap-2">
+        <div className="flex w-full shrink-0 flex-wrap items-center justify-between gap-2 sm:ml-auto sm:w-auto sm:flex-nowrap sm:justify-end">
           <div className="flex items-center">
             <button
               type="button"

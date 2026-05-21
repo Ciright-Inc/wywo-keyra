@@ -5,33 +5,38 @@ import { protocolOpenAction } from "@/lib/authenticationFeed/protocolOpenBehavio
 import { resolvePublicFeedJson } from "@/lib/authenticationFeed/feedClientResolve";
 import { FeedTurnstileGate } from "@/components/home/FeedTurnstileGate";
 import { cn } from "@/components/ui/cn";
+import { IconSatSignal } from "@/components/ui/Icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type FeedVariant = "default" | "hero";
+type FeedVariant = "default" | "hero" | "bento";
 
 function feedUi(variant: FeedVariant) {
-  const hero = variant === "hero";
+  const compact = variant === "hero" || variant === "bento";
   return {
-    muted: hero ? "text-slate-500" : "text-keyra-text-2",
-    primary: hero ? "text-slate-900" : "text-keyra-primary",
-    accent: hero ? "text-blue-600" : "text-keyra-accent",
-    accentMuted: hero ? "text-blue-600/80" : "text-keyra-accent/80",
-    border: hero ? "border-slate-200/60" : "border-keyra-border/30",
-    dot: hero
-      ? "size-1.5 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]"
+    muted: compact ? "text-[var(--color-body)]" : "text-keyra-text-2",
+    primary: compact ? "text-[var(--color-ink)]" : "text-keyra-primary",
+    accent: compact ? "text-[var(--color-ink)]" : "text-keyra-accent",
+    accentMuted: compact ? "text-[var(--color-body)]" : "text-keyra-accent/80",
+    border: compact ? "border-[var(--color-hairline)]" : "border-keyra-border/30",
+    dot: compact
+      ? "size-1.5 shrink-0 rounded-full bg-[var(--color-ink)] ring-2 ring-[rgba(0,0,0,0.08)]"
       : "inline-block size-1.5 shrink-0 rounded-full bg-keyra-accent/35 ring-1 ring-keyra-border",
-    skeleton: hero ? "bg-slate-100" : "bg-keyra-bg/80",
-    skeletonLight: hero ? "bg-slate-50" : "bg-keyra-bg/60",
-    scroll: hero
-      ? "max-h-36 space-y-0 overflow-y-auto pr-1 sm:max-h-40"
+    skeleton: compact ? "bg-[var(--color-surface-strong)]" : "bg-keyra-bg/80",
+    skeletonLight: compact ? "bg-[var(--color-canvas-soft)]" : "bg-keyra-bg/60",
+    scroll: compact
+      ? variant === "bento"
+        ? "max-h-32 flex-1 space-y-0 overflow-y-auto pr-1 sm:max-h-36"
+        : "max-h-36 space-y-0 overflow-y-auto pr-1 sm:max-h-40"
       : "max-h-[min(240px,42vh)] space-y-1.5 overflow-y-auto pr-1 sm:max-h-[min(280px,50vh)]",
-    row: hero
-      ? "grid grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_auto] items-center gap-2 border-b py-2 text-[12px] last:border-0"
+    row: compact
+      ? "border-b py-2.5 text-[12px] last:border-0 max-[420px]:flex max-[420px]:flex-col max-[420px]:gap-1.5 min-[421px]:grid min-[421px]:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_auto] min-[421px]:items-center min-[421px]:gap-2"
       : "grid grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)_auto] items-start gap-1.5 border-b pb-1.5 text-[clamp(0.52rem,0.22vw+0.48rem,0.66rem)] last:border-0",
-    hrBadge: hero
-      ? "rounded-full border border-slate-200/80 bg-slate-50 px-1.5 py-0.5 text-[10px] font-medium text-slate-700"
+    hrBadge: compact
+      ? "rounded-full border border-[var(--color-hairline-strong)] bg-[var(--color-canvas-soft)] px-1.5 py-0.5 font-mono text-[9px] font-semibold tracking-wide text-[var(--color-ink)]"
       : "rounded px-1 py-0.5 text-[0.75em] font-bold ring-1 ring-keyra-border",
-    empty: hero ? "text-[12px] text-slate-400" : "text-[clamp(0.52rem,0.22vw+0.48rem,0.62rem)] text-keyra-text-2",
+    empty: compact
+      ? "keyra-bento-body text-[12px]"
+      : "text-[clamp(0.52rem,0.22vw+0.48rem,0.62rem)] text-keyra-text-2",
   };
 }
 
@@ -164,6 +169,7 @@ function readBatchPayload(json: Record<string, unknown>): {
 
 export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: FeedVariant }) {
   const ui = feedUi(variant);
+  const isCompact = variant === "hero" || variant === "bento";
   const needsTurnstile = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim());
   const [captchaToken, setCaptchaToken] = useState<string | null>(needsTurnstile ? null : "ready");
 
@@ -393,14 +399,22 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
     return (
       <div className="space-y-0" aria-busy aria-label="Loading latest authentications">
         {[0, 1, 2, 3, 4].map((i) =>
-          variant === "hero" ? (
+          isCompact ? (
             <div
               key={i}
-              className="grid grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_auto] items-center gap-2 border-b border-slate-100 py-2 last:border-0"
+              className={cn(
+                "grid grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_auto] items-center gap-2 border-b py-2.5 last:border-0",
+                ui.border,
+              )}
             >
-              <div className="h-3 max-w-[85%] animate-pulse rounded bg-slate-100" />
-              <div className="h-3 max-w-[70%] animate-pulse rounded bg-slate-100" />
-              <div className="h-5 w-12 animate-pulse rounded-full bg-slate-100" />
+              <div className="flex items-center gap-2">
+                <span className="keyra-bento-icon !h-6 !w-6 opacity-40" aria-hidden>
+                  <IconSatSignal className="h-3 w-3" />
+                </span>
+                <div className={cn("h-3 flex-1 max-w-[75%] animate-pulse rounded", ui.skeleton)} />
+              </div>
+              <div className={cn("h-3 max-w-[70%] animate-pulse rounded", ui.skeleton)} />
+              <div className={cn("h-5 w-11 animate-pulse rounded-full", ui.skeletonLight)} />
             </div>
           ) : (
             <div key={i} className="flex gap-2 py-1">
@@ -432,7 +446,7 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
             className={cn(ui.row, ui.border, ui.primary)}
           >
             <div className="min-w-0">
-              {variant === "hero" ? (
+              {isCompact ? (
                 <div className="flex items-center gap-2">
                   <span className={ui.dot} aria-hidden />
                   <span className="truncate font-medium">{row.c}</span>
@@ -450,10 +464,14 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
               )}
             </div>
             <div className="min-w-0">
-              {variant === "hero" ? (
+              {isCompact ? (
                 <button
                   type="button"
-                  className="w-full truncate text-left text-[12px] text-slate-600 underline-offset-2 hover:text-slate-900 hover:underline"
+                  className={cn(
+                    "w-full truncate text-left font-mono text-[11px] underline-offset-2 hover:underline",
+                    ui.muted,
+                    variant === "bento" ? "hover:text-[var(--color-ink)]" : "hover:text-[var(--color-text-link)]",
+                  )}
                   onClick={() => void openProtocol(row.pl)}
                 >
                   {row.m}
@@ -476,12 +494,12 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
             </div>
             <div
               className={cn(
-                variant === "hero"
+                isCompact
                   ? "flex shrink-0 items-center justify-end"
-                  : "flex min-w-[7rem] flex-col items-end gap-0.5 text-right",
+                  : "flex min-w-0 flex-col items-end gap-0.5 text-right sm:min-w-[7rem]",
               )}
             >
-              {variant === "hero" ? (
+              {isCompact ? (
                 <span className={ui.hrBadge}>{row.st}</span>
               ) : (
                 <>

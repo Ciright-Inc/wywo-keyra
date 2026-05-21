@@ -199,19 +199,19 @@ function SceneLights() {
   );
 }
 
-export default function KeyraRealisticGlobeScene() {
+export default function KeyraRealisticGlobeScene({ opaque = false }: { opaque?: boolean }) {
   return (
     <Canvas
       camera={{ position: [0, 0.08, 2.42], fov: 42, near: 0.08, far: 32 }}
       dpr={[1, 2]}
       gl={{
         antialias: true,
-        alpha: true,
+        alpha: !opaque,
         powerPreference: "high-performance",
       }}
-      style={{ width: "100%", height: "100%", display: "block" }}
+      style={{ width: "100%", height: "100%", display: "block", background: opaque ? "#ffffff" : undefined }}
       onCreated={({ gl }) => {
-        gl.setClearColor(0x000000, 0);
+        gl.setClearColor(0xffffff, opaque ? 1 : 0);
         gl.outputColorSpace = THREE.SRGBColorSpace;
         gl.toneMapping = THREE.ACESFilmicToneMapping;
         gl.toneMappingExposure = 1.08;

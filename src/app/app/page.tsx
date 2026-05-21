@@ -11,7 +11,7 @@ export default function DashboardPage() {
           <p className="text-[14px] font-medium uppercase tracking-wider text-keyra-text-2">
             Status
           </p>
-          <h1 className="mt-2 text-[36px] font-bold tracking-tight text-keyra-primary sm:text-[44px]">
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-keyra-primary sm:text-[36px] lg:text-[44px]">
             Protected
           </h1>
           <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-keyra-text-2 sm:text-[18px]">
@@ -36,17 +36,17 @@ export default function DashboardPage() {
             icon={<IconShieldCheck className="h-5 w-5" />}
           />
           <ul className="mt-6 space-y-3 text-[14px] text-keyra-text-2">
-            <li className="flex items-center justify-between rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3">
+            <li className="flex flex-col gap-1 rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <span>Verified on this device</span>
-              <span>Today</span>
+              <span className="text-keyra-text-2 sm:text-inherit">Today</span>
             </li>
-            <li className="flex items-center justify-between rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3">
+            <li className="flex flex-col gap-1 rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <span>New sign‑in protected</span>
-              <span>Yesterday</span>
+              <span className="text-keyra-text-2 sm:text-inherit">Yesterday</span>
             </li>
-            <li className="flex items-center justify-between rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3">
+            <li className="flex flex-col gap-1 rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <span>Protection check completed</span>
-              <span>This week</span>
+              <span className="text-keyra-text-2 sm:text-inherit">This week</span>
             </li>
           </ul>
         </Card>

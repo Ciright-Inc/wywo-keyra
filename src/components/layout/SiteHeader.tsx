@@ -139,7 +139,7 @@ export function SiteHeader() {
           className={
             isAdminRoute
               ? "relative z-10 flex min-w-0 shrink-0 items-center justify-end gap-0 py-0.5 xl:gap-0"
-              : "relative z-10 flex w-full min-w-0 shrink-0 flex-wrap items-center justify-between gap-x-0 gap-y-1 py-0.5 sm:flex-nowrap sm:justify-between lg:col-start-3 lg:row-start-1 lg:w-auto lg:flex-nowrap lg:justify-end lg:gap-0 lg:py-0.5 lg:pl-0 xl:gap-0 xl:pl-0"
+              : "relative z-10 flex w-full min-w-0 shrink-0 flex-wrap items-center justify-end gap-x-1 gap-y-1 py-0.5 lg:col-start-3 lg:row-start-1 lg:w-auto lg:flex-nowrap lg:justify-end lg:gap-0 lg:py-0.5 lg:pl-0 xl:gap-0 xl:pl-0"
           }
         >
           {!isAdminRoute ? (
@@ -151,7 +151,7 @@ export function SiteHeader() {
 
           {isAdminLoginRoute ? null : (
             <div
-              className="flex min-w-0 shrink-0 flex-row flex-nowrap items-stretch rounded-[var(--keyra-radius-pill)] border border-keyra-border bg-keyra-surface/90 p-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md sm:p-0 mr-2"
+              className="flex min-w-0 shrink-0 flex-row flex-wrap items-stretch rounded-[var(--keyra-radius-pill)] border border-keyra-border bg-keyra-surface/90 p-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md sm:flex-nowrap sm:p-0 mr-1.5 sm:mr-2"
               aria-label="Access Get Started and Be Protected Online"
             >
               {isProtectedAdminRoute ? (
