@@ -19,7 +19,7 @@ function trimField(value: string) {
 
 export default function AppProfilePage() {
   const router = useRouter();
-  const { user, refresh } = useKeyraSession();
+  const { user, refresh, initialized } = useKeyraSession();
   const [honeypot, setHoneypot] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -29,10 +29,11 @@ export default function AppProfilePage() {
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
+    if (!initialized) return;
     if (!user) {
       router.replace("/login?next=/app/profile");
     }
-  }, [user, router]);
+  }, [initialized, user, router]);
 
   useEffect(() => {
     if (!user) return;

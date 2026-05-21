@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ActiveAuthenticationCountriesWidget } from "@/components/home/ActiveAuthenticationCountriesWidget";
-import { ActiveSatProtocolsWidget } from "@/components/home/ActiveSatProtocolsWidget";
 import { GlobalVerificationSignalsLive } from "@/components/home/GlobalVerificationSignalsLive";
+import { LatestAuthenticationsFeed } from "@/components/home/LatestAuthenticationsFeed";
 import { KeyraHomeGlobe } from "@/components/home/KeyraHomeGlobe";
+import { useClientReady } from "@/lib/useClientReady";
 import { HomeRegistrationCTAs } from "@/components/registration/HomeRegistrationCTAs";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -20,6 +20,8 @@ const homeAudienceCard = "keyra-card keyra-home-card p-7 sm:p-8";
 const homeHeroPanel = "keyra-home-panel";
 
 export function HomeContent() {
+  const clientReady = useClientReady();
+
   return (
     <>
       {/* SECTION 1 — HERO */}
@@ -86,21 +88,31 @@ export function HomeContent() {
                     <GlobalVerificationSignalsLive variant="hero" />
                     <div className="mt-3 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-2 text-center"><span className="text-[11px] text-slate-500">Global numbers verified — live by region</span></div>
                   </motion.div>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.42,ease:easeTrust}}>
-                      <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Latest authentications</p>
-                      <ActiveAuthenticationCountriesWidget />
-                    </motion.div>
-                    <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.48,ease:easeTrust}}>
-                      <ActiveSatProtocolsWidget />
-                    </motion.div>
-                  </div>
+                  <motion.div
+                    className={`${homeHeroPanel} p-4`}
+                    initial={{ opacity: 0, x: 12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.42, ease: easeTrust }}
+                  >
+                    <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">
+                      Latest authentications
+                    </p>
+                    <div className="mt-3">
+                      {clientReady ? (
+                        <LatestAuthenticationsFeed variant="hero" />
+                      ) : (
+                        <p className="text-[12px] text-slate-400" aria-busy>
+                          Loading…
+                        </p>
+                      )}
+                    </div>
+                  </motion.div>
                 </div>
               </div>
 
               <motion.div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6,delay:0.5,ease:easeTrust}}>
                 {[{t:"Protect Your Identity",d:"Secure your personal identity, mobile device, and digital presence with Keyra.",h:"/signup"},{t:"Protect Your Family",d:"Create a protected family identity registry for every family member.",h:"/app/family"},{t:"Secure Your Organization",d:"Protect your company domains, data, and team identities.",h:"/contact"},{t:"Partner With Keyra",d:"Join Keyra as a telecom, technology, or service partner.",h:"/partners"}].map(item=>(
-                  <Link key={item.t} href={item.h} className="group block">
+                  <Link key={item.t} href={item.h} prefetch={false} className="group block">
                     <div className={`h-full ${homeHeroPanel} p-6`}>
                       <h3 className="text-[15px] font-semibold leading-snug text-slate-900">{item.t}</h3>
                       <p className="mt-2 text-[13px] leading-[1.6] text-slate-500">{item.d}</p>
@@ -211,6 +223,7 @@ export function HomeContent() {
         <div className={`${homeHeroPanel} inline-flex w-fit px-4 py-4`}>
           <Link
             href="/global-deployment"
+            prefetch={false}
             className="inline-flex focus-visible:outline-none focus-visible:keyra-focus rounded-[var(--keyra-radius-pill)]"
           >
             <Button variant="secondary">View global deployment</Button>
@@ -263,7 +276,7 @@ export function HomeContent() {
                 {item.headline}
               </h3>
               <p className="mt-3 text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px]">{item.body}</p>
-              <Link href={item.href} className="mt-7 inline-flex">
+              <Link href={item.href} prefetch={false} className="mt-7 inline-flex">
                 <Button variant="secondary">{item.cta}</Button>
               </Link>
             </div>

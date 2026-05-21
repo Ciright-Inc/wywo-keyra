@@ -67,6 +67,7 @@ export function SiteHeader() {
       >
         <Link
           href="/"
+          prefetch={false}
           className={
             isAdminRoute
               ? "relative z-0 flex min-w-0 items-center justify-start overflow-visible py-0 lg:h-14"
@@ -122,6 +123,7 @@ export function SiteHeader() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    prefetch={false}
                     onClick={handleClick}
                     className={linkClass}
                   >

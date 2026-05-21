@@ -6,12 +6,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/components/ui/cn";
+import { useClientReady } from "@/lib/useClientReady";
 
 export function AccountMenu() {
   const { user, headerLabel, logout } = useKeyraSession();
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const clientReady = useClientReady();
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -60,6 +62,7 @@ export function AccountMenu() {
           <Link
             role="menuitem"
             href="/app/family"
+            prefetch={false}
             className="block px-4 py-2.5 text-[14px] text-keyra-text transition hover:bg-keyra-bg"
             onClick={() => setOpen(false)}
           >
@@ -68,6 +71,7 @@ export function AccountMenu() {
           <Link
             role="menuitem"
             href="/app"
+            prefetch={false}
             className="block px-4 py-2.5 text-[14px] text-keyra-text transition hover:bg-keyra-bg"
             onClick={() => setOpen(false)}
           >
@@ -80,7 +84,7 @@ export function AccountMenu() {
             onClick={async () => {
               await logout();
               setOpen(false);
-              router.refresh();
+              if (clientReady) router.refresh();
             }}
           >
             Log out

@@ -16,11 +16,11 @@ export function KeyraHomeLink({ className, children }: KeyraHomeLinkProps) {
     if (pathname !== "/") return;
 
     event.preventDefault();
+    const { pathname: currentPath, search } = window.location;
     if (window.location.hash) {
-      window.location.href = "/";
-      return;
+      window.history.replaceState(null, "", `${currentPath}${search}`);
     }
-    window.location.reload();
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }
 
   return (

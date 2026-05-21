@@ -8,6 +8,7 @@ import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { buildGetStartedAccessUrl, keyraDeveloperPortalUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { useClientReady } from "@/lib/useClientReady";
 
 type NavLink = { href: string; label: string; external?: boolean };
 
@@ -26,6 +27,7 @@ export function MobileNav() {
   const [open, setOpen] = useState(false);
   const { user, logout } = useKeyraSession();
   const router = useRouter();
+  const clientReady = useClientReady();
   const pathname = usePathname();
   const accessHref = useMemo(() => {
     if (typeof window !== "undefined") {
@@ -99,6 +101,7 @@ export function MobileNav() {
                     ) : (
                       <Link
                         href={item.href}
+                        prefetch={false}
                         onClick={() => setOpen(false)}
                         className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-primary transition-colors duration-150 active:bg-keyra-surface hover:bg-keyra-surface"
                       >
@@ -127,7 +130,7 @@ export function MobileNav() {
                         onClick={async () => {
                           await logout();
                           setOpen(false);
-                          router.refresh();
+                          if (clientReady) router.refresh();
                         }}
                       >
                         Log out
