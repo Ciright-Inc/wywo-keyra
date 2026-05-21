@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ActiveAuthenticationCountriesWidget } from "@/components/home/ActiveAuthenticationCountriesWidget";
+import { ActiveSatProtocolsWidget } from "@/components/home/ActiveSatProtocolsWidget";
+import { GlobalVerificationSignalsLive } from "@/components/home/GlobalVerificationSignalsLive";
 import { KeyraHomeGlobe } from "@/components/home/KeyraHomeGlobe";
 import { HomeRegistrationCTAs } from "@/components/registration/HomeRegistrationCTAs";
 import { Button } from "@/components/ui/Button";
@@ -33,9 +36,9 @@ export function HomeContent() {
 
           <div className="mt-12 grid grid-cols-1 gap-10 lg:mt-14 lg:grid-cols-[minmax(0,42%)_minmax(0,1fr)] lg:items-start lg:gap-8">
             {/* LEFT: Globe */}
-            <div className="relative lg:-ml-16 xl:-ml-24">
+            <div className="relative lg:-ml-12 xl:-ml-20">
               <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" aria-hidden style={{width:"120%",height:"120%",background:"radial-gradient(circle,rgba(59,130,246,0.12) 0%,rgba(37,99,235,0.03) 50%,transparent 70%)",filter:"blur(40px)"}} />
-              <div className="relative mx-auto w-full max-w-[520px] lg:max-w-none">
+              <div className="relative mx-auto w-full max-w-[500px] lg:max-w-[440px] xl:max-w-[500px]">
                 <div className="relative aspect-square w-full overflow-hidden rounded-full">
                   <KeyraHomeGlobe className="block h-full w-full touch-pan-y" />
                 </div>
@@ -44,7 +47,7 @@ export function HomeContent() {
 
             {/* RIGHT: Timeline + widgets, then 4 CTAs directly below */}
             <div className="flex min-w-0 flex-col gap-8 lg:gap-10">
-              <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,15.5rem)] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,17.5rem)]">
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,15.5rem)] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
                 {/* Timeline */}
                 <div className="lg:pt-1">
                   <div className="flex flex-col gap-6">
@@ -80,19 +83,18 @@ export function HomeContent() {
                 <div className="flex flex-col gap-3 lg:pt-1">
                   <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.35,ease:easeTrust}}>
                     <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Global verification signals</p>
-                    <p className="mt-3 font-mono text-[1.65rem] font-semibold leading-none tracking-tight tabular-nums text-slate-900">2,801,077</p>
-                    <div className="mt-3 flex gap-5">
-                      <div><p className="font-mono text-xs font-medium tabular-nums text-slate-900">4,822</p><p className="text-[10px] text-slate-500">Per second</p></div>
-                      <div><p className="font-mono text-xs font-medium tabular-nums text-slate-900">289,320</p><p className="text-[10px] text-slate-500">Per minute</p></div>
-                    </div>
+                    <GlobalVerificationSignalsLive variant="hero" />
                     <div className="mt-3 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-2 text-center"><span className="text-[11px] text-slate-500">Global numbers verified — live by region</span></div>
                   </motion.div>
-                  <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.42,ease:easeTrust}}>
-                    <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Latest authentications</p>
-                    <div className="mt-3 space-y-2.5">
-                      {["Ireland • SIM verified","Germany • eSIM enrolled","USA • Carrier signal"].map(l=>(<div key={l} className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]" /><span className="text-[12px] text-slate-500">{l}</span></div>))}
-                    </div>
-                  </motion.div>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.42,ease:easeTrust}}>
+                      <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Latest authentications</p>
+                      <ActiveAuthenticationCountriesWidget />
+                    </motion.div>
+                    <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.48,ease:easeTrust}}>
+                      <ActiveSatProtocolsWidget />
+                    </motion.div>
+                  </div>
                 </div>
               </div>
 

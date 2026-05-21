@@ -8,6 +8,7 @@ import { SAT_PROTOCOL_CATEGORIES } from "@/lib/satProtocol/categories";
 
 const DEFAULT_PAGE_SIZE = 25;
 const PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
+const TABLE_CHECKBOX_CLASS = "accent-black";
 
 type ProtocolRow = {
   id: string;
@@ -427,11 +428,11 @@ export default function AdminSatProtocolsPage() {
     return bits.join(" · ");
   }, [debouncedQ, category, activeFilter, sortKey, sortDir]);
 
-  const sortableTh = (label: string, key: string) => (
-    <th className="px-1.5 py-2">
+  const sortableTh = (label: string, key: string, align: "left" | "center" = "left") => (
+    <th className={`px-1.5 py-2 ${align === "center" ? "w-14 text-center" : "text-left"}`}>
       <button
         type="button"
-        className="text-left font-semibold hover:text-keyra-accent"
+        className={`font-semibold hover:text-keyra-accent ${align === "center" ? "inline-flex items-center justify-center" : "text-left"}`}
         onClick={() => toggleSort(key)}
         disabled={busy}
       >
@@ -499,8 +500,8 @@ export default function AdminSatProtocolsPage() {
               disabled={busy}
             >
               <option value="all">All</option>
-              <option value="true">On</option>
-              <option value="false">Off</option>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
             </select>
           </label>
           <label className="flex items-center gap-1.5 text-[11px] font-medium text-keyra-text-2 sm:text-xs">
@@ -686,6 +687,7 @@ export default function AdminSatProtocolsPage() {
               <th className="w-10 pl-4 pr-2 py-2.5 align-middle" scope="col">
                 <input
                   type="checkbox"
+                  className={TABLE_CHECKBOX_CLASS}
                   checked={allSelected}
                   onChange={toggleSelectAll}
                   disabled={busy || rows.length === 0}
@@ -701,9 +703,9 @@ export default function AdminSatProtocolsPage() {
               {sortableTh("Roam", "roamingPercentage")}
               {sortableTh("Trust", "trustLevel")}
               <th className="px-1 py-2">Flags</th>
-              {sortableTh("Global", "globalAvailability")}
-              {sortableTh("API", "apiReady")}
-              {sortableTh("On", "active")}
+              {sortableTh("Global", "globalAvailability", "center")}
+              {sortableTh("API", "apiReady", "center")}
+              {sortableTh("Active", "active", "center")}
             </tr>
           </thead>
           <tbody>
@@ -712,6 +714,7 @@ export default function AdminSatProtocolsPage() {
                 <td className="pl-4 pr-2 py-1 align-middle">
                   <input
                     type="checkbox"
+                    className={TABLE_CHECKBOX_CLASS}
                     checked={!!selected[r.id]}
                     onChange={() => toggleSelect(r.id)}
                     disabled={busy}
@@ -827,31 +830,40 @@ export default function AdminSatProtocolsPage() {
                   {r.flagConsumer ? "C" : "·"}
                   {r.flagAiAgent ? "A" : "·"}
                 </td>
-                <td className="px-1 py-1 text-center">
-                  <input
-                    type="checkbox"
-                    checked={r.globalAvailability !== false}
-                    onChange={(e) => patchRow(r.id, { globalAvailability: e.target.checked })}
-                    disabled={busy}
-                    title="Global availability"
-                  />
+                <td className="w-14 px-1 py-1">
+                  <div className="flex justify-center">
+                    <input
+                      type="checkbox"
+                      className={TABLE_CHECKBOX_CLASS}
+                      checked={r.globalAvailability !== false}
+                      onChange={(e) => patchRow(r.id, { globalAvailability: e.target.checked })}
+                      disabled={busy}
+                      title="Global availability"
+                    />
+                  </div>
                 </td>
-                <td className="px-1 py-1 text-center">
-                  <input
-                    type="checkbox"
-                    checked={r.apiReady !== false}
-                    onChange={(e) => patchRow(r.id, { apiReady: e.target.checked })}
-                    disabled={busy}
-                    title="API ready"
-                  />
+                <td className="w-14 px-1 py-1">
+                  <div className="flex justify-center">
+                    <input
+                      type="checkbox"
+                      className={TABLE_CHECKBOX_CLASS}
+                      checked={r.apiReady !== false}
+                      onChange={(e) => patchRow(r.id, { apiReady: e.target.checked })}
+                      disabled={busy}
+                      title="API ready"
+                    />
+                  </div>
                 </td>
-                <td className="px-1 py-1 text-center">
-                  <input
-                    type="checkbox"
-                    checked={r.active}
-                    onChange={(e) => patchRow(r.id, { active: e.target.checked })}
-                    disabled={busy}
-                  />
+                <td className="w-14 px-1 py-1">
+                  <div className="flex justify-center">
+                    <input
+                      type="checkbox"
+                      className={TABLE_CHECKBOX_CLASS}
+                      checked={r.active}
+                      onChange={(e) => patchRow(r.id, { active: e.target.checked })}
+                      disabled={busy}
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

@@ -10,6 +10,7 @@ import {
   parseSession,
   type KeyraSessionUser,
 } from "@/lib/keyraSessionCookie";
+import { KEYRA_LOGO_SRC } from "@/lib/keyraBrandAssets";
 import { LANE_HEADER, parseKeyraDesignLaneHeader } from "@/lib/keyraDesignLane";
 import { ToastProvider } from "@/components/ui/Toast";
 import { ElevenLabsHomeAgent } from "@/components/home/ElevenLabsHomeAgent";
@@ -45,9 +46,9 @@ export const metadata: Metadata = {
     "Be Protected Online — calm, deterministic identity for people, businesses, and nations. Keyra restores trust infrastructure.",
   metadataBase: new URL("https://keyra.ie"),
   icons: {
-    icon: "/kerya-logo.png",
-    shortcut: "/kerya-logo.png",
-    apple: "/kerya-logo.png",
+    icon: KEYRA_LOGO_SRC,
+    shortcut: KEYRA_LOGO_SRC,
+    apple: KEYRA_LOGO_SRC,
   },
   openGraph: {
     title: "Keyra — Be Protected Online",

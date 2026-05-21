@@ -1,11 +1,11 @@
 import Image from "next/image";
+import { KEYRA_LOGO_SRC } from "@/lib/keyraBrandAssets";
 
 /** Intrinsic logo asset ratio (width / height). */
 const LOGO_ASPECT = "1320/520";
 
 type KeyraLogoProps = {
   className?: string;
-  /** Logo image is in /public. */
   variant?: "header" | "footer" | "inline";
   showWordmark?: boolean;
   wordmarkClassName?: string;
@@ -23,7 +23,7 @@ export function KeyraLogo({
   showWordmark = true,
   wordmarkClassName = "",
 }: KeyraLogoProps) {
-  const logoSrc = "/kerya-logo.png?v=3";
+  const logoSrc = KEYRA_LOGO_SRC;
   const wordmarkSize = variant === "footer" ? "text-sm" : "text-lg";
 
   return (
