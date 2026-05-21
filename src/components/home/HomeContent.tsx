@@ -11,6 +11,10 @@ import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
 
 const easeTrust = [0.22, 0.61, 0.36, 1] as const;
 
+const homeCard = "keyra-home-card px-6 py-5";
+const homeCardOnDark = "keyra-home-card keyra-surface-light px-6 py-5";
+const homeAudienceCard = "keyra-card keyra-home-card p-7 sm:p-8";
+const homeHeroPanel = "keyra-home-panel";
 
 export function HomeContent() {
   return (
@@ -20,7 +24,7 @@ export function HomeContent() {
         <div className="pointer-events-none absolute inset-0" aria-hidden style={{background:"radial-gradient(ellipse 55% 90% at 18% 55%,rgba(241,245,249,0.8) 0%,rgba(255,255,255,0.6) 40%,transparent 80%)"}} />
         <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.04]" aria-hidden style={{backgroundImage:"url('/image.png')",filter:"blur(60px)"}} />
 
-        <div className="relative z-10 mx-auto max-w-[1440px] px-12 pb-16 pt-8 lg:px-20 lg:pb-20 lg:pt-12">
+        <div className="relative z-10 mx-auto max-w-[1440px] px-[var(--keyra-space-section-x)] py-10 sm:py-14">
           <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6,ease:easeTrust}}>
             <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-500">Sovereign trust infrastructure</p>
             <h1 className="mt-5 text-[clamp(3rem,5.5vw,5.8rem)] font-semibold leading-[1.05] tracking-[-0.03em]">Be Protected Online.</h1>
@@ -63,7 +67,7 @@ export function HomeContent() {
                           )}
                         </div>
 
-                        <motion.div className="flex-1 rounded-xl border border-slate-200/80 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.2+i*0.08,ease:easeTrust}}>
+                        <motion.div className={`flex-1 ${homeHeroPanel} px-5 py-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.2+i*0.08,ease:easeTrust}}>
                           <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">{item.l}</p>
                           <p className="mt-2 text-[13px] leading-[1.6] text-slate-600">{item.t}</p>
                         </motion.div>
@@ -74,7 +78,7 @@ export function HomeContent() {
 
                 {/* Widgets */}
                 <div className="flex flex-col gap-3 lg:pt-1">
-                  <motion.div className="rounded-xl border border-slate-200/80 bg-white/60 p-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.35,ease:easeTrust}}>
+                  <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.35,ease:easeTrust}}>
                     <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Global verification signals</p>
                     <p className="mt-3 font-mono text-[1.65rem] font-semibold leading-none tracking-tight tabular-nums text-slate-900">2,801,077</p>
                     <div className="mt-3 flex gap-5">
@@ -83,7 +87,7 @@ export function HomeContent() {
                     </div>
                     <div className="mt-3 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-2 text-center"><span className="text-[11px] text-slate-500">Global numbers verified — live by region</span></div>
                   </motion.div>
-                  <motion.div className="rounded-xl border border-slate-200/80 bg-white/60 p-4 shadow-sm backdrop-blur-sm" initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.42,ease:easeTrust}}>
+                  <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.42,ease:easeTrust}}>
                     <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Latest authentications</p>
                     <div className="mt-3 space-y-2.5">
                       {["Ireland • SIM verified","Germany • eSIM enrolled","USA • Carrier signal"].map(l=>(<div key={l} className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]" /><span className="text-[12px] text-slate-500">{l}</span></div>))}
@@ -95,7 +99,7 @@ export function HomeContent() {
               <motion.div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6,delay:0.5,ease:easeTrust}}>
                 {[{t:"Protect Your Identity",d:"Secure your personal identity, mobile device, and digital presence with Keyra.",h:"/signup"},{t:"Protect Your Family",d:"Create a protected family identity registry for every family member.",h:"/app/family"},{t:"Secure Your Organization",d:"Protect your company domains, data, and team identities.",h:"/contact"},{t:"Partner With Keyra",d:"Join Keyra as a telecom, technology, or service partner.",h:"/partners"}].map(item=>(
                   <Link key={item.t} href={item.h} className="group block">
-                    <div className="h-full rounded-xl border border-slate-200/70 bg-white p-6 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md">
+                    <div className={`h-full ${homeHeroPanel} p-6`}>
                       <h3 className="text-[15px] font-semibold leading-snug text-slate-900">{item.t}</h3>
                       <p className="mt-2 text-[13px] leading-[1.6] text-slate-500">{item.d}</p>
                     </div>
@@ -122,7 +126,7 @@ export function HomeContent() {
             "Humans and agents blurred.",
             "Institutions needed proof, not patches.",
           ].map((line) => (
-            <Card key={line} className="keyra-surface-light px-6 py-5 shadow-none">
+            <Card key={line} className={homeCardOnDark}>
               <p className="text-[15px] font-medium leading-snug tracking-tight text-keyra-primary sm:text-[16px]">
                 {line}
               </p>
@@ -145,7 +149,7 @@ export function HomeContent() {
             "Proof must travel with the interaction.",
             "Calm defaults beat frantic friction.",
           ].map((line) => (
-            <Card key={line} className="border-keyra-border/80 bg-[rgba(255,255,255,0.02)] px-6 py-5 shadow-none">
+            <Card key={line} className={homeCard}>
               <p className="text-[15px] font-medium leading-snug text-keyra-primary">{line}</p>
             </Card>
           ))}
@@ -187,7 +191,7 @@ export function HomeContent() {
             "Deterministic verification routing",
             "Institutional continuity — calm by default",
           ].map((line) => (
-            <Card key={line} className="keyra-surface-light px-6 py-5 shadow-none">
+            <Card key={line} className={homeCardOnDark}>
               <p className="text-[14px] font-medium leading-relaxed text-keyra-primary sm:text-[15px]">{line}</p>
             </Card>
           ))}
@@ -202,9 +206,14 @@ export function HomeContent() {
         title="Carrier-scale architecture for national resilience."
         lead="Built in Ireland as a trust institution for the digital age — composed for global deployment without compromising sovereignty or clarity."
       >
-        <Link href="/global-deployment" className="inline-flex focus-visible:outline-none focus-visible:keyra-focus rounded-[var(--keyra-radius-pill)]">
-          <Button variant="secondary">View global deployment</Button>
-        </Link>
+        <div className={`${homeHeroPanel} inline-flex w-fit px-4 py-4`}>
+          <Link
+            href="/global-deployment"
+            className="inline-flex focus-visible:outline-none focus-visible:keyra-focus rounded-[var(--keyra-radius-pill)]"
+          >
+            <Button variant="secondary">View global deployment</Button>
+          </Link>
+        </div>
       </NarrativeSection>
 
       {/* SECTION 8 — WHO IT'S FOR */}
@@ -246,7 +255,7 @@ export function HomeContent() {
               cta: "Partner with Keyra",
             },
           ].map((item) => (
-            <div key={item.title} className="keyra-card border-keyra-border/80 p-7 sm:p-8">
+            <div key={item.title} className={homeAudienceCard}>
               <p className="keyra-eyebrow text-[10px]">{item.title}</p>
               <h3 className="mt-4 text-balance text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl">
                 {item.headline}
@@ -274,7 +283,7 @@ export function HomeContent() {
             "Humans carry cryptographic continuity.",
             "Every surface inherits quiet assurance.",
           ].map((line) => (
-            <Card key={line} className="border-keyra-border/80 bg-[rgba(255,255,255,0.02)] px-6 py-6 shadow-none">
+            <Card key={line} className={homeCard}>
               <p className="text-[15px] font-medium leading-snug text-keyra-primary">{line}</p>
             </Card>
           ))}
@@ -302,13 +311,12 @@ export function HomeContent() {
       {/* SECTION 11 — FINAL STATEMENT */}
       <section
         id="get-protected"
-        className="relative scroll-mt-44 px-[var(--keyra-space-section-x)] pt-20 pb-20 sm:scroll-mt-24 sm:pt-20 sm:pb-20"
+        className="keyra-section relative scroll-mt-44 sm:scroll-mt-24"
         style={{ background: "linear-gradient(to bottom, #f0f2f5, #e8eaf0)" }}
         aria-labelledby="finale-heading"
       >
-        
         <div className="mx-auto max-w-4xl relative">
-          <div className="overflow-hidden rounded-[32px] border-[rgba(255,255,255,0.9)] bg-white shadow-[0_32px_80px_rgba(0,0,0,0.12),0_16px_40px_rgba(0,0,0,0.08)] px-8 py-16 text-center sm:px-16 sm:py-16 md:px-20 md:py-20 transition-all duration-[0.35s] ease hover:-translate-y-2 hover:shadow-[0_40px_100px_rgba(0,0,0,0.15),0_20px_50px_rgba(0,0,0,0.1)]">
+          <div className="overflow-hidden rounded-[32px] border-[rgba(255,255,255,0.9)] bg-white shadow-[0_32px_80px_rgba(0,0,0,0.12),0_16px_40px_rgba(0,0,0,0.08)] px-8 py-12 text-center sm:px-12 sm:py-14 md:px-16 transition-all duration-[0.35s] ease hover:-translate-y-2 hover:shadow-[0_40px_100px_rgba(0,0,0,0.15),0_20px_50px_rgba(0,0,0,0.1)]">
             <p className="keyra-eyebrow">Final statement</p>
             <h2 id="finale-heading" className="keyra-display-finale mx-auto mt-4 max-w-[18ch] text-balance">
               Be Protected Online.
@@ -316,7 +324,7 @@ export function HomeContent() {
             <p className="mx-auto mt-6 max-w-xl text-pretty text-[16px] leading-[1.65] text-keyra-text-2 sm:text-[17px]">
               Civilization-grade trust — rendered as calm infrastructure. Keyra is how the internet keeps its promises.
             </p>
-            <div className="mx-auto mt-10 max-w-xl rounded-[var(--keyra-radius-card)] border border-keyra-border/80 bg-[rgba(255,255,255,0.03)] px-5 py-6 sm:px-8">
+            <div className="keyra-card keyra-home-card mx-auto mt-10 max-w-xl px-5 py-6 sm:px-8">
               <div className="mx-auto max-w-lg text-left">
                 <HomeRegistrationCTAs />
               </div>

@@ -558,6 +558,59 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   border-color: var(--color-hairline-strong);
 }
 
+/* Home page — visible 2px border + layered shadow on all content boxes */
+.keyra-home-card {
+  border-width: 2px !important;
+  border-color: var(--color-hairline-strong) !important;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.06) !important;
+}
+
+.keyra-home-card:hover {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.1),
+    0 12px 32px rgba(0, 0, 0, 0.08) !important;
+}
+
+.keyra-band--dark .keyra-home-card:not(.keyra-surface-light) {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.28),
+    0 8px 24px rgba(0, 0, 0, 0.22) !important;
+}
+
+.keyra-band--dark .keyra-home-card:not(.keyra-surface-light):hover {
+  border-color: rgba(255, 255, 255, 0.36) !important;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.32),
+    0 12px 32px rgba(0, 0, 0, 0.26) !important;
+}
+
+.keyra-band--dark .keyra-home-card.keyra-surface-light {
+  border-color: var(--color-hairline-strong) !important;
+}
+
+.keyra-home-panel {
+  border: 2px solid var(--color-hairline-strong);
+  border-radius: var(--keyra-radius-card);
+  background: var(--color-surface-card);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.06);
+  transition:
+    box-shadow var(--keyra-motion-base) var(--keyra-ease-out),
+    border-color var(--keyra-motion-base) var(--keyra-ease-out);
+}
+
+.keyra-home-panel:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.1),
+    0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
 .keyra-focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
