@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { ensureDeploymentAppsSeeded, listDeploymentAppCategoryViews, toDeploymentAppView } from "@/lib/deploymentApps";
+import {
+  ensureDeploymentAppsSeeded,
+  getDeploymentAppEditNeighbors,
+  listDeploymentAppCategoryViews,
+  toDeploymentAppView,
+} from "@/lib/deploymentApps";
+import { AppEditSiblingNav } from "../../AppEditSiblingNav";
 import { AppForm } from "../../AppForm";
 
 type Params = {
@@ -11,9 +17,10 @@ type Params = {
 export default async function EditDeploymentAppPage({ params }: { params: Promise<Params> }) {
   const { appId } = await params;
   await ensureDeploymentAppsSeeded();
-  const [app, categories] = await Promise.all([
+  const [app, categories, neighbors] = await Promise.all([
     prisma.deploymentApp.findFirst({ where: { id: appId, isActive: true } }),
     listDeploymentAppCategoryViews(),
+    getDeploymentAppEditNeighbors(appId),
   ]);
   if (!app) notFound();
 
@@ -27,11 +34,21 @@ export default async function EditDeploymentAppPage({ params }: { params: Promis
       </Link>
 
       <div className="mt-6 rounded-3xl border border-keyra-border bg-keyra-surface p-6 shadow-[0_24px_70px_rgba(0,0,0,0.06)] sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-keyra-text-2">App directory</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-keyra-primary">Edit app</h1>
-        <p className="mt-3 text-sm leading-6 text-keyra-text-2">
-          Update the app details. Saved changes are stored in the database.
-        </p>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-keyra-text-2">App directory</p>
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-keyra-primary">Edit app</h1>
+            <p className="mt-3 text-sm leading-6 text-keyra-text-2">
+              Update the app details. Saved changes are stored in the database.
+            </p>
+          </div>
+          <AppEditSiblingNav
+            prevApp={neighbors.prev}
+            nextApp={neighbors.next}
+            index={neighbors.index}
+            total={neighbors.total}
+          />
+        </div>
 
         <AppForm mode="edit" app={toDeploymentAppView(app)} categories={categories} />
       </div>

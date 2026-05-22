@@ -5,8 +5,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { RowActions } from "@/components/admin/RowActions";
+import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
+import { buildListHref } from "@/lib/admin/listSearchParams";
 
 const STATUS_OPTIONS = ["IDENTIFIED", "INSTITUTIONAL_AWARENESS", "TVIP", "OPERATIONAL"] as const;
+const TELCOS_BASE_HREF = "/admin/deployments/telcos";
+
+export type TelcoSortKey = "name" | "country" | "subdomain" | "status" | "published" | "created";
 
 type CountryOption = { id: string; name: string; iso2: string };
 
@@ -33,14 +38,26 @@ function buildTelcosListHref(
   pageSize: number,
   defaultPageSize: number,
   searchQuery: string,
+  sortBy: TelcoSortKey,
+  sortDir: "asc" | "desc",
 ): string {
-  const sp = new URLSearchParams();
-  const sq = searchQuery.trim();
-  if (sq) sp.set("q", sq);
-  if (page > 1) sp.set("page", String(page));
-  if (pageSize !== defaultPageSize) sp.set("perPage", String(pageSize));
-  const q = sp.toString();
-  return `/admin/deployments/telcos${q ? `?${q}` : ""}`;
+  return buildListHref(
+    TELCOS_BASE_HREF,
+    { page, pageSize, searchQuery },
+    defaultPageSize,
+    sortBy === "created" && sortDir === "desc"
+      ? undefined
+      : { sort: sortBy === "created" ? undefined : sortBy, dir: sortDir },
+  );
+}
+
+function nextSortState(
+  column: TelcoSortKey,
+  sortBy: TelcoSortKey,
+  sortDir: "asc" | "desc",
+): { sort: TelcoSortKey; dir: "asc" | "desc" } {
+  if (sortBy === column) return { sort: column, dir: sortDir === "asc" ? "desc" : "asc" };
+  return { sort: column, dir: "asc" };
 }
 
 function pageNumbers(current: number, total: number): (number | "gap")[] {
@@ -70,6 +87,8 @@ type Props = {
   defaultPageSize: number;
   /** URL `q` param; server trims and caps length */
   searchQuery: string;
+  sortBy: TelcoSortKey;
+  sortDir: "asc" | "desc";
   countries: CountryOption[];
   showCreate: boolean;
   /** Mirrors the server-side `canMutate` check — gates per-row delete buttons. */
@@ -84,6 +103,8 @@ export function TelcosDirectoryClient({
   pageSizeOptions,
   defaultPageSize,
   searchQuery,
+  sortBy,
+  sortDir,
   countries,
   showCreate,
   canDelete,
@@ -127,6 +148,29 @@ export function TelcosDirectoryClient({
 
   const pagerItems = useMemo(() => pageNumbers(page, totalPages), [page, totalPages]);
 
+  function sortHref(column: TelcoSortKey, targetPage = 1): string {
+    const next = nextSortState(column, sortBy, sortDir);
+    return buildTelcosListHref(targetPage, pageSize, defaultPageSize, searchQuery, next.sort, next.dir);
+  }
+
+  function sortIndicator(column: TelcoSortKey): string {
+    if (sortBy !== column) return "";
+    return sortDir === "asc" ? " ↑" : " ↓";
+  }
+
+  const sortableTh = (label: string, column: TelcoSortKey) => (
+    <th className="px-3 py-2" aria-sort={sortBy === column ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+      <Link
+        href={sortHref(column, 1)}
+        prefetch={false}
+        className="inline-flex items-center gap-0.5 font-semibold text-keyra-text-2 transition hover:text-keyra-primary"
+      >
+        {label}
+        <span aria-hidden>{sortIndicator(column)}</span>
+      </Link>
+    </th>
+  );
+
   /** Sync local input when URL `q` changes (e.g. via pagination links). */
   useEffect(() => {
     setQInput(searchQuery);
@@ -147,7 +191,7 @@ export function TelcosDirectoryClient({
     const next = qInput.trim();
     if (next === searchQuery.trim()) return;
     const t = setTimeout(() => {
-      router.push(buildTelcosListHref(1, pageSize, defaultPageSize, next));
+      router.push(buildTelcosListHref(1, pageSize, defaultPageSize, next, sortBy, sortDir));
     }, 280);
     return () => clearTimeout(t);
   }, [qInput, searchQuery, router, pageSize, defaultPageSize]);
@@ -160,7 +204,7 @@ export function TelcosDirectoryClient({
     if (clearQuery) {
       setQInput("");
       if (hasSearch) {
-        router.push(buildTelcosListHref(1, pageSize, defaultPageSize, ""));
+        router.push(buildTelcosListHref(1, pageSize, defaultPageSize, "", sortBy, sortDir));
       }
     }
     setSearchExpanded(false);
@@ -188,7 +232,7 @@ export function TelcosDirectoryClient({
               </span>
             </div>
             <p className="mt-1.5 max-w-xl text-sm leading-snug text-keyra-text-2">
-              Full telco catalog — newest additions appear first. Create and edits stay limited by your deployment role.
+              Full telco catalog — click any column header to sort. Default order is newest first.
             </p>
           </div>
 
@@ -400,23 +444,22 @@ export function TelcosDirectoryClient({
           <table className="w-full min-w-[42rem] text-left text-sm">
             <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
               <tr>
-                <th className="px-3 py-2">Telco</th>
-                <th className="px-3 py-2">Country</th>
-                <th className="px-3 py-2">Subdomain</th>
-                <th className="px-3 py-2">Status</th>
-                <th className="px-3 py-2">Published</th>
+                {sortableTh("Telco", "name")}
+                {sortableTh("Country", "country")}
+                {sortableTh("Subdomain", "subdomain")}
+                {sortableTh("Status", "status")}
+                {sortableTh("Published", "published")}
                 <th className="w-px whitespace-nowrap px-2 py-2 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
               {telcos.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-3 py-8 text-center text-sm text-keyra-text-2">
-                    {hasSearch
-                      ? "No telcos match your search. Try different keywords or clear the search."
-                      : "No telcos in this catalog."}
-                  </td>
-                </tr>
+                <AdminListEmptyState
+                  variant="table-row"
+                  colSpan={6}
+                  hasSearch={hasSearch}
+                  entityName="telcos"
+                />
               ) : (
                 telcos.map((t) => {
                   const isDeleting = deletingId === t.id;
@@ -479,7 +522,7 @@ export function TelcosDirectoryClient({
                 ) : (
                   <Link
                     key={sz}
-                    href={buildTelcosListHref(1, sz, defaultPageSize, searchQuery)}
+                    href={buildTelcosListHref(1, sz, defaultPageSize, searchQuery, sortBy, sortDir)}
                     prefetch={false}
                     className={inactivePageClass}
                   >
@@ -491,7 +534,7 @@ export function TelcosDirectoryClient({
 
             <div className="flex flex-wrap items-center justify-end gap-2">
               <Link
-                href={buildTelcosListHref(Math.max(1, page - 1), pageSize, defaultPageSize, searchQuery)}
+                href={buildTelcosListHref(Math.max(1, page - 1), pageSize, defaultPageSize, searchQuery, sortBy, sortDir)}
                 prefetch={false}
                 aria-disabled={page <= 1}
                 className={`${inactivePageClass} ${page <= 1 ? "pointer-events-none opacity-40" : ""}`}
@@ -510,7 +553,7 @@ export function TelcosDirectoryClient({
                 ) : (
                   <Link
                     key={item}
-                    href={buildTelcosListHref(item, pageSize, defaultPageSize, searchQuery)}
+                    href={buildTelcosListHref(item, pageSize, defaultPageSize, searchQuery, sortBy, sortDir)}
                     prefetch={false}
                     className={inactivePageClass}
                   >
@@ -519,7 +562,7 @@ export function TelcosDirectoryClient({
                 ),
               )}
               <Link
-                href={buildTelcosListHref(Math.min(totalPages, page + 1), pageSize, defaultPageSize, searchQuery)}
+                href={buildTelcosListHref(Math.min(totalPages, page + 1), pageSize, defaultPageSize, searchQuery, sortBy, sortDir)}
                 prefetch={false}
                 aria-disabled={page >= totalPages}
                 className={`${inactivePageClass} ${page >= totalPages ? "pointer-events-none opacity-40" : ""}`}

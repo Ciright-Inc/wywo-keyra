@@ -1,8 +1,9 @@
 import { readJsonObject, rateLimitResponse } from "@/app/api/keyra/_routeHelpers";
 import { writeAudit } from "@/app/api/admin/deployments/_audit";
 import { requireGlobalFeedWrite } from "@/lib/authenticationFeed/adminGuard";
-import { requireDeploymentAuth } from "@/lib/deployments/adminContext";
+import { getAuthenticationFeedSettingsForAdmin } from "@/lib/authenticationFeed/adminListQueries";
 import { ensureDefaultFeedSettings } from "@/lib/authenticationFeed/feedSessionDb";
+import { requireDeploymentAuth } from "@/lib/deployments/adminContext";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -12,8 +13,7 @@ export async function GET(req: Request) {
   const auth = await requireDeploymentAuth(req);
   if (auth instanceof Response) return auth;
 
-  await ensureDefaultFeedSettings();
-  const row = await prisma.authenticationFeedSetting.findUnique({ where: { id: "default" } });
+  const row = await getAuthenticationFeedSettingsForAdmin();
   return NextResponse.json({ settings: row });
 }
 

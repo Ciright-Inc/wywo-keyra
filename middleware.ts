@@ -1,6 +1,5 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { adminIsConfigured, isAuthorizedAdmin } from "@/lib/adminAuth";
 import {
   adminSplitHostEnabled,
   getAdminPublicOrigin,
@@ -67,25 +66,7 @@ export async function middleware(request: NextRequest) {
     return nextForAppShell(request);
   }
 
-  if (!adminIsConfigured()) {
-    if (isAdminApi) {
-      return NextResponse.json({ error: "Admin is not configured." }, { status: 503 });
-    }
-    return new NextResponse("Admin is not configured.", { status: 503 });
-  }
-
-  if (await isAuthorizedAdmin(request)) {
-    return nextForAppShell(request);
-  }
-
-  if (isAdminApi) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const url = request.nextUrl.clone();
-  url.pathname = "/admin/login";
-  url.searchParams.set("next", pathname);
-  return NextResponse.redirect(url);
+  return nextForAppShell(request);
 }
 
 export const config = {

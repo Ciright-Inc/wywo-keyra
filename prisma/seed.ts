@@ -8,6 +8,7 @@ import {
   type VerificationMethod,
 } from "@prisma/client";
 import { buildTelcoSubdomainForSeed, loadDeploymentSeed } from "./deploymentSeedData";
+import { loadRegionsCountriesSeed } from "./regionsCountriesSeedData";
 import { seedAuthenticationFeed } from "./seedAuthenticationFeed";
 import { seedDeploymentGraph } from "./seedDeploymentGraph";
 
@@ -15,6 +16,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const data = loadDeploymentSeed();
+  const regionsCountries = loadRegionsCountriesSeed();
 
   await prisma.adminUser.deleteMany();
 
@@ -28,7 +30,7 @@ async function main() {
   await prisma.region.deleteMany();
 
   const regionBySlug = new Map<string, { id: string }>();
-  for (const r of data.regions) {
+  for (const r of regionsCountries.regions) {
     const created = await prisma.region.create({
       data: {
         continentCode: r.continentCode,
@@ -44,7 +46,7 @@ async function main() {
   }
 
   const countryByIso2 = new Map<string, { id: string; countrySubdomain: string }>();
-  for (const c of data.countries) {
+  for (const c of regionsCountries.featuredCountries) {
     const region = regionBySlug.get(c.regionSlug);
     if (!region) throw new Error(`Missing region slug: ${c.regionSlug}`);
     const created = await prisma.countryDeployment.create({

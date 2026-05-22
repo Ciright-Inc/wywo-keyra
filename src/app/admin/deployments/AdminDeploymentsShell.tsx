@@ -14,6 +14,7 @@ const nav = [
   { href: "/admin/deployments/server-nodes", label: "Server nodes", icon: "server" },
   { href: "/admin/deployments/access-domain-rules", label: "Access domains", icon: "shield" },
   { href: "/admin/deployments/access-requests", label: "Access requests", icon: "inbox" },
+  { href: "/admin/deployments/admin-users", label: "Admin users", icon: "users" },
   { href: "/admin/deployments/audit", label: "Audit", icon: "audit" },
 ] as const;
 
@@ -67,6 +68,13 @@ function NavIcon({ name }: { name: (typeof nav)[number]["icon"] }) {
         <>
           <path {...common} d="M4 13h5l2 3h2l2-3h5" />
           <path {...common} d="M5 13 7 5h10l2 8v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z" />
+        </>
+      ) : name === "users" ? (
+        <>
+          <path {...common} d="M16 19v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1" />
+          <circle {...common} cx="10" cy="8" r="3" />
+          <path {...common} d="M20 19v-1a3 3 0 0 0-2-2.8" />
+          <path {...common} d="M16 4.2a3 3 0 0 1 0 5.6" />
         </>
       ) : (
         <>

@@ -5,11 +5,14 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { buildListHref } from "@/lib/admin/listSearchParams";
 
 const STATUS_OPTIONS = ["IDENTIFIED", "INSTITUTIONAL_AWARENESS", "TVIP", "OPERATIONAL"] as const;
+
+export type CountrySortKey = "name" | "region" | "iso2" | "subdomain" | "status" | "published" | "sortOrder";
 
 export type CountryRow = {
   id: string;
@@ -18,6 +21,7 @@ export type CountryRow = {
   countrySubdomain: string;
   status: string;
   isPublished: boolean;
+  region: { name: string; slug: string };
 };
 
 type RegionOption = { id: string; name: string; slug: string };
@@ -28,6 +32,8 @@ type Props = {
   pageSizeOptions: readonly number[];
   defaultPageSize: number;
   searchQuery: string;
+  sortBy: CountrySortKey;
+  sortDir: "asc" | "desc";
   regions: RegionOption[];
   showCreate: boolean;
   /** Mirrors the server-side mutate check — gates the trash icon. */
@@ -38,12 +44,28 @@ type Props = {
 
 const BASE_HREF = "/admin/deployments/countries";
 
+function sortListExtra(sortBy: CountrySortKey, sortDir: "asc" | "desc") {
+  if (sortBy === "sortOrder" && sortDir === "asc") return undefined;
+  return { sort: sortBy === "sortOrder" ? undefined : sortBy, dir: sortDir };
+}
+
+function nextSortState(
+  column: CountrySortKey,
+  sortBy: CountrySortKey,
+  sortDir: "asc" | "desc",
+): { sort: CountrySortKey; dir: "asc" | "desc" } {
+  if (sortBy === column) return { sort: column, dir: sortDir === "asc" ? "desc" : "asc" };
+  return { sort: column, dir: "asc" };
+}
+
 export function CountriesDirectoryClient({
   countries,
   pagination,
   pageSizeOptions,
   defaultPageSize,
   searchQuery,
+  sortBy,
+  sortDir,
   regions,
   showCreate,
   canDelete,
@@ -89,8 +111,14 @@ export function CountriesDirectoryClient({
   const selectClass = `${inputClass} bg-keyra-bg`;
 
   const buildSearchHref = useCallback(
-    (query: string) => buildListHref(BASE_HREF, { page: 1, pageSize, searchQuery: query }, defaultPageSize),
-    [pageSize, defaultPageSize],
+    (query: string) =>
+      buildListHref(
+        BASE_HREF,
+        { page: 1, pageSize, searchQuery: query },
+        defaultPageSize,
+        sortListExtra(sortBy, sortDir),
+      ),
+    [pageSize, defaultPageSize, sortBy, sortDir],
   );
 
   const buildPaginationHref = useCallback(
@@ -99,8 +127,37 @@ export function CountriesDirectoryClient({
         BASE_HREF,
         { page: nextPage, pageSize: nextPageSize, searchQuery },
         defaultPageSize,
+        sortListExtra(sortBy, sortDir),
       ),
-    [searchQuery, defaultPageSize],
+    [searchQuery, defaultPageSize, sortBy, sortDir],
+  );
+
+  function sortHref(column: CountrySortKey): string {
+    const next = nextSortState(column, sortBy, sortDir);
+    return buildListHref(
+      BASE_HREF,
+      { page: 1, pageSize, searchQuery },
+      defaultPageSize,
+      sortListExtra(next.sort, next.dir),
+    );
+  }
+
+  function sortIndicator(column: CountrySortKey): string {
+    if (sortBy !== column) return "";
+    return sortDir === "asc" ? " ↑" : " ↓";
+  }
+
+  const sortableTh = (label: string, column: CountrySortKey) => (
+    <th className="px-3 py-2" aria-sort={sortBy === column ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+      <Link
+        href={sortHref(column)}
+        prefetch={false}
+        className="inline-flex items-center gap-0.5 font-semibold text-keyra-text-2 transition hover:text-keyra-primary"
+      >
+        {label}
+        <span aria-hidden>{sortIndicator(column)}</span>
+      </Link>
+    </th>
   );
 
   const canUseCreate = showCreate && regions.length > 0;
@@ -117,7 +174,7 @@ export function CountriesDirectoryClient({
               </span>
             </div>
             <p className="mt-1.5 max-w-xl text-sm leading-snug text-keyra-text-2">
-              Scoped to your admin role. Edit rows you are permitted to change.
+              Scoped to your admin role. Click any column header to sort.
             </p>
           </div>
 
@@ -125,7 +182,7 @@ export function CountriesDirectoryClient({
             <CollapsibleSearchBar
               searchQuery={searchQuery}
               buildHref={buildSearchHref}
-              placeholder="Name, ISO, subdomain, status…"
+              placeholder="Name, ISO, region, subdomain, status…"
               ariaLabel="Search countries"
             />
             <Link
@@ -236,29 +293,30 @@ export function CountriesDirectoryClient({
           <table className="w-full min-w-[36rem] text-left text-sm">
             <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
               <tr>
-                <th className="px-3 py-2">Country</th>
-                <th className="px-3 py-2">ISO2</th>
-                <th className="px-3 py-2">Subdomain</th>
-                <th className="px-3 py-2">Status</th>
-                <th className="px-3 py-2">Published</th>
+                {sortableTh("Country", "name")}
+                {sortableTh("Region", "region")}
+                {sortableTh("ISO2", "iso2")}
+                {sortableTh("Subdomain", "subdomain")}
+                {sortableTh("Status", "status")}
+                {sortableTh("Published", "published")}
                 <th className="w-px whitespace-nowrap px-2 py-2 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
               {countries.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-3 py-8 text-center text-sm text-keyra-text-2">
-                    {hasSearch
-                      ? "No countries match your search. Try different keywords or clear the search."
-                      : "No countries in this catalog."}
-                  </td>
-                </tr>
+                <AdminListEmptyState
+                  variant="table-row"
+                  colSpan={7}
+                  hasSearch={hasSearch}
+                  entityName="countries"
+                />
               ) : (
                 countries.map((c) => {
                   const isDeleting = deletingId === c.id;
                   return (
                     <tr key={c.id} className={`transition hover:bg-keyra-surface ${isDeleting ? "opacity-60" : ""}`}>
                       <td className="px-3 py-2 font-medium text-keyra-primary">{c.name}</td>
+                      <td className="px-3 py-2 text-keyra-text-2">{c.region.name}</td>
                       <td className="px-3 py-2 text-keyra-text-2">{c.iso2}</td>
                       <td className="max-w-[12rem] truncate px-3 py-2 font-mono text-xs text-keyra-text-2">
                         {c.countrySubdomain}

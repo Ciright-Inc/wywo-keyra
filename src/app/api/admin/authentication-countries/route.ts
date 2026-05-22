@@ -1,4 +1,3 @@
-import type { Prisma } from "@prisma/client";
 import { readJsonObject, rateLimitResponse } from "@/app/api/keyra/_routeHelpers";
 import { writeAudit } from "@/app/api/admin/deployments/_audit";
 import {
@@ -7,6 +6,10 @@ import {
   validatePercentageWeight,
 } from "@/lib/authenticationFeed/countryPayload";
 import { requireGlobalFeedWrite } from "@/lib/authenticationFeed/adminGuard";
+import {
+  listAuthenticationCountriesForAdmin,
+  parseAuthenticationCountriesSearchParams,
+} from "@/lib/authenticationFeed/adminListQueries";
 import { requireDeploymentAuth } from "@/lib/deployments/adminContext";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
@@ -17,63 +20,8 @@ export async function GET(req: Request) {
   const auth = await requireDeploymentAuth(req);
   if (auth instanceof Response) return auth;
 
-  const url = new URL(req.url);
-  const region = url.searchParams.get("region")?.trim();
-  const subRegion = url.searchParams.get("subRegion")?.trim();
-  const activeParam = url.searchParams.get("active");
-  const authEn = url.searchParams.get("authenticationEnabled");
-  const weightMinRaw = url.searchParams.get("weightMin");
-  const weightMaxRaw = url.searchParams.get("weightMax");
-  const q = url.searchParams.get("q")?.trim().toLowerCase() ?? "";
-  const sort = url.searchParams.get("sort")?.trim().toLowerCase() ?? "priority";
-
-  const orderBy: Prisma.AuthenticationCountryOrderByWithRelationInput[] =
-    sort === "weight" || sort === "percentage"
-      ? [{ percentageWeight: "desc" }, { countryName: "asc" }]
-      : sort === "name" || sort === "country"
-        ? [{ countryName: "asc" }]
-        : sort === "iso" || sort === "iso2"
-          ? [{ iso2: "asc" }]
-          : sort === "updated"
-            ? [{ updatedAt: "desc" }]
-            : [{ displayPriority: "asc" }, { countryName: "asc" }];
-
-  const weightMin = weightMinRaw != null && weightMinRaw !== "" ? Number(weightMinRaw) : null;
-  const weightMax = weightMaxRaw != null && weightMaxRaw !== "" ? Number(weightMaxRaw) : null;
-
-  const where: Prisma.AuthenticationCountryWhereInput = {
-    ...(region ? { region } : {}),
-    ...(subRegion ? { subRegion } : {}),
-    ...(activeParam === "true" ? { active: true } : {}),
-    ...(activeParam === "false" ? { active: false } : {}),
-    ...(authEn === "true" ? { authenticationEnabled: true } : {}),
-    ...(authEn === "false" ? { authenticationEnabled: false } : {}),
-    ...(q
-      ? {
-          OR: [
-            { countryName: { contains: q, mode: "insensitive" } },
-            { officialName: { contains: q, mode: "insensitive" } },
-            { iso2: { contains: q, mode: "insensitive" } },
-            { iso3: { contains: q, mode: "insensitive" } },
-            { region: { contains: q, mode: "insensitive" } },
-            { subRegion: { contains: q, mode: "insensitive" } },
-          ],
-        }
-      : {}),
-  };
-
-  if (weightMin != null && Number.isFinite(weightMin) && weightMax != null && Number.isFinite(weightMax)) {
-    where.percentageWeight = { gte: weightMin, lte: weightMax };
-  } else if (weightMin != null && Number.isFinite(weightMin)) {
-    where.percentageWeight = { gte: weightMin };
-  } else if (weightMax != null && Number.isFinite(weightMax)) {
-    where.percentageWeight = { lte: weightMax };
-  }
-
-  const rows = await prisma.authenticationCountry.findMany({
-    where,
-    orderBy,
-  });
+  const params = parseAuthenticationCountriesSearchParams(new URL(req.url).searchParams);
+  const rows = await listAuthenticationCountriesForAdmin(params);
 
   return NextResponse.json({ countries: rows });
 }

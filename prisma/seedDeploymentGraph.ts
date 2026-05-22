@@ -1,152 +1,27 @@
 /**
- * Idempotent upsert of global deployment map rows (regions, countries, telcos) from
- * `prisma/data/deployment-seed.json`, plus every ISO-3166 alpha-2 territory from `world-countries`
- * (region: global-catalog, subdomain `{iso2}.keyra.ie`, not published by default).
- * Real telco catalog rows come from `npm run db:import:telcos` (Excel import).
- * Safe on every production boot: does not wipe admins, audit, access rules, or server nodes
- * (those remain `prisma db seed` only).
+ * Idempotent upsert of deployment telcos (+ optional access rules in full seed) from
+ * `prisma/data/deployment-seed.json`. Regions and countries are seeded separately via
+ * `seedRegionsAndCountries` (`prisma/data/regions-countries-seed.json`).
  */
-import { DeploymentStatus, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { buildTelcoSubdomainForSeed, loadDeploymentSeed } from "./deploymentSeedData";
-import { allWorldCountriesWithIso2 } from "./worldCountriesIso";
+import { seedRegionsAndCountries, type RegionsCountriesSeedStats } from "./seedRegionsCountries";
 
-export type DeploymentGraphSeedStats = {
-  regionsUpserted: number;
-  countriesUpserted: number;
+export type DeploymentGraphSeedStats = RegionsCountriesSeedStats & {
   telcosUpserted: number;
-  worldCatalogCountriesUpserted: number;
   placeholderTelcosUpserted: number;
 };
 
 export async function seedDeploymentGraph(prisma: PrismaClient): Promise<DeploymentGraphSeedStats> {
+  const regionStats = await seedRegionsAndCountries(prisma);
+
   const data = loadDeploymentSeed();
-  const regionBySlug = new Map<string, { id: string }>();
-  let regionsUpserted = 0;
-
-  for (const r of data.regions) {
-    const row = await prisma.region.upsert({
-      where: { slug: r.slug },
-      create: {
-        continentCode: r.continentCode,
-        subregionCode: r.subregionCode,
-        name: r.name,
-        slug: r.slug,
-        mapKey: r.mapKey,
-        sortOrder: r.sortOrder,
-        isPublished: r.isPublished,
-      },
-      update: {
-        continentCode: r.continentCode,
-        subregionCode: r.subregionCode,
-        name: r.name,
-        mapKey: r.mapKey,
-        sortOrder: r.sortOrder,
-        isPublished: r.isPublished,
-      },
-    });
-    regionBySlug.set(r.slug, { id: row.id });
-    regionsUpserted++;
-  }
-
-  const globalCatalogRegion = regionBySlug.get("global-catalog");
-  if (!globalCatalogRegion) {
-    throw new Error("[seedDeploymentGraph] Missing region slug: global-catalog (add to deployment-seed.json).");
-  }
-
-  const countryByIso2 = new Map<string, { id: string; countrySubdomain: string }>();
-  let countriesUpserted = 0;
-
-  for (const c of data.countries) {
-    const region = regionBySlug.get(c.regionSlug);
-    if (!region) throw new Error(`[seedDeploymentGraph] Missing region slug: ${c.regionSlug}`);
-    const subdomain = c.countrySubdomain.toLowerCase();
-    const row = await prisma.countryDeployment.upsert({
-      where: { countrySubdomain: subdomain },
-      create: {
-        regionId: region.id,
-        name: c.name,
-        iso2: c.iso2.toUpperCase(),
-        iso3: c.iso3.toUpperCase(),
-        flagAssetKey: c.flagAssetKey,
-        population: c.population,
-        populationDisplay: c.populationDisplay,
-        countrySubdomain: subdomain,
-        officialReferenceDomain: c.officialReferenceDomain,
-        status: c.status as DeploymentStatus,
-        statusNote: c.statusNote,
-        sourceLabel: c.sourceLabel,
-        sourceUrl: c.sourceUrl,
-        sourceVerifiedAt: c.sourceVerifiedAt ? new Date(c.sourceVerifiedAt) : null,
-        sortOrder: c.sortOrder,
-        isPublished: c.isPublished,
-      },
-      update: {
-        regionId: region.id,
-        name: c.name,
-        iso2: c.iso2.toUpperCase(),
-        iso3: c.iso3.toUpperCase(),
-        flagAssetKey: c.flagAssetKey,
-        population: c.population,
-        populationDisplay: c.populationDisplay,
-        officialReferenceDomain: c.officialReferenceDomain,
-        status: c.status as DeploymentStatus,
-        statusNote: c.statusNote,
-        sourceLabel: c.sourceLabel,
-        sourceUrl: c.sourceUrl,
-        sourceVerifiedAt: c.sourceVerifiedAt ? new Date(c.sourceVerifiedAt) : null,
-        sortOrder: c.sortOrder,
-        isPublished: c.isPublished,
-      },
-    });
-    countryByIso2.set(c.iso2.toUpperCase(), { id: row.id, countrySubdomain: row.countrySubdomain });
-    countriesUpserted++;
-  }
-
-  let worldCatalogCountriesUpserted = 0;
-  let worldCatalogSort = 10000;
-
-  for (const wc of allWorldCountriesWithIso2()) {
-    const iso2 = wc.cca2.toUpperCase();
-    if (countryByIso2.has(iso2)) continue;
-
-    const subdomain = `${iso2.toLowerCase()}.keyra.ie`;
-    const name = wc.name.common;
-    const iso3 = (wc.cca3 ?? "XXX").toUpperCase();
-    const flagAssetKey = iso2.toLowerCase();
-    worldCatalogSort += 1;
-
-    const row = await prisma.countryDeployment.upsert({
-      where: { countrySubdomain: subdomain },
-      create: {
-        regionId: globalCatalogRegion.id,
-        name,
-        iso2,
-        iso3,
-        flagAssetKey,
-        population: null,
-        populationDisplay: null,
-        countrySubdomain: subdomain,
-        officialReferenceDomain: null,
-        status: DeploymentStatus.IDENTIFIED,
-        statusNote: "Auto-seeded from world-countries; refine in admin.",
-        sourceLabel: "world-countries (npm)",
-        sourceUrl: "https://www.npmjs.com/package/world-countries",
-        sourceVerifiedAt: new Date(),
-        sortOrder: worldCatalogSort,
-        isPublished: false,
-      },
-      update: {
-        regionId: globalCatalogRegion.id,
-        name,
-        iso2,
-        iso3,
-        flagAssetKey,
-      },
-    });
-
-    countryByIso2.set(iso2, { id: row.id, countrySubdomain: row.countrySubdomain });
-    worldCatalogCountriesUpserted++;
-  }
+  const countries = await prisma.countryDeployment.findMany({
+    select: { id: true, iso2: true, countrySubdomain: true },
+  });
+  const countryByIso2 = new Map(
+    countries.map((c) => [c.iso2.toUpperCase(), { id: c.id, countrySubdomain: c.countrySubdomain }]),
+  );
 
   let telcosUpserted = 0;
   for (const t of data.telcos) {
@@ -169,7 +44,7 @@ export async function seedDeploymentGraph(prisma: PrismaClient): Promise<Deploym
         subscribersDisplay: t.subscribersDisplay,
         telcoSubdomain,
         officialDomain: t.officialDomain,
-        status: t.status as DeploymentStatus,
+        status: t.status as never,
         sortOrder: t.sortOrder,
         isPublished: t.isPublished,
       },
@@ -179,7 +54,7 @@ export async function seedDeploymentGraph(prisma: PrismaClient): Promise<Deploym
         subscribersDisplay: t.subscribersDisplay,
         telcoSubdomain,
         officialDomain: t.officialDomain,
-        status: t.status as DeploymentStatus,
+        status: t.status as never,
         sortOrder: t.sortOrder,
         isPublished: t.isPublished,
       },
@@ -188,10 +63,8 @@ export async function seedDeploymentGraph(prisma: PrismaClient): Promise<Deploym
   }
 
   return {
-    regionsUpserted,
-    countriesUpserted,
+    ...regionStats,
     telcosUpserted,
-    worldCatalogCountriesUpserted,
     placeholderTelcosUpserted: 0,
   };
 }

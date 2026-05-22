@@ -1,7 +1,8 @@
 /**
  * Post-migrate catalog seed for production-style deploys.
  * Safe to run on every boot: upserts feed settings, SAT protocol registry, (by default) world AuthenticationCountry rows,
- * and (by default) deployment map regions / CountryDeployment / TelcoDeployment from `prisma/data/deployment-seed.json`.
+ * and (by default) deployment map regions / CountryDeployment from `prisma/data/regions-countries-seed.json`
+ * plus telcos from `prisma/data/deployment-seed.json`.
  * If there are no AdminUser rows yet, seeds the same demo admins as `prisma/seed.ts` (password from SEED_ADMIN_PASSWORD).
  * Does NOT run full prisma/seed.ts (no admin wipe, no access rules / server nodes reset).
  *

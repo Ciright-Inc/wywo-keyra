@@ -6,12 +6,48 @@ import { createCountry } from "@/app/admin/deployments/actions";
 import { DeploymentAdminRole } from "@prisma/client";
 import { isComplianceReviewer, isReadOnlyRole } from "@/lib/deployments/adminAuthz";
 import { parsePage, parsePageSize, parseSearchQuery } from "@/lib/admin/listSearchParams";
-import { CountriesDirectoryClient } from "./CountriesDirectoryClient";
+import { CountriesDirectoryClient, type CountrySortKey } from "./CountriesDirectoryClient";
 
 const DEFAULT_PAGE_SIZE = 25;
 const PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
 
-type Search = { page?: string; perPage?: string; q?: string };
+const SORTABLE_COLUMNS = new Set<CountrySortKey>(["name", "region", "iso2", "subdomain", "status", "published"]);
+
+type Search = { page?: string; perPage?: string; q?: string; sort?: string; dir?: string };
+
+function parseCountrySort(
+  rawSort: string | undefined,
+  rawDir: string | undefined,
+): { sort: CountrySortKey; dir: "asc" | "desc" } {
+  if (!rawSort?.trim()) return { sort: "sortOrder", dir: "asc" };
+  const sort = rawSort.trim() as CountrySortKey;
+  if (!SORTABLE_COLUMNS.has(sort)) return { sort: "sortOrder", dir: "asc" };
+  const dir = rawDir === "asc" || rawDir === "desc" ? rawDir : "asc";
+  return { sort, dir };
+}
+
+function countryOrderBy(
+  sort: CountrySortKey,
+  dir: "asc" | "desc",
+): Prisma.CountryDeploymentOrderByWithRelationInput[] {
+  switch (sort) {
+    case "name":
+      return [{ name: dir }];
+    case "region":
+      return [{ region: { name: dir } }, { name: "asc" }];
+    case "iso2":
+      return [{ iso2: dir }, { name: "asc" }];
+    case "subdomain":
+      return [{ countrySubdomain: dir }, { name: "asc" }];
+    case "status":
+      return [{ status: dir }, { name: "asc" }];
+    case "published":
+      return [{ isPublished: dir }, { name: "asc" }];
+    case "sortOrder":
+    default:
+      return [{ sortOrder: dir }, { name: "asc" }];
+  }
+}
 
 function countrySearchWhere(query: string): Prisma.CountryDeploymentWhereInput | undefined {
   const q = query.trim();
@@ -35,6 +71,7 @@ export default async function AdminCountriesPage({ searchParams }: { searchParam
   const pageSize = parsePageSize(sp.perPage, PAGE_SIZE_OPTIONS, DEFAULT_PAGE_SIZE);
   let page = parsePage(sp.page);
   const searchQuery = parseSearchQuery(sp.q);
+  const { sort, dir } = parseCountrySort(sp.sort, sp.dir);
 
   const auth = await assertAdminServer();
   const cw = await countryWhereFromAuth(auth);
@@ -58,7 +95,7 @@ export default async function AdminCountriesPage({ searchParams }: { searchParam
 
   const countries = await prisma.countryDeployment.findMany({
     where,
-    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    orderBy: countryOrderBy(sort, dir),
     skip: (page - 1) * pageSize,
     take: pageSize,
     include: { region: { select: { name: true, slug: true } } },
@@ -88,11 +125,14 @@ export default async function AdminCountriesPage({ searchParams }: { searchParam
         countrySubdomain: c.countrySubdomain,
         status: c.status,
         isPublished: c.isPublished,
+        region: { name: c.region.name, slug: c.region.slug },
       }))}
       pagination={{ page, pageSize, totalCount, totalPages, showingFrom, showingTo }}
       pageSizeOptions={PAGE_SIZE_OPTIONS}
       defaultPageSize={DEFAULT_PAGE_SIZE}
       searchQuery={searchQuery}
+      sortBy={sort}
+      sortDir={dir}
       regions={regions}
       showCreate={showCreate}
       canDelete={canMutate}

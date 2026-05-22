@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 
 export type AuditEventRow = {
@@ -153,13 +154,12 @@ export function AuditDirectoryClient({
               </thead>
               <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
                 {events.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className="px-3 py-8 text-center text-sm text-keyra-text-2">
-                      {hasEventsSearch
-                        ? "No audit events match your search."
-                        : "No audit events recorded yet."}
-                    </td>
-                  </tr>
+                  <AdminListEmptyState
+                    variant="table-row"
+                    colSpan={3}
+                    hasSearch={hasEventsSearch}
+                    entityName="audit events"
+                  />
                 ) : (
                   events.map((a) => (
                     <tr key={a.id} className="transition hover:bg-keyra-surface">
@@ -212,13 +212,12 @@ export function AuditDirectoryClient({
               </thead>
               <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
                 {history.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className="px-3 py-8 text-center text-sm text-keyra-text-2">
-                      {hasHistorySearch
-                        ? "No status history rows match your search."
-                        : "No status history recorded yet."}
-                    </td>
-                  </tr>
+                  <AdminListEmptyState
+                    variant="table-row"
+                    colSpan={3}
+                    hasSearch={hasHistorySearch}
+                    entityName="status history"
+                  />
                 ) : (
                   history.map((h) => (
                     <tr key={h.id} className="transition hover:bg-keyra-surface">

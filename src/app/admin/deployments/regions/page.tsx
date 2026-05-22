@@ -5,12 +5,44 @@ import { regionWhereFromAuth } from "@/lib/deployments/adminContext";
 import { createRegion } from "@/app/admin/deployments/actions";
 import { canCreateRegion, isComplianceReviewer, isReadOnlyRole } from "@/lib/deployments/adminAuthz";
 import { parsePage, parsePageSize, parseSearchQuery } from "@/lib/admin/listSearchParams";
-import { RegionsDirectoryClient } from "./RegionsDirectoryClient";
+import { RegionsDirectoryClient, type RegionSortKey } from "./RegionsDirectoryClient";
 
 const DEFAULT_PAGE_SIZE = 25;
 const PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
 
-type Search = { page?: string; perPage?: string; q?: string };
+const SORTABLE_COLUMNS = new Set<RegionSortKey>(["name", "slug", "map", "published"]);
+
+type Search = { page?: string; perPage?: string; q?: string; sort?: string; dir?: string };
+
+function parseRegionSort(
+  rawSort: string | undefined,
+  rawDir: string | undefined,
+): { sort: RegionSortKey; dir: "asc" | "desc" } {
+  if (!rawSort?.trim()) return { sort: "sortOrder", dir: "asc" };
+  const sort = rawSort.trim() as RegionSortKey;
+  if (!SORTABLE_COLUMNS.has(sort)) return { sort: "sortOrder", dir: "asc" };
+  const dir = rawDir === "asc" || rawDir === "desc" ? rawDir : "asc";
+  return { sort, dir };
+}
+
+function regionOrderBy(
+  sort: RegionSortKey,
+  dir: "asc" | "desc",
+): Prisma.RegionOrderByWithRelationInput[] {
+  switch (sort) {
+    case "name":
+      return [{ name: dir }];
+    case "slug":
+      return [{ slug: dir }, { name: "asc" }];
+    case "map":
+      return [{ mapKey: dir }, { name: "asc" }];
+    case "published":
+      return [{ isPublished: dir }, { name: "asc" }];
+    case "sortOrder":
+    default:
+      return [{ sortOrder: dir }, { name: "asc" }];
+  }
+}
 
 function regionSearchWhere(query: string): Prisma.RegionWhereInput | undefined {
   const q = query.trim();
@@ -31,6 +63,7 @@ export default async function AdminRegionsPage({ searchParams }: { searchParams:
   const pageSize = parsePageSize(sp.perPage, PAGE_SIZE_OPTIONS, DEFAULT_PAGE_SIZE);
   let page = parsePage(sp.page);
   const searchQuery = parseSearchQuery(sp.q);
+  const { sort, dir } = parseRegionSort(sp.sort, sp.dir);
 
   const auth = await assertAdminServer();
   const rw = await regionWhereFromAuth(auth);
@@ -47,7 +80,7 @@ export default async function AdminRegionsPage({ searchParams }: { searchParams:
 
   const regions = await prisma.region.findMany({
     where,
-    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    orderBy: regionOrderBy(sort, dir),
     skip: (page - 1) * pageSize,
     take: pageSize,
   });
@@ -74,6 +107,8 @@ export default async function AdminRegionsPage({ searchParams }: { searchParams:
       pageSizeOptions={PAGE_SIZE_OPTIONS}
       defaultPageSize={DEFAULT_PAGE_SIZE}
       searchQuery={searchQuery}
+      sortBy={sort}
+      sortDir={dir}
       showCreate={showCreate}
       canDelete={canDelete}
       createRegion={createRegion}

@@ -1,6 +1,6 @@
 "use client";
 
-import type { KeyraSessionUser } from "@/lib/keyraSessionCookie";
+import type { KeyraSessionUser } from "@/lib/keyraSessionTypes";
 import { formatPhoneDisplay } from "@/lib/keyraSessionDisplay";
 import {
   createContext,

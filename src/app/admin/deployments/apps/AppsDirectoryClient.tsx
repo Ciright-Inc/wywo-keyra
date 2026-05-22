@@ -8,6 +8,7 @@ import {
   type DeploymentAppView,
 } from "@/lib/deploymentAppConstants";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
 import { GensparkSlidePanel } from "./GensparkSlidePanel";
 
@@ -172,11 +173,12 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
       </div>
 
       {totalVisible === 0 ? (
-        <p className="mt-6 rounded-2xl border border-keyra-border bg-keyra-surface/50 px-4 py-6 text-center text-sm text-keyra-text-2">
-          {hasSearch || hasCategoryFilter
-            ? "No apps match your filters. Try a different category or clear the search."
-            : "No apps yet. Create your first app to get started."}
-        </p>
+        <AdminListEmptyState
+          variant="panel"
+          hasSearch={hasSearch}
+          hasFilter={hasCategoryFilter}
+          entityName="apps"
+        />
       ) : (
         <div className="mt-6 rounded-3xl border border-keyra-border bg-keyra-surface/45 p-2.5 shadow-[0_18px_54px_rgba(0,0,0,0.04)] sm:p-3">
           <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">

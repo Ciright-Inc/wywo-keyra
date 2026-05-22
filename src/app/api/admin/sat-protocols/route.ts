@@ -1,90 +1,24 @@
 import { readJsonObject, rateLimitResponse } from "@/app/api/keyra/_routeHelpers";
 import { writeAudit } from "@/app/api/admin/deployments/_audit";
 import { requireGlobalFeedWrite } from "@/lib/authenticationFeed/adminGuard";
+import {
+  listSatProtocolsForAdmin,
+  parseSatProtocolsSearchParams,
+} from "@/lib/authenticationFeed/adminListQueries";
 import { requireDeploymentAuth } from "@/lib/deployments/adminContext";
 import prisma from "@/lib/prisma";
 import { SAT_PROTOCOL_DEFAULT_HOME, SAT_PROTOCOL_DEFAULT_ROAMING, SAT_PROTOCOL_DEFAULT_WEIGHT } from "@/lib/satProtocol/registry";
 import { validateHomeRoaming } from "@/lib/satProtocol/validateHomeRoaming";
-import type { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
-
-const SORT_FIELDS = new Set([
-  "displayOrder",
-  "protocolName",
-  "protocolCode",
-  "protocolCategory",
-  "percentageWeight",
-  "trustLevel",
-  "updatedAt",
-  "active",
-  "homePercentage",
-  "roamingPercentage",
-]);
-
-function parseOrderBy(raw: string | null): Prisma.SatProtocolOrderByWithRelationInput {
-  const s = raw?.trim() ?? "displayOrder:asc";
-  const [k0, d0] = s.split(":");
-  const dir = d0 === "desc" ? "desc" : "asc";
-  const key = SORT_FIELDS.has(k0) ? k0 : "displayOrder";
-  return { [key]: dir } as Prisma.SatProtocolOrderByWithRelationInput;
-}
 
 export async function GET(req: Request) {
   const auth = await requireDeploymentAuth(req);
   if (auth instanceof Response) return auth;
 
-  const url = new URL(req.url);
-  const activeParam = url.searchParams.get("active");
-  const q = url.searchParams.get("q")?.trim() ?? "";
-  const category = url.searchParams.get("category")?.trim() ?? "";
-  const enterprise = url.searchParams.get("enterprise");
-  const government = url.searchParams.get("government");
-  const telco = url.searchParams.get("telco");
-  const consumer = url.searchParams.get("consumer");
-  const aiAgent = url.searchParams.get("aiAgent");
-  const globalAvail = url.searchParams.get("globalAvailability");
-  const apiReady = url.searchParams.get("apiReady");
-  const sort = parseOrderBy(url.searchParams.get("sort"));
-
-  const where: Prisma.SatProtocolWhereInput = {
-    ...(activeParam === "true" ? { active: true } : {}),
-    ...(activeParam === "false" ? { active: false } : {}),
-    ...(category ? { protocolCategory: category } : {}),
-    ...(enterprise === "true" ? { flagEnterprise: true } : {}),
-    ...(enterprise === "false" ? { flagEnterprise: false } : {}),
-    ...(government === "true" ? { flagGovernment: true } : {}),
-    ...(government === "false" ? { flagGovernment: false } : {}),
-    ...(telco === "true" ? { flagTelco: true } : {}),
-    ...(telco === "false" ? { flagTelco: false } : {}),
-    ...(consumer === "true" ? { flagConsumer: true } : {}),
-    ...(consumer === "false" ? { flagConsumer: false } : {}),
-    ...(aiAgent === "true" ? { flagAiAgent: true } : {}),
-    ...(aiAgent === "false" ? { flagAiAgent: false } : {}),
-    ...(globalAvail === "true" ? { globalAvailability: true } : {}),
-    ...(globalAvail === "false" ? { globalAvailability: false } : {}),
-    ...(apiReady === "true" ? { apiReady: true } : {}),
-    ...(apiReady === "false" ? { apiReady: false } : {}),
-    ...(q
-      ? {
-          OR: [
-            { protocolName: { contains: q, mode: "insensitive" } },
-            { protocolCode: { contains: q, mode: "insensitive" } },
-            { protocolCategory: { contains: q, mode: "insensitive" } },
-            { protocolSlug: { contains: q, mode: "insensitive" } },
-            { shortDescription: { contains: q, mode: "insensitive" } },
-            { longDescription: { contains: q, mode: "insensitive" } },
-            { securityClassification: { contains: q, mode: "insensitive" } },
-          ],
-        }
-      : {}),
-  };
-
-  const rows = await prisma.satProtocol.findMany({
-    where,
-    orderBy: sort,
-  });
+  const params = parseSatProtocolsSearchParams(new URL(req.url).searchParams);
+  const rows = await listSatProtocolsForAdmin(params);
 
   return NextResponse.json({ protocols: rows });
 }

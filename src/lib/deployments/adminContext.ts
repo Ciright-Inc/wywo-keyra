@@ -1,45 +1,53 @@
+import "server-only";
+
+import { cache } from "react";
 import type { Prisma } from "@prisma/client";
-import { DeploymentAdminRole as R } from "@prisma/client";
+import { DeploymentAdminRole as R, RequestApprovalStatus } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import {
-  ADMIN_JWT_COOKIE,
-  getTokenFromRequest,
-  verifyAdminJwt,
-} from "@/lib/adminJwt";
+import { normalizePhoneE164 } from "@/lib/adminUserPhone";
 import type { DeploymentAuth } from "@/lib/deployments/adminAuthz";
 import { parseScope } from "@/lib/deployments/adminAuthz";
+import {
+  resolveKeyraSessionFromCookies,
+  resolveKeyraSessionFromRequest,
+} from "@/lib/keyraSessionServer";
+
+export type AdminAccessState =
+  | { status: "authorized"; auth: DeploymentAuth }
+  | { status: "unsigned" }
+  | { status: "no_access"; phoneE164: string };
+
+export const resolveAdminAuthForPhone = cache(async (phoneE164: string): Promise<DeploymentAuth | null> => {
+  const phone = normalizePhoneE164(phoneE164);
+  if (!phone) return null;
+
+  const user = await prisma.adminUser.findFirst({
+    where: { phoneE164: phone, isActive: true },
+  });
+  if (!user) return null;
+  return { kind: "user", user };
+});
 
 export async function resolveDeploymentAuth(req: Request): Promise<DeploymentAuth | null> {
-  const cookie = req.headers.get("cookie");
-  let cookieJwt: string | null = null;
-  if (cookie) {
-    const parts = cookie.split(";").map((c) => c.trim());
-    for (const p of parts) {
-      if (p.startsWith(`${ADMIN_JWT_COOKIE}=`)) {
-        cookieJwt = decodeURIComponent(p.slice(ADMIN_JWT_COOKIE.length + 1));
-        break;
-      }
-    }
-  }
-  const raw = getTokenFromRequest(req, cookieJwt);
-  if (!raw) return null;
-
-  const legacy = process.env.KEYRA_ADMIN_TOKEN?.trim();
-  if (legacy && raw === legacy) {
-    return { kind: "legacy_super" };
-  }
-
-  const claims = await verifyAdminJwt(raw);
-  if (!claims) return null;
-
-  if (claims.svc === true || claims.sub === "legacy-service") {
-    return { kind: "legacy_super" };
-  }
-
-  const user = await prisma.adminUser.findUnique({ where: { id: claims.sub } });
-  if (!user?.isActive) return null;
-  return { kind: "user", user };
+  const session = await resolveKeyraSessionFromRequest(req);
+  if (!session?.phoneE164) return null;
+  return resolveAdminAuthForPhone(session.phoneE164);
 }
+
+export const resolveDeploymentAuthFromCookies = cache(async (): Promise<DeploymentAuth | null> => {
+  const session = await resolveKeyraSessionFromCookies();
+  if (!session?.phoneE164) return null;
+  return resolveAdminAuthForPhone(session.phoneE164);
+});
+
+export const resolveAdminAccessState = cache(async (): Promise<AdminAccessState> => {
+  const session = await resolveKeyraSessionFromCookies();
+  if (!session?.phoneE164) return { status: "unsigned" };
+
+  const auth = await resolveAdminAuthForPhone(session.phoneE164);
+  if (!auth) return { status: "no_access", phoneE164: session.phoneE164 };
+  return { status: "authorized", auth };
+});
 
 export async function requireDeploymentAuth(req: Request): Promise<DeploymentAuth | Response> {
   const auth = await resolveDeploymentAuth(req);
@@ -157,13 +165,122 @@ export async function canApproveAccessRequestRow(
   return false;
 }
 
-export async function resolveDeploymentAuthFromCookies(): Promise<DeploymentAuth | null> {
-  const { cookies } = await import("next/headers");
-  const jar = await cookies();
-  const v = jar.get(ADMIN_JWT_COOKIE)?.value;
-  if (!v) return null;
-  const req = new Request("http://localhost", {
-    headers: { cookie: `${ADMIN_JWT_COOKIE}=${v}` },
+const ACCESS_REQUEST_LIST_SELECT = {
+  id: true,
+  workEmail: true,
+  targetType: true,
+  targetId: true,
+  verificationStatus: true,
+  approvalStatus: true,
+  createdAt: true,
+} as const;
+
+export type AdminAccessRequestRow = {
+  id: string;
+  workEmail: string;
+  targetType: string;
+  targetId: string;
+  verificationStatus: string;
+  approvalStatus: string;
+  createdAt: Date;
+};
+
+function accessRequestsVisibleToAuth(
+  auth: DeploymentAuth,
+  rows: AdminAccessRequestRow[],
+  maps: {
+    countryRegion: Map<string, string>;
+    telcoCountry: Map<string, string>;
+    telcoRegion: Map<string, string>;
+  },
+): AdminAccessRequestRow[] {
+  if (auth.kind === "legacy_super") return rows;
+  if (auth.kind !== "user") return [];
+  if (
+    auth.user.role === R.GLOBAL_ADMIN ||
+    auth.user.role === R.COMPLIANCE_REVIEWER ||
+    auth.user.role === R.READ_ONLY
+  ) {
+    return rows;
+  }
+
+  const scope = parseScope(auth.user.scopeJson);
+  const countryIds = new Set(scope.countryIds ?? []);
+  const regionIds = new Set(scope.regionIds ?? []);
+  const telcoIds = new Set(scope.telcoIds ?? []);
+
+  return rows.filter((row) => {
+    if (row.targetType === "COUNTRY") {
+      if (auth.user.role === R.COUNTRY_ADMIN) return countryIds.has(row.targetId);
+      if (auth.user.role === R.REGIONAL_ADMIN) {
+        const regionId = maps.countryRegion.get(row.targetId);
+        return regionId != null && regionIds.has(regionId);
+      }
+      return false;
+    }
+    if (row.targetType === "TELCO") {
+      if (auth.user.role === R.TELCO_ADMIN) return telcoIds.has(row.targetId);
+      if (auth.user.role === R.COUNTRY_ADMIN) {
+        const countryId = maps.telcoCountry.get(row.targetId);
+        return countryId != null && countryIds.has(countryId);
+      }
+      if (auth.user.role === R.REGIONAL_ADMIN) {
+        const regionId = maps.telcoRegion.get(row.targetId);
+        return regionId != null && regionIds.has(regionId);
+      }
+    }
+    return false;
   });
-  return resolveDeploymentAuth(req);
 }
+
+export async function listAccessRequestsForAdmin(
+  auth: DeploymentAuth,
+  approvalStatus?: RequestApprovalStatus,
+): Promise<AdminAccessRequestRow[]> {
+  const rows = await prisma.serverAccessRequest.findMany({
+    where: approvalStatus ? { approvalStatus } : {},
+    orderBy: { createdAt: "desc" },
+    take: 300,
+    select: ACCESS_REQUEST_LIST_SELECT,
+  });
+
+  if (
+    auth.kind === "legacy_super" ||
+    (auth.kind === "user" &&
+      (auth.user.role === R.GLOBAL_ADMIN ||
+        auth.user.role === R.COMPLIANCE_REVIEWER ||
+        auth.user.role === R.READ_ONLY))
+  ) {
+    return rows;
+  }
+
+  const countryTargetIds = Array.from(
+    new Set(rows.filter((r) => r.targetType === "COUNTRY").map((r) => r.targetId)),
+  );
+  const telcoTargetIds = Array.from(
+    new Set(rows.filter((r) => r.targetType === "TELCO").map((r) => r.targetId)),
+  );
+
+  const [countries, telcos] = await Promise.all([
+    countryTargetIds.length
+      ? prisma.countryDeployment.findMany({
+          where: { id: { in: countryTargetIds } },
+          select: { id: true, regionId: true },
+        })
+      : Promise.resolve([]),
+    telcoTargetIds.length
+      ? prisma.telcoDeployment.findMany({
+          where: { id: { in: telcoTargetIds } },
+          select: { id: true, countryId: true, country: { select: { regionId: true } } },
+        })
+      : Promise.resolve([]),
+  ]);
+
+  const countryRegion = new Map(countries.map((c) => [c.id, c.regionId]));
+  const telcoCountry = new Map(telcos.map((t) => [t.id, t.countryId]));
+  const telcoRegion = new Map(telcos.map((t) => [t.id, t.country.regionId]));
+
+  return accessRequestsVisibleToAuth(auth, rows, { countryRegion, telcoCountry, telcoRegion });
+}
+
+export { resolveKeyraSessionFromCookies, resolveKeyraSessionFromRequest };

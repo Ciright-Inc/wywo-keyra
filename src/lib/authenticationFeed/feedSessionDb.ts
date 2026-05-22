@@ -5,12 +5,22 @@ export const KEYRA_FEED_SESSION_COOKIE = "keyra_feed_session";
 
 const SESSION_HOURS = 24;
 
+let defaultFeedSettingsEnsured = false;
+
 export async function ensureDefaultFeedSettings(): Promise<void> {
-  await prisma.authenticationFeedSetting.upsert({
+  if (defaultFeedSettingsEnsured) return;
+
+  const existing = await prisma.authenticationFeedSetting.findUnique({
     where: { id: "default" },
-    create: { id: "default" },
-    update: {},
+    select: { id: true },
   });
+  if (existing) {
+    defaultFeedSettingsEnsured = true;
+    return;
+  }
+
+  await prisma.authenticationFeedSetting.create({ data: { id: "default" } });
+  defaultFeedSettingsEnsured = true;
 }
 
 export async function createAuthenticationFeedSession(

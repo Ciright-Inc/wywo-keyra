@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { buildListHref } from "@/lib/admin/listSearchParams";
@@ -216,13 +217,12 @@ export function AccessDomainRulesDirectoryClient({
             </thead>
             <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
               {rules.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-3 py-8 text-center text-sm text-keyra-text-2">
-                    {hasSearch
-                      ? "No rules match your search. Try different keywords or clear the search."
-                      : "No access domain rules visible to your account."}
-                  </td>
-                </tr>
+                <AdminListEmptyState
+                  variant="table-row"
+                  colSpan={5}
+                  hasSearch={hasSearch}
+                  entityName="access rules"
+                />
               ) : (
                 rules.map((r) => {
                   const isDeleting = deletingId === r.id;
