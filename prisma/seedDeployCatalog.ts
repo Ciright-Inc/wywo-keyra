@@ -3,7 +3,7 @@
  * Safe to run on every boot: upserts feed settings, SAT protocol registry, (by default) world AuthenticationCountry rows,
  * and (by default) deployment map regions / CountryDeployment from `prisma/data/regions-countries-seed.json`
  * plus telcos from `prisma/data/deployment-seed.json`.
- * If there are no AdminUser rows yet, seeds the same demo admins as `prisma/seed.ts` (password from SEED_ADMIN_PASSWORD).
+ * Upserts admin users from `prisma/data/admin-users-seed.json` (Admin users tab records).
  * Does NOT run full prisma/seed.ts (no admin wipe, no access rules / server nodes reset).
  *
  * Skip entirely: SKIP_DEPLOY_CATALOG_SEED=1
@@ -12,7 +12,7 @@
  * Skip telco catalog import (541 operators from keyra-telcos-catalog.json): SKIP_TELCO_CATALOG_SEED=1
  */
 import { PrismaClient } from "@prisma/client";
-import { seedAdminUsersIfEmpty } from "./seedAdminUsersIfEmpty";
+import { seedAdminUsers } from "./seedAdminUsers";
 import { seedAuthenticationFeed } from "./seedAuthenticationFeed";
 import { seedDeploymentGraph } from "./seedDeploymentGraph";
 import { importKeyraTelcosFromCatalog } from "./importKeyraTelcos";
@@ -50,10 +50,8 @@ async function main() {
       }
     }
 
-    const adminBoot = await seedAdminUsersIfEmpty(prisma);
-    if (adminBoot !== "skipped") {
-      console.info("[seedDeployCatalog] Admin user bootstrap:", adminBoot);
-    }
+    const adminStats = await seedAdminUsers(prisma);
+    console.info("[seedDeployCatalog] Admin users:", adminStats);
   } finally {
     await prisma.$disconnect();
   }
