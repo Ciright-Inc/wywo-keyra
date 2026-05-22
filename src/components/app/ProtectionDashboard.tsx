@@ -262,27 +262,29 @@ function ProtectionPanelCard({
   );
 }
 
-function buildSecurityScoreRows(
-  score: ProtectionDashboard["securityScore"],
-): Array<{
+type SecurityScoreRow = {
   id: string;
   label: string;
   href?: string;
   points?: number;
   done: boolean;
-}> {
-  const pending = score.recommendations.map((rec) => ({
+};
+
+function buildSecurityScoreRows(
+  score: ProtectionDashboard["securityScore"],
+): SecurityScoreRow[] {
+  const pending: SecurityScoreRow[] = score.recommendations.map((rec) => ({
     id: rec.id,
     label: rec.label,
     href: rec.href,
     points: rec.points,
     done: false,
   }));
-  const rows = [...pending];
+  const rows: SecurityScoreRow[] = [...pending];
   for (const factor of scoreIncludedFactors) {
     if (rows.length >= PANEL_LIST_SLOTS) break;
     if (pending.some((p) => p.id === factor.id)) continue;
-    rows.push({ ...factor, done: true });
+    rows.push({ id: factor.id, label: factor.label, done: true });
   }
   return rows.slice(0, PANEL_LIST_SLOTS);
 }
