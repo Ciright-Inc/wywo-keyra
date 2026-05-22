@@ -75,6 +75,22 @@ async function createPasswordHash(): Promise<string> {
   return hash(randomBytes(32).toString("hex"), 10);
 }
 
+/** Ensure seeded phone numbers can be assigned without tripping the unique index. */
+async function releasePhoneForOtherUsers(
+  prisma: PrismaClient,
+  phoneE164: string | null,
+  email: string,
+): Promise<void> {
+  if (!phoneE164) return;
+  await prisma.adminUser.updateMany({
+    where: {
+      phoneE164,
+      NOT: { email },
+    },
+    data: { phoneE164: null },
+  });
+}
+
 export async function seedAdminUsers(prisma: PrismaClient): Promise<AdminUsersSeedStats> {
   const data = loadAdminUsersSeed();
   const stats: AdminUsersSeedStats = { created: 0, updated: 0, unchanged: 0 };
@@ -86,6 +102,8 @@ export async function seedAdminUsers(prisma: PrismaClient): Promise<AdminUsersSe
     const role = entry.role as DeploymentAdminRole;
     const isActive = entry.isActive !== false;
     const scopeJson = await resolveScopeJson(prisma, entry.scope);
+
+    await releasePhoneForOtherUsers(prisma, phoneE164, email);
 
     const existing = await prisma.adminUser.findUnique({ where: { email } });
 
