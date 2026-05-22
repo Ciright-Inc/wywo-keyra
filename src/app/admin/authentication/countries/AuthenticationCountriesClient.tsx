@@ -10,8 +10,31 @@ import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { AdminFormPanelCloseButton } from "@/components/admin/AdminFormPanelCloseButton";
+import { AdminEditIconButton } from "@/components/admin/AdminEditIconButton";
 import { ClientTablePagination } from "@/components/admin/ClientTablePagination";
+import { AdminCatalogHero } from "@/components/admin/AdminCatalogHero";
+import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AuthenticationCountryFormFields } from "./AuthenticationCountryFormFields";
+import {
+  adminBody,
+  adminCheckbox,
+  adminFilterLabel,
+  adminFilterSelect,
+  adminInlineFormBody,
+  adminPageTitle,
+  adminPageToolbar,
+  adminPanel,
+  adminSectionTitle,
+  adminTableCellInput,
+  adminTableDense,
+  adminTableDenseScroll,
+  adminTableWrap,
+  adminToolbarBtnDanger,
+  adminToolbarBtnPrimary,
+  adminToolbarBtnSecondary,
+  adminToolbarMeta,
+  adminToolbarStrip,
+} from "@/lib/admin/adminUiClasses";
 import {
   authCountryFormValuesFromRow,
   authCountryFormValuesToPayload,
@@ -64,14 +87,12 @@ export function AuthenticationCountriesClient({
   const [editRow, setEditRow] = useState<AuthenticationCountry | null>(null);
   const [editDraft, setEditDraft] = useState<AuthCountryFormValues>(() => emptyAuthCountryFormValues());
   const [editErrors, setEditErrors] = useState<Record<string, string>>({});
-  const [searchExpanded, setSearchExpanded] = useState(false);
   /** Client-side paging over the already-loaded `rows`. Server fetch returns everything matching
    * the current filters in one pass, so paging here is just a render slice — keeps cross-page
    * `selected`/`dirtyIds` state intact and lets users edit rows on page 1, jump to page 3, edit
    * more, then Save once. */
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
-  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
     fetchAbortRef.current?.abort();
@@ -130,23 +151,6 @@ export function AuthenticationCountriesClient({
     const t = setTimeout(() => setQ(qInput.trim()), 280);
     return () => clearTimeout(t);
   }, [qInput]);
-
-  useEffect(() => {
-    if (searchExpanded) {
-      const t = setTimeout(() => searchInputRef.current?.focus(), 180);
-      return () => clearTimeout(t);
-    }
-    return undefined;
-  }, [searchExpanded]);
-
-  function toggleSearchPanel() {
-    setSearchExpanded((open) => !open);
-  }
-
-  function collapseSearch(clearQuery = false) {
-    if (clearQuery) setQInput("");
-    setSearchExpanded(false);
-  }
 
   useEffect(() => {
     if (!addCountryOpen) return;
@@ -565,43 +569,25 @@ export function AuthenticationCountriesClient({
   }, [q, region, subRegion, activeFilter, authFilter, weightMin, weightMax, sortBy]);
 
   return (
-    <div className="flex flex-col gap-5 text-keyra-primary">
-      <section className="relative overflow-hidden rounded-3xl border border-keyra-border bg-keyra-surface px-6 py-6 shadow-[0_24px_70px_rgba(0,0,0,0.06)] sm:px-7">
-        <div className="pointer-events-none absolute -right-14 -top-20 size-52 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.07),transparent_68%)]" />
-        <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-3xl">
-            <h1 className="text-3xl font-semibold tracking-tight text-keyra-primary">
-              Authentication countries
-            </h1>
-            <p className="mt-3 text-sm leading-6 text-keyra-text-2">
-              Manage country eligibility, weighting, and feed visibility for authentication events.
-            </p>
-          </div>
+    <div>
+      {error ? <p className="ds-admin-error-banner">{error}</p> : null}
 
-          <div className="grid grid-cols-2 gap-3 sm:min-w-72">
-            <div className="rounded-2xl border border-keyra-border bg-keyra-bg/75 px-4 py-3">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-keyra-text-2">Rows</p>
-              <p className="mt-1 text-2xl font-semibold text-keyra-primary">{loading ? "—" : dataRows.length}</p>
-            </div>
-            <div className="rounded-2xl border border-keyra-border bg-keyra-bg/75 px-4 py-3">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-keyra-text-2">Weight sum</p>
-              <p className="mt-1 text-2xl font-semibold text-keyra-primary">{loading ? "—" : activeSum.toFixed(2)}</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AdminCatalogHero
+        title="Authentication countries"
+        description="Manage country eligibility, weighting, and feed visibility for authentication events."
+        srOnly={filterSummary}
+        stats={[
+          { label: "Rows", value: loading ? "—" : String(dataRows.length) },
+          { label: "Weight sum", value: loading ? "—" : activeSum.toFixed(2) },
+        ]}
+      />
 
-      {error ? (
-        <p className="ds-admin-error-banner">{error}</p>
-      ) : null}
-
-      <div className="sticky top-[var(--keyra-header-offset)] z-20 flex flex-col gap-3 rounded-2xl border border-keyra-border bg-keyra-surface/95 px-3 py-3 shadow-sm backdrop-blur-sm sm:flex-row sm:items-center sm:px-4 lg:top-14">
+      <div className={adminToolbarStrip}>
         <div className="flex min-w-0 w-full flex-1 flex-wrap items-center gap-3 sm:w-auto">
-          {/* Inline filters — moved out of the Catalog tools modal so they're always visible. */}
-          <label className="flex items-center gap-1.5 text-[11px] font-medium text-keyra-text-2 sm:text-xs">
+          <label className={adminFilterLabel}>
             Active
             <select
-              className="h-9 rounded-md border border-keyra-border bg-keyra-bg px-2 text-xs text-keyra-primary"
+              className={adminFilterSelect}
               value={activeFilter}
               onChange={(e) => setActiveFilter(e.target.value as "" | "true" | "false")}
               disabled={busy}
@@ -611,10 +597,10 @@ export function AuthenticationCountriesClient({
               <option value="false">Inactive</option>
             </select>
           </label>
-          <label className="flex items-center gap-1.5 text-[11px] font-medium text-keyra-text-2 sm:text-xs">
+          <label className={adminFilterLabel}>
             Auth feed
             <select
-              className="h-9 rounded-md border border-keyra-border bg-keyra-bg px-2 text-xs text-keyra-primary"
+              className={adminFilterSelect}
               value={authFilter}
               onChange={(e) => setAuthFilter(e.target.value as "" | "true" | "false")}
               disabled={busy}
@@ -624,10 +610,10 @@ export function AuthenticationCountriesClient({
               <option value="false">Disabled</option>
             </select>
           </label>
-          <label className="flex items-center gap-1.5 text-[11px] font-medium text-keyra-text-2 sm:text-xs">
+          <label className={adminFilterLabel}>
             Sort
             <select
-              className="h-9 rounded-md border border-keyra-border bg-keyra-bg px-2 text-xs text-keyra-primary"
+              className={adminFilterSelect}
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortKey)}
               disabled={busy}
@@ -639,117 +625,60 @@ export function AuthenticationCountriesClient({
               <option value="updated">Updated (desc)</option>
             </select>
           </label>
-          <span className="shrink-0 rounded-full border border-keyra-border bg-keyra-bg px-3 py-1.5 text-[11px] text-keyra-text-2 sm:text-xs">
-            Selected: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
+          <span className={adminToolbarMeta}>
+            Selected: <span className="font-medium text-[var(--ds-ink)]">{selectedIds.length}</span>
             {dirtyRowIds.length > 0 ? (
               <>
                 {" "}
-                · Unsaved: <span className="font-medium text-amber-700">{dirtyRowIds.length}</span>
+                · Unsaved: <span className="font-medium text-[var(--ds-warning)]">{dirtyRowIds.length}</span>
               </>
             ) : null}
           </span>
         </div>
 
-        <div className="flex w-full shrink-0 flex-wrap items-center justify-between gap-2 sm:ml-auto sm:w-auto sm:flex-nowrap sm:justify-end">
-          <div className="flex items-center">
-            <button
-              type="button"
-              className={`inline-flex size-9 shrink-0 items-center justify-center rounded-lg border transition duration-300 ${
-                searchExpanded || q.trim()
-                  ? "border-black/20 bg-keyra-bg text-keyra-primary ring-1 ring-black/10"
-                  : "border-keyra-border bg-keyra-bg text-keyra-text-2 hover:border-black/20 hover:text-keyra-primary"
-              }`}
-              onClick={toggleSearchPanel}
-              aria-label={searchExpanded ? "Collapse search" : "Expand search"}
-              aria-expanded={searchExpanded}
-              disabled={busy}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
-                <circle cx="11" cy="11" r="7" />
-                <path d="M20 20 16.65 16.65" />
-              </svg>
-            </button>
-            <div
-              className={`grid transition-[grid-template-columns] duration-300 ease-out ${
-                searchExpanded ? "grid-cols-[1fr] ml-2" : "grid-cols-[0fr] ml-0"
-              }`}
-            >
-              <div className="overflow-hidden">
-                <div className="relative">
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    value={qInput}
-                    onChange={(e) => setQInput(e.target.value)}
-                    placeholder="Name, ISO, region…"
-                    autoComplete="off"
-                    disabled={busy}
-                    aria-label="Search countries"
-                    className={`h-9 rounded-lg border border-keyra-border bg-keyra-bg py-0 pl-3 text-sm text-keyra-primary outline-none transition-opacity duration-300 focus-visible:border-black/25 focus-visible:keyra-focus ${
-                      searchExpanded ? "w-44 pr-8 opacity-100 sm:w-56" : "w-44 pointer-events-none opacity-0 sm:w-56"
-                    }`}
-                  />
-                  {searchExpanded ? (
-                    <button
-                      type="button"
-                      className="absolute right-1.5 top-1/2 inline-flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-keyra-text-2 transition hover:bg-keyra-surface hover:text-keyra-primary"
-                      onClick={() => collapseSearch(true)}
-                      aria-label="Clear search and collapse"
-                      disabled={busy}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
-                        <path d="M18 6 6 18M6 6l12 12" />
-                      </svg>
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <Button
+        <div className={`${adminPageToolbar} w-full sm:ml-auto sm:w-auto`}>
+          <CollapsibleSearchBar
+            mode="client"
+            searchQuery={qInput}
+            onChange={setQInput}
+            placeholder="Name, ISO, region…"
+            ariaLabel="Search countries"
+          />
+          <button
             type="button"
-            variant="secondary"
-            className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold"
+            className={addCountryOpen ? adminToolbarBtnSecondary : adminToolbarBtnPrimary}
             onClick={() => (addCountryOpen ? setAddCountryOpen(false) : openAddPanel())}
             aria-expanded={addCountryOpen}
+            disabled={busy}
           >
-            {addCountryOpen ? "Close add" : "Add country"}
-          </Button>
-          <Button
+            {addCountryOpen ? "Close create form" : "Add country"}
+          </button>
+          <button
             type="button"
-            className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold"
+            className={adminToolbarBtnPrimary}
             disabled={busy || dirtyRowIds.length === 0}
             onClick={() => void saveDirtyRows()}
           >
             Save{dirtyRowIds.length > 0 ? ` (${dirtyRowIds.length})` : ""}
-          </Button>
-          <Button
+          </button>
+          <button
             type="button"
-            variant="secondary"
-            className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold text-red-700 hover:border-red-500/30 hover:bg-red-500/8"
+            className={adminToolbarBtnDanger}
             disabled={busy || selectedIds.length === 0}
             onClick={() => void deleteSelectedRows()}
           >
             Delete{selectedIds.length > 0 ? ` (${selectedIds.length})` : ""}
-          </Button>
+          </button>
         </div>
       </div>
 
       {addCountryOpen ? (
-        <div className="rounded-2xl border border-keyra-border bg-keyra-surface/95 p-4 shadow-sm sm:p-5">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Add country</h2>
-              <p className="mt-1 text-xs text-keyra-text-2">Same fields as the list. Required: name, ISO-2, region, weight.</p>
-            </div>
-            <AdminFormPanelCloseButton
-              label="Close add country form"
-              disabled={busy}
-              onClick={() => setAddCountryOpen(false)}
-            />
-          </div>
-          <div className="mt-4 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
+        <div className={`${adminPanel} mt-3`}>
+          <h2 className={adminSectionTitle}>Add country</h2>
+          <p className={`${adminBody} mt-1 text-[var(--ds-body)]`}>
+            Same fields as the list. Required: name, ISO-2, region, weight.
+          </p>
+          <div className={adminInlineFormBody}>
             <AuthenticationCountryFormFields
               values={addDraft}
               errors={addErrors}
@@ -765,7 +694,7 @@ export function AuthenticationCountriesClient({
               }}
             />
             <div className="mt-4 flex justify-end">
-              <Button type="button" disabled={busy} onClick={() => void addRow()}>
+              <Button type="button" size="sm" disabled={busy} onClick={() => void addRow()}>
                 Add country
               </Button>
             </div>
@@ -774,22 +703,16 @@ export function AuthenticationCountriesClient({
       ) : null}
 
       {editRow ? (
-        <div className="rounded-2xl border border-keyra-border bg-keyra-surface/95 p-4 shadow-sm sm:p-5">
-          <div className="flex items-start justify-between gap-3">
+        <>
+          <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Edit country</h2>
-              <p className="mt-1 text-xs text-keyra-text-2">
-                Editing <span className="font-medium text-keyra-primary">{editRow.countryName}</span>. Required: name,
-                ISO-2, region, weight.
-              </p>
+              <h1 className={adminPageTitle}>Edit country</h1>
+              <p className={`${adminBody} mt-2 text-[var(--ds-body)]`}>{editRow.countryName}</p>
             </div>
-            <AdminFormPanelCloseButton
-              label="Close edit country form"
-              disabled={busy}
-              onClick={closeEditPanel}
-            />
+            <AdminFormPanelCloseButton variant="back" disabled={busy} onClick={closeEditPanel} />
           </div>
-          <div className="mt-4 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
+          <div className={`${adminPanel} mt-6`}>
+            <div className={adminInlineFormBody}>
             <AuthenticationCountryFormFields
               values={editDraft}
               errors={editErrors}
@@ -805,45 +728,45 @@ export function AuthenticationCountriesClient({
               }}
             />
             <div className="mt-4 flex justify-end gap-2">
-              <Button type="button" variant="secondary" disabled={busy} onClick={closeEditPanel}>
+              <Button type="button" variant="secondary" size="sm" disabled={busy} onClick={closeEditPanel}>
                 Cancel
               </Button>
-              <Button type="button" disabled={busy} onClick={() => void saveEditRow()}>
+              <Button type="button" size="sm" disabled={busy} onClick={() => void saveEditRow()}>
                 Save changes
               </Button>
             </div>
           </div>
         </div>
+        </>
       ) : null}
 
       {isInitialLoading ? (
         <AdminDirectorySkeleton tab="auth-countries" tableOnly rows={8} />
       ) : (
         <>
-      <div
-        className={`max-h-[min(85vh,calc(100dvh-11rem))] min-h-[260px] overflow-auto rounded-2xl border border-keyra-border bg-keyra-surface/50 shadow-[0_18px_54px_rgba(0,0,0,0.05)] transition-opacity ${isRefreshing ? "pointer-events-none opacity-60" : ""}`}
-      >
-        <table className="min-w-[1200px] w-full border-collapse text-left text-xs">
-          <thead className="sticky top-0 z-10 border-b border-keyra-border bg-keyra-bg/95 backdrop-blur-sm text-[10px] uppercase tracking-wider text-keyra-text-2">
+      <div className={`${adminTableWrap} mt-3 transition-opacity ${isRefreshing ? "pointer-events-none opacity-60" : ""}`}>
+        <div className={adminTableDenseScroll}>
+        <table className={`${adminTableDense} min-w-[1200px]`}>
+          <thead>
             <tr>
-              <th className="w-10 pl-4 pr-2 py-2.5 align-middle" scope="col">
-                <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} disabled={busy || dataRows.length === 0} aria-label="Select all" />
+              <th className="w-10" scope="col">
+                <input type="checkbox" className={adminCheckbox} checked={allSelected} onChange={toggleSelectAll} disabled={busy || dataRows.length === 0} aria-label="Select all" />
               </th>
-              <th className="px-2 py-2.5 align-middle">Name</th>
-              <th className="px-2 py-2.5 align-middle">Official</th>
-              <th className="px-2 py-2.5 align-middle">Flag</th>
-              <th className="px-2 py-2.5 align-middle">ISO2</th>
-              <th className="px-2 py-2.5 align-middle">ISO3</th>
-              <th className="px-2 py-2.5 align-middle">Region</th>
-              <th className="px-2 py-2.5 align-middle">Sub</th>
-              <th className="px-2 py-2.5 align-middle">Phone</th>
-              <th className="px-2 py-2.5 align-middle">Currency</th>
-              <th className="px-2 py-2.5 align-middle">Auth</th>
-              <th className="px-2 py-2.5 align-middle">Active</th>
-              <th className="px-2 py-2.5 align-middle">Wt</th>
-              <th className="px-2 py-2.5 align-middle">Pri</th>
-              <th className="px-2 py-2.5 align-middle">Updated</th>
-              <th className="px-2 py-2.5 pr-4 align-middle text-right">Actions</th>
+              <th>Name</th>
+              <th>Official</th>
+              <th>Flag</th>
+              <th>ISO2</th>
+              <th>ISO3</th>
+              <th>Region</th>
+              <th>Sub</th>
+              <th>Phone</th>
+              <th>Currency</th>
+              <th>Auth</th>
+              <th>Active</th>
+              <th>Wt</th>
+              <th>Pri</th>
+              <th>Updated</th>
+              <th className="is-right">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -870,6 +793,7 @@ export function AuthenticationCountriesClient({
             className="border-0 bg-transparent px-4 py-8 text-center shadow-none sm:px-6"
           />
         ) : null}
+        </div>
       </div>
 
       {dataRows.length > 0 ? (
@@ -915,22 +839,21 @@ function CountryEditorRow({
   isEditing: boolean;
   disabled: boolean;
 }) {
-  const inp =
-    "h-8 min-h-8 w-full rounded-md border border-keyra-border bg-keyra-bg px-2 py-1 text-[11px] leading-tight text-keyra-primary placeholder:text-keyra-text-2/50";
+  const inp = adminTableCellInput;
   return (
     <tr
-      className={`border-b border-keyra-border/50 align-middle transition-colors hover:bg-keyra-bg/40 ${
+      className={
         isEditing
-          ? "bg-keyra-primary/5 ring-1 ring-inset ring-keyra-primary/15"
+          ? "bg-[var(--ds-canvas-soft)] ring-1 ring-inset ring-[var(--ds-ink)]/10"
           : dirty
             ? "bg-amber-500/5 ring-1 ring-inset ring-amber-500/20"
             : selected
-              ? "bg-keyra-bg/50"
-              : ""
-      }`}
+              ? "bg-[var(--ds-canvas-soft)]/80"
+              : undefined
+      }
     >
-      <td className="w-10 pl-4 pr-2 py-1.5 align-middle">
-        <input type="checkbox" checked={selected} onChange={onToggleSelect} disabled={disabled} aria-label={`Select ${row.countryName}`} className="size-3.5 accent-keyra-accent" />
+      <td className="w-10">
+        <input type="checkbox" checked={selected} onChange={onToggleSelect} disabled={disabled} aria-label={`Select ${row.countryName}`} className={adminCheckbox} />
       </td>
       <td className="px-2 py-1.5 align-middle">
         <input className={`${inp} min-w-[6.5rem]`} value={row.countryName} onChange={(e) => onChange(row.id, { countryName: e.target.value })} disabled={disabled} />
@@ -997,14 +920,14 @@ function CountryEditorRow({
       <td className="px-2 py-1.5 align-middle text-center">
         <input
           type="checkbox"
-          className="size-3.5 accent-keyra-accent"
+          className={adminCheckbox}
           checked={row.authenticationEnabled}
           onChange={(e) => onChange(row.id, { authenticationEnabled: e.target.checked })}
           disabled={disabled}
         />
       </td>
       <td className="px-2 py-1.5 align-middle text-center">
-        <input type="checkbox" className="size-3.5 accent-keyra-accent" checked={row.active} onChange={(e) => onChange(row.id, { active: e.target.checked })} disabled={disabled} />
+        <input type="checkbox" className={adminCheckbox} checked={row.active} onChange={(e) => onChange(row.id, { active: e.target.checked })} disabled={disabled} />
       </td>
       <td className="px-2 py-1.5 align-middle">
         <input
@@ -1024,27 +947,15 @@ function CountryEditorRow({
           disabled={disabled}
         />
       </td>
-      <td className="whitespace-nowrap px-2 py-1.5 align-middle text-[10px] text-keyra-text-2">{fmtDate(row.updatedAt)}</td>
-      <td className="px-2 py-1.5 pr-4 align-middle text-right">
-        <button
-          type="button"
-          title="Edit"
+      <td className="whitespace-nowrap text-[var(--ds-body)]">{fmtDate(row.updatedAt)}</td>
+      <td className="is-actions">
+        <AdminEditIconButton
           aria-label={`Edit ${row.countryName}`}
           disabled={disabled}
+          active={isEditing}
           onClick={onEdit}
-          className={`inline-flex size-8 items-center justify-center rounded-md border bg-keyra-bg transition disabled:opacity-50 ${
-            isEditing
-              ? "border-keyra-primary/30 text-keyra-primary ring-1 ring-keyra-primary/20"
-              : "border-keyra-border text-keyra-primary hover:border-black/20 hover:bg-keyra-surface"
-          }`}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <path d="M12 20h9" />
-            <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
-          </svg>
-        </button>
+        />
       </td>
     </tr>
   );
 }
-

@@ -1,17 +1,26 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { DeploymentAdminRole } from "@prisma/client";
-import { AdminPhoneField } from "@/components/admin/AdminPhoneField";
+import { AdminEditPageHeader } from "@/components/admin/AdminEditPageHeader";
 import { AdminFieldError, fieldClass } from "@/components/admin/AdminFieldError";
+import { AdminPhoneField } from "@/components/admin/AdminPhoneField";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
+import {
+  adminFormCheckboxLabel,
+  adminFormStack,
+  adminLabel,
+  adminLegacyInput,
+  adminPanel,
+  adminSectionTitle,
+  adminCheckbox,
+} from "@/lib/admin/adminUiClasses";
 import {
   type AdminUserFieldErrors,
   validateAdminUserUpdate,
 } from "@/lib/adminUserValidation";
+import { DeploymentAdminRole } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const ROLE_OPTIONS = Object.values(DeploymentAdminRole);
 
@@ -50,9 +59,8 @@ export function AdminUserEditClient({ user, canEdit }: Props) {
   const [fieldErrors, setFieldErrors] = useState<AdminUserFieldErrors>({});
   const [pending, setPending] = useState(false);
 
-  const inputClass =
-    "mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60";
-  const selectClass = inputClass;
+  const inputClass = adminLegacyInput;
+  const selectClass = adminLegacyInput;
 
   function clearField(field: keyof AdminUserFieldErrors) {
     setFieldErrors((prev) => {
@@ -86,20 +94,18 @@ export function AdminUserEditClient({ user, canEdit }: Props) {
     setFieldErrors({});
     setPending(true);
     try {
-      const body: Record<string, unknown> = {
-        displayName,
-        email,
-        phoneCountryCode,
-        phoneNational,
-        role,
-        isActive,
-      };
-
       const res = await fetch(`/api/admin/deployments/admin-users/${user.id}`, {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          displayName,
+          email,
+          phoneCountryCode,
+          phoneNational,
+          role,
+          isActive,
+        }),
       });
       const data = (await res.json().catch(() => ({}))) as {
         error?: string;
@@ -126,114 +132,114 @@ export function AdminUserEditClient({ user, canEdit }: Props) {
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-keyra-primary">Admin user</h1>
-          <p className="mt-2 text-sm text-keyra-text-2">{user.displayName?.trim() || user.email}</p>
-        </div>
-        <Link
-          href="/admin/deployments/admin-users"
-          className="text-sm text-keyra-accent underline-offset-4 hover:underline"
-        >
-          Back to list
-        </Link>
-      </div>
+      <AdminEditPageHeader
+        title="Edit admin user"
+        subtitle={user.displayName?.trim() || user.email}
+        backHref="/admin/deployments/admin-users"
+      />
 
       {error ? <p className="mt-4 ds-admin-error-banner">{error}</p> : null}
 
-      <form onSubmit={(e) => void handleSubmit(e)} className="mt-8 keyra-card space-y-3 p-6" noValidate>
-        <label className="block text-sm text-keyra-text-2">
-          Name
-          <input
-            value={displayName}
-            onChange={(e) => {
-              setDisplayName(e.target.value);
-              clearField("displayName");
+      <div className={`${adminPanel} mt-6`}>
+        <h2 className={adminSectionTitle}>User details</h2>
+        <p className="mt-1 text-sm text-[var(--ds-body)]">Add a user with name, mobile number, and email.</p>
+
+        <form onSubmit={(e) => void handleSubmit(e)} className={adminFormStack} noValidate>
+          <label className={adminLabel}>
+            Name
+            <input
+              value={displayName}
+              onChange={(e) => {
+                setDisplayName(e.target.value);
+                clearField("displayName");
+              }}
+              disabled={!canEdit}
+              placeholder="Full name"
+              className={fieldClass(inputClass, Boolean(fieldErrors.displayName))}
+              aria-invalid={Boolean(fieldErrors.displayName) || undefined}
+            />
+            <AdminFieldError message={fieldErrors.displayName} />
+          </label>
+
+          <AdminPhoneField
+            idBase="admin-user-edit"
+            label="Mobile number"
+            phoneCountryCode={phoneCountryCode}
+            nationalValue={phoneNational}
+            onPhoneCountryChange={(code) => {
+              setPhoneCountryCode(code);
+              clearField("phone");
+              clearField("phoneCountryCode");
+            }}
+            onNationalChange={(value) => {
+              setPhoneNational(value);
+              clearField("phone");
+              clearField("phoneNational");
             }}
             disabled={!canEdit}
-            className={fieldClass(inputClass, Boolean(fieldErrors.displayName))}
-            aria-invalid={Boolean(fieldErrors.displayName) || undefined}
+            phoneError={fieldErrors.phone ?? fieldErrors.phoneNational}
+            countryError={fieldErrors.phoneCountryCode}
           />
-          <AdminFieldError message={fieldErrors.displayName} />
-        </label>
 
-        <AdminPhoneField
-          idBase="admin-user-edit"
-          label="Mobile number"
-          phoneCountryCode={phoneCountryCode}
-          nationalValue={phoneNational}
-          onPhoneCountryChange={(code) => {
-            setPhoneCountryCode(code);
-            clearField("phone");
-            clearField("phoneCountryCode");
-          }}
-          onNationalChange={(value) => {
-            setPhoneNational(value);
-            clearField("phone");
-            clearField("phoneNational");
-          }}
-          disabled={!canEdit}
-          phoneError={fieldErrors.phone ?? fieldErrors.phoneNational}
-          countryError={fieldErrors.phoneCountryCode}
-        />
+          <label className={adminLabel}>
+            Email
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                clearField("email");
+              }}
+              disabled={!canEdit}
+              placeholder="admin@example.com"
+              className={fieldClass(inputClass, Boolean(fieldErrors.email))}
+              aria-invalid={Boolean(fieldErrors.email) || undefined}
+            />
+            <AdminFieldError message={fieldErrors.email} />
+          </label>
 
-        <label className="block text-sm text-keyra-text-2">
-          Email
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              clearField("email");
-            }}
-            disabled={!canEdit}
-            className={fieldClass(inputClass, Boolean(fieldErrors.email))}
-            aria-invalid={Boolean(fieldErrors.email) || undefined}
-          />
-          <AdminFieldError message={fieldErrors.email} />
-        </label>
+          <label className={adminLabel}>
+            Role
+            <select
+              value={role}
+              onChange={(e) => {
+                setRole(e.target.value as DeploymentAdminRole);
+                clearField("role");
+              }}
+              disabled={!canEdit}
+              className={fieldClass(selectClass, Boolean(fieldErrors.role))}
+            >
+              {ROLE_OPTIONS.map((r) => (
+                <option key={r} value={r}>
+                  {ROLE_LABELS[r]}
+                </option>
+              ))}
+            </select>
+            <AdminFieldError message={fieldErrors.role} />
+          </label>
 
-        <label className="block text-sm text-keyra-text-2">
-          Role
-          <select
-            value={role}
-            onChange={(e) => {
-              setRole(e.target.value as DeploymentAdminRole);
-              clearField("role");
-            }}
-            disabled={!canEdit}
-            className={fieldClass(selectClass, Boolean(fieldErrors.role))}
-          >
-            {ROLE_OPTIONS.map((r) => (
-              <option key={r} value={r}>
-                {ROLE_LABELS[r]}
-              </option>
-            ))}
-          </select>
-          <AdminFieldError message={fieldErrors.role} />
-        </label>
+          <label className={adminFormCheckboxLabel}>
+            <input
+              type="checkbox"
+              checked={isActive}
+              onChange={(e) => setIsActive(e.target.checked)}
+              disabled={!canEdit}
+              className={adminCheckbox}
+            />
+            Active
+          </label>
 
-        <label className="flex items-center gap-3 text-sm text-keyra-text-2">
-          <input
-            type="checkbox"
-            checked={isActive}
-            onChange={(e) => setIsActive(e.target.checked)}
-            disabled={!canEdit}
-            className="size-4 rounded border-keyra-border accent-keyra-primary disabled:opacity-60"
-          />
-          Active
-        </label>
-
-        {canEdit ? (
           <div className="pt-2">
-            <Button type="submit" variant="primary" disabled={pending}>
-              {pending ? "Saving…" : "Save changes"}
-            </Button>
+            {canEdit ? (
+              <Button type="submit" variant="primary" disabled={pending}>
+                {pending ? "Saving…" : "Save changes"}
+              </Button>
+            ) : (
+              <p className={adminLabel}>You have read-only access to admin users.</p>
+            )}
           </div>
-        ) : (
-          <p className="text-sm text-keyra-text-2">You have read-only access to admin users.</p>
-        )}
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

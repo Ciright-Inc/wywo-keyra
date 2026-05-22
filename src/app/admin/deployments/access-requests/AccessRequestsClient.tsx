@@ -8,6 +8,20 @@ import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
+import {
+  adminBody,
+  adminCheckbox,
+  adminCountBadge,
+  adminEyebrow,
+  adminLabel,
+  adminLegacyInput,
+  adminPageTitle,
+  adminPanel,
+  adminSectionTitle,
+  adminTable,
+  adminTableScroll,
+  adminTableWrap,
+} from "@/lib/admin/adminUiClasses";
 
 type Row = {
   id: string;
@@ -79,15 +93,15 @@ export function AccessRequestsClient({ initialRequests }: { initialRequests?: Ro
     <div>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-keyra-primary">
+          <h1 className={adminPageTitle}>
             Access requests
             {rows ? (
-              <span className="ml-2 rounded-full border border-keyra-border bg-keyra-surface px-2.5 py-0.5 align-middle text-xs font-medium text-keyra-text-2">
+              <span className={`ml-2 align-middle ${adminCountBadge}`}>
                 {hasSearch ? `${visibleCount} of ${totalCount}` : totalCount}
               </span>
             ) : null}
           </h1>
-          <p className="mt-2 text-sm text-keyra-text-2">Approve or reject after email verification.</p>
+          <p className={`${adminBody} mt-2 text-[var(--ds-body)]`}>Approve or reject after email verification.</p>
         </div>
         <div className="flex items-center gap-2">
           <CollapsibleSearchBar
@@ -103,26 +117,27 @@ export function AccessRequestsClient({ initialRequests }: { initialRequests?: Ro
         </div>
       </div>
 
-      {error ? <p className="mt-4 text-sm text-red-300">{error}</p> : null}
+      {error ? <p className="ds-admin-error-banner mt-4">{error}</p> : null}
 
       {isInitialLoading ? (
         <div className="mt-8">
           <AdminDirectorySkeleton tab="deployments-access-requests" tableOnly rows={6} />
         </div>
       ) : (
-      <div className={`mt-8 overflow-x-auto rounded-[var(--keyra-radius-card)] border border-keyra-border transition-opacity ${isRefreshing ? "pointer-events-none opacity-60" : ""}`}>
-        <table className="w-full min-w-[36rem] text-left text-sm">
-          <thead className="bg-[rgba(255,255,255,0.03)] text-xs uppercase tracking-wider text-keyra-text-2">
+      <div className={`${adminTableWrap} mt-8 transition-opacity ${isRefreshing ? "pointer-events-none opacity-60" : ""}`}>
+        <div className={adminTableScroll}>
+        <table className={`${adminTable} min-w-[36rem]`}>
+          <thead>
             <tr>
-              <th className="px-3 py-2">Created</th>
-              <th className="px-3 py-2">Email</th>
-              <th className="px-3 py-2">Target</th>
-              <th className="px-3 py-2">Verify</th>
-              <th className="px-3 py-2">Approval</th>
-              <th className="px-3 py-2 text-right">Actions</th>
+              <th>Created</th>
+              <th>Email</th>
+              <th>Target</th>
+              <th>Verify</th>
+              <th>Approval</th>
+              <th className="is-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-keyra-border">
+          <tbody>
             {(filteredRows ?? []).length === 0 ? (
               <AdminListEmptyState
                 variant="table-row"
@@ -133,14 +148,14 @@ export function AccessRequestsClient({ initialRequests }: { initialRequests?: Ro
             ) : null}
             {(filteredRows ?? []).map((r) => (
               <tr key={r.id}>
-                <td className="px-3 py-3 text-xs text-keyra-text-2">{r.createdAt}</td>
-                <td className="px-3 py-3 text-keyra-primary">{r.workEmail}</td>
-                <td className="px-3 py-3 text-xs text-keyra-text-2">
+                <td className="is-muted ds-numeric">{r.createdAt}</td>
+                <td>{r.workEmail}</td>
+                <td className="is-muted">
                   {r.targetType} · {r.targetId}
                 </td>
-                <td className="px-3 py-3 text-keyra-text-2">{r.verificationStatus}</td>
-                <td className="px-3 py-3 text-keyra-text-2">{r.approvalStatus}</td>
-                <td className="px-3 py-3 text-right">
+                <td className="is-muted">{r.verificationStatus}</td>
+                <td className="is-muted">{r.approvalStatus}</td>
+                <td className="is-actions">
                   <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-end">
                     <Button
                       type="button"
@@ -210,6 +225,7 @@ export function AccessRequestsClient({ initialRequests }: { initialRequests?: Ro
             ))}
           </tbody>
         </table>
+        </div>
       </div>
       )}
     </div>

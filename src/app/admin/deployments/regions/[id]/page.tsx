@@ -3,8 +3,18 @@ import prisma from "@/lib/prisma";
 import { assertAdminServer } from "@/lib/assertAdminServer";
 import { updateRegion } from "@/app/admin/deployments/actions";
 import { Button } from "@/components/ui/Button";
+import { AdminEditPageHeader } from "@/components/admin/AdminEditPageHeader";
 import { DeploymentAdminRole } from "@prisma/client";
 import { canPatchRegion, isComplianceReviewer, isReadOnlyRole } from "@/lib/deployments/adminAuthz";
+import {
+  adminFormCheckboxLabelWide,
+  adminFormGrid,
+  adminLabel,
+  adminLegacyInput,
+  adminPanel,
+  adminSectionTitle,
+  adminCheckbox,
+} from "@/lib/admin/adminUiClasses";
 
 type Params = { id: string };
 
@@ -33,78 +43,73 @@ export default async function AdminRegionEditPage({ params }: { params: Promise<
     auth.kind === "legacy_super" ||
     (auth.kind === "user" && !isReadOnlyRole(auth) && !isComplianceReviewer(auth) && canPatchRegion(auth, region.id));
 
+  const inputClass = adminLegacyInput;
+
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-keyra-primary">Edit region</h1>
-      <p className="mt-2 text-sm text-keyra-text-2">{region.name}</p>
+      <AdminEditPageHeader title="Edit region" subtitle={region.name} backHref="/admin/deployments/regions" />
 
-      <form action={updateRegion} className="mt-8 keyra-card space-y-3 p-6">
-        <input type="hidden" name="id" value={region.id} />
-        <label className="block text-sm text-keyra-text-2">
-          Name
-          <input
-            name="name"
-            defaultValue={region.name}
-            required
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Slug
-          <input
-            name="slug"
-            defaultValue={region.slug}
-            required
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Map key
-          <input
-            name="mapKey"
-            defaultValue={region.mapKey}
-            required
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Continent code
-          <input
-            name="continentCode"
-            defaultValue={region.continentCode}
-            required
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Subregion code
-          <input
-            name="subregionCode"
-            defaultValue={region.subregionCode}
-            required
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Sort order
-          <input
-            name="sortOrder"
-            defaultValue={String(region.sortOrder)}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="flex items-center gap-2 text-sm text-keyra-text-2">
-          <input name="isPublished" type="checkbox" defaultChecked={region.isPublished} disabled={!canEdit} className="size-4" />
-          Published
-        </label>
-        {canEdit ? <Button type="submit">Save</Button> : <p className="text-sm text-keyra-text-2">Read-only for your role.</p>}
-      </form>
+      <div className={`${adminPanel} mt-6`}>
+        <h2 className={adminSectionTitle}>Region details</h2>
+        <form action={updateRegion} className={adminFormGrid}>
+          <input type="hidden" name="id" value={region.id} />
+          <label className={`${adminLabel} sm:col-span-2`}>
+            Name
+            <input name="name" defaultValue={region.name} required disabled={!canEdit} className={inputClass} />
+          </label>
+          <label className={adminLabel}>
+            Slug
+            <input name="slug" defaultValue={region.slug} required disabled={!canEdit} className={inputClass} />
+          </label>
+          <label className={adminLabel}>
+            Map key
+            <input name="mapKey" defaultValue={region.mapKey} required disabled={!canEdit} className={inputClass} />
+          </label>
+          <label className={adminLabel}>
+            Continent code (M49)
+            <input
+              name="continentCode"
+              defaultValue={region.continentCode}
+              required
+              disabled={!canEdit}
+              className={inputClass}
+            />
+          </label>
+          <label className={adminLabel}>
+            Subregion code (M49)
+            <input
+              name="subregionCode"
+              defaultValue={region.subregionCode}
+              required
+              disabled={!canEdit}
+              className={inputClass}
+            />
+          </label>
+          <label className={adminLabel}>
+            Sort order
+            <input name="sortOrder" defaultValue={String(region.sortOrder)} disabled={!canEdit} className={inputClass} />
+          </label>
+          <label className={adminFormCheckboxLabelWide}>
+            <input
+              name="isPublished"
+              type="checkbox"
+              defaultChecked={region.isPublished}
+              disabled={!canEdit}
+              className={adminCheckbox}
+            />
+            Published
+          </label>
+          <div className="sm:col-span-2">
+            {canEdit ? (
+              <Button type="submit" variant="primary">
+                Save changes
+              </Button>
+            ) : (
+              <p className={adminLabel}>Read-only for your role.</p>
+            )}
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

@@ -1,12 +1,26 @@
 import type { AdminSkeletonTab } from "./AdminDirectorySkeleton";
 import { AdminDirectorySkeleton } from "./AdminDirectorySkeleton";
+import {
+  adminBody,
+  adminCheckbox,
+  adminCountBadge,
+  adminEyebrow,
+  adminLabel,
+  adminLegacyInput,
+  adminPageTitle,
+  adminPanel,
+  adminSectionTitle,
+  adminTable,
+  adminTableScroll,
+  adminTableWrap,
+} from "@/lib/admin/adminUiClasses";
 
 function DeploymentsPanelStaticHeader({ title, description }: { title: string; description: string }) {
   return (
-    <div className="ds-panel is-dashboard">
+    <div className={adminPanel}>
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl">{title}</h1>
-        <p className="mt-1.5 max-w-xl text-sm leading-snug text-keyra-text-2">{description}</p>
+        <h1 className={adminPageTitle}>{title}</h1>
+        <p className={`${adminBody} mt-1.5 max-w-xl text-[var(--ds-body)]`}>{description}</p>
       </div>
     </div>
   );
@@ -14,22 +28,18 @@ function DeploymentsPanelStaticHeader({ title, description }: { title: string; d
 
 function DeploymentsOverviewStaticHeader() {
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-keyra-border bg-keyra-surface px-6 py-7 shadow-[0_24px_70px_rgba(0,0,0,0.06)] sm:px-8">
-      <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+    <section className="ds-feature-card is-dashboard">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-keyra-text-2">Deployment registry</p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-keyra-primary sm:text-4xl">Deployments overview</h1>
-          <p className="mt-3 text-sm leading-6 text-keyra-text-2">
+          <p className="ds-caption-uppercase">Deployment registry</p>
+          <h1 className="ds-display-sm mt-2">Deployments overview</h1>
+          <p className="ds-body-sm mt-3 text-[var(--ds-body)]">
             Internal control surface for regions, countries, telcos, access policy, and public deployment visibility.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <span className="rounded-full border border-keyra-border bg-keyra-bg px-4 py-2 text-sm font-medium text-keyra-primary">
-            Public explorer
-          </span>
-          <span className="rounded-full bg-[var(--keyra-action)] px-4 py-2 text-sm font-medium text-keyra-primary ring-1 ring-[var(--keyra-action-border)]">
-            Review access
-          </span>
+          <span className="ds-btn-secondary is-sm pointer-events-none">Public explorer</span>
+          <span className="ds-btn-primary is-sm pointer-events-none">Review access</span>
         </div>
       </div>
     </section>
@@ -40,7 +50,7 @@ function AppsListStaticHeader() {
   return (
     <div>
       <div className="flex flex-wrap items-start justify-between gap-3 py-1">
-        <h1 className="text-2xl font-semibold text-keyra-primary">Apps</h1>
+        <h1 className={adminPageTitle}>Apps</h1>
       </div>
       <p className="mt-2 text-sm text-keyra-text-2">
         Select an app to open its configured destination. Newly created apps appear first.
@@ -52,7 +62,7 @@ function AppsListStaticHeader() {
 function AccessRequestsStaticHeader() {
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-keyra-primary">Access requests</h1>
+      <h1 className={adminPageTitle}>Access requests</h1>
       <p className="mt-2 text-sm text-keyra-text-2">Approve or reject after email verification.</p>
     </div>
   );
@@ -60,20 +70,27 @@ function AccessRequestsStaticHeader() {
 
 function AuditStaticHeader() {
   return (
-    <div className="ds-panel is-dashboard">
-      <h1 className="text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl">Audit</h1>
-      <p className="mt-1.5 max-w-xl text-sm leading-snug text-keyra-text-2">
-        Deployment audit events and status history across the registry.
-      </p>
+    <div className={adminPanel}>
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <h1 className={adminPageTitle}>Audit</h1>
+          <p className={`${adminBody} mt-1.5 max-w-xl text-[var(--ds-body)]`}>
+            Immutable-style audit trail and status transitions. Each section searches and pages independently.
+          </p>
+        </div>
+        <span className="ds-btn-secondary is-sm pointer-events-none shrink-0 opacity-60" aria-hidden>
+          Search
+        </span>
+      </div>
     </div>
   );
 }
 
 function AuthCountriesStaticHeader() {
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-keyra-border bg-keyra-surface px-6 py-6 shadow-[0_24px_70px_rgba(0,0,0,0.06)] sm:px-7">
+    <section className="relative overflow-hidden ds-feature-card is-dashboard sm:px-7">
       <div className="max-w-3xl">
-        <h1 className="text-3xl font-semibold tracking-tight text-keyra-primary">Authentication countries</h1>
+        <h1 className={adminPageTitle}>Authentication countries</h1>
         <p className="mt-3 text-sm leading-6 text-keyra-text-2">
           Manage country eligibility, weighting, and feed visibility for authentication events.
         </p>
@@ -84,23 +101,14 @@ function AuthCountriesStaticHeader() {
 
 function AuthProtocolsStaticHeader() {
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-keyra-border bg-keyra-surface px-6 py-6 shadow-[0_24px_70px_rgba(0,0,0,0.06)] sm:px-7">
+    <section className="relative overflow-hidden ds-feature-card is-dashboard sm:px-7">
       <div className="max-w-3xl">
-        <h1 className="text-3xl font-semibold tracking-tight text-keyra-primary">SAT protocols</h1>
+        <h1 className={adminPageTitle}>SAT protocols</h1>
         <p className="mt-3 text-sm leading-6 text-keyra-text-2">
           Global SAT-Core registry. Home and roaming percentages must total 100% (default 40 / 60).
         </p>
       </div>
     </section>
-  );
-}
-
-function AuthSettingsStaticHeader() {
-  return (
-    <div>
-      <h1 className="text-2xl font-semibold tracking-tight text-keyra-primary">Authentication feed settings</h1>
-      <p className="mt-2 text-sm text-keyra-text-2">Configure feed defaults and visibility.</p>
-    </div>
   );
 }
 
@@ -160,42 +168,11 @@ function renderStaticHeader(tab: AdminSkeletonTab) {
       return <AuthCountriesStaticHeader />;
     case "auth-protocols":
       return <AuthProtocolsStaticHeader />;
-    case "auth-settings":
-      return <AuthSettingsStaticHeader />;
   }
-}
-
-function AuthSettingsFormSkeleton() {
-  return (
-    <div className="mt-6 max-w-xl space-y-4">
-      <div className="space-y-3">
-        <div className="keyra-skeleton h-5 w-28" aria-hidden />
-        <div className="keyra-skeleton h-5 w-32" aria-hidden />
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        {Array.from({ length: 6 }, (_, index) => (
-          <div key={index}>
-            <div className="keyra-skeleton h-4 w-32" aria-hidden />
-            <div className="keyra-skeleton mt-1 h-10 w-full rounded-md" aria-hidden />
-          </div>
-        ))}
-      </div>
-      <div className="keyra-skeleton h-10 w-32 rounded-full" aria-hidden />
-    </div>
-  );
 }
 
 /** Route-level loading: real page title + list-area skeleton only. */
 export function AdminTabRouteLoading({ tab }: { tab: AdminSkeletonTab }) {
-  if (tab === "auth-settings") {
-    return (
-      <div aria-busy="true" aria-label="Loading">
-        {renderStaticHeader(tab)}
-        <AuthSettingsFormSkeleton />
-      </div>
-    );
-  }
-
   return (
     <div
       aria-busy="true"

@@ -14,7 +14,6 @@ const HREF_TO_TAB: Record<string, AdminSkeletonTab> = {
   "/admin/authentication": "auth-countries",
   "/admin/authentication/countries": "auth-countries",
   "/admin/authentication/protocols": "auth-protocols",
-  "/admin/authentication/settings": "auth-settings",
 };
 
 export function adminTabForHref(href: string): AdminSkeletonTab | null {

@@ -1,6 +1,20 @@
 "use client";
 
 import type { ReactElement } from "react";
+import {
+  adminBody,
+  adminCheckbox,
+  adminCountBadge,
+  adminEyebrow,
+  adminLabel,
+  adminLegacyInput,
+  adminPageTitle,
+  adminPanel,
+  adminSectionTitle,
+  adminTable,
+  adminTableScroll,
+  adminTableWrap,
+} from "@/lib/admin/adminUiClasses";
 
 /**
  * Pagination footer for admin list tabs that page an already-loaded array in memory
@@ -61,7 +75,7 @@ export function ClientTablePagination({
 
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-keyra-border bg-keyra-bg/50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-      <p className="text-sm text-keyra-text-2">
+      <p className={adminLabel}>
         Page <span className="font-semibold text-keyra-primary">{page}</span> of{" "}
         <span className="font-semibold text-keyra-primary">{totalPages}</span>
         <span className="text-keyra-text-2">

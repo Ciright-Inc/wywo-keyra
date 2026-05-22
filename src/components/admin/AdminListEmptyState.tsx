@@ -1,3 +1,6 @@
+import { adminEmptyPanel } from "@/lib/admin/adminUiClasses";
+import { cn } from "@/components/ui/cn";
+
 type TableProps = {
   variant: "table-row";
   colSpan: number;
@@ -37,21 +40,12 @@ export function AdminListEmptyState(props: Props) {
   const message = adminListEmptyMessage(props);
 
   if (props.variant === "panel") {
-    return (
-      <p
-        className={
-          props.className ??
-          "mt-6 rounded-2xl border border-keyra-border bg-keyra-surface/50 px-4 py-8 text-center text-sm text-keyra-text-2"
-        }
-      >
-        {message}
-      </p>
-    );
+    return <p className={cn(adminEmptyPanel, props.className)}>{message}</p>;
   }
 
   return (
     <tr>
-      <td colSpan={props.colSpan} className="px-3 py-10 text-center text-sm text-keyra-text-2">
+      <td colSpan={props.colSpan} className="ds-admin-empty">
         {message}
       </td>
     </tr>

@@ -11,7 +11,6 @@ import { useAdminShellNavigation } from "@/lib/admin/useAdminShellNavigation";
 const nav = [
   { href: "/admin/authentication/countries", label: "Authentication countries", icon: "globe" },
   { href: "/admin/authentication/protocols", label: "SAT protocols", icon: "protocol" },
-  { href: "/admin/authentication/settings", label: "Feed settings", icon: "settings" },
 ] as const;
 
 function AuthNavIcon({ name }: { name: (typeof nav)[number]["icon"] }) {
@@ -30,15 +29,10 @@ function AuthNavIcon({ name }: { name: (typeof nav)[number]["icon"] }) {
           <circle {...common} cx="12" cy="12" r="8" />
           <path {...common} d="M4 12h16M12 4c2 2.2 3 4.9 3 8s-1 5.8-3 8c-2-2.2-3-4.9-3-8s1-5.8 3-8" />
         </>
-      ) : name === "protocol" ? (
+      ) : (
         <>
           <path {...common} d="M12 3 4.5 7.5V16.5L12 21l7.5-4.5V7.5z" />
           <path {...common} d="M8.5 10.5 12 8.5l3.5 2v4L12 16.5l-3.5-2z" />
-        </>
-      ) : (
-        <>
-          <path {...common} d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5z" />
-          <path {...common} d="M19 12a7 7 0 0 0-.1-1.1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.9-1.1L14.2 3h-4.4l-.4 2.8a7 7 0 0 0-1.9 1.1l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 5 12c0 .4 0 .8.1 1.1l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.9 1.1l.4 2.8h4.4l.4-2.8a7 7 0 0 0 1.9-1.1l2.4 1 2-3.4-2-1.6c.1-.3.1-.7.1-1.1z" />
         </>
       )}
     </svg>

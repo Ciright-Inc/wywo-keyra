@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AdminEditPageHeader } from "@/components/admin/AdminEditPageHeader";
+import { adminPanel } from "@/lib/admin/adminUiClasses";
 import type { DeploymentAppCategoryView, DeploymentAppView } from "@/lib/deploymentAppConstants";
 import { AppEditSiblingNav } from "./AppEditSiblingNav";
 import { AppForm } from "./AppForm";
@@ -83,22 +84,15 @@ export function AppEditClient({ initialApp, categories, siblingApps }: Props) {
 
   return (
     <div className="max-w-3xl">
-      <Link
-        href="/admin/deployments/apps"
-        className="text-sm font-medium text-keyra-text-2 underline-offset-4 transition hover:text-keyra-primary hover:underline"
-      >
-        &lt;- Back to apps
-      </Link>
+      <AdminEditPageHeader
+        title="Edit app"
+        subtitle={app.label}
+        backHref="/admin/deployments/apps"
+        backLabel="Back to apps"
+      />
 
-      <div className="mt-6 rounded-3xl border border-keyra-border bg-keyra-surface p-6 shadow-[0_24px_70px_rgba(0,0,0,0.06)] sm:p-8">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-keyra-text-2">App directory</p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-keyra-primary">Edit app</h1>
-            <p className="mt-3 text-sm leading-6 text-keyra-text-2">
-              Update the app details. Saved changes are stored in the database.
-            </p>
-          </div>
+      <div className={`${adminPanel} mt-6`}>
+        <div className="flex flex-wrap items-start justify-end gap-4">
           <AppEditSiblingNav
             prevApp={nav.prev}
             nextApp={nav.next}

@@ -1,11 +1,11 @@
 "use client";
 
 import { AdminFieldError, fieldClass } from "@/components/admin/AdminFieldError";
+import { adminFormInput, adminLabel, adminCheckbox, adminFormCheckboxLabel, adminSubsectionTitle } from "@/lib/admin/adminUiClasses";
 import { SAT_PROTOCOL_CATEGORIES } from "@/lib/satProtocol/categories";
 import type { ProtocolFormValues } from "@/lib/authenticationFeed/protocolFormValidation";
 
-const inputBase =
-  "h-10 w-full rounded-lg border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary outline-none transition focus-visible:border-black/25 focus-visible:keyra-focus disabled:opacity-60";
+const inputBase = adminFormInput;
 
 const COLOR_THEMES = [
   "sky",
@@ -54,7 +54,7 @@ function Field({
 }) {
   return (
     <label htmlFor={htmlFor} className="block">
-      <span className="text-xs font-medium text-keyra-text-2">
+      <span className={adminLabel}>
         {label}
         {required ? <span className="text-red-600"> *</span> : null}
       </span>
@@ -76,10 +76,10 @@ function CheckboxField({
   onChange: (checked: boolean) => void;
 }) {
   return (
-    <label className="inline-flex items-center gap-2 text-sm text-keyra-primary">
+    <label className={adminFormCheckboxLabel}>
       <input
         type="checkbox"
-        className="size-4 accent-keyra-accent"
+        className={adminCheckbox}
         checked={checked}
         disabled={disabled}
         onChange={(event) => onChange(event.target.checked)}
@@ -90,7 +90,7 @@ function CheckboxField({
 }
 
 export function AuthenticationProtocolFormFields({ values, errors, disabled, onChange }: Props) {
-  const selectClass = `${inputBase} bg-keyra-bg`;
+  const selectClass = inputBase;
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -229,7 +229,7 @@ export function AuthenticationProtocolFormFields({ values, errors, disabled, onC
       </Field>
 
       <div className="flex flex-col justify-end gap-3 sm:col-span-2 lg:col-span-3">
-        <p className="text-xs font-medium uppercase tracking-wider text-keyra-text-2">Audience flags</p>
+        <p className={adminSubsectionTitle}>Audience flags</p>
         <div className="flex flex-wrap gap-x-6 gap-y-2">
           <CheckboxField label="Enterprise" checked={values.flagEnterprise} disabled={disabled} onChange={(checked) => onChange({ flagEnterprise: checked })} />
           <CheckboxField label="Government" checked={values.flagGovernment} disabled={disabled} onChange={(checked) => onChange({ flagGovernment: checked })} />
@@ -240,7 +240,7 @@ export function AuthenticationProtocolFormFields({ values, errors, disabled, onC
       </div>
 
       <div className="flex flex-col justify-end gap-3 sm:col-span-2 lg:col-span-3">
-        <p className="text-xs font-medium uppercase tracking-wider text-keyra-text-2">Capabilities</p>
+        <p className={adminSubsectionTitle}>Capabilities</p>
         <div className="flex flex-wrap gap-x-6 gap-y-2">
           <CheckboxField label="Zero knowledge" checked={values.zeroKnowledgeCompatible} disabled={disabled} onChange={(checked) => onChange({ zeroKnowledgeCompatible: checked })} />
           <CheckboxField label="SIM / eSIM required" checked={values.simOrEsimRequired} disabled={disabled} onChange={(checked) => onChange({ simOrEsimRequired: checked })} />

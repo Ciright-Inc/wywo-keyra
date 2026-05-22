@@ -8,10 +8,12 @@ import {
   deleteAuthenticationProtocolMessage,
   deleteAuthenticationProtocolsMessage,
 } from "@/lib/admin/adminDeleteMessages";
+import { AdminCatalogHero } from "@/components/admin/AdminCatalogHero";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { AdminFormPanelCloseButton } from "@/components/admin/AdminFormPanelCloseButton";
+import { AdminEditIconButton } from "@/components/admin/AdminEditIconButton";
 import { ClientTablePagination } from "@/components/admin/ClientTablePagination";
 import { AuthenticationProtocolFormFields } from "./AuthenticationProtocolFormFields";
 import {
@@ -23,10 +25,32 @@ import {
 } from "@/lib/authenticationFeed/protocolFormValidation";
 import { SAT_PROTOCOL_CATEGORIES } from "@/lib/satProtocol/categories";
 import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
+import {
+  adminBody,
+  adminCheckbox,
+  adminFilterLabel,
+  adminFilterSelect,
+  adminInlineFormBody,
+  adminPageTitle,
+  adminPageToolbar,
+  adminPanel,
+  adminSectionTitle,
+  adminSubsectionTitle,
+  adminTableCellInput,
+  adminTableDense,
+  adminTableDenseScroll,
+  adminTableWrap,
+  adminToolbarBtnDanger,
+  adminToolbarBtnPrimary,
+  adminToolbarBtnSecondary,
+  adminToolbarMeta,
+  adminToolbarStrip,
+} from "@/lib/admin/adminUiClasses";
 
 const DEFAULT_PAGE_SIZE = 25;
 const PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
-const TABLE_CHECKBOX_CLASS = "accent-black";
+
+const protocolCellInput = adminTableCellInput;
 
 type ProtocolRow = {
   id: string;
@@ -92,7 +116,7 @@ const THEME_ACCENTS: Record<string, string> = {
 };
 
 function themeClass(theme: string | null | undefined) {
-  return THEME_ACCENTS[theme ?? ""] ?? "border-keyra-border text-keyra-text-2";
+  return THEME_ACCENTS[theme ?? ""] ?? "border-[var(--ds-hairline-strong)] text-[var(--ds-body)]";
 }
 
 function secChipClass(c: string | null | undefined) {
@@ -102,7 +126,7 @@ function secChipClass(c: string | null | undefined) {
   // tones were near-white and dissolved into the soft tinted pill backgrounds.
   if (u.includes("SOVEREIGN") || u === "CRITICAL") return "bg-red-500/20 text-red-800 ring-red-600/45";
   if (u.includes("HIGH") || u.includes("ELEVATED")) return "bg-amber-500/20 text-amber-800 ring-amber-600/45";
-  return "bg-keyra-bg text-keyra-primary ring-keyra-border";
+  return "bg-[var(--ds-canvas-soft)] text-[var(--ds-ink)] ring-[var(--ds-hairline-strong)]";
 }
 
 export function AuthenticationProtocolsClient({
@@ -561,10 +585,10 @@ export function AuthenticationProtocolsClient({
   }, [debouncedQ, category, activeFilter, sortKey, sortDir]);
 
   const sortableTh = (label: string, key: string, align: "left" | "center" = "left") => (
-    <th className={`px-1.5 py-2 ${align === "center" ? "w-14 text-center" : "text-left"}`}>
+    <th className={align === "center" ? "text-center" : undefined} aria-sort={sortKey === key ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
       <button
         type="button"
-        className={`font-semibold hover:text-keyra-accent ${align === "center" ? "inline-flex items-center justify-center" : "text-left"}`}
+        className={`ds-table-sort ${align === "center" ? "w-full justify-center" : ""}`}
         onClick={() => toggleSort(key)}
         disabled={busy}
       >
@@ -575,46 +599,24 @@ export function AuthenticationProtocolsClient({
   );
 
   return (
-    <div className="flex flex-col gap-5 text-keyra-primary">
-      {/* Hero — mirrors the Authentication countries hero card. */}
-      <section className="relative overflow-hidden rounded-3xl border border-keyra-border bg-keyra-surface px-6 py-6 shadow-[0_24px_70px_rgba(0,0,0,0.06)] sm:px-7">
-        <div className="pointer-events-none absolute -right-14 -top-20 size-52 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.07),transparent_68%)]" />
-        <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-3xl">
-            <h1 className="text-3xl font-semibold tracking-tight text-keyra-primary">SAT protocols</h1>
-            <p className="mt-3 text-sm leading-6 text-keyra-text-2">
-              Global SAT-Core registry. Home and roaming percentages must total 100% (default 40 / 60). Sort from any table column header.
-            </p>
-          </div>
+    <div>
+      {error ? <p className="ds-admin-error-banner">{error}</p> : null}
 
-          <div className="grid grid-cols-2 gap-3 sm:min-w-72">
-            <div className="rounded-2xl border border-keyra-border bg-keyra-bg/75 px-4 py-3">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-keyra-text-2">Rows</p>
-              <p className="mt-1 text-2xl font-semibold text-keyra-primary">{loading ? "—" : dataRows.length}</p>
-            </div>
-            <div className="rounded-2xl border border-keyra-border bg-keyra-bg/75 px-4 py-3">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-keyra-text-2">Active</p>
-              <p className="mt-1 text-2xl font-semibold text-keyra-primary">{loading ? "—" : activeCount}</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AdminCatalogHero
+        title="SAT protocols"
+        description="Global SAT-Core registry. Home and roaming percentages must total 100% (default 40 / 60). Sort from any table column header."
+        srOnly={filterSummary}
+        stats={[
+          { label: "Rows", value: loading ? "—" : String(dataRows.length) },
+          { label: "Active", value: loading ? "—" : String(activeCount) },
+        ]}
+      />
 
-      {error ? (
-        <p className="ds-admin-error-banner">{error}</p>
-      ) : null}
-
-      {/* Sticky toolbar — inline filters + bulk actions + search + add toggle. */}
-      <div className="sticky top-[var(--keyra-header-offset)] z-20 flex flex-col gap-3 rounded-2xl border border-keyra-border bg-keyra-surface/95 px-3 py-3 shadow-sm backdrop-blur-sm sm:flex-row sm:items-center sm:px-4 lg:top-14">
+      <div className={adminToolbarStrip}>
         <div className="flex min-w-0 w-full flex-1 flex-wrap items-center gap-3 sm:w-auto">
-          <label className="flex items-center gap-1.5 text-[11px] font-medium text-keyra-text-2 sm:text-xs">
+          <label className={adminFilterLabel}>
             Category
-            <select
-              className="h-9 rounded-md border border-keyra-border bg-keyra-bg px-2 text-xs text-keyra-primary"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              disabled={busy}
-            >
+            <select className={adminFilterSelect} value={category} onChange={(e) => setCategory(e.target.value)} disabled={busy}>
               <option value="">All</option>
               {SAT_PROTOCOL_CATEGORIES.map((c) => (
                 <option key={c} value={c}>
@@ -623,10 +625,10 @@ export function AuthenticationProtocolsClient({
               ))}
             </select>
           </label>
-          <label className="flex items-center gap-1.5 text-[11px] font-medium text-keyra-text-2 sm:text-xs">
+          <label className={adminFilterLabel}>
             Active
             <select
-              className="h-9 rounded-md border border-keyra-border bg-keyra-bg px-2 text-xs text-keyra-primary"
+              className={adminFilterSelect}
               value={activeFilter}
               onChange={(e) => setActiveFilter(e.target.value as typeof activeFilter)}
               disabled={busy}
@@ -636,14 +638,9 @@ export function AuthenticationProtocolsClient({
               <option value="false">Inactive</option>
             </select>
           </label>
-          <label className="flex items-center gap-1.5 text-[11px] font-medium text-keyra-text-2 sm:text-xs">
+          <label className={adminFilterLabel}>
             Sort
-            <select
-              className="h-9 rounded-md border border-keyra-border bg-keyra-bg px-2 text-xs text-keyra-primary"
-              value={sortKey}
-              onChange={(e) => setSortKey(e.target.value)}
-              disabled={busy}
-            >
+            <select className={adminFilterSelect} value={sortKey} onChange={(e) => setSortKey(e.target.value)} disabled={busy}>
               <option value="displayOrder">Display order</option>
               <option value="protocolName">Name</option>
               <option value="protocolCode">Code</option>
@@ -653,22 +650,18 @@ export function AuthenticationProtocolsClient({
               <option value="active">Active</option>
             </select>
           </label>
-          <span className="shrink-0 rounded-full border border-keyra-border bg-keyra-bg px-3 py-1.5 text-[11px] text-keyra-text-2 sm:text-xs">
-            Selected: <span className="font-medium text-keyra-primary">{selectedIds.length}</span>
+          <span className={adminToolbarMeta}>
+            Selected: <span className="font-medium text-[var(--ds-ink)]">{selectedIds.length}</span>
             {dirtyRowIds.length > 0 ? (
               <>
                 {" "}
-                · Unsaved: <span className="font-medium text-amber-700">{dirtyRowIds.length}</span>
+                · Unsaved: <span className="font-medium text-[var(--ds-warning)]">{dirtyRowIds.length}</span>
               </>
             ) : null}
           </span>
-          {/* Hidden but kept: the previous filterSummary readout used to live here. The same
-              data is now shown via the inline filter dropdowns above; the variable stays
-              referenced below to silence unused-warnings without breaking behavior. */}
-          <span className="sr-only">{filterSummary}</span>
         </div>
 
-        <div className="flex w-full shrink-0 flex-wrap items-center justify-between gap-2 sm:ml-auto sm:w-auto sm:flex-nowrap sm:justify-end">
+        <div className={`${adminPageToolbar} w-full sm:ml-auto sm:w-auto`}>
           <CollapsibleSearchBar
             mode="client"
             searchQuery={searchQ}
@@ -677,74 +670,62 @@ export function AuthenticationProtocolsClient({
             ariaLabel="Search protocols"
           />
           {showEnableButton ? (
-            <Button
+            <button
               type="button"
-              variant="secondary"
-              className="!h-9 !min-h-0 !py-0 shrink-0 px-3 text-xs font-semibold"
+              className={adminToolbarBtnSecondary}
               disabled={busy || selectedIds.length === 0}
               onClick={() => void patchBulkStatus(true)}
               title={selectedIds.length === 0 ? "Select rows first" : "Set selected rows active"}
             >
               Enable{selectedIds.length > 0 ? ` (${selectedIds.length})` : ""}
-            </Button>
+            </button>
           ) : null}
           {showDisableButton ? (
-            <Button
+            <button
               type="button"
-              variant="secondary"
-              className="!h-9 !min-h-0 !py-0 shrink-0 px-3 text-xs font-semibold"
+              className={adminToolbarBtnSecondary}
               disabled={busy || selectedIds.length === 0}
               onClick={() => void patchBulkStatus(false)}
               title={selectedIds.length === 0 ? "Select rows first" : "Set selected rows inactive"}
             >
               Disable{selectedIds.length > 0 ? ` (${selectedIds.length})` : ""}
-            </Button>
+            </button>
           ) : null}
-          <Button
+          <button
             type="button"
-            variant="secondary"
-            className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold"
+            className={addProtocolOpen ? adminToolbarBtnSecondary : adminToolbarBtnPrimary}
             onClick={() => (addProtocolOpen ? setAddProtocolOpen(false) : openAddPanel())}
             aria-expanded={addProtocolOpen}
+            disabled={busy}
           >
-            {addProtocolOpen ? "Close add" : "Add protocol"}
-          </Button>
-          <Button
+            {addProtocolOpen ? "Close create form" : "Add protocol"}
+          </button>
+          <button
             type="button"
-            className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold"
+            className={adminToolbarBtnPrimary}
             disabled={busy || dirtyRowIds.length === 0}
             onClick={() => void saveDirtyRows()}
           >
             Save{dirtyRowIds.length > 0 ? ` (${dirtyRowIds.length})` : ""}
-          </Button>
-          <Button
+          </button>
+          <button
             type="button"
-            variant="secondary"
-            className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold text-red-700 hover:border-red-500/30 hover:bg-red-500/8"
+            className={adminToolbarBtnDanger}
             disabled={busy || selectedIds.length === 0}
             onClick={() => void deleteSelectedRows()}
           >
             Delete{selectedIds.length > 0 ? ` (${selectedIds.length})` : ""}
-          </Button>
+          </button>
         </div>
       </div>
 
       {addProtocolOpen ? (
-        <div className="rounded-2xl border border-keyra-border bg-keyra-surface/95 p-4 shadow-sm sm:p-5">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Add protocol</h2>
-              <p className="mt-1 text-xs text-keyra-text-2">
-                Same fields as the list. Required: name, code, category, weight. Home + roam must total 100%.
-              </p>
-            </div>
-            <AdminFormPanelCloseButton
-              label="Close add protocol form"
-              disabled={busy}
-              onClick={() => setAddProtocolOpen(false)}
-            />
-          </div>
-          <div className="mt-4 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
+        <div className={`${adminPanel} mt-3`}>
+          <h2 className={adminSectionTitle}>Add protocol</h2>
+          <p className={`${adminBody} mt-1 text-[var(--ds-body)]`}>
+            Same fields as the list. Required: name, code, category, weight. Home + roam must total 100%.
+          </p>
+          <div className={adminInlineFormBody}>
             <AuthenticationProtocolFormFields
               values={addDraft}
               errors={addErrors}
@@ -759,7 +740,7 @@ export function AuthenticationProtocolsClient({
               }}
             />
             <div className="mt-4 flex justify-end">
-              <Button type="button" disabled={busy} onClick={() => void add()}>
+              <Button type="button" size="sm" disabled={busy} onClick={() => void add()}>
                 Add protocol
               </Button>
             </div>
@@ -768,22 +749,16 @@ export function AuthenticationProtocolsClient({
       ) : null}
 
       {editRow ? (
-        <div className="rounded-2xl border border-keyra-border bg-keyra-surface/95 p-4 shadow-sm sm:p-5">
-          <div className="flex items-start justify-between gap-3">
+        <>
+          <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Edit protocol</h2>
-              <p className="mt-1 text-xs text-keyra-text-2">
-                Editing <span className="font-medium text-keyra-primary">{editRow.protocolName}</span>. Home + roam must
-                total 100%.
-              </p>
+              <h1 className={adminPageTitle}>Edit protocol</h1>
+              <p className={`${adminBody} mt-2 text-[var(--ds-body)]`}>{editRow.protocolName}</p>
             </div>
-            <AdminFormPanelCloseButton
-              label="Close edit protocol form"
-              disabled={busy}
-              onClick={closeEditPanel}
-            />
+            <AdminFormPanelCloseButton variant="back" disabled={busy} onClick={closeEditPanel} />
           </div>
-          <div className="mt-4 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
+          <div className={`${adminPanel} mt-6`}>
+            <div className={adminInlineFormBody}>
             <AuthenticationProtocolFormFields
               values={editDraft}
               errors={editErrors}
@@ -798,38 +773,38 @@ export function AuthenticationProtocolsClient({
               }}
             />
             <div className="mt-4 flex justify-end gap-2">
-              <Button type="button" variant="secondary" disabled={busy} onClick={closeEditPanel}>
+              <Button type="button" variant="secondary" size="sm" disabled={busy} onClick={closeEditPanel}>
                 Cancel
               </Button>
-              <Button type="button" disabled={busy} onClick={() => void saveEditRow()}>
+              <Button type="button" size="sm" disabled={busy} onClick={() => void saveEditRow()}>
                 Save changes
               </Button>
             </div>
           </div>
         </div>
+        </>
       ) : null}
 
       {isInitialLoading ? (
         <AdminDirectorySkeleton tab="auth-protocols" tableOnly rows={8} />
       ) : (
         <>
-      <div
-        className={`max-h-[min(85vh,calc(100dvh-var(--keyra-header-offset)-8rem))] min-h-[260px] overflow-auto overscroll-x-contain rounded-2xl border border-keyra-border bg-keyra-surface/50 shadow-[0_18px_54px_rgba(0,0,0,0.05)] transition-opacity ${isRefreshing ? "pointer-events-none opacity-60" : ""}`}
-      >
-        <table className="min-w-[1100px] w-full border-collapse text-left text-xs">
-          <thead className="sticky top-0 z-10 border-b border-keyra-border bg-keyra-bg/95 text-[10px] uppercase tracking-wider text-keyra-text-2 backdrop-blur-sm">
+      <div className={`${adminTableWrap} mt-3 transition-opacity ${isRefreshing ? "pointer-events-none opacity-60" : ""}`}>
+        <div className={adminTableDenseScroll}>
+        <table className={`${adminTableDense} min-w-[1100px]`}>
+          <thead>
             <tr>
-              <th className="w-10 pl-4 pr-2 py-2.5 align-middle" scope="col">
+              <th className="w-10" scope="col">
                 <input
                   type="checkbox"
-                  className={TABLE_CHECKBOX_CLASS}
+                  className={adminCheckbox}
                   checked={allSelected}
                   onChange={toggleSelectAll}
                   disabled={busy || dataRows.length === 0}
                   aria-label={allSelected ? "Clear selection" : "Select all"}
                 />
               </th>
-              <th className="px-1.5 py-2.5 align-middle">SAT</th>
+              <th>SAT</th>
               {sortableTh("Name", "protocolName")}
               {sortableTh("Code", "protocolCode")}
               {sortableTh("Category", "protocolCategory")}
@@ -837,25 +812,23 @@ export function AuthenticationProtocolsClient({
               {sortableTh("Home", "homePercentage")}
               {sortableTh("Roam", "roamingPercentage")}
               {sortableTh("Trust", "trustLevel")}
-              <th className="px-1 py-2">Flags</th>
+              <th>Flags</th>
               {sortableTh("Global", "globalAvailability", "center")}
               {sortableTh("API", "apiReady", "center")}
               {sortableTh("Active", "active", "center")}
-              <th className="px-2 py-2.5 pr-4 align-middle text-right">Actions</th>
+              <th className="is-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {pagedRows.map((r) => (
               <tr
                 key={r.id}
-                className={`border-b border-keyra-border/50 align-top ${
-                  editRow?.id === r.id ? "bg-keyra-primary/5 ring-1 ring-inset ring-keyra-primary/15" : ""
-                }`}
+                className={editRow?.id === r.id ? "bg-[var(--ds-canvas-soft)] ring-1 ring-inset ring-[var(--ds-ink)]/10" : undefined}
               >
                 <td className="pl-4 pr-2 py-1 align-middle">
                   <input
                     type="checkbox"
-                    className={TABLE_CHECKBOX_CLASS}
+                    className={adminCheckbox}
                     checked={!!selected[r.id]}
                     onChange={() => toggleSelect(r.id)}
                     disabled={busy}
@@ -872,7 +845,7 @@ export function AuthenticationProtocolsClient({
                 </td>
                 <td className="px-1 py-1">
                   <input
-                    className="w-[130px] rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
+                    className={`${protocolCellInput} w-[130px]`}
                     value={r.protocolName}
                     onChange={(e) => patchRow(r.id, { protocolName: e.target.value })}
                     disabled={busy}
@@ -883,7 +856,7 @@ export function AuthenticationProtocolsClient({
                     </span>
                     {typeof r.trustLevel === "number" ? (
                       <span
-                        className="rounded px-1.5 py-0.5 text-[10px] font-semibold ring-1 ring-keyra-border bg-keyra-bg text-keyra-primary"
+                        className="rounded px-1.5 py-0.5 text-[10px] font-semibold ring-1 ring-[var(--ds-hairline-strong)] bg-[var(--ds-canvas-soft)] text-[var(--ds-ink)]"
                         title="Trust level"
                       >
                         T{r.trustLevel}
@@ -902,7 +875,7 @@ export function AuthenticationProtocolsClient({
                       className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ring-1 ${
                         r.active
                           ? "bg-emerald-500/15 text-emerald-700 ring-emerald-500/45"
-                          : "bg-keyra-bg text-keyra-text-2 ring-keyra-border"
+                          : "bg-[var(--ds-canvas-soft)] text-[var(--ds-body)] ring-[var(--ds-hairline-strong)]"
                       }`}
                       title="Feed / registry activity"
                     >
@@ -912,7 +885,7 @@ export function AuthenticationProtocolsClient({
                 </td>
                 <td className="px-1 py-1">
                   <input
-                    className="w-[88px] rounded border border-keyra-border bg-keyra-bg px-1 py-0.5 font-mono"
+                    className={`${protocolCellInput} w-[88px] font-mono`}
                     value={r.protocolCode}
                     onChange={(e) => patchRow(r.id, { protocolCode: e.target.value })}
                     disabled={busy}
@@ -920,7 +893,7 @@ export function AuthenticationProtocolsClient({
                 </td>
                 <td className="px-1 py-1">
                   <input
-                    className="w-[100px] rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
+                    className={`${protocolCellInput} w-[100px]`}
                     value={r.protocolCategory}
                     onChange={(e) => patchRow(r.id, { protocolCategory: e.target.value })}
                     disabled={busy}
@@ -929,7 +902,7 @@ export function AuthenticationProtocolsClient({
                 <td className="px-1 py-1">
                   <input
                     type="number"
-                    className="w-14 rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
+                    className={`${protocolCellInput} w-14`}
                     value={r.percentageWeight}
                     onChange={(e) => patchRow(r.id, { percentageWeight: Number(e.target.value) })}
                     disabled={busy}
@@ -938,7 +911,7 @@ export function AuthenticationProtocolsClient({
                 <td className="px-1 py-1">
                   <input
                     type="number"
-                    className="w-12 rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
+                    className={`${protocolCellInput} w-12`}
                     value={r.homePercentage}
                     onChange={(e) => patchRow(r.id, { homePercentage: Number(e.target.value) })}
                     disabled={busy}
@@ -947,7 +920,7 @@ export function AuthenticationProtocolsClient({
                 <td className="px-1 py-1">
                   <input
                     type="number"
-                    className="w-12 rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
+                    className={`${protocolCellInput} w-12`}
                     value={r.roamingPercentage}
                     onChange={(e) => patchRow(r.id, { roamingPercentage: Number(e.target.value) })}
                     disabled={busy}
@@ -958,13 +931,13 @@ export function AuthenticationProtocolsClient({
                     type="number"
                     min={1}
                     max={5}
-                    className="w-10 rounded border border-keyra-border bg-keyra-bg px-1 py-0.5"
+                    className={`${protocolCellInput} w-10`}
                     value={r.trustLevel ?? 4}
                     onChange={(e) => patchRow(r.id, { trustLevel: Number(e.target.value) })}
                     disabled={busy}
                   />
                 </td>
-                <td className="px-1 py-1 font-mono text-[10px] leading-tight text-keyra-text-2">
+                <td className="font-mono text-[10px] leading-tight text-[var(--ds-body)]">
                   {r.flagEnterprise ? "E" : "·"}
                   {r.flagGovernment ? "G" : "·"}
                   {r.flagTelco ? "T" : "·"}
@@ -975,7 +948,7 @@ export function AuthenticationProtocolsClient({
                   <div className="flex justify-center">
                     <input
                       type="checkbox"
-                      className={TABLE_CHECKBOX_CLASS}
+                      className={adminCheckbox}
                       checked={r.globalAvailability !== false}
                       onChange={(e) => patchRow(r.id, { globalAvailability: e.target.checked })}
                       disabled={busy}
@@ -987,7 +960,7 @@ export function AuthenticationProtocolsClient({
                   <div className="flex justify-center">
                     <input
                       type="checkbox"
-                      className={TABLE_CHECKBOX_CLASS}
+                      className={adminCheckbox}
                       checked={r.apiReady !== false}
                       onChange={(e) => patchRow(r.id, { apiReady: e.target.checked })}
                       disabled={busy}
@@ -999,31 +972,20 @@ export function AuthenticationProtocolsClient({
                   <div className="flex justify-center">
                     <input
                       type="checkbox"
-                      className={TABLE_CHECKBOX_CLASS}
+                      className={adminCheckbox}
                       checked={r.active}
                       onChange={(e) => patchRow(r.id, { active: e.target.checked })}
                       disabled={busy}
                     />
                   </div>
                 </td>
-                <td className="px-2 py-1 pr-4 align-middle text-right">
-                  <button
-                    type="button"
-                    title="Edit"
+                <td className="is-actions">
+                  <AdminEditIconButton
                     aria-label={`Edit ${r.protocolName}`}
                     disabled={busy}
+                    active={editRow?.id === r.id}
                     onClick={() => openEditPanel(r)}
-                    className={`inline-flex size-8 items-center justify-center rounded-md border bg-keyra-bg transition disabled:opacity-50 ${
-                      editRow?.id === r.id
-                        ? "border-keyra-primary/30 text-keyra-primary ring-1 ring-keyra-primary/20"
-                        : "border-keyra-border text-keyra-primary hover:border-black/20 hover:bg-keyra-surface"
-                    }`}
-                  >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                      <path d="M12 20h9" />
-                      <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
-                    </svg>
-                  </button>
+                  />
                 </td>
               </tr>
             ))}
@@ -1037,6 +999,7 @@ export function AuthenticationProtocolsClient({
             className="border-0 bg-transparent px-4 py-8 text-center shadow-none sm:px-6"
           />
         ) : null}
+        </div>
       </div>
 
       {dataRows.length > 0 ? (

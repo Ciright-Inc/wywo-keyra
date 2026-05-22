@@ -37,7 +37,7 @@ export default function AdminLoginPage({ searchParams }: { searchParams: Promise
   return (
     <Suspense
       fallback={
-        <div className="mx-auto max-w-md px-4 py-16 text-sm text-keyra-text-2">Loading…</div>
+        <div className="mx-auto max-w-md px-4 py-16 ds-body-sm text-[var(--ds-body)]">Loading…</div>
       }
     >
       <AdminLoginContent searchParams={searchParams} />

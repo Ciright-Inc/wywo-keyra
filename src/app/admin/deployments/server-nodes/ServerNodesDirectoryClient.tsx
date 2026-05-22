@@ -12,6 +12,21 @@ import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import { useToast } from "@/components/ui/Toast";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { buildListHref } from "@/lib/admin/listSearchParams";
+import {
+  adminBody,
+  adminCheckbox,
+  adminCountBadge,
+  adminEyebrow,
+  adminLabel,
+  adminLegacyInput,
+  adminPageTitle,
+  adminPanel,
+  adminSectionTitle,
+  adminTextareaMono,
+  adminTable,
+  adminTableScroll,
+  adminTableWrap,
+} from "@/lib/admin/adminUiClasses";
 
 export type ServerNodeRow = {
   id: string;
@@ -86,8 +101,8 @@ export function ServerNodesDirectoryClient({
   }
 
   const inputClass =
-    "mt-1 h-10 w-full rounded-lg border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary shadow-sm outline-none transition focus-visible:border-black/25 focus-visible:keyra-focus disabled:opacity-60";
-  const selectClass = `${inputClass} bg-keyra-bg`;
+    adminLegacyInput;
+  const selectClass = adminLegacyInput;
 
   const buildSearchHref = useCallback(
     (query: string) => buildListHref(BASE_HREF, { page: 1, pageSize, searchQuery: query }, defaultPageSize),
@@ -108,16 +123,16 @@ export function ServerNodesDirectoryClient({
 
   return (
     <div>
-      <div className="ds-panel is-dashboard">
+      <div className={adminPanel}>
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl">Server nodes</h1>
-              <span className="rounded-full border border-keyra-border bg-keyra-bg px-2.5 py-0.5 text-[11px] font-medium text-keyra-text-2">
+              <h1 className={adminPageTitle}>Server nodes</h1>
+              <span className={adminCountBadge}>
                 {totalCount.toLocaleString()} total
               </span>
             </div>
-            <p className="mt-1.5 max-w-xl text-sm leading-snug text-keyra-text-2">
+            <p className={`${adminBody} mt-1.5 max-w-xl text-[var(--ds-body)]`}>
               FQDN targets for country or telco assets you are allowed to see.
             </p>
           </div>
@@ -132,11 +147,7 @@ export function ServerNodesDirectoryClient({
             {canUseCreate ? (
               <button
                 type="button"
-                className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ring-1 ${
-                  createOpen
-                    ? "border border-[var(--keyra-action-border)] bg-keyra-bg text-keyra-primary ring-[var(--keyra-action-border)] hover:bg-keyra-surface"
-                    : "bg-[var(--keyra-action)] text-keyra-primary ring-[var(--keyra-action-border)] hover:bg-keyra-surface"
-                }`}
+                className={createOpen ? "ds-btn-secondary is-sm" : "ds-btn-primary is-sm"}
                 onClick={() => setCreateOpen((open) => !open)}
               >
                 {createOpen ? "Close create form" : "Create server node"}
@@ -146,17 +157,17 @@ export function ServerNodesDirectoryClient({
         </div>
 
         {canUseCreate && createOpen ? (
-          <div className="mt-5 border-t border-keyra-border pt-5">
-            <h2 className="text-lg font-semibold text-keyra-primary">New server node</h2>
-            <form action={createServerNode} className="keyra-card mt-4 grid gap-3 p-5 sm:grid-cols-2">
-              <label className="text-sm text-keyra-text-2 sm:col-span-2">
+          <div className="mt-5 border-t border-[var(--ds-hairline)] pt-5">
+            <h2 className={adminSectionTitle}>New server node</h2>
+            <form action={createServerNode} className="ds-form-grid ds-form-grid--2 mt-4">
+              <label className={`${adminLabel} sm:col-span-2`}>
                 Target type
                 <select name="targetType" required className={selectClass}>
                   <option value="COUNTRY">COUNTRY</option>
                   <option value="TELCO">TELCO</option>
                 </select>
               </label>
-              <label className="text-sm text-keyra-text-2 sm:col-span-2">
+              <label className={`${adminLabel} sm:col-span-2`}>
                 Target (country)
                 <select name="targetIdCountry" className={selectClass}>
                   <option value="">—</option>
@@ -170,7 +181,7 @@ export function ServerNodesDirectoryClient({
               <p className="text-xs text-keyra-text-2 sm:col-span-2">
                 For COUNTRY targets, pick the country above. For TELCO, pick a telco below (only one target applies).
               </p>
-              <label className="text-sm text-keyra-text-2 sm:col-span-2">
+              <label className={`${adminLabel} sm:col-span-2`}>
                 Target (telco)
                 <select name="targetIdTelco" className={selectClass}>
                   <option value="">—</option>
@@ -181,11 +192,11 @@ export function ServerNodesDirectoryClient({
                   ))}
                 </select>
               </label>
-              <label className="text-sm text-keyra-text-2 sm:col-span-2">
+              <label className={`${adminLabel} sm:col-span-2`}>
                 FQDN
                 <input name="fqdn" required className={inputClass} />
               </label>
-              <label className="text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Environment
                 <select name="environment" required className={selectClass}>
                   <option value="PROD">PROD</option>
@@ -193,7 +204,7 @@ export function ServerNodesDirectoryClient({
                   <option value="TEST">TEST</option>
                 </select>
               </label>
-              <label className="text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Status
                 <select name="status" className={selectClass}>
                   <option value="IDENTIFIED">IDENTIFIED</option>
@@ -202,17 +213,13 @@ export function ServerNodesDirectoryClient({
                   <option value="OPERATIONAL">OPERATIONAL</option>
                 </select>
               </label>
-              <label className="text-sm text-keyra-text-2 sm:col-span-2">
+              <label className={`${adminLabel} sm:col-span-2`}>
                 Healthcheck URL
                 <input name="healthcheckUrl" className={inputClass} />
               </label>
-              <label className="text-sm text-keyra-text-2 sm:col-span-2">
+              <label className={`${adminLabel} sm:col-span-2`}>
                 Metadata JSON (optional)
-                <textarea
-                  name="metadataJson"
-                  rows={3}
-                  className="mt-1 w-full rounded-lg border border-keyra-border bg-keyra-bg px-3 py-2 font-mono text-xs text-keyra-primary shadow-sm outline-none transition focus-visible:border-black/25 focus-visible:keyra-focus"
-                />
+                <textarea name="metadataJson" rows={3} className={adminTextareaMono} />
               </label>
               <div className="sm:col-span-2">
                 <Button type="submit" variant="primary">
@@ -239,10 +246,10 @@ export function ServerNodesDirectoryClient({
                 <th className="px-3 py-2">Env</th>
                 <th className="px-3 py-2">Target</th>
                 <th className="px-3 py-2">Status</th>
-                <th className="w-px whitespace-nowrap px-2 py-2 text-right">Actions</th>
+                <th className="is-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
+            <tbody>
               {nodes.length === 0 ? (
                 <AdminListEmptyState
                   variant="table-row"
@@ -254,18 +261,18 @@ export function ServerNodesDirectoryClient({
                 nodes.map((n) => {
                   const isDeleting = deletingId === n.id;
                   return (
-                    <tr key={n.id} className={`transition hover:bg-keyra-surface ${isDeleting ? "opacity-60" : ""}`}>
-                      <td className="px-3 py-2 font-medium text-keyra-primary">{n.fqdn}</td>
-                      <td className="px-3 py-2 text-keyra-text-2">{n.environment}</td>
+                    <tr key={n.id} className={isDeleting ? "opacity-60" : undefined}>
+                      <td>{n.fqdn}</td>
+                      <td className="is-muted">{n.environment}</td>
                       <td className="max-w-[18rem] truncate px-3 py-2 font-mono text-xs text-keyra-text-2">
                         {n.targetType} · {n.targetId}
                       </td>
                       <td className="px-3 py-2">
-                        <span className="inline-flex rounded-full border border-keyra-border bg-keyra-bg px-2 py-0.5 text-xs font-medium text-keyra-primary">
+                        <span className="ds-status-pill">
                           {n.status}
                         </span>
                       </td>
-                      <td className="w-px whitespace-nowrap px-2 py-2 text-right">
+                      <td className="is-actions">
                         <RowActions
                           editHref={`/admin/deployments/server-nodes/${n.id}`}
                           editAriaLabel={`Edit ${n.fqdn}`}

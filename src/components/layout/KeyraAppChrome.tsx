@@ -8,6 +8,13 @@ import { ElevenLabsHomeAgent } from "@/components/home/ElevenLabsHomeAgent";
 const MINIMAL_PATH_PREFIXES = ["/verify-device", "/hosted-login", "/callback"];
 
 function isMinimalChrome(pathname: string): boolean {
+  if (
+    pathname.startsWith("/admin") &&
+    pathname !== "/admin/login" &&
+    !pathname.startsWith("/admin/login/")
+  ) {
+    return true;
+  }
   return MINIMAL_PATH_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );

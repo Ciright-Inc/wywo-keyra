@@ -8,7 +8,10 @@ import {
   deleteAppCategoryWithReassignMessage,
 } from "@/lib/admin/adminDeleteMessages";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { AdminDeleteIconButton, AdminEditIconButton } from "@/components/admin/AdminEditIconButton";
+import { fieldClass as adminFieldClass } from "@/components/admin/AdminFieldError";
 import { useToast } from "@/components/ui/Toast";
+import { adminLabel, adminLegacyInput } from "@/lib/admin/adminUiClasses";
 import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import {
   DEPLOYMENT_APP_CATEGORY_MAX_LENGTH,
@@ -36,11 +39,8 @@ function sortCategories(categories: DeploymentAppCategoryView[]): DeploymentAppC
   );
 }
 
-function fieldClass(hasError: boolean): string {
-  return [
-    "mt-1 h-10 w-full rounded-xl border bg-keyra-surface px-3 text-sm text-keyra-primary outline-none focus-visible:keyra-focus",
-    hasError ? "border-red-300 ring-1 ring-red-200" : "border-keyra-border",
-  ].join(" ");
+function inputClass(hasError: boolean): string {
+  return adminFieldClass(adminLegacyInput, hasError);
 }
 
 export function ManageCategoriesModal({
@@ -340,7 +340,7 @@ export function ManageCategoriesModal({
                         min={0}
                         max={9999}
                         required
-                        className={fieldClass(Boolean(fieldErrors.orderNumber))}
+                        className={inputClass(Boolean(fieldErrors.orderNumber))}
                         placeholder="10"
                         value={orderNumber}
                         onChange={(event) => {
@@ -361,7 +361,7 @@ export function ManageCategoriesModal({
                       <input
                         id="category-name"
                         required
-                        className={`${fieldClass(Boolean(fieldErrors.categoryName))} px-4`}
+                        className={inputClass(Boolean(fieldErrors.categoryName))}
                         placeholder="Example: Finance"
                         value={categoryName}
                         onChange={(event) => {
@@ -382,7 +382,7 @@ export function ManageCategoriesModal({
                       type="button"
                       onClick={() => void saveCategory()}
                       disabled={isSaving}
-                      className="rounded-full bg-[var(--keyra-action)] px-4 py-2 text-sm font-medium text-keyra-primary ring-1 ring-[var(--keyra-action-border)] disabled:opacity-60"
+                      className="ds-btn-primary is-sm disabled:opacity-55"
                     >
                       {isSaving ? "Saving…" : editingOriginalName ? "Save changes" : "Add category"}
                     </button>
@@ -414,54 +414,16 @@ export function ManageCategoriesModal({
                         <p className="text-xs text-keyra-text-2">Order {category.sortOrder}</p>
                       </div>
                       <div className="inline-flex items-center gap-1.5">
-                        <button
-                          type="button"
-                          title="Edit"
+                        <AdminEditIconButton
                           aria-label={`Edit ${category.name}`}
+                          active={editingOriginalName === category.name}
                           onClick={() => startEdit(category)}
-                          className="inline-flex size-8 items-center justify-center rounded-md border border-keyra-border bg-keyra-bg text-keyra-primary transition hover:border-black/20 hover:bg-keyra-surface"
-                        >
-                          <svg
-                            width="15"
-                            height="15"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            aria-hidden
-                          >
-                            <path d="M12 20h9" />
-                            <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
-                          </svg>
-                        </button>
-                        <button
-                          type="button"
-                          title="Delete"
+                        />
+                        <AdminDeleteIconButton
                           aria-label={`Delete ${category.name}`}
                           disabled={busyAction === `delete:${category.name}` || categoryList.length <= 1}
                           onClick={() => void beginDeleteCategory(category.name)}
-                          className="inline-flex size-8 items-center justify-center rounded-md border border-keyra-border bg-keyra-bg text-red-700 transition hover:border-red-500/30 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          <svg
-                            width="15"
-                            height="15"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            aria-hidden
-                          >
-                            <path d="M3 6h18" />
-                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                            <path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                            <path d="M10 11v6" />
-                            <path d="M14 11v6" />
-                          </svg>
-                        </button>
+                        />
                       </div>
                     </li>
                   ))}
@@ -482,7 +444,7 @@ export function ManageCategoriesModal({
                           setFieldErrors((current) => ({ ...current, reassign: undefined }));
                         }
                       }}
-                      className="mt-2 h-10 w-full rounded-xl border border-keyra-border bg-white px-3 text-sm text-keyra-primary outline-none focus-visible:keyra-focus"
+                      className={`${adminLegacyInput} mt-2`}
                     >
                       {reassignOptions.map((category) => (
                         <option key={category.name} value={category.name}>
@@ -498,7 +460,7 @@ export function ManageCategoriesModal({
                         type="button"
                         onClick={() => void confirmReassignAndDelete()}
                         disabled={!reassignTarget || busyAction === `delete:${reassignFor}`}
-                        className="rounded-full bg-[var(--keyra-action)] px-4 py-2 text-sm font-medium text-keyra-primary ring-1 ring-[var(--keyra-action-border)] disabled:opacity-60"
+                        className="ds-btn-primary is-sm disabled:opacity-55"
                       >
                         Move apps & delete
                       </button>

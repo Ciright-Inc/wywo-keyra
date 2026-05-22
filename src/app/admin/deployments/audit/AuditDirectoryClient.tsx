@@ -1,9 +1,26 @@
 "use client";
 
 import { useCallback } from "react";
+import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
+import { formatAdminDateTime } from "@/lib/admin/formatAdminDateTime";
+import { useAdminRouteTransition } from "@/lib/admin/useAdminRouteTransition";
+import {
+  adminBody,
+  adminCountBadge,
+  adminPageTitle,
+  adminPanel,
+  adminSectionTitle,
+  adminTable,
+  adminTableScroll,
+  adminTableWrap,
+  adminToolbarMeta,
+} from "@/lib/admin/adminUiClasses";
+
+export type AuditEventSortKey = "when" | "action" | "entityType" | "entityId" | "actor";
+export type StatusHistorySortKey = "when" | "targetType" | "targetId" | "previous" | "next" | "changedBy";
 
 export type AuditEventRow = {
   id: string;
@@ -11,6 +28,8 @@ export type AuditEventRow = {
   action: string;
   entityType: string;
   entityId: string;
+  actorId: string | null;
+  actorRole: string | null;
 };
 
 export type StatusHistoryRow = {
@@ -20,11 +39,20 @@ export type StatusHistoryRow = {
   targetId: string;
   previousStatus: string | null;
   nextStatus: string;
+  changedBy: string;
+};
+
+type AuditSectionState<TSort extends string> = {
+  q: string;
+  page: number;
+  perPage: number;
+  sort: TSort;
+  dir: "asc" | "desc";
 };
 
 type AuditSearchKeys = {
-  events: { q: string; page: number; perPage: number };
-  history: { q: string; page: number; perPage: number };
+  events: AuditSectionState<AuditEventSortKey>;
+  history: AuditSectionState<StatusHistorySortKey>;
 };
 
 type Props = {
@@ -34,23 +62,82 @@ type Props = {
   historyPagination: TablePaginationMeta;
   pageSizeOptions: readonly number[];
   defaultPageSize: number;
-  /** URL params for each section, used to preserve the other section's state when paginating one. */
   state: AuditSearchKeys;
 };
 
 const BASE_HREF = "/admin/deployments/audit";
 
-function buildAuditHref(state: AuditSearchKeys, defaultPageSize: number): string {
-  const sp = new URLSearchParams();
-  const { events, history } = state;
+const EVENT_SORT_LABELS: Record<AuditEventSortKey, string> = {
+  when: "When",
+  action: "Action",
+  entityType: "Entity type",
+  entityId: "Entity ID",
+  actor: "Actor",
+};
+
+const HISTORY_SORT_LABELS: Record<StatusHistorySortKey, string> = {
+  when: "When",
+  targetType: "Target type",
+  targetId: "Target ID",
+  previous: "Previous status",
+  next: "Next status",
+  changedBy: "Changed by",
+};
+
+function appendEventsParams(sp: URLSearchParams, events: AuditSectionState<AuditEventSortKey>, defaultPageSize: number) {
   if (events.q.trim()) sp.set("eq", events.q.trim());
   if (events.page > 1) sp.set("epage", String(events.page));
   if (events.perPage !== defaultPageSize) sp.set("eperPage", String(events.perPage));
+  sp.set("esort", events.sort);
+  sp.set("edir", events.dir);
+}
+
+function appendHistoryParams(
+  sp: URLSearchParams,
+  history: AuditSectionState<StatusHistorySortKey>,
+  defaultPageSize: number,
+) {
   if (history.q.trim()) sp.set("hq", history.q.trim());
   if (history.page > 1) sp.set("hpage", String(history.page));
   if (history.perPage !== defaultPageSize) sp.set("hperPage", String(history.perPage));
+  sp.set("hsort", history.sort);
+  sp.set("hdir", history.dir);
+}
+
+function buildAuditHref(state: AuditSearchKeys, defaultPageSize: number): string {
+  const sp = new URLSearchParams();
+  appendEventsParams(sp, state.events, defaultPageSize);
+  appendHistoryParams(sp, state.history, defaultPageSize);
   const qs = sp.toString();
   return `${BASE_HREF}${qs ? `?${qs}` : ""}`;
+}
+
+function nextSortState<TSort extends string>(
+  column: TSort,
+  sortBy: TSort,
+  sortDir: "asc" | "desc",
+  whenKey: TSort,
+): { sort: TSort; dir: "asc" | "desc" } {
+  if (sortBy === column) return { sort: column, dir: sortDir === "asc" ? "desc" : "asc" };
+  return { sort: column, dir: column === whenKey ? "desc" : "asc" };
+}
+
+function sortSummary<TSort extends string>(
+  sort: TSort,
+  dir: "asc" | "desc",
+  labels: Record<TSort, string>,
+  whenKey: TSort,
+): string {
+  const label = labels[sort];
+  if (sort === whenKey) {
+    return dir === "desc" ? `Sorted by ${label} (newest first)` : `Sorted by ${label} (oldest first)`;
+  }
+  return dir === "asc" ? `Sorted by ${label} (A → Z)` : `Sorted by ${label} (Z → A)`;
+}
+
+function formatActor(actorRole: string | null, actorId: string | null): string {
+  if (actorRole && actorId) return `${actorRole} · ${actorId}`;
+  return actorRole ?? actorId ?? "—";
 }
 
 export function AuditDirectoryClient({
@@ -62,28 +149,20 @@ export function AuditDirectoryClient({
   defaultPageSize,
   state,
 }: Props) {
+  const { isPending, navigate } = useAdminRouteTransition();
   const hasEventsSearch = state.events.q.trim().length > 0;
   const hasHistorySearch = state.history.q.trim().length > 0;
 
   const buildEventsSearchHref = useCallback(
     (query: string) =>
-      buildAuditHref(
-        {
-          ...state,
-          events: { q: query, page: 1, perPage: state.events.perPage },
-        },
-        defaultPageSize,
-      ),
+      buildAuditHref({ ...state, events: { ...state.events, q: query, page: 1 } }, defaultPageSize),
     [state, defaultPageSize],
   );
 
   const buildEventsPaginationHref = useCallback(
     (nextPage: number, nextPageSize: number) =>
       buildAuditHref(
-        {
-          ...state,
-          events: { q: state.events.q, page: nextPage, perPage: nextPageSize },
-        },
+        { ...state, events: { ...state.events, page: nextPage, perPage: nextPageSize } },
         defaultPageSize,
       ),
     [state, defaultPageSize],
@@ -91,38 +170,80 @@ export function AuditDirectoryClient({
 
   const buildHistorySearchHref = useCallback(
     (query: string) =>
-      buildAuditHref(
-        {
-          ...state,
-          history: { q: query, page: 1, perPage: state.history.perPage },
-        },
-        defaultPageSize,
-      ),
+      buildAuditHref({ ...state, history: { ...state.history, q: query, page: 1 } }, defaultPageSize),
     [state, defaultPageSize],
   );
 
   const buildHistoryPaginationHref = useCallback(
     (nextPage: number, nextPageSize: number) =>
       buildAuditHref(
-        {
-          ...state,
-          history: { q: state.history.q, page: nextPage, perPage: nextPageSize },
-        },
+        { ...state, history: { ...state.history, page: nextPage, perPage: nextPageSize } },
         defaultPageSize,
       ),
     [state, defaultPageSize],
   );
 
+  function eventsSortHref(column: AuditEventSortKey): string {
+    const next = nextSortState(column, state.events.sort, state.events.dir, "when");
+    return buildAuditHref({ ...state, events: { ...state.events, ...next, page: 1 } }, defaultPageSize);
+  }
+
+  function historySortHref(column: StatusHistorySortKey): string {
+    const next = nextSortState(column, state.history.sort, state.history.dir, "when");
+    return buildAuditHref({ ...state, history: { ...state.history, ...next, page: 1 } }, defaultPageSize);
+  }
+
+  function eventsSortIndicator(column: AuditEventSortKey): string {
+    if (state.events.sort !== column) return "";
+    return state.events.dir === "asc" ? " ↑" : " ↓";
+  }
+
+  function historySortIndicator(column: StatusHistorySortKey): string {
+    if (state.history.sort !== column) return "";
+    return state.history.dir === "asc" ? " ↑" : " ↓";
+  }
+
+  const eventsSortableTh = (label: string, column: AuditEventSortKey) => (
+    <th aria-sort={state.events.sort === column ? (state.events.dir === "asc" ? "ascending" : "descending") : "none"}>
+      <AdminTransitionLink href={eventsSortHref(column)} onNavigate={navigate} className="ds-table-sort">
+        {label}
+        <span aria-hidden>{eventsSortIndicator(column)}</span>
+      </AdminTransitionLink>
+    </th>
+  );
+
+  const historySortableTh = (label: string, column: StatusHistorySortKey) => (
+    <th aria-sort={state.history.sort === column ? (state.history.dir === "asc" ? "ascending" : "descending") : "none"}>
+      <AdminTransitionLink href={historySortHref(column)} onNavigate={navigate} className="ds-table-sort">
+        {label}
+        <span aria-hidden>{historySortIndicator(column)}</span>
+      </AdminTransitionLink>
+    </th>
+  );
+
   return (
     <div>
-      <div className="ds-panel is-dashboard">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl">Audit</h1>
+      <div className={adminPanel}>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0 max-w-3xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className={adminPageTitle}>Audit</h1>
+              <span className={adminCountBadge}>{eventsPagination.totalCount.toLocaleString()} events</span>
+            </div>
+            <p className={`${adminBody} mt-1.5 text-[var(--ds-body)]`}>
+              Review who changed what across the deployment registry. Click any column header to sort. Search, sort, and
+              pagination are independent for each table below.
+            </p>
           </div>
-          <p className="mt-1.5 max-w-xl text-sm leading-snug text-keyra-text-2">
-            Immutable-style audit trail and status transitions. Each section searches and pages independently.
-          </p>
+
+          <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+            <CollapsibleSearchBar
+              searchQuery={state.events.q}
+              buildHref={buildEventsSearchHref}
+              placeholder="Action, entity, actor…"
+              ariaLabel="Search audit events"
+            />
+          </div>
         </div>
       </div>
 
@@ -130,45 +251,48 @@ export function AuditDirectoryClient({
       <div className="mt-5">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Audit events</h2>
-            <span className="rounded-full border border-keyra-border bg-keyra-bg px-2 py-0.5 text-[11px] font-medium text-keyra-text-2">
-              {eventsPagination.totalCount.toLocaleString()} total
-            </span>
+            <h2 className={adminSectionTitle}>Audit events</h2>
+            <span className={adminCountBadge}>{eventsPagination.totalCount.toLocaleString()} total</span>
           </div>
-          <CollapsibleSearchBar
-            searchQuery={state.events.q}
-            buildHref={buildEventsSearchHref}
-            placeholder="Action, entity, actor…"
-            ariaLabel="Search audit events"
-          />
+          <span className={adminToolbarMeta}>
+            {sortSummary(state.events.sort, state.events.dir, EVENT_SORT_LABELS, "when")}
+          </span>
         </div>
-        <div className="overflow-hidden rounded-2xl border border-keyra-border bg-keyra-surface/45 shadow-[0_12px_36px_rgba(0,0,0,0.03)]">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[36rem] text-left text-sm">
-              <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
+        <div className={`${adminTableWrap} transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
+          <div className={adminTableScroll}>
+            <table className={`${adminTable} min-w-[52rem]`}>
+              <thead>
                 <tr>
-                  <th className="px-3 py-2">When</th>
-                  <th className="px-3 py-2">Action</th>
-                  <th className="px-3 py-2">Entity</th>
+                  {eventsSortableTh("When", "when")}
+                  {eventsSortableTh("Action", "action")}
+                  {eventsSortableTh("Entity type", "entityType")}
+                  {eventsSortableTh("Entity ID", "entityId")}
+                  {eventsSortableTh("Actor", "actor")}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
+              <tbody>
                 {events.length === 0 ? (
                   <AdminListEmptyState
                     variant="table-row"
-                    colSpan={3}
+                    colSpan={5}
                     hasSearch={hasEventsSearch}
                     entityName="audit events"
                   />
                 ) : (
                   events.map((a) => (
-                    <tr key={a.id} className="transition hover:bg-keyra-surface">
-                      <td className="whitespace-nowrap px-3 py-2 font-mono text-[11px] text-keyra-text-2">
-                        {a.createdAt}
+                    <tr key={a.id}>
+                      <td className="whitespace-nowrap text-[13px] is-muted" title={a.createdAt}>
+                        {formatAdminDateTime(a.createdAt)}
                       </td>
-                      <td className="px-3 py-2 font-medium text-keyra-primary">{a.action}</td>
-                      <td className="max-w-[22rem] truncate px-3 py-2 font-mono text-xs text-keyra-text-2">
-                        {a.entityType} · {a.entityId}
+                      <td>
+                        <span className="ds-status-pill">{a.action}</span>
+                      </td>
+                      <td className="font-mono text-xs">{a.entityType}</td>
+                      <td className="max-w-[14rem] truncate font-mono text-xs is-muted" title={a.entityId}>
+                        {a.entityId}
+                      </td>
+                      <td className="max-w-[12rem] truncate text-sm is-muted" title={formatActor(a.actorRole, a.actorId)}>
+                        {formatActor(a.actorRole, a.actorId)}
                       </td>
                     </tr>
                   ))
@@ -180,6 +304,7 @@ export function AuditDirectoryClient({
             {...eventsPagination}
             pageSizeOptions={pageSizeOptions}
             buildHref={buildEventsPaginationHref}
+            onNavigate={navigate}
           />
         </div>
       </div>
@@ -188,47 +313,58 @@ export function AuditDirectoryClient({
       <div className="mt-8">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Status history</h2>
-            <span className="rounded-full border border-keyra-border bg-keyra-bg px-2 py-0.5 text-[11px] font-medium text-keyra-text-2">
-              {historyPagination.totalCount.toLocaleString()} total
-            </span>
+            <h2 className={adminSectionTitle}>Status history</h2>
+            <span className={adminCountBadge}>{historyPagination.totalCount.toLocaleString()} total</span>
           </div>
-          <CollapsibleSearchBar
-            searchQuery={state.history.q}
-            buildHref={buildHistorySearchHref}
-            placeholder="Target id, changed by, reason…"
-            ariaLabel="Search status history"
-          />
+          <div className="flex flex-wrap items-center gap-3">
+            <span className={adminToolbarMeta}>
+              {sortSummary(state.history.sort, state.history.dir, HISTORY_SORT_LABELS, "when")}
+            </span>
+            <CollapsibleSearchBar
+              searchQuery={state.history.q}
+              buildHref={buildHistorySearchHref}
+              placeholder="Target id, changed by, reason…"
+              ariaLabel="Search status history"
+            />
+          </div>
         </div>
-        <div className="overflow-hidden rounded-2xl border border-keyra-border bg-keyra-surface/45 shadow-[0_12px_36px_rgba(0,0,0,0.03)]">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[36rem] text-left text-sm">
-              <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
+        <div className={`${adminTableWrap} transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
+          <div className={adminTableScroll}>
+            <table className={`${adminTable} min-w-[56rem]`}>
+              <thead>
                 <tr>
-                  <th className="px-3 py-2">When</th>
-                  <th className="px-3 py-2">Target</th>
-                  <th className="px-3 py-2">Change</th>
+                  {historySortableTh("When", "when")}
+                  {historySortableTh("Target type", "targetType")}
+                  {historySortableTh("Target ID", "targetId")}
+                  {historySortableTh("Previous", "previous")}
+                  {historySortableTh("Next", "next")}
+                  {historySortableTh("Changed by", "changedBy")}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
+              <tbody>
                 {history.length === 0 ? (
                   <AdminListEmptyState
                     variant="table-row"
-                    colSpan={3}
+                    colSpan={6}
                     hasSearch={hasHistorySearch}
                     entityName="status history"
                   />
                 ) : (
                   history.map((h) => (
-                    <tr key={h.id} className="transition hover:bg-keyra-surface">
-                      <td className="whitespace-nowrap px-3 py-2 font-mono text-[11px] text-keyra-text-2">
-                        {h.changedAt}
+                    <tr key={h.id}>
+                      <td className="whitespace-nowrap text-[13px] is-muted" title={h.changedAt}>
+                        {formatAdminDateTime(h.changedAt)}
                       </td>
-                      <td className="max-w-[22rem] truncate px-3 py-2 font-mono text-xs text-keyra-text-2">
-                        {h.targetType} · {h.targetId}
+                      <td className="font-mono text-xs">{h.targetType}</td>
+                      <td className="max-w-[14rem] truncate font-mono text-xs is-muted" title={h.targetId}>
+                        {h.targetId}
                       </td>
-                      <td className="px-3 py-2 text-keyra-text-2">
-                        {h.previousStatus ?? "—"} → {h.nextStatus}
+                      <td className="is-muted">{h.previousStatus ?? "—"}</td>
+                      <td>
+                        <span className="ds-status-pill">{h.nextStatus}</span>
+                      </td>
+                      <td className="max-w-[12rem] truncate text-sm is-muted" title={h.changedBy}>
+                        {h.changedBy}
                       </td>
                     </tr>
                   ))
@@ -240,6 +376,7 @@ export function AuditDirectoryClient({
             {...historyPagination}
             pageSizeOptions={pageSizeOptions}
             buildHref={buildHistoryPaginationHref}
+            onNavigate={navigate}
           />
         </div>
       </div>

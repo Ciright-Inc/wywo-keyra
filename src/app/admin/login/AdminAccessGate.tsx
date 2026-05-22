@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { Button } from "@/components/ui/Button";
 import { formatPhoneDisplay } from "@/lib/keyraSessionDisplay";
 import { buildGetStartedAccessUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
 
@@ -21,33 +20,21 @@ export function AdminAccessGate({ reason, phoneE164, nextPath }: Props) {
   const isNoAccess = reason === "no_access";
 
   return (
-    <div className="relative mx-auto flex min-h-[calc(100vh-7rem)] w-full max-w-6xl items-center justify-center overflow-hidden px-4 py-10 sm:px-6 lg:px-8">
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-8 h-72 w-72 -translate-x-1/2 rounded-full bg-[var(--keyra-action)]/45 blur-3xl" />
-        <div className="absolute bottom-8 right-10 h-64 w-64 rounded-full bg-keyra-primary/[0.06] blur-3xl" />
-      </div>
-
-      <div className="grid w-full items-stretch overflow-hidden rounded-[2rem] border border-keyra-border bg-keyra-surface/80 shadow-[0_28px_90px_rgba(0,0,0,0.10)] backdrop-blur lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="hidden border-r border-keyra-border bg-keyra-bg/60 p-8 lg:flex lg:flex-col lg:justify-between">
+    <div className="mx-auto flex min-h-[calc(100vh-7rem)] w-full max-w-6xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <div className="grid w-full items-stretch overflow-hidden rounded-[var(--ds-radius-lg)] border border-[var(--ds-hairline-strong)] bg-[var(--ds-surface-card)] lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="hidden border-r border-[var(--ds-hairline-strong)] bg-[var(--ds-canvas-soft)] p-8 lg:flex lg:flex-col lg:justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-keyra-border bg-keyra-surface px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-keyra-text-2">
-              Keyra admin
-            </div>
-            <h1 className="mt-8 text-4xl font-semibold tracking-tight text-keyra-primary">
-              Admin access uses your Keyra login.
-            </h1>
-            <p className="mt-4 max-w-sm text-sm leading-6 text-keyra-text-2">
+            <div className="ds-badge-pill">Keyra admin</div>
+            <h1 className="ds-display-md mt-8">Admin access uses your Keyra login.</h1>
+            <p className="ds-body-sm mt-4 max-w-sm text-[var(--ds-body)]">
               Sign in on Keyra with the same mobile number linked to an active admin user record.
             </p>
           </div>
 
           <div className="grid gap-3">
             {["Sign in on Keyra", "Mobile matched to admin user", "Deployment console access"].map((item) => (
-              <div
-                key={item}
-                className="flex items-center gap-3 rounded-2xl border border-keyra-border bg-keyra-surface/70 px-4 py-3 text-sm font-medium text-keyra-primary"
-              >
-                <span className="size-2 rounded-full bg-keyra-primary" aria-hidden />
+              <div key={item} className="ds-admin-panel flex items-center gap-3 py-3 text-sm font-medium">
+                <span className="size-2 rounded-full bg-[var(--ds-ink)]" aria-hidden />
                 {item}
               </div>
             ))}
@@ -56,26 +43,22 @@ export function AdminAccessGate({ reason, phoneE164, nextPath }: Props) {
 
         <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
           <div className="lg:hidden">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-keyra-text-2">Keyra admin</p>
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-keyra-primary">
-              {isNoAccess ? "No admin access" : "Sign in on Keyra first"}
-            </h2>
+            <p className="ds-caption-uppercase">Keyra admin</p>
+            <h2 className="ds-title-md mt-3">{isNoAccess ? "No admin access" : "Sign in on Keyra first"}</h2>
           </div>
 
           <div className="hidden lg:block">
-            <h2 className="text-2xl font-semibold tracking-tight text-keyra-primary">
-              {isNoAccess ? "No admin access" : "Sign in on Keyra first"}
-            </h2>
+            <h2 className="ds-title-md">{isNoAccess ? "No admin access" : "Sign in on Keyra first"}</h2>
           </div>
 
           {isNoAccess ? (
-            <div className="mt-5 space-y-3 text-sm leading-6 text-keyra-text-2">
+            <div className="ds-body-sm mt-5 space-y-3 text-[var(--ds-body)]">
               <p>
                 You are signed in to Keyra
                 {phoneE164 ? (
                   <>
                     {" "}
-                    as <span className="font-medium text-keyra-primary">{formatPhoneDisplay(phoneE164)}</span>
+                    as <span className="font-medium text-[var(--ds-ink)]">{formatPhoneDisplay(phoneE164)}</span>
                   </>
                 ) : null}
                 , but this mobile number does not have active admin rights.
@@ -83,7 +66,7 @@ export function AdminAccessGate({ reason, phoneE164, nextPath }: Props) {
               <p>Contact a global administrator if you need deployment admin access.</p>
             </div>
           ) : (
-            <div className="mt-5 space-y-3 text-sm leading-6 text-keyra-text-2">
+            <div className="ds-body-sm mt-5 space-y-3 text-[var(--ds-body)]">
               <p>Admin uses the same Keyra session as the main site. Sign in first, then return here.</p>
               <p>After login, access is granted only when your mobile number matches an active admin user.</p>
             </div>
@@ -91,16 +74,11 @@ export function AdminAccessGate({ reason, phoneE164, nextPath }: Props) {
 
           <div className="mt-8 flex flex-wrap gap-3">
             {!isNoAccess ? (
-              <a href={loginHref} className="inline-flex">
-                <Button variant="primary" size="lg" type="button">
-                  Login on Keyra
-                </Button>
+              <a href={loginHref} className="ds-btn-primary">
+                Login on Keyra
               </a>
             ) : null}
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center rounded-[var(--ds-radius-md)] border border-[var(--ds-hairline-strong)] bg-[var(--ds-surface-card)] px-5 py-3 text-sm font-medium text-[var(--ds-ink)] transition hover:bg-[var(--ds-surface-muted)]"
-            >
+            <Link href="/" className="ds-btn-secondary">
               Back to Keyra home
             </Link>
           </div>

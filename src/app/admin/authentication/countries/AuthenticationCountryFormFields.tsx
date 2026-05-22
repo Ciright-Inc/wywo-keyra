@@ -2,11 +2,11 @@
 
 import { AdminFieldError, fieldClass } from "@/components/admin/AdminFieldError";
 import { CountryFlagCombo } from "@/components/admin/CountryFlagCombo";
+import { adminFormInput, adminLabel, adminCheckbox, adminFormCheckboxLabel } from "@/lib/admin/adminUiClasses";
 import type { AuthCountryFormValues } from "@/lib/authenticationFeed/countryFormValidation";
 import { authCountryFieldsFromFlagOption } from "@/lib/countryFlagOptions";
 
-const inputBase =
-  "h-10 w-full rounded-lg border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary outline-none transition focus-visible:border-black/25 focus-visible:keyra-focus disabled:opacity-60";
+const inputBase = adminFormInput;
 
 type Props = {
   values: AuthCountryFormValues;
@@ -31,7 +31,7 @@ function Field({
 }) {
   return (
     <label htmlFor={htmlFor} className="block">
-      <span className="text-xs font-medium text-keyra-text-2">
+      <span className={adminLabel}>
         {label}
         {required ? <span className="text-red-600"> *</span> : null}
       </span>
@@ -199,20 +199,20 @@ export function AuthenticationCountryFormFields({
 
       <div className="flex flex-col justify-end gap-3 sm:col-span-2 lg:col-span-3">
         <div className="flex flex-wrap gap-6">
-          <label className="inline-flex items-center gap-2 text-sm text-keyra-primary">
+          <label className={adminFormCheckboxLabel}>
             <input
               type="checkbox"
-              className="size-4 accent-keyra-accent"
+              className={adminCheckbox}
               checked={values.authenticationEnabled}
               onChange={(e) => onChange({ authenticationEnabled: e.target.checked })}
               disabled={disabled}
             />
             Auth feed enabled
           </label>
-          <label className="inline-flex items-center gap-2 text-sm text-keyra-primary">
+          <label className={adminFormCheckboxLabel}>
             <input
               type="checkbox"
-              className="size-4 accent-keyra-accent"
+              className={adminCheckbox}
               checked={values.active}
               onChange={(e) => onChange({ active: e.target.checked })}
               disabled={disabled}

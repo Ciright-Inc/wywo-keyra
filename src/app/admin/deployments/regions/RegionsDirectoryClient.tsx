@@ -14,6 +14,21 @@ import { useToast } from "@/components/ui/Toast";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { buildListHref } from "@/lib/admin/listSearchParams";
 import { useAdminRouteTransition } from "@/lib/admin/useAdminRouteTransition";
+import {
+  adminBody,
+  adminCheckbox,
+  adminFormCheckboxLabelWide,
+  adminCountBadge,
+  adminEyebrow,
+  adminLabel,
+  adminLegacyInput,
+  adminPageTitle,
+  adminPanel,
+  adminSectionTitle,
+  adminTable,
+  adminTableScroll,
+  adminTableWrap,
+} from "@/lib/admin/adminUiClasses";
 
 export type RegionSortKey = "name" | "slug" | "map" | "published" | "sortOrder";
 
@@ -103,7 +118,7 @@ export function RegionsDirectoryClient({
   }
 
   const inputClass =
-    "mt-1 h-10 w-full rounded-lg border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary shadow-sm outline-none transition focus-visible:border-black/25 focus-visible:keyra-focus disabled:opacity-60";
+    adminLegacyInput;
 
   const buildSearchHref = useCallback(
     (query: string) =>
@@ -143,12 +158,8 @@ export function RegionsDirectoryClient({
   }
 
   const sortableTh = (label: string, column: RegionSortKey) => (
-    <th className="px-3 py-2" aria-sort={sortBy === column ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-      <AdminTransitionLink
-        href={sortHref(column)}
-        onNavigate={navigate}
-        className="inline-flex items-center gap-0.5 font-semibold text-keyra-text-2 transition hover:text-keyra-primary"
-      >
+    <th aria-sort={sortBy === column ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+      <AdminTransitionLink href={sortHref(column)} onNavigate={navigate} className="ds-table-sort">
         {label}
         <span aria-hidden>{sortIndicator(column)}</span>
       </AdminTransitionLink>
@@ -158,16 +169,16 @@ export function RegionsDirectoryClient({
   return (
     <div>
       {/* Hero */}
-      <div className="ds-panel is-dashboard">
+      <div className={adminPanel}>
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl">Regions</h1>
-              <span className="rounded-full border border-keyra-border bg-keyra-bg px-2.5 py-0.5 text-[11px] font-medium text-keyra-text-2">
+              <h1 className={adminPageTitle}>Regions</h1>
+              <span className={adminCountBadge}>
                 {totalCount.toLocaleString()} total
               </span>
             </div>
-            <p className="mt-1.5 max-w-xl text-sm leading-snug text-keyra-text-2">
+            <p className={`${adminBody} mt-1.5 max-w-xl text-[var(--ds-body)]`}>
               Formal UN M49 macro + subregion codes, with UI map keys. Click any column header to sort.
             </p>
           </div>
@@ -182,11 +193,7 @@ export function RegionsDirectoryClient({
             {showCreate ? (
               <button
                 type="button"
-                className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ring-1 ${
-                  createOpen
-                    ? "border border-[var(--keyra-action-border)] bg-keyra-bg text-keyra-primary ring-[var(--keyra-action-border)] hover:bg-keyra-surface"
-                    : "bg-[var(--keyra-action)] text-keyra-primary ring-[var(--keyra-action-border)] hover:bg-keyra-surface"
-                }`}
+                className={createOpen ? "ds-btn-secondary is-sm" : "ds-btn-primary is-sm"}
                 onClick={() => setCreateOpen((open) => !open)}
               >
                 {createOpen ? "Close create form" : "Create region"}
@@ -196,35 +203,35 @@ export function RegionsDirectoryClient({
         </div>
 
         {showCreate && createOpen ? (
-          <div className="mt-5 border-t border-keyra-border pt-5">
-            <h2 className="text-lg font-semibold text-keyra-primary">New region</h2>
-            <form action={createRegion} className="keyra-card mt-4 grid gap-3 p-5 sm:grid-cols-2">
-              <label className="text-sm text-keyra-text-2 sm:col-span-2">
+          <div className="mt-5 border-t border-[var(--ds-hairline)] pt-5">
+            <h2 className={adminSectionTitle}>New region</h2>
+            <form action={createRegion} className="ds-form-grid ds-form-grid--2 mt-4">
+              <label className={`${adminLabel} sm:col-span-2`}>
                 Name
                 <input name="name" required className={inputClass} />
               </label>
-              <label className="text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Slug
                 <input name="slug" required className={inputClass} />
               </label>
-              <label className="text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Map key
                 <input name="mapKey" required className={inputClass} />
               </label>
-              <label className="text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Continent code (M49)
                 <input name="continentCode" required className={inputClass} />
               </label>
-              <label className="text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Subregion code (M49)
                 <input name="subregionCode" required className={inputClass} />
               </label>
-              <label className="text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Sort order
                 <input name="sortOrder" defaultValue="0" className={inputClass} />
               </label>
-              <label className="flex items-center gap-2 text-sm text-keyra-text-2 sm:col-span-2">
-                <input name="isPublished" type="checkbox" className="size-4" />
+              <label className={adminFormCheckboxLabelWide}>
+                <input name="isPublished" type="checkbox" className={adminCheckbox} />
                 Published
               </label>
               <div className="sm:col-span-2">
@@ -244,19 +251,19 @@ export function RegionsDirectoryClient({
       ) : null}
 
       {/* Table */}
-      <div className={`ds-table-wrap mt-3 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[36rem] text-left text-sm">
-            <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
+      <div className={`${adminTableWrap} mt-3 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
+        <div className={adminTableScroll}>
+          <table className={`${adminTable} min-w-[36rem]`}>
+            <thead>
               <tr>
                 {sortableTh("Name", "name")}
                 {sortableTh("Slug", "slug")}
                 {sortableTh("Map", "map")}
                 {sortableTh("Published", "published")}
-                <th className="w-px whitespace-nowrap px-2 py-2 text-right">Actions</th>
+                <th className="is-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
+            <tbody>
               {regions.length === 0 ? (
                 <AdminListEmptyState
                   variant="table-row"
@@ -268,12 +275,12 @@ export function RegionsDirectoryClient({
                 regions.map((r) => {
                   const isDeleting = deletingId === r.id;
                   return (
-                    <tr key={r.id} className={`transition hover:bg-keyra-surface ${isDeleting ? "opacity-60" : ""}`}>
-                      <td className="px-3 py-2 font-medium text-keyra-primary">{r.name}</td>
-                      <td className="px-3 py-2 text-keyra-text-2">{r.slug}</td>
-                      <td className="px-3 py-2 text-keyra-text-2">{r.mapKey}</td>
-                      <td className="px-3 py-2 text-keyra-text-2">{r.isPublished ? "Yes" : "No"}</td>
-                      <td className="w-px whitespace-nowrap px-2 py-2 text-right">
+                    <tr key={r.id} className={isDeleting ? "opacity-60" : undefined}>
+                      <td>{r.name}</td>
+                      <td className="is-muted">{r.slug}</td>
+                      <td className="is-muted">{r.mapKey}</td>
+                      <td className="is-muted">{r.isPublished ? "Yes" : "No"}</td>
+                      <td className="is-actions">
                         <RowActions
                           editHref={`/admin/deployments/regions/${r.id}`}
                           editAriaLabel={`Edit ${r.name}`}

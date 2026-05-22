@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { cn } from "@/components/ui/cn";
 import { fieldClass } from "@/components/admin/AdminFieldError";
+import { adminInput } from "@/lib/admin/adminUiClasses";
 import {
   COUNTRY_FLAG_OPTIONS,
   findCountryFlagOption,
@@ -74,12 +76,15 @@ export function CountryFlagCombo({
   }
 
   const triggerClass = fieldClass(
-    "inline-flex h-10 w-12 shrink-0 items-center justify-center rounded-lg border border-keyra-border bg-keyra-bg text-left text-sm text-keyra-primary shadow-sm outline-none transition hover:border-black/20 focus-visible:border-black/25 focus-visible:keyra-focus disabled:cursor-not-allowed disabled:opacity-60",
+    cn(
+      adminInput,
+      "inline-flex h-10 w-12 min-h-10 shrink-0 items-center justify-center p-0 disabled:cursor-not-allowed disabled:opacity-55",
+    ),
     hasError,
   );
 
   return (
-    <div ref={rootRef} className={`relative inline-block ${className}`}>
+    <div ref={rootRef} className={cn("relative inline-block", className)}>
       <button
         id={id}
         type="button"
@@ -101,8 +106,8 @@ export function CountryFlagCombo({
       </button>
 
       {open ? (
-        <div className="absolute left-0 z-[220] mt-1 w-[min(92vw,18rem)] overflow-hidden rounded-xl border border-keyra-border bg-keyra-bg shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
-          <div className="border-b border-keyra-border p-2">
+        <div className="ds-feature-card absolute left-0 z-[220] mt-1 w-[min(92vw,18rem)] overflow-hidden p-0 shadow-[var(--ds-shadow-soft)]">
+          <div className="border-b border-[var(--ds-hairline-strong)] p-2">
             <input
               ref={searchRef}
               type="search"
@@ -111,7 +116,7 @@ export function CountryFlagCombo({
               placeholder="Search country name…"
               autoComplete="off"
               aria-label="Search countries"
-              className="h-9 w-full rounded-lg border border-keyra-border bg-keyra-surface px-3 text-sm text-keyra-primary outline-none focus-visible:border-black/25 focus-visible:keyra-focus"
+              className={cn(adminInput, "h-9 min-h-9 py-0")}
             />
           </div>
           <ul role="listbox" aria-labelledby={id} className="max-h-56 overflow-y-auto py-1">
@@ -119,7 +124,7 @@ export function CountryFlagCombo({
               <li role="option" aria-selected={false}>
                 <button
                   type="button"
-                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-keyra-text-2 transition hover:bg-keyra-surface"
+                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left ds-body-sm text-[var(--ds-body)] transition hover:bg-[var(--ds-canvas-soft)]"
                   onClick={clearSelection}
                 >
                   Clear flag
@@ -127,7 +132,7 @@ export function CountryFlagCombo({
               </li>
             ) : null}
             {filtered.length === 0 ? (
-              <li className="px-3 py-2 text-sm text-keyra-text-2">No countries match your search.</li>
+              <li className="px-3 py-2 ds-body-sm text-[var(--ds-body)]">No countries match your search.</li>
             ) : (
               filtered.map((option) => {
                 const active = selected?.iso2 === option.iso2;
@@ -135,16 +140,17 @@ export function CountryFlagCombo({
                   <li key={option.iso2} role="option" aria-selected={active}>
                     <button
                       type="button"
-                      className={`flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm transition hover:bg-keyra-surface ${
-                        active ? "bg-keyra-surface font-medium text-keyra-primary" : "text-keyra-primary"
-                      }`}
+                      className={cn(
+                        "flex w-full items-center gap-2.5 px-3 py-2 text-left ds-body-sm transition hover:bg-[var(--ds-canvas-soft)]",
+                        active && "bg-[var(--ds-canvas-soft)] font-medium",
+                      )}
                       onClick={() => pick(option)}
                     >
                       <span className="shrink-0 text-base leading-none" aria-hidden>
                         {option.flagEmoji}
                       </span>
                       <span className="min-w-0 flex-1 truncate">{option.name}</span>
-                      <span className="shrink-0 font-mono text-xs text-keyra-text-2">{option.iso2}</span>
+                      <span className="shrink-0 font-mono text-xs text-[var(--ds-body)]">{option.iso2}</span>
                     </button>
                   </li>
                 );

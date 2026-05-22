@@ -11,7 +11,6 @@ export type AdminToastEntity =
   | "admin-user"
   | "auth-country"
   | "auth-protocol"
-  | "auth-settings"
   | "access-request";
 
 const ENTITY_LABELS: Record<AdminToastEntity, string> = {
@@ -25,7 +24,6 @@ const ENTITY_LABELS: Record<AdminToastEntity, string> = {
   "admin-user": "Admin user",
   "auth-country": "Authentication country",
   "auth-protocol": "SAT protocol",
-  "auth-settings": "Feed settings",
   "access-request": "Access request",
 };
 

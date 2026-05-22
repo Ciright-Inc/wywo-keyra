@@ -1,35 +1,39 @@
-"use client";
+import { cn } from "@/components/ui/cn";
+import { adminEditBackLink } from "@/lib/admin/adminUiClasses";
 
 type Props = {
   onClick: () => void;
-  label?: string;
   disabled?: boolean;
+  className?: string;
+  label?: string;
+  /** `back` matches deployment edit pages — arrow + "Back to list" */
+  variant?: "close" | "back";
 };
 
-export function AdminFormPanelCloseButton({ onClick, label = "Close form", disabled }: Props) {
+export function AdminFormPanelCloseButton({
+  onClick,
+  disabled,
+  className,
+  label,
+  variant = "close",
+}: Props) {
+  const isBack = variant === "back";
+  const text = label ?? (isBack ? "Back to list" : "Close");
+  const icon = isBack ? "arrow_back" : "close";
+
   return (
     <button
       type="button"
-      aria-label={label}
-      title={label}
-      disabled={disabled}
       onClick={onClick}
-      className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-keyra-border bg-keyra-bg px-2.5 py-1.5 text-xs font-semibold text-keyra-text-2 shadow-sm transition hover:border-black/25 hover:bg-keyra-surface hover:text-keyra-primary disabled:cursor-not-allowed disabled:opacity-50"
+      disabled={disabled}
+      title={text}
+      aria-label={text}
+      className={cn(adminEditBackLink, "disabled:cursor-not-allowed disabled:opacity-55", className)}
     >
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.25"
-        strokeLinecap="round"
-        aria-hidden
-      >
-        <path d="M18 6 6 18" />
-        <path d="m6 6 12 12" />
-      </svg>
-      Close
+      <span className="material-symbols-outlined text-[14px] leading-none no-underline" aria-hidden>
+        {icon}
+      </span>
+      {text}
     </button>
   );
 }

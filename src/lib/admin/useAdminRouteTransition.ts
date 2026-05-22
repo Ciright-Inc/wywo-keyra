@@ -1,7 +1,8 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useTransition, useState } from "react";
+import { normalizeAdminHref } from "@/lib/admin/normalizeAdminHref";
 
 type NavActiveOptions = {
   /** Only match the exact href (used for section overview roots). */
@@ -11,26 +12,32 @@ type NavActiveOptions = {
 /** Soft navigation: keep current page visible with a light pending state instead of route loading UI. */
 export function useAdminRouteTransition() {
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const [pendingHref, setPendingHref] = useState<string | null>(null);
 
+  const currentHref = normalizeAdminHref(
+    searchParams.toString() ? `${pathname}?${searchParams.toString()}` : pathname,
+  );
+
   useEffect(() => {
     if (!pendingHref) return;
-    if (pathname === pendingHref || pathname.startsWith(`${pendingHref}/`)) {
+    if (normalizeAdminHref(pendingHref) === currentHref) {
       setPendingHref(null);
     }
-  }, [pathname, pendingHref]);
+  }, [currentHref, pendingHref]);
 
   const navigate = useCallback(
     (href: string) => {
-      if (href === pathname || href === pendingHref) return;
-      setPendingHref(href);
+      const target = normalizeAdminHref(href);
+      if (target === currentHref || target === normalizeAdminHref(pendingHref ?? "")) return;
+      setPendingHref(target);
       startTransition(() => {
         router.push(href);
       });
     },
-    [pathname, pendingHref, router],
+    [currentHref, pendingHref, router],
   );
 
   const prefetch = useCallback(
