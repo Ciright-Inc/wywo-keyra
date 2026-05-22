@@ -18,6 +18,7 @@ export type AdminUsersSeedStats = {
   created: number;
   updated: number;
   unchanged: number;
+  skipped?: boolean;
 };
 
 async function resolveScopeJson(
@@ -77,7 +78,7 @@ async function createPasswordHash(): Promise<string> {
 
 /** Ensure seeded phone numbers can be assigned without tripping the unique index. */
 async function releasePhoneForOtherUsers(
-  prisma: PrismaClient,
+  prisma: PrismaClient | Prisma.TransactionClient,
   phoneE164: string | null,
   email: string,
 ): Promise<void> {
@@ -91,7 +92,17 @@ async function releasePhoneForOtherUsers(
   });
 }
 
-export async function seedAdminUsers(prisma: PrismaClient): Promise<AdminUsersSeedStats> {
+export async function seedAdminUsers(
+  prisma: PrismaClient,
+  options?: { skipIfAnyExist?: boolean },
+): Promise<AdminUsersSeedStats> {
+  if (options?.skipIfAnyExist) {
+    const existingCount = await prisma.adminUser.count();
+    if (existingCount > 0) {
+      return { created: 0, updated: 0, unchanged: 0, skipped: true };
+    }
+  }
+
   const data = loadAdminUsersSeed();
   const stats: AdminUsersSeedStats = { created: 0, updated: 0, unchanged: 0 };
 
@@ -103,49 +114,51 @@ export async function seedAdminUsers(prisma: PrismaClient): Promise<AdminUsersSe
     const isActive = entry.isActive !== false;
     const scopeJson = await resolveScopeJson(prisma, entry.scope);
 
-    await releasePhoneForOtherUsers(prisma, phoneE164, email);
+    await prisma.$transaction(async (tx) => {
+      await releasePhoneForOtherUsers(tx, phoneE164, email);
 
-    const existing = await prisma.adminUser.findUnique({ where: { email } });
+      const existing = await tx.adminUser.findUnique({ where: { email } });
 
-    if (!existing) {
-      await prisma.adminUser.create({
+      if (!existing) {
+        await tx.adminUser.create({
+          data: {
+            email,
+            displayName,
+            phoneE164,
+            passwordHash: await createPasswordHash(),
+            role,
+            scopeJson,
+            isActive,
+          },
+        });
+        stats.created += 1;
+        return;
+      }
+
+      const needsUpdate =
+        existing.displayName !== displayName ||
+        existing.phoneE164 !== phoneE164 ||
+        existing.role !== role ||
+        existing.isActive !== isActive ||
+        !scopeJsonEqual(existing.scopeJson, scopeJson);
+
+      if (!needsUpdate) {
+        stats.unchanged += 1;
+        return;
+      }
+
+      await tx.adminUser.update({
+        where: { email },
         data: {
-          email,
           displayName,
           phoneE164,
-          passwordHash: await createPasswordHash(),
           role,
           scopeJson,
           isActive,
         },
       });
-      stats.created += 1;
-      continue;
-    }
-
-    const needsUpdate =
-      existing.displayName !== displayName ||
-      existing.phoneE164 !== phoneE164 ||
-      existing.role !== role ||
-      existing.isActive !== isActive ||
-      !scopeJsonEqual(existing.scopeJson, scopeJson);
-
-    if (!needsUpdate) {
-      stats.unchanged += 1;
-      continue;
-    }
-
-    await prisma.adminUser.update({
-      where: { email },
-      data: {
-        displayName,
-        phoneE164,
-        role,
-        scopeJson,
-        isActive,
-      },
+      stats.updated += 1;
     });
-    stats.updated += 1;
   }
 
   return stats;
