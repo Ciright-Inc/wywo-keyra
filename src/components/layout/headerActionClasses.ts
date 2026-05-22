@@ -12,6 +12,13 @@ export const KEYRA_HEADER_ACTION_MENU = [
   "hover:bg-[#F5F5F5] active:bg-[#EEEEEE]",
 ].join(" ");
 
+/** Mobile menu trigger — matches 9-dot launcher icon button. */
+export const KEYRA_HEADER_ACTION_MENU_ICON = [
+  "flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-[var(--keyra-radius-pill)] border border-keyra-border bg-white text-keyra-primary transition-colors duration-150 ease-out",
+  "hover:border-black/14 hover:bg-black/[0.04] active:border-[rgba(255,255,255,0.14)]",
+  "focus:outline-none focus-visible:ring-2 focus-visible:ring-black/35",
+].join(" ");
+
 /** Access — primary: #000 fill, bold white text, opacity hover. */
 export const KEYRA_HEADER_ACTION_ACCESS = [
   KEYRA_HEADER_ACTION_BASE,

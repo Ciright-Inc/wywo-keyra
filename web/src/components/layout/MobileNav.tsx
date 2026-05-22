@@ -3,12 +3,29 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/Button";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { useRouter } from "next/navigation";
 import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
 
 type NavLink = { href: string; label: string; external?: boolean };
+
+function HamburgerIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      width="18"
+      height="18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      aria-hidden
+    >
+      <path d="M4 7h16M4 12h16M4 17h16" />
+    </svg>
+  );
+}
 
 function buildLinks(): NavLink[] {
   return [
@@ -38,16 +55,16 @@ export function MobileNav() {
 
   return (
     <div className="relative z-10 shrink-0 lg:hidden">
-      <Button
+      <button
         type="button"
-        variant="secondary"
-        className="h-10 shrink-0 px-2.5 text-[13px] sm:px-4 sm:text-sm"
+        className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-[var(--keyra-radius-pill)] border border-keyra-border bg-white text-keyra-primary transition-colors duration-150 ease-out hover:border-black/14 hover:bg-black/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-black/35 active:border-[rgba(255,255,255,0.14)]"
         aria-expanded={open}
         aria-controls="mobile-nav-panel"
+        aria-label={open ? "Close menu" : "Open menu"}
         onClick={() => setOpen((o) => !o)}
       >
-        Menu
-      </Button>
+        <HamburgerIcon />
+      </button>
       <AnimatePresence>
         {open ? (
           <>

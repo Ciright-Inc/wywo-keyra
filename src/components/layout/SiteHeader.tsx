@@ -9,10 +9,7 @@ import { KeyraLogo } from "@/components/brand/KeyraLogo";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { buildGetStartedAccessUrl, keyraDeveloperPortalUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
 import { useMemo, useEffect, useState } from "react";
-import {
-  KEYRA_HEADER_ACTION_ACCESS,
-  KEYRA_HEADER_ACTIONS_GROUP,
-} from "./headerActionClasses";
+import { KEYRA_HEADER_ACTION_ACCESS } from "./headerActionClasses";
 
 type NavItem = { href: string; label: string; external?: boolean };
 
@@ -69,7 +66,7 @@ export function SiteHeader() {
         className={
           isAdminRoute
             ? "relative flex w-full min-w-0 items-center justify-between px-4 py-1 sm:px-6 lg:h-14 lg:px-8 lg:py-0 xl:px-10"
-            : "relative mx-auto grid w-full min-w-0 max-w-7xl grid-cols-1 gap-y-0 px-3 py-0.5 sm:px-6 lg:h-14 lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-0 lg:gap-y-0 lg:py-0"
+            : "relative mx-auto flex min-h-12 w-full min-w-0 max-w-7xl items-center justify-between gap-2 px-3 pt-1.5 sm:px-6 lg:h-14 lg:grid lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-0 lg:pt-0"
         }
       >
         <Link
@@ -78,7 +75,7 @@ export function SiteHeader() {
           className={
             isAdminRoute
               ? "relative z-0 flex min-w-0 items-center justify-start overflow-visible py-0 lg:h-14"
-              : "relative z-0 flex w-full min-w-0 items-center justify-start overflow-visible py-0 lg:col-start-1 lg:row-start-1 lg:h-14 lg:w-auto lg:max-w-none lg:py-0 lg:pr-3"
+              : "relative z-0 flex min-w-0 shrink-0 items-center justify-start overflow-visible lg:col-start-1 lg:row-start-1 lg:h-14 lg:pr-3"
           }
           aria-label="Keyra home"
         >
@@ -146,24 +143,23 @@ export function SiteHeader() {
           className={
             isAdminRoute
               ? "relative z-10 flex min-w-0 shrink-0 items-center justify-end gap-0 py-0.5 xl:gap-0"
-              : "relative z-10 flex w-full min-w-0 shrink-0 flex-wrap items-center justify-end gap-x-1 gap-y-1 py-0.5 lg:col-start-3 lg:row-start-1 lg:w-auto lg:flex-nowrap lg:justify-end lg:gap-0 lg:py-0.5 lg:pl-0 xl:gap-0 xl:pl-0"
+              : "relative z-10 flex shrink-0 flex-nowrap items-center justify-end gap-2 lg:col-start-3 lg:row-start-1 lg:gap-0 lg:pl-0 xl:pl-0"
           }
         >
           {!isAdminRoute ? (
-            <>
-              <div className={KEYRA_HEADER_ACTIONS_GROUP}>
-                <MobileNav />
-                {!user ? (
-                  <a
-                    href={accessHref}
-                    className={`${KEYRA_HEADER_ACTION_ACCESS} no-underline`}
-                  >
-                    Access
-                  </a>
-                ) : null}
-              </div>
+            <div className="flex shrink-0 items-center gap-2">
+              {!user ? (
+                <a
+                  href={accessHref}
+                  className={`${KEYRA_HEADER_ACTION_ACCESS} hidden no-underline lg:inline-flex`}
+                >
+                  Access
+                </a>
+              ) : null}
+              <KeyraAppLauncher />
               <AccountMenu />
-            </>
+              <MobileNav />
+            </div>
           ) : null}
 
           {isAdminLoginRoute ? null : isProtectedAdminRoute ? (
@@ -181,7 +177,7 @@ export function SiteHeader() {
             </div>
           ) : null}
 
-          <KeyraAppLauncher />
+          {isAdminRoute ? <KeyraAppLauncher /> : null}
         </div>
       </div>
     </header>

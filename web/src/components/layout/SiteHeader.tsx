@@ -27,10 +27,10 @@ export function SiteHeader() {
 
   return (
     <header className="keyra-site-header-shell z-[var(--keyra-z-header)]">
-      <div className="relative mx-auto grid w-full min-w-0 max-w-7xl grid-cols-1 gap-y-0 px-3 py-0.5 sm:px-6 lg:h-14 lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-5 lg:gap-y-0 lg:py-0">
+      <div className="relative mx-auto flex min-h-12 w-full min-w-0 max-w-7xl items-center justify-between gap-2 px-3 pt-1.5 sm:px-6 lg:h-14 lg:grid lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-5 lg:pt-0">
         <Link
           href="/"
-          className="relative z-0 flex w-full min-w-0 items-center justify-start overflow-visible py-0 lg:col-start-1 lg:row-start-1 lg:h-14 lg:w-auto lg:max-w-none lg:py-0 lg:pr-3"
+          className="relative z-0 flex min-w-0 shrink-0 items-center justify-start overflow-visible lg:col-start-1 lg:row-start-1 lg:h-14 lg:pr-3"
           aria-label="Keyra home"
         >
           <KeyraLogo variant="header" showWordmark={false} />
@@ -66,12 +66,15 @@ export function SiteHeader() {
           </div>
         </nav>
 
-        <div className="relative z-10 flex w-full min-w-0 shrink-0 flex-wrap items-center justify-between gap-x-2 gap-y-1 py-0.5 sm:flex-nowrap sm:justify-between lg:col-start-3 lg:row-start-1 lg:w-auto lg:flex-nowrap lg:justify-end lg:gap-2 lg:py-0.5 lg:pl-3 xl:gap-3 xl:pl-5">
-          <MobileNav />
-          <AccountMenu />
+        <div className="relative z-10 flex shrink-0 flex-nowrap items-center justify-end gap-2 lg:col-start-3 lg:row-start-1 lg:pl-3 xl:gap-3 xl:pl-5">
+          <div className="flex shrink-0 items-center gap-2">
+            <KeyraAppLauncher />
+            <AccountMenu />
+            <MobileNav />
+          </div>
 
           <div
-            className="flex min-w-0 shrink-0 flex-row flex-nowrap items-stretch rounded-[var(--keyra-radius-pill)] border border-keyra-border bg-keyra-surface/90 p-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md sm:p-1"
+            className="hidden min-w-0 shrink-0 flex-row flex-nowrap items-stretch rounded-[var(--keyra-radius-pill)] border border-keyra-border bg-keyra-surface/90 p-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md sm:flex sm:p-1"
             aria-label="Sign in and get protected"
           >
             {!user ? (
@@ -92,8 +95,6 @@ export function SiteHeader() {
               </span>
             </Link>
           </div>
-
-          <KeyraAppLauncher />
         </div>
       </div>
     </header>

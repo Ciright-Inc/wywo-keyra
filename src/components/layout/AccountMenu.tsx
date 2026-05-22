@@ -123,15 +123,17 @@ export function AccountMenu() {
         type="button"
         aria-expanded={open}
         aria-haspopup="menu"
+        aria-label="Account menu"
         className={cn(
-          "flex h-10 max-w-[min(40vw,12rem)] items-center gap-2 rounded-[var(--keyra-radius-pill)] border pl-1 pr-2 text-left text-[13px] font-semibold text-keyra-primary",
+          "flex h-10 items-center rounded-[var(--keyra-radius-pill)] border text-left text-[13px] font-semibold text-keyra-primary",
           "border-keyra-border/90 bg-keyra-surface/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-md",
           "transition-[border-color,background-color,box-shadow] duration-150 ease-out",
           "hover:border-black/14 hover:bg-keyra-surface hover:shadow-[0_4px_14px_rgba(0,0,0,0.07),inset_0_1px_0_rgba(255,255,255,0.55)]",
           "active:scale-[0.99]",
           open &&
             "border-keyra-accent/35 bg-keyra-surface shadow-[0_4px_18px_rgba(0,0,0,0.09),inset_0_1px_0_rgba(255,255,255,0.6)] ring-1 ring-keyra-accent/20",
-          "sm:max-w-[260px] sm:gap-2.5 sm:pr-2.5 sm:text-sm",
+          "max-lg:h-10 max-lg:w-10 max-lg:max-w-none max-lg:justify-center max-lg:p-0",
+          "lg:max-w-[260px] lg:gap-2.5 lg:pl-1 lg:pr-2.5 lg:text-sm",
         )}
         onClick={(e) => {
           e.stopPropagation();
@@ -139,10 +141,10 @@ export function AccountMenu() {
         }}
       >
         <AccountMenuIdentityMark label={headerLabel} />
-        <span className="min-w-0 truncate">{headerLabel}</span>
+        <span className="hidden min-w-0 truncate lg:inline">{headerLabel}</span>
         <ChevronDownIcon
           className={cn(
-            "shrink-0 text-keyra-text-2 transition-[transform,color] duration-150",
+            "hidden shrink-0 text-keyra-text-2 transition-[transform,color] duration-150 lg:block",
             open && "rotate-180 text-keyra-accent",
           )}
         />

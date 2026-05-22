@@ -4,13 +4,31 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
-import { KEYRA_HEADER_ACTION_MENU } from "./headerActionClasses";
+import { KEYRA_HEADER_ACTION_MENU_ICON } from "./headerActionClasses";
 import { buildGetStartedAccessUrl, keyraDeveloperPortalUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { useClientReady } from "@/lib/useClientReady";
 
 type NavLink = { href: string; label: string; external?: boolean };
+
+function HamburgerIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      width="18"
+      height="18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      aria-hidden
+    >
+      <path d="M4 7h16M4 12h16M4 17h16" />
+    </svg>
+  );
+}
 
 function buildLinks(): NavLink[] {
   return [
@@ -54,12 +72,13 @@ export function MobileNav() {
     <div className="relative z-10 shrink-0 lg:hidden">
       <button
         type="button"
-        className={`${KEYRA_HEADER_ACTION_MENU} cursor-pointer`}
+        className={KEYRA_HEADER_ACTION_MENU_ICON}
         aria-expanded={open}
         aria-controls="mobile-nav-panel"
+        aria-label={open ? "Close menu" : "Open menu"}
         onClick={() => setOpen((o) => !o)}
       >
-        Menu
+        <HamburgerIcon />
       </button>
       <AnimatePresence>
         {open ? (

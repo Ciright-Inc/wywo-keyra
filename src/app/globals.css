@@ -141,7 +141,7 @@
   --keyra-space-section-lg: 3.5rem;
   --keyra-space-section-x: clamp(20px, 4vw, 48px);
   --keyra-space-section-y: var(--keyra-space-section);
-  --keyra-header-offset: 5.75rem;
+  --keyra-header-offset: 3.375rem;
 
   /* Motion — cinematic layers (Trust Layer doctrine) */
   --keyra-motion-fg: 300ms;

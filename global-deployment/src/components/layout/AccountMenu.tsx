@@ -7,6 +7,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/components/ui/cn";
 
+function accountMenuInitials(label: string | null): string | null {
+  if (!label || /^\+?[\d\s().-]+$/.test(label.trim())) return null;
+  const parts = label.trim().split(/\s+/).filter((p) => /[A-Za-z]/.test(p));
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+  }
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return null;
+}
+
 export function AccountMenu() {
   const { user, headerLabel, logout } = useKeyraSession();
   const [open, setOpen] = useState(false);
@@ -25,6 +35,8 @@ export function AccountMenu() {
     return null;
   }
 
+  const initials = accountMenuInitials(headerLabel);
+
   return (
     <div className="relative shrink-0" ref={wrapRef}>
       <button
@@ -32,15 +44,23 @@ export function AccountMenu() {
         aria-expanded={open}
         aria-haspopup="menu"
         className={cn(
-          "flex h-10 max-w-[min(46vw,220px)] items-center gap-2 rounded-[var(--keyra-radius-pill)] border border-keyra-border px-3 text-left text-[13px] font-medium text-keyra-primary transition duration-300 ease-out hover:border-[rgba(255,255,255,0.14)] sm:max-w-[260px] sm:px-4 sm:text-sm",
+          "flex h-10 items-center rounded-[var(--keyra-radius-pill)] border border-keyra-border text-left text-[13px] font-medium text-keyra-primary transition duration-300 ease-out hover:border-[rgba(255,255,255,0.14)]",
+          "max-lg:h-10 max-lg:w-10 max-lg:max-w-none max-lg:justify-center max-lg:p-0",
+          "lg:max-w-[260px] lg:gap-2 lg:px-4 lg:text-sm",
         )}
         onClick={(e) => {
           e.stopPropagation();
           setOpen((o) => !o);
         }}
       >
-        <span className="truncate">{headerLabel}</span>
-        <span className="text-keyra-text-2" aria-hidden>
+        <span
+          className="relative flex size-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-keyra-accent to-keyra-accent-2 text-[11px] font-semibold text-white ring-2 ring-white/90 lg:hidden"
+          aria-hidden
+        >
+          {initials ?? "•"}
+        </span>
+        <span className="hidden min-w-0 truncate lg:inline">{headerLabel}</span>
+        <span className="hidden text-keyra-text-2 lg:inline" aria-hidden>
           ▾
         </span>
       </button>
