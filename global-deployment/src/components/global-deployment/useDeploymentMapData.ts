@@ -17,7 +17,7 @@ export function useDeploymentMapData({
 }: {
   initialTree: PublicDeploymentTree;
   selectedMapKey: string | null;
-  /** Refetch published tree for near-live updates without full navigation. */
+  /** Refetch admin registry for near-live updates without full navigation. */
   enablePolling?: boolean;
 }) {
   const [tree, setTree] = useState(initialTree);
@@ -29,7 +29,7 @@ export function useDeploymentMapData({
 
   const refetch = useCallback(async () => {
     try {
-      const res = await fetch("/api/public/deployments", { cache: "no-store" });
+      const res = await fetch("/api/public/admin-registry", { cache: "no-store" });
       if (!res.ok) return;
       const json = (await res.json()) as PublicDeploymentTree;
       setTree(json);
@@ -40,6 +40,7 @@ export function useDeploymentMapData({
 
   useEffect(() => {
     if (!enablePolling) return;
+    void refetch();
     const id = window.setInterval(() => void refetch(), POLL_MS);
     return () => window.clearInterval(id);
   }, [enablePolling, refetch]);

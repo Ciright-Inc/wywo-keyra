@@ -11,7 +11,7 @@ import { DeploymentDetailPanel } from "@/components/global-deployment/Deployment
 import type { PublicCountry, PublicDeploymentTree } from "@/lib/deployments/publicTree";
 import { useDeploymentMapData } from "@/components/global-deployment/useDeploymentMapData";
 
-export function GlobalDeploymentView({ initialTree }: { initialTree: PublicDeploymentTree }) {
+export function GlobalDeploymentView({ initialAdminTree }: { initialAdminTree: PublicDeploymentTree }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedMapKey, setSelectedMapKey] = useState<string | null>(null);
@@ -27,7 +27,7 @@ export function GlobalDeploymentView({ initialTree }: { initialTree: PublicDeplo
     }
   }, [inspectCountryId]);
 
-  const mapData = useDeploymentMapData({ initialTree, selectedMapKey });
+  const mapData = useDeploymentMapData({ initialTree: initialAdminTree, selectedMapKey });
 
   let inspected: { country: PublicCountry; regionName: string } | null = null;
   if (inspectCountryId) {
@@ -66,7 +66,7 @@ export function GlobalDeploymentView({ initialTree }: { initialTree: PublicDeplo
     })();
   }, [router, searchParams]);
 
-  const hasRows = mapData.filteredTree.regions.some((r) => r.countries.length > 0);
+  const hasRegistryRows = mapData.tree.regions.length > 0;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
@@ -79,11 +79,11 @@ export function GlobalDeploymentView({ initialTree }: { initialTree: PublicDeplo
       />
 
       <div id="registry" className="mt-10 scroll-mt-24 lg:mt-12">
-        {!hasRows ? (
-          <EmptyState title="No published deployments" body="Check back soon." />
+        {!hasRegistryRows ? (
+          <EmptyState title="No admin regions yet" body="Add regions in Keyra admin to populate this registry." />
         ) : (
           <DeploymentRegistry
-            regions={mapData.filteredTree.regions}
+            regions={mapData.tree.regions}
             expandedCountryId={expandedCountryId}
             onToggleCountry={(id) => setExpandedCountryId((cur) => (cur === id ? null : id))}
             onInspectCountry={setInspectCountryId}

@@ -97,8 +97,13 @@ afterEach(() => {
 });
 
 describe("GlobalDeploymentView", () => {
-  it("expands a country row to show telcos", () => {
-    render(<GlobalDeploymentView initialTree={tree} />);
+  it("expands a region, then a country row to show telcos", () => {
+    render(<GlobalDeploymentView initialAdminTree={tree} />);
+
+    const regionBtn = screen.getByRole("button", { name: /Test Region/i });
+    expect(regionBtn.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(regionBtn);
+    expect(regionBtn.getAttribute("aria-expanded")).toBe("true");
 
     const countryBtn = screen.getByRole("button", { name: /Registry row: Testland/i });
     expect(countryBtn.getAttribute("aria-expanded")).toBe("false");

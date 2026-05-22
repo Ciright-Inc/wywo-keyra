@@ -27,7 +27,7 @@ export function DeploymentMapSection({
           <div className="min-w-0">
             <h2 className="text-lg font-semibold tracking-tight text-keyra-primary sm:text-xl">Deployment map</h2>
             <p className="mt-1 text-[13px] text-keyra-text-2">
-              {nodeCount} published market{nodeCount === 1 ? "" : "s"} · hover nodes · scroll to zoom · drag to pan
+              {nodeCount} admin market{nodeCount === 1 ? "" : "s"} · hover nodes · scroll to zoom · drag to pan
             </p>
           </div>
           <RegionFilterTabs
