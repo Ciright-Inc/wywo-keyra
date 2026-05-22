@@ -1326,23 +1326,7 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   height: 100%;
   flex-direction: column;
   padding: 1.25rem 1.375rem;
-  transition:
-    transform var(--ds-motion-base) var(--ds-ease),
-    border-color var(--ds-motion-base) var(--ds-ease),
-    background var(--ds-motion-base) var(--ds-ease);
-}
-
-.keyra-bento-cta-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(0, 0, 0, 0.18);
-  background: var(--bento-elevated);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-}
-
-.keyra-bento-cta-card:hover .keyra-bento-icon {
-  background: #171717;
-  color: #ffffff;
-  border-color: #171717;
+  cursor: default;
 }
 
 .keyra-bento-cta-card__title {

@@ -22,9 +22,6 @@ export default function DashboardPage() {
           <Link href="/verify" className="inline-flex">
             <Button>Verify now</Button>
           </Link>
-          <Link href="/app/settings" className="inline-flex">
-            <Button variant="secondary">Protection settings</Button>
-          </Link>
         </div>
       </div>
 
@@ -91,10 +88,7 @@ export default function DashboardPage() {
         </Card>
 
         <Card>
-          <CardHeader
-            title="Peace of mind"
-            description="Simple by design."
-          />
+          <CardHeader title="Peace of mind" description="Simple by design." />
           <ul className="mt-4 space-y-2 text-[14px] text-keyra-text-2">
             <li>No codes to chase</li>
             <li>No confusing settings</li>
@@ -105,4 +99,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

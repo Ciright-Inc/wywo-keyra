@@ -16,6 +16,8 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
+    "db:sync:protection": "prisma db execute --schema prisma/schema.prisma --file prisma/migrations/20260522120000_keyra_user_protection/migration.sql",
+    "db:sync:simsecure": "node scripts/apply-keyra-migrations-simsecure.mjs",
     "db:seed": "prisma db seed",
     "db:seed:auth-feed": "tsx prisma/seedAuthenticationFeed.ts",
     "db:seed:deploy-catalog": "tsx prisma/seedDeployCatalog.ts",

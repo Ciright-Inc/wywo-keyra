@@ -285,6 +285,41 @@ model KeyraSiteUserProfile {
   updatedAt   DateTime @updatedAt
 }
 
+/** Per-user protection dashboard state (identity watch scans). */
+model KeyraUserProtection {
+  phoneE164    String    @id
+  lastScanAt   DateTime?
+  scanStatus   String    @default("clear")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+/** Known devices seen for a Keyra user (from session user-agent). */
+model KeyraUserDevice {
+  id            String   @id @default(cuid())
+  phoneE164     String
+  label         String
+  deviceKind    String
+  userAgentHash String
+  lastActiveAt  DateTime @default(now())
+  isCurrent     Boolean  @default(false)
+
+  @@unique([phoneE164, userAgentHash])
+  @@index([phoneE164])
+}
+
+/** Trusted locations inferred or added for a Keyra user. */
+model KeyraTrustedLocation {
+  id          String   @id @default(cuid())
+  phoneE164   String
+  label       String
+  regionHint  String?
+  lastSeenAt  DateTime @default(now())
+  isCurrent   Boolean  @default(false)
+
+  @@index([phoneE164])
+}
+
 /** Admin-configured country weights for keyra.ie “Latest authentications” demo feed. */
 model AuthenticationCountry {
   id                      String   @id @default(cuid())

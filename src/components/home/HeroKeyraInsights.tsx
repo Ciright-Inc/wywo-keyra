@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import type { ComponentType, ReactNode, SVGProps } from "react";
 import { motion } from "framer-motion";
 import { GlobalVerificationSignalsLive } from "@/components/home/GlobalVerificationSignalsLive";
@@ -166,35 +165,30 @@ const timelineSteps: {
 const heroCtaItems: {
   t: string;
   d: string;
-  h: string;
   tag: string;
   icon: HeroIcon;
 }[] = [
   {
     t: "Protect Your Identity",
     d: "Secure your personal identity, mobile device, and digital presence with Keyra.",
-    h: "/signup",
     tag: "Personal",
     icon: IconFingerprint,
   },
   {
     t: "Protect Your Family",
     d: "Create a protected family identity registry for every family member.",
-    h: "/app/family",
     tag: "Family",
     icon: IconFamilyShield,
   },
   {
     t: "Secure Your Organization",
     d: "Protect your company domains, data, and team identities.",
-    h: "/contact",
     tag: "Enterprise",
     icon: IconInstitution,
   },
   {
     t: "Partner With Keyra",
     d: "Join Keyra as a telecom, technology, or service partner.",
-    h: "/partners",
     tag: "Partners",
     icon: IconPartnerNetwork,
   },
@@ -351,16 +345,14 @@ export function HeroKeyraCtaGrid({ variant = "default" }: { variant?: HeroVarian
         transition={{ duration: 0.6, delay: 0.48, ease: easeTrust }}
       >
         {heroCtaItems.map((item) => (
-          <Link key={item.t} href={item.h} prefetch={false} className="group block h-full">
-            <div className="keyra-bento-glass keyra-bento-cta-card h-full">
-              <div className="flex items-start justify-between gap-3">
-                <HeroInsightIcon icon={item.icon} size="lg" variant="bento" />
-                <span className="keyra-bento-tag">{item.tag}</span>
-              </div>
-              <h3 className="keyra-bento-cta-card__title">{item.t}</h3>
-              <p className="keyra-bento-cta-card__desc">{item.d}</p>
+          <div key={item.t} className="keyra-bento-glass keyra-bento-cta-card h-full">
+            <div className="flex items-start justify-between gap-3">
+              <HeroInsightIcon icon={item.icon} size="lg" variant="bento" />
+              <span className="keyra-bento-tag">{item.tag}</span>
             </div>
-          </Link>
+            <h3 className="keyra-bento-cta-card__title">{item.t}</h3>
+            <p className="keyra-bento-cta-card__desc">{item.d}</p>
+          </div>
         ))}
       </motion.div>
     );
@@ -374,20 +366,18 @@ export function HeroKeyraCtaGrid({ variant = "default" }: { variant?: HeroVarian
       transition={{ duration: 0.6, delay: 0.5, ease: easeTrust }}
     >
       {heroCtaItems.map((item) => (
-        <Link key={item.t} href={item.h} prefetch={false} className="group block h-full">
-          <div className="keyra-hero-insight keyra-hero-insight--interactive flex h-full flex-col p-6">
-            <div className="flex items-start justify-between gap-3">
-              <HeroInsightIcon icon={item.icon} size="lg" />
-              <span className="keyra-hero-tag">{item.tag}</span>
-            </div>
-            <h3 className="mt-4 text-[15px] font-semibold leading-snug tracking-tight text-[var(--color-ink)]">
-              {item.t}
-            </h3>
-            <p className="mt-2 flex-1 text-[13px] leading-[1.65] text-[var(--color-body)]">
-              {item.d}
-            </p>
+        <div key={item.t} className="keyra-hero-insight flex h-full flex-col p-6">
+          <div className="flex items-start justify-between gap-3">
+            <HeroInsightIcon icon={item.icon} size="lg" />
+            <span className="keyra-hero-tag">{item.tag}</span>
           </div>
-        </Link>
+          <h3 className="mt-4 text-[15px] font-semibold leading-snug tracking-tight text-[var(--color-ink)]">
+            {item.t}
+          </h3>
+          <p className="mt-2 flex-1 text-[13px] leading-[1.65] text-[var(--color-body)]">
+            {item.d}
+          </p>
+        </div>
       ))}
     </motion.div>
   );

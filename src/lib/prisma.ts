@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
 /** Bump when Prisma schema changes so dev HMR picks up a new generated client. */
-const PRISMA_CLIENT_SCHEMA_VERSION = "deployment-app-category-v4";
+const PRISMA_CLIENT_SCHEMA_VERSION = "keyra-user-protection-v1";
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
