@@ -1,8 +1,27 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, startTransition } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, startTransition } from "react";
 import { Button } from "@/components/ui/Button";
+import { useToast } from "@/components/ui/Toast";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
+import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
+import {
+  adminBody,
+  adminCheckbox,
+  adminCountBadge,
+  adminEyebrow,
+  adminLabel,
+  adminLegacyInput,
+  adminPageTitle,
+  adminPanel,
+  adminSectionTitle,
+  adminTable,
+  adminTableScroll,
+  adminTableWrap,
+} from "@/lib/admin/adminUiClasses";
 
 type Row = {
   id: string;
@@ -14,8 +33,12 @@ type Row = {
   createdAt: string;
 };
 
-export function AccessRequestsClient() {
-  const [rows, setRows] = useState<Row[] | null>(null);
+export function AccessRequestsClient({ initialRequests }: { initialRequests?: Row[] }) {
+  const skipInitialFetch = useRef(initialRequests != null);
+  const confirm = useAdminConfirm();
+  const toast = useToast();
+  const [rows, setRows] = useState<Row[] | null>(initialRequests ?? null);
+  const [loading, setLoading] = useState(initialRequests == null);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
@@ -23,20 +46,29 @@ export function AccessRequestsClient() {
     startTransition(() => {
       setError(null);
     });
-    const res = await fetch("/api/admin/deployments/access-requests", { credentials: "include" });
-    if (!res.ok) {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/admin/deployments/access-requests", { credentials: "include" });
+      if (!res.ok) {
+        startTransition(() => {
+          setError("Unable to load requests.");
+        });
+        return;
+      }
+      const json = (await res.json()) as { requests: Row[] };
       startTransition(() => {
-        setError("Unable to load requests.");
+        setRows(json.requests);
       });
-      return;
+    } finally {
+      setLoading(false);
     }
-    const json = (await res.json()) as { requests: Row[] };
-    startTransition(() => {
-      setRows(json.requests);
-    });
   }, []);
 
   useEffect(() => {
+    if (skipInitialFetch.current) {
+      skipInitialFetch.current = false;
+      return;
+    }
     void load();
   }, [load]);
 
@@ -54,20 +86,22 @@ export function AccessRequestsClient() {
   const hasSearch = query.trim().length > 0;
   const visibleCount = filteredRows?.length ?? 0;
   const totalCount = rows?.length ?? 0;
+  const isInitialLoading = loading && rows === null;
+  const isRefreshing = loading && rows !== null;
 
   return (
     <div>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-keyra-primary">
+          <h1 className={adminPageTitle}>
             Access requests
             {rows ? (
-              <span className="ml-2 rounded-full border border-keyra-border bg-keyra-surface px-2.5 py-0.5 align-middle text-xs font-medium text-keyra-text-2">
+              <span className={`ml-2 align-middle ${adminCountBadge}`}>
                 {hasSearch ? `${visibleCount} of ${totalCount}` : totalCount}
               </span>
             ) : null}
           </h1>
-          <p className="mt-2 text-sm text-keyra-text-2">Approve or reject after email verification.</p>
+          <p className={`${adminBody} mt-2 text-[var(--ds-body)]`}>Approve or reject after email verification.</p>
         </div>
         <div className="flex items-center gap-2">
           <CollapsibleSearchBar
@@ -77,46 +111,51 @@ export function AccessRequestsClient() {
             placeholder="Email, target id, status…"
             ariaLabel="Search access requests"
           />
-          <Button type="button" variant="secondary" onClick={() => void load()}>
+          <Button type="button" variant="secondary" disabled={loading} onClick={() => void load()}>
             Refresh
           </Button>
         </div>
       </div>
 
-      {error ? <p className="mt-4 text-sm text-red-300">{error}</p> : null}
+      {error ? <p className="ds-admin-error-banner mt-4">{error}</p> : null}
 
-      <div className="mt-8 overflow-x-auto rounded-[var(--keyra-radius-card)] border border-keyra-border">
-        <table className="w-full min-w-[36rem] text-left text-sm">
-          <thead className="bg-[rgba(255,255,255,0.03)] text-xs uppercase tracking-wider text-keyra-text-2">
+      {isInitialLoading ? (
+        <div className="mt-8">
+          <AdminDirectorySkeleton tab="deployments-access-requests" tableOnly rows={6} />
+        </div>
+      ) : (
+      <div className={`${adminTableWrap} mt-8 transition-opacity ${isRefreshing ? "pointer-events-none opacity-60" : ""}`}>
+        <div className={adminTableScroll}>
+        <table className={`${adminTable} min-w-[36rem]`}>
+          <thead>
             <tr>
-              <th className="px-3 py-2">Created</th>
-              <th className="px-3 py-2">Email</th>
-              <th className="px-3 py-2">Target</th>
-              <th className="px-3 py-2">Verify</th>
-              <th className="px-3 py-2">Approval</th>
-              <th className="px-3 py-2 text-right">Actions</th>
+              <th>Created</th>
+              <th>Email</th>
+              <th>Target</th>
+              <th>Verify</th>
+              <th>Approval</th>
+              <th className="is-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-keyra-border">
-            {rows !== null && (filteredRows ?? []).length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-3 py-8 text-center text-sm text-keyra-text-2">
-                  {hasSearch
-                    ? "No access requests match your search."
-                    : "No access requests yet."}
-                </td>
-              </tr>
+          <tbody>
+            {(filteredRows ?? []).length === 0 ? (
+              <AdminListEmptyState
+                variant="table-row"
+                colSpan={6}
+                hasSearch={hasSearch}
+                entityName="access requests"
+              />
             ) : null}
             {(filteredRows ?? []).map((r) => (
               <tr key={r.id}>
-                <td className="px-3 py-3 text-xs text-keyra-text-2">{r.createdAt}</td>
-                <td className="px-3 py-3 text-keyra-primary">{r.workEmail}</td>
-                <td className="px-3 py-3 text-xs text-keyra-text-2">
+                <td className="is-muted ds-numeric">{r.createdAt}</td>
+                <td>{r.workEmail}</td>
+                <td className="is-muted">
                   {r.targetType} · {r.targetId}
                 </td>
-                <td className="px-3 py-3 text-keyra-text-2">{r.verificationStatus}</td>
-                <td className="px-3 py-3 text-keyra-text-2">{r.approvalStatus}</td>
-                <td className="px-3 py-3 text-right">
+                <td className="is-muted">{r.verificationStatus}</td>
+                <td className="is-muted">{r.approvalStatus}</td>
+                <td className="is-actions">
                   <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-end">
                     <Button
                       type="button"
@@ -124,13 +163,25 @@ export function AccessRequestsClient() {
                       className="h-9 px-3 text-xs"
                       disabled={r.approvalStatus !== "PENDING" || r.verificationStatus !== "VERIFIED"}
                       onClick={async () => {
+                        if (
+                          !(await confirm({
+                            message: `Approve access request for "${r.workEmail}"?`,
+                            confirmLabel: "Approve",
+                          }))
+                        ) {
+                          return;
+                        }
                         const res = await fetch(`/api/admin/deployments/access-requests/${r.id}`, {
                           method: "PATCH",
                           headers: { "Content-Type": "application/json" },
                           credentials: "include",
                           body: JSON.stringify({ approvalStatus: "APPROVED" }),
                         });
-                        if (!res.ok) window.alert("Unable to approve.");
+                        if (!res.ok) {
+                          toast.error("Unable to approve", "The access request could not be approved.");
+                          return;
+                        }
+                        showAdminActionToast(toast, "approved", "access-request", { name: r.workEmail });
                         await load();
                       }}
                     >
@@ -142,6 +193,14 @@ export function AccessRequestsClient() {
                       className="h-9 px-3 text-xs"
                       disabled={r.approvalStatus !== "PENDING"}
                       onClick={async () => {
+                        if (
+                          !(await confirm({
+                            message: `Reject access request for "${r.workEmail}"?`,
+                            confirmLabel: "Reject",
+                          }))
+                        ) {
+                          return;
+                        }
                         const reason = window.prompt("Rejection reason (internal record):") ?? "";
                         if (!reason.trim()) return;
                         const res = await fetch(`/api/admin/deployments/access-requests/${r.id}`, {
@@ -150,7 +209,11 @@ export function AccessRequestsClient() {
                           credentials: "include",
                           body: JSON.stringify({ approvalStatus: "REJECTED", rejectionReason: reason.trim() }),
                         });
-                        if (!res.ok) window.alert("Unable to reject.");
+                        if (!res.ok) {
+                          toast.error("Unable to reject", "The access request could not be rejected.");
+                          return;
+                        }
+                        showAdminActionToast(toast, "rejected", "access-request", { name: r.workEmail });
                         await load();
                       }}
                     >
@@ -162,7 +225,9 @@ export function AccessRequestsClient() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
+      )}
     </div>
   );
 }

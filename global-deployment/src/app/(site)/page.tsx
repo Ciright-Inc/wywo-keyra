@@ -4,14 +4,14 @@ import { DeploymentErrorBoundary } from "@/components/global-deployment/Deployme
 import { GlobalDeploymentHero } from "@/components/global-deployment/GlobalDeploymentHero";
 import { GlobalDeploymentView } from "@/components/global-deployment/GlobalDeploymentView";
 import { GlobalDeploymentPageLoader } from "@/components/global-deployment/GlobalDeploymentPageLoader";
-import { getPublicDeploymentTree } from "@/lib/deployments/publicTree";
+import { getAdminRegistryTree } from "@/lib/deployments/adminRegistryTree";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Global deployment",
   description:
-    "Explore Keyra's published regional, country, and operator deployment posture — calm, structured, and institutionally grounded.",
+    "Explore Keyra regional, country, and operator deployment posture from the live admin registry.",
 };
 
 function ViewFallback() {
@@ -19,14 +19,14 @@ function ViewFallback() {
 }
 
 export default async function GlobalDeploymentHomePage() {
-  const tree = await getPublicDeploymentTree();
+  const adminTree = await getAdminRegistryTree();
 
   return (
     <>
       <GlobalDeploymentHero />
       <DeploymentErrorBoundary>
         <Suspense fallback={<ViewFallback />}>
-          <GlobalDeploymentView initialTree={tree} />
+          <GlobalDeploymentView initialAdminTree={adminTree} />
         </Suspense>
       </DeploymentErrorBoundary>
     </>

@@ -1,6 +1,4 @@
-import { hash } from "bcryptjs";
 import {
-  DeploymentAdminRole,
   DeploymentStatus,
   PrismaClient,
   type ServerEnvironment,
@@ -8,13 +6,16 @@ import {
   type VerificationMethod,
 } from "@prisma/client";
 import { buildTelcoSubdomainForSeed, loadDeploymentSeed } from "./deploymentSeedData";
+import { loadRegionsCountriesSeed } from "./regionsCountriesSeedData";
 import { seedAuthenticationFeed } from "./seedAuthenticationFeed";
+import { seedAdminUsers } from "./seedAdminUsers";
 import { seedDeploymentGraph } from "./seedDeploymentGraph";
 
 const prisma = new PrismaClient();
 
 async function main() {
   const data = loadDeploymentSeed();
+  const regionsCountries = loadRegionsCountriesSeed();
 
   await prisma.adminUser.deleteMany();
 
@@ -28,7 +29,7 @@ async function main() {
   await prisma.region.deleteMany();
 
   const regionBySlug = new Map<string, { id: string }>();
-  for (const r of data.regions) {
+  for (const r of regionsCountries.regions) {
     const created = await prisma.region.create({
       data: {
         continentCode: r.continentCode,
@@ -44,7 +45,7 @@ async function main() {
   }
 
   const countryByIso2 = new Map<string, { id: string; countrySubdomain: string }>();
-  for (const c of data.countries) {
+  for (const c of regionsCountries.featuredCountries) {
     const region = regionBySlug.get(c.regionSlug);
     if (!region) throw new Error(`Missing region slug: ${c.regionSlug}`);
     const created = await prisma.countryDeployment.create({
@@ -158,62 +159,9 @@ async function main() {
     });
   }
 
-  const seedPw = process.env.SEED_ADMIN_PASSWORD?.trim() || "ChangeMeSeed!123";
-  const passwordHash = await hash(seedPw, 10);
-
-  const neRegion = regionBySlug.get("northern-europe");
-  const ieCountry = countryByIso2.get("IE");
-  const eirTelco = telcoByKey.get("IE:eir");
-  if (!neRegion || !ieCountry || !eirTelco) {
-    throw new Error("Seed admin demo references missing (northern-europe / IE / eir).");
-  }
-
-  const adminSeeds: Array<{
-    email: string;
-    displayName: string;
-    role: DeploymentAdminRole;
-    scopeJson?: Record<string, string[]>;
-  }> = [
-    { email: "global@seed.keyra", displayName: "Global Admin", role: DeploymentAdminRole.GLOBAL_ADMIN },
-    {
-      email: "regional@seed.keyra",
-      displayName: "Regional Admin (Northern Europe)",
-      role: DeploymentAdminRole.REGIONAL_ADMIN,
-      scopeJson: { regionIds: [neRegion.id] },
-    },
-    {
-      email: "country@seed.keyra",
-      displayName: "Country Admin (Ireland)",
-      role: DeploymentAdminRole.COUNTRY_ADMIN,
-      scopeJson: { countryIds: [ieCountry.id] },
-    },
-    {
-      email: "telco@seed.keyra",
-      displayName: "Telco Admin (eir)",
-      role: DeploymentAdminRole.TELCO_ADMIN,
-      scopeJson: { telcoIds: [eirTelco.id] },
-    },
-    { email: "compliance@seed.keyra", displayName: "Compliance Reviewer", role: DeploymentAdminRole.COMPLIANCE_REVIEWER },
-    { email: "readonly@seed.keyra", displayName: "Read Only", role: DeploymentAdminRole.READ_ONLY },
-  ];
-
-  for (const u of adminSeeds) {
-    await prisma.adminUser.create({
-      data: {
-        email: u.email,
-        displayName: u.displayName,
-        passwordHash,
-        role: u.role,
-        scopeJson: u.scopeJson ?? undefined,
-      },
-    });
-  }
-
-  console.info(
-    `[seed] Created ${adminSeeds.length} admin users (password from SEED_ADMIN_PASSWORD or default "ChangeMeSeed!123").`,
-  );
-
   await seedDeploymentGraph(prisma);
+  const adminStats = await seedAdminUsers(prisma);
+  console.info("[seed] Admin users:", adminStats);
   console.info("[seed] Extended deployment map with ISO-3166 catalog countries + placeholder telcos.");
 
   await seedAuthenticationFeed(prisma);

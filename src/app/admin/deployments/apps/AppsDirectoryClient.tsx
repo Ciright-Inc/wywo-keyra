@@ -8,12 +8,31 @@ import {
   type DeploymentAppView,
 } from "@/lib/deploymentAppConstants";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { useToast } from "@/components/ui/Toast";
+import { deleteDeploymentAppMessage } from "@/lib/admin/adminDeleteMessages";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import { GensparkSlidePanel } from "./GensparkSlidePanel";
+import {
+  adminBody,
+  adminCheckbox,
+  adminCountBadge,
+  adminEyebrow,
+  adminLabel,
+  adminLegacyInput,
+  adminPageTitle,
+  adminPanel,
+  adminSectionTitle,
+  adminTable,
+  adminTableScroll,
+  adminTableWrap,
+} from "@/lib/admin/adminUiClasses";
 
 function AppListIcon({ label }: { label: string }) {
   return (
-    <span className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-black/20 bg-keyra-bg text-xs font-semibold text-keyra-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
+    <span className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[var(--ds-radius-md)] border border-[var(--ds-hairline-strong)] bg-[var(--ds-canvas-soft)] text-xs font-semibold text-[var(--ds-ink)]">
       <Image
         src="/keyra-app-mark.png"
         alt=""
@@ -51,7 +70,7 @@ function GensparkIconButton({
       title="Open slides"
       aria-label={`Open slides for ${label}`}
       onClick={onClick}
-      className="inline-flex size-8 items-center justify-center rounded-md border border-keyra-border bg-keyra-bg text-keyra-primary transition hover:border-black/20 hover:bg-keyra-surface"
+      className="ds-btn-icon" style={{ width: 32, height: 32 }}
     >
       <svg
         width="15"
@@ -77,6 +96,8 @@ type Props = {
 };
 
 export function AppsDirectoryClient({ initialApps, categories }: Props) {
+  const confirm = useAdminConfirm();
+  const toast = useToast();
   const [apps, setApps] = useState(initialApps);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -101,7 +122,7 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
   const totalVisible = visibleApps.length;
 
   async function deleteApp(app: DeploymentAppView) {
-    if (!window.confirm(`Delete ${app.label}?`)) return;
+    if (!(await confirm(deleteDeploymentAppMessage(app.label)))) return;
     setBusyId(app.id);
     try {
       const res = await fetch(`/api/admin/deployments/apps/${encodeURIComponent(app.id)}`, {
@@ -113,8 +134,9 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
         throw new Error(data?.error ?? "Delete failed.");
       }
       setApps((current) => current.filter((item) => item.id !== app.id));
+      showAdminActionToast(toast, "deleted", "app", { name: app.label });
     } catch (err) {
-      window.alert(err instanceof Error ? err.message : "Delete failed.");
+      toast.error("Delete failed", err instanceof Error ? err.message : "Delete failed.");
     } finally {
       setBusyId(null);
     }
@@ -125,8 +147,8 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
       <div>
         <div className="flex flex-wrap items-start justify-between gap-3 py-1">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-semibold text-keyra-primary">Apps</h1>
-            <span className="rounded-full border border-keyra-border bg-keyra-surface px-3 py-1 text-xs font-medium text-keyra-text-2">
+            <h1 className={adminPageTitle}>Apps</h1>
+            <span className={adminCountBadge}>
               {hasSearch || hasCategoryFilter ? `${totalVisible} of ${apps.length}` : apps.length}
             </span>
           </div>
@@ -138,27 +160,26 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
               placeholder="Label, description, link, category…"
               ariaLabel="Search apps"
             />
-            <Link
-              href="/admin/deployments/apps/new"
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--keyra-action-border)] bg-[var(--keyra-action)] px-4 py-2 text-sm font-medium leading-none text-keyra-primary shadow-sm transition hover:bg-keyra-surface"
-            >
-              <span aria-hidden>+</span>
+            <Link href="/admin/deployments/apps/new" className="ds-btn-primary is-sm">
+              <span className="material-symbols-outlined text-[18px]" aria-hidden>
+                add
+              </span>
               Create new app
             </Link>
           </div>
         </div>
-        <p className="mt-2 text-sm text-keyra-text-2">
+        <p className={`${adminBody} mt-2 text-[var(--ds-body)]`}>
           Select an app to open its configured destination. Newly created apps appear first.
         </p>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <label className="flex items-center gap-2 text-sm font-medium text-keyra-text-2">
+        <label className={`flex items-center gap-2 ${adminLabel}`}>
           <span>Category</span>
           <select
             value={categoryFilter}
             onChange={(event) => setCategoryFilter(event.target.value)}
-            className="h-10 w-full min-w-0 rounded-2xl border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary outline-none focus-visible:keyra-focus sm:w-auto sm:min-w-[12rem]"
+            className="ds-text-input is-sm sm:w-auto sm:min-w-[12rem]"
             aria-label="Filter apps by category"
           >
             <option value={ALL_APP_CATEGORIES_FILTER}>All apps</option>
@@ -172,20 +193,21 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
       </div>
 
       {totalVisible === 0 ? (
-        <p className="mt-6 rounded-2xl border border-keyra-border bg-keyra-surface/50 px-4 py-6 text-center text-sm text-keyra-text-2">
-          {hasSearch || hasCategoryFilter
-            ? "No apps match your filters. Try a different category or clear the search."
-            : "No apps yet. Create your first app to get started."}
-        </p>
+        <AdminListEmptyState
+          variant="panel"
+          hasSearch={hasSearch}
+          hasFilter={hasCategoryFilter}
+          entityName="apps"
+        />
       ) : (
-        <div className="mt-6 rounded-3xl border border-keyra-border bg-keyra-surface/45 p-2.5 shadow-[0_18px_54px_rgba(0,0,0,0.04)] sm:p-3">
-          <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+        <div className={`${adminTableWrap} mt-6 p-3 sm:p-4`}>
+          <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {visibleApps.map((app) => {
             const isDeleting = busyId === app.id;
             return (
             <li
               key={app.id}
-              className={`group rounded-2xl border border-keyra-border bg-keyra-surface/70 px-3 py-3 transition hover:border-keyra-accent/40 hover:bg-keyra-surface sm:px-4 ${isDeleting ? "opacity-60" : ""}`}
+              className={`ds-feature-card is-dashboard group p-3 sm:p-4 ${isDeleting ? "opacity-60" : ""}`}
             >
               <div className="flex items-start justify-between gap-3">
                 <a
@@ -197,10 +219,10 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
                   <AppListIcon label={app.label} />
                   <div className="min-w-0">
                     <div className="flex min-w-0 flex-wrap items-center gap-2">
-                      <h2 className="truncate text-sm font-semibold text-keyra-primary">{app.label}</h2>
+                      <h2 className="truncate ds-body-sm font-semibold">{app.label}</h2>
                       <CategoryChip label={app.section} />
                       {app.isPrivate ? (
-                        <span className="shrink-0 rounded-full border border-keyra-border bg-keyra-bg px-1.5 py-0.5 text-[10px] font-medium text-keyra-text-2">
+                        <span className="ds-status-pill shrink-0 text-[10px]">
                           Private
                         </span>
                       ) : null}
@@ -211,7 +233,7 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
                 <div className="flex shrink-0 flex-col items-end gap-2">
                   <a
                     href={app.href}
-                    className="rounded-full p-1.5 text-keyra-accent transition group-hover:bg-[var(--keyra-action)] group-hover:text-keyra-primary"
+                    className="ds-btn-icon" style={{ width: 28, height: 28 }}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Open ${app.label}`}

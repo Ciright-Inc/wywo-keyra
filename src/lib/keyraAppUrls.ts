@@ -8,6 +8,27 @@ function trimSlash(s: string): string {
   return s.replace(/\/+$/, "");
 }
 
+/** Canonical marketing host — strip legacy www for return URLs and links. */
+export function canonicalKeyraHostname(hostname: string): string {
+  return hostname.toLowerCase() === "www.keyra.ie" ? "keyra.ie" : hostname;
+}
+
+/** Normalize absolute Keyra return URLs to the canonical marketing host. */
+export function normalizeKeyraReturnUrl(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+
+  try {
+    const url = new URL(trimmed);
+    url.hostname = canonicalKeyraHostname(url.hostname);
+    return url.toString();
+  } catch {
+    return trimmed;
+  }
+}
+
 /** get-started.keyra.ie */
 export function keyraGetStartedUrl(): string {
   return trimSlash(process.env.NEXT_PUBLIC_GET_STARTED_URL?.trim() || "https://get-started.keyra.ie");
@@ -25,6 +46,7 @@ export function buildGetStartedAccessUrl(returnToAbsoluteUrl: string): string {
     const path = u.startsWith("/") ? u : `/${u}`;
     u = `${trimSlash(base)}${path}`;
   }
+  u = normalizeKeyraReturnUrl(u);
   return `${gs}/?return=${encodeURIComponent(u)}`;
 }
 

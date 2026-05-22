@@ -4,12 +4,30 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
+import { useToast } from "@/components/ui/Toast";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import {
   normalizeDeploymentAppCategory,
   type DeploymentAppCategoryView,
   type DeploymentAppView,
 } from "@/lib/deploymentAppConstants";
 import { ManageCategoriesModal } from "./ManageCategoriesModal";
+import {
+  adminBody,
+  adminCheckbox,
+  adminFormCheckboxLabel,
+  adminCountBadge,
+  adminEyebrow,
+  adminLabel,
+  adminLegacyInput,
+  adminPageTitle,
+  adminPanel,
+  adminPanelStatic,
+  adminSectionTitle,
+  adminTable,
+  adminTableScroll,
+  adminTableWrap,
+} from "@/lib/admin/adminUiClasses";
 
 type Props = {
   mode: "create" | "edit";
@@ -25,6 +43,7 @@ function sortCategories(categories: DeploymentAppCategoryView[]): DeploymentAppC
 
 export function AppForm({ mode, app, categories }: Props) {
   const router = useRouter();
+  const toast = useToast();
   const [label, setLabel] = useState(app?.label ?? "");
   const [description, setDescription] = useState(app?.description ?? "");
   const [href, setHref] = useState(app?.href ?? "");
@@ -88,6 +107,12 @@ export function AppForm({ mode, app, categories }: Props) {
       return;
     }
 
+    showAdminActionToast(
+      toast,
+      mode === "edit" ? "saved" : "created",
+      "app",
+      { name: label.trim() },
+    );
     router.push("/admin/deployments/apps");
     router.refresh();
   }
@@ -95,10 +120,10 @@ export function AppForm({ mode, app, categories }: Props) {
   return (
     <>
       <form onSubmit={submit} className="mt-8 grid gap-4">
-        <label className="block text-sm font-medium text-keyra-text-2">
+        <label className={adminLabel}>
           App name
           <input
-            className="mt-2 h-11 w-full rounded-2xl border border-keyra-border bg-keyra-bg px-4 text-sm text-keyra-primary outline-none focus-visible:keyra-focus"
+            className={adminLegacyInput}
             placeholder="Example: Billing"
             value={label}
             onChange={(event) => setLabel(event.target.value)}
@@ -106,10 +131,10 @@ export function AppForm({ mode, app, categories }: Props) {
           />
         </label>
 
-        <label className="block text-sm font-medium text-keyra-text-2">
+        <label className={adminLabel}>
           Description
           <input
-            className="mt-2 h-11 w-full rounded-2xl border border-keyra-border bg-keyra-bg px-4 text-sm text-keyra-primary outline-none focus-visible:keyra-focus"
+            className={adminLegacyInput}
             placeholder="Short app purpose"
             value={description}
             onChange={(event) => setDescription(event.target.value)}
@@ -117,10 +142,10 @@ export function AppForm({ mode, app, categories }: Props) {
           />
         </label>
 
-        <label className="block text-sm font-medium text-keyra-text-2">
+        <label className={adminLabel}>
           Redirect URL
           <input
-            className="mt-2 h-11 w-full rounded-2xl border border-keyra-border bg-keyra-bg px-4 text-sm text-keyra-primary outline-none focus-visible:keyra-focus"
+            className={adminLegacyInput}
             placeholder="https://example.keyra.ie"
             type="url"
             value={href}
@@ -129,11 +154,11 @@ export function AppForm({ mode, app, categories }: Props) {
           />
         </label>
 
-        <label className="block text-sm font-medium text-keyra-text-2">
+        <label className={adminLabel}>
           Genspark URL
-          <span className="ml-1 text-xs font-normal text-keyra-text-2">(optional)</span>
+          <span className="ml-1 text-xs font-normal text-[var(--ds-muted)]">(optional)</span>
           <input
-            className="mt-2 h-11 w-full rounded-2xl border border-keyra-border bg-keyra-bg px-4 text-sm text-keyra-primary outline-none focus-visible:keyra-focus"
+            className={adminLegacyInput}
             placeholder="https://genspark.example.com"
             type="url"
             value={gensparkUrl}
@@ -143,13 +168,13 @@ export function AppForm({ mode, app, categories }: Props) {
 
         <div className="grid gap-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <label className="text-sm font-medium text-keyra-text-2" htmlFor="app-category">
+            <label className={adminLabel} htmlFor="app-category">
               Category
             </label>
             <button
               type="button"
               onClick={() => setManageCategoriesOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-keyra-border bg-keyra-surface px-3 py-1.5 text-xs font-medium text-keyra-primary transition hover:border-black/20"
+              className="ds-btn-secondary is-sm"
             >
               <svg
                 width="14"
@@ -170,7 +195,7 @@ export function AppForm({ mode, app, categories }: Props) {
           </div>
           <select
             id="app-category"
-            className="h-11 w-full rounded-2xl border border-keyra-border bg-keyra-bg px-4 text-sm text-keyra-primary outline-none focus-visible:keyra-focus"
+            className={adminLegacyInput}
             value={section}
             onChange={(event) => setSection(event.target.value)}
             required
@@ -186,36 +211,34 @@ export function AppForm({ mode, app, categories }: Props) {
           </select>
         </div>
 
-        <label className="flex items-start gap-3 rounded-2xl border border-keyra-border bg-keyra-bg px-4 py-3 text-sm text-keyra-text-2">
+        <label className={`${adminFormCheckboxLabel} items-start ${adminPanelStatic} px-4 py-3`}>
           <input
             type="checkbox"
-            className="mt-1 size-4 rounded border-keyra-border accent-keyra-primary"
+            className={`${adminCheckbox} mt-0.5`}
             checked={isPrivate}
             onChange={(event) => setIsPrivate(event.target.checked)}
           />
           <span>
-            <span className="block font-medium text-keyra-primary">Private app</span>
+            <span className="block font-medium text-[var(--ds-ink)]">Private app</span>
             <span className="mt-1 block text-xs leading-5">
               Hide this app from the 9-dot app launcher. It will still appear here in admin.
             </span>
           </span>
         </label>
 
-        {error ? (
-          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
-        ) : null}
+        {error ? <p className="ds-admin-error-banner">{error}</p> : null}
 
         <div className="mt-4 flex flex-wrap gap-2">
           <button
             type="submit"
             disabled={saving}
-            className="rounded-full bg-[var(--keyra-action)] px-4 py-2 text-sm font-medium text-keyra-primary ring-1 ring-[var(--keyra-action-border)] disabled:opacity-60"
+            className="ds-btn-primary is-sm disabled:opacity-55"
           >
             {saving ? "Saving..." : mode === "edit" ? "Save changes" : "Create app"}
           </button>
           <Link
             href="/admin/deployments/apps"
-            className="rounded-full border border-keyra-border bg-keyra-bg px-4 py-2 text-sm font-medium text-keyra-primary transition hover:border-black/20"
+            className="ds-btn-secondary is-sm"
           >
             Cancel
           </Link>

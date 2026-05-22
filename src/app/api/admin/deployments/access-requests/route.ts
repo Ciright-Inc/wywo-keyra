@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { RequestApprovalStatus } from "@prisma/client";
-import prisma from "@/lib/prisma";
-import { canApproveAccessRequestRow, requireDeploymentAuth } from "@/lib/deployments/adminContext";
+import { listAccessRequestsForAdmin, requireDeploymentAuth } from "@/lib/deployments/adminContext";
 
 function isApprovalStatus(v: string): v is RequestApprovalStatus {
   return Object.values(RequestApprovalStatus).includes(v as RequestApprovalStatus);
@@ -13,30 +12,15 @@ export async function GET(req: Request) {
 
   const url = new URL(req.url);
   const statusParam = url.searchParams.get("approvalStatus") ?? undefined;
-  const statusWhere =
-    statusParam && isApprovalStatus(statusParam)
-      ? { approvalStatus: statusParam }
-      : {};
+  const approvalStatus =
+    statusParam && isApprovalStatus(statusParam) ? statusParam : undefined;
 
-  const rows = await prisma.serverAccessRequest.findMany({
-    where: statusWhere,
-    orderBy: { createdAt: "desc" },
-    take: 300,
+  const visible = await listAccessRequestsForAdmin(auth, approvalStatus);
+
+  return NextResponse.json({
+    requests: visible.map((r) => ({
+      ...r,
+      createdAt: r.createdAt.toISOString(),
+    })),
   });
-
-  const visible = (
-    await Promise.all(
-      rows.map(async (r) => ({
-        r,
-        ok: await canApproveAccessRequestRow(auth, {
-          targetType: r.targetType,
-          targetId: r.targetId,
-        }),
-      })),
-    )
-  )
-    .filter((x) => x.ok)
-    .map((x) => x.r);
-
-  return NextResponse.json({ requests: visible });
 }

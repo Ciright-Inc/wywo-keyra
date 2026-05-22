@@ -1,4 +1,4 @@
-import type { KeyraSessionUser } from "@/lib/keyraSessionCookie";
+import type { KeyraSessionUser } from "@/lib/keyraSessionTypes";
 import prisma from "@/lib/prisma";
 
 export type SavedProfileFields = Pick<KeyraSessionUser, "displayName" | "email" | "country">;

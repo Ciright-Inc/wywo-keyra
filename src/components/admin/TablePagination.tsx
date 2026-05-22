@@ -1,4 +1,20 @@
 import Link from "next/link";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
+import {
+  adminBody,
+  adminCheckbox,
+  adminCountBadge,
+  adminEyebrow,
+  adminLabel,
+  adminLegacyInput,
+  adminPageTitle,
+  adminPanel,
+  adminSectionTitle,
+  adminTable,
+  adminTableScroll,
+  adminTableWrap,
+} from "@/lib/admin/adminUiClasses";
 
 export type TablePaginationMeta = {
   page: number;
@@ -13,6 +29,8 @@ type Props = TablePaginationMeta & {
   pageSizeOptions: readonly number[];
   /** Builds a URL targeting (page, pageSize); query, sort, etc. are owned by the host page. */
   buildHref: (page: number, pageSize: number) => string;
+  /** When set, pagination uses soft navigation (keeps list visible while loading). */
+  onNavigate?: (href: string) => void;
   /** Optional. Defaults to `"row"` — used in the screen-reader summary as in "Rows: 1–25 of 240 rows". */
   rowNoun?: string;
 };
@@ -36,12 +54,34 @@ function pageNumbers(current: number, total: number): (number | "gap")[] {
   return out;
 }
 
+function PaginationLink({
+  href,
+  className,
+  onNavigate,
+  children,
+  ...rest
+}: {
+  href: string;
+  className: string;
+  onNavigate?: (href: string) => void;
+  children: ReactNode;
+} & ComponentPropsWithoutRef<"a">) {
+  if (onNavigate) {
+    return (
+      <AdminTransitionLink href={href} onNavigate={onNavigate} className={className} {...rest}>
+        {children}
+      </AdminTransitionLink>
+    );
+  }
+  return (
+    <Link href={href} prefetch={false} className={className} {...rest}>
+      {children}
+    </Link>
+  );
+}
+
 /**
  * Standard pagination footer for admin list tabs.
- *
- * Visual matches the Telcos directory: page-of-N indicator, rows-per-page selector, and
- * Previous/Next + page-number links. Renders nothing when `totalCount === 0` so empty states
- * remain clean.
  */
 export function TablePagination({
   page,
@@ -52,6 +92,7 @@ export function TablePagination({
   showingTo,
   pageSizeOptions,
   buildHref,
+  onNavigate,
 }: Props) {
   if (totalCount === 0) return null;
   const pagerItems = pageNumbers(page, totalPages);
@@ -63,7 +104,7 @@ export function TablePagination({
 
   return (
     <div className="flex flex-col gap-3 border-t border-keyra-border bg-keyra-bg/50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-      <p className="text-sm text-keyra-text-2">
+      <p className={adminLabel}>
         Page <span className="font-semibold text-keyra-primary">{page}</span> of{" "}
         <span className="font-semibold text-keyra-primary">{totalPages}</span>
         <span className="text-keyra-text-2">
@@ -84,22 +125,27 @@ export function TablePagination({
               {sz}
             </span>
           ) : (
-            <Link key={sz} href={buildHref(1, sz)} prefetch={false} className={inactivePageClass}>
+            <PaginationLink
+              key={sz}
+              href={buildHref(1, sz)}
+              onNavigate={onNavigate}
+              className={inactivePageClass}
+            >
               {sz}
-            </Link>
+            </PaginationLink>
           ),
         )}
       </div>
 
       <div className="flex flex-wrap items-center justify-end gap-2">
-        <Link
+        <PaginationLink
           href={buildHref(Math.max(1, page - 1), pageSize)}
-          prefetch={false}
+          onNavigate={onNavigate}
           aria-disabled={page <= 1}
           className={`${inactivePageClass} ${page <= 1 ? "pointer-events-none opacity-40" : ""}`}
         >
           Previous
-        </Link>
+        </PaginationLink>
         {pagerItems.map((item, i) =>
           item === "gap" ? (
             <span key={`gap-${i}`} className="px-2 text-keyra-text-2">
@@ -110,24 +156,24 @@ export function TablePagination({
               {item}
             </span>
           ) : (
-            <Link
+            <PaginationLink
               key={item}
               href={buildHref(item, pageSize)}
-              prefetch={false}
+              onNavigate={onNavigate}
               className={inactivePageClass}
             >
               {item}
-            </Link>
+            </PaginationLink>
           ),
         )}
-        <Link
+        <PaginationLink
           href={buildHref(Math.min(totalPages, page + 1), pageSize)}
-          prefetch={false}
+          onNavigate={onNavigate}
           aria-disabled={page >= totalPages}
           className={`${inactivePageClass} ${page >= totalPages ? "pointer-events-none opacity-40" : ""}`}
         >
           Next
-        </Link>
+        </PaginationLink>
       </div>
     </div>
   );

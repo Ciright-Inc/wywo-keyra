@@ -1,11 +1,21 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { assertAdminServer } from "@/lib/assertAdminServer";
+import { countryWhereFromAuth } from "@/lib/deployments/adminContext";
 import { updateServerNode } from "@/app/admin/deployments/actions";
 import { Button } from "@/components/ui/Button";
+import { AdminEditPageHeader } from "@/components/admin/AdminEditPageHeader";
 import { DeploymentAdminRole } from "@prisma/client";
 import { canMutateServerAsset, isComplianceReviewer, isReadOnlyRole } from "@/lib/deployments/adminAuthz";
+import {
+  adminFormGrid,
+  adminFormHelper,
+  adminLabel,
+  adminLegacyInput,
+  adminPanel,
+  adminSectionTitle,
+  adminTextareaMono,
+} from "@/lib/admin/adminUiClasses";
 
 type Params = { id: string };
 
@@ -40,6 +50,21 @@ export default async function AdminServerNodeEditPage({ params }: { params: Prom
   if (!node) notFound();
   if (!(await canViewNode(auth, node))) notFound();
 
+  const cw = await countryWhereFromAuth(auth);
+  const countries = await prisma.countryDeployment.findMany({
+    where: cw ?? {},
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    select: { id: true, name: true, iso2: true },
+  });
+  const telcos = await prisma.telcoDeployment.findMany({
+    where: cw ? { countryId: { in: countries.map((c) => c.id) } } : {},
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    select: { id: true, name: true, country: { select: { iso2: true } } },
+  });
+
+  const countryOptions = countries.map((c) => ({ id: c.id, label: `${c.name} (${c.iso2})` }));
+  const telcoOptions = telcos.map((t) => ({ id: t.id, label: `${t.name} (${t.country.iso2})` }));
+
   const canEdit =
     auth.kind === "legacy_super" ||
     (auth.kind === "user" &&
@@ -52,90 +77,91 @@ export default async function AdminServerNodeEditPage({ params }: { params: Prom
       ? JSON.stringify(node.metadataJson, null, 2)
       : "";
 
+  const inputClass = adminLegacyInput;
+  const selectClass = adminLegacyInput;
+  const targetCountryId = node.targetType === "COUNTRY" ? node.targetId : "";
+  const targetTelcoId = node.targetType === "TELCO" ? node.targetId : "";
+
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-keyra-primary">Server node</h1>
-          <p className="mt-2 text-xs text-keyra-text-2">
-            {node.targetType} · {node.targetId}
-          </p>
-        </div>
-        <Link href="/admin/deployments/server-nodes" className="text-sm text-keyra-accent underline-offset-4 hover:underline">
-          Back to list
-        </Link>
-      </div>
+      <AdminEditPageHeader title="Edit server node" subtitle={node.fqdn} backHref="/admin/deployments/server-nodes" />
 
-      <form action={updateServerNode} className="mt-8 keyra-card space-y-3 p-6">
-        <input type="hidden" name="id" value={node.id} />
-        <label className="block text-sm text-keyra-text-2">
-          FQDN
-          <input
-            name="fqdn"
-            defaultValue={node.fqdn}
-            required
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Environment
-          <select
-            name="environment"
-            defaultValue={node.environment}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          >
-            <option value="PROD">PROD</option>
-            <option value="STAGE">STAGE</option>
-            <option value="TEST">TEST</option>
-          </select>
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Status
-          <select
-            name="status"
-            defaultValue={node.status}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          >
-            <option value="IDENTIFIED">IDENTIFIED</option>
-            <option value="INSTITUTIONAL_AWARENESS">INSTITUTIONAL_AWARENESS</option>
-            <option value="TVIP">TVIP</option>
-            <option value="OPERATIONAL">OPERATIONAL</option>
-          </select>
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Healthcheck URL
-          <input
-            name="healthcheckUrl"
-            defaultValue={node.healthcheckUrl ?? ""}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Last heartbeat (ISO)
-          <input
-            name="lastHeartbeatAt"
-            type="datetime-local"
-            defaultValue={node.lastHeartbeatAt ? node.lastHeartbeatAt.toISOString().slice(0, 16) : ""}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Metadata JSON
-          <textarea
-            name="metadataJson"
-            rows={5}
-            defaultValue={metadataStr}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 font-mono text-xs text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        {canEdit ? <Button type="submit">Save</Button> : <p className="text-sm text-keyra-text-2">Read-only for your role.</p>}
-      </form>
+      <div className={`${adminPanel} mt-6`}>
+        <h2 className={adminSectionTitle}>Server node details</h2>
+        <form action={updateServerNode} className={adminFormGrid}>
+          <input type="hidden" name="id" value={node.id} />
+          <label className={`${adminLabel} sm:col-span-2`}>
+            Target type
+            <select name="targetType" defaultValue={node.targetType} disabled className={selectClass}>
+              <option value="COUNTRY">COUNTRY</option>
+              <option value="TELCO">TELCO</option>
+            </select>
+          </label>
+          <label className={`${adminLabel} sm:col-span-2`}>
+            Target (country)
+            <select name="targetIdCountry" defaultValue={targetCountryId} disabled className={selectClass}>
+              <option value="">—</option>
+              {countryOptions.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className={adminFormHelper}>
+            For COUNTRY targets, pick the country above. For TELCO, pick a telco below (only one target applies).
+          </p>
+          <label className={`${adminLabel} sm:col-span-2`}>
+            Target (telco)
+            <select name="targetIdTelco" defaultValue={targetTelcoId} disabled className={selectClass}>
+              <option value="">—</option>
+              {telcoOptions.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={`${adminLabel} sm:col-span-2`}>
+            FQDN
+            <input name="fqdn" defaultValue={node.fqdn} required disabled={!canEdit} className={inputClass} />
+          </label>
+          <label className={adminLabel}>
+            Environment
+            <select name="environment" defaultValue={node.environment} disabled={!canEdit} className={selectClass}>
+              <option value="PROD">PROD</option>
+              <option value="STAGE">STAGE</option>
+              <option value="TEST">TEST</option>
+            </select>
+          </label>
+          <label className={adminLabel}>
+            Status
+            <select name="status" defaultValue={node.status} disabled={!canEdit} className={selectClass}>
+              <option value="IDENTIFIED">IDENTIFIED</option>
+              <option value="INSTITUTIONAL_AWARENESS">INSTITUTIONAL_AWARENESS</option>
+              <option value="TVIP">TVIP</option>
+              <option value="OPERATIONAL">OPERATIONAL</option>
+            </select>
+          </label>
+          <label className={`${adminLabel} sm:col-span-2`}>
+            Healthcheck URL
+            <input name="healthcheckUrl" defaultValue={node.healthcheckUrl ?? ""} disabled={!canEdit} className={inputClass} />
+          </label>
+          <label className={`${adminLabel} sm:col-span-2`}>
+            Metadata JSON (optional)
+            <textarea name="metadataJson" rows={3} defaultValue={metadataStr} disabled={!canEdit} className={adminTextareaMono} />
+          </label>
+          <div className="sm:col-span-2">
+            {canEdit ? (
+              <Button type="submit" variant="primary">
+                Save changes
+              </Button>
+            ) : (
+              <p className={adminLabel}>Read-only for your role.</p>
+            )}
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

@@ -1,8 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import type { ReactNode } from "react";
+import { AdminConfirmProvider } from "@/components/admin/AdminConfirmProvider";
+import { AdminRouteToast } from "@/components/admin/AdminRouteToast";
+import { AdminShellMainContent } from "@/components/admin/AdminShellMainContent";
+import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
+import { useAdminShellNavigation } from "@/lib/admin/useAdminShellNavigation";
 
 const nav = [
   { href: "/admin/authentication", label: "Auth feed", icon: "pulse" },
@@ -14,6 +18,7 @@ const nav = [
   { href: "/admin/deployments/server-nodes", label: "Server nodes", icon: "server" },
   { href: "/admin/deployments/access-domain-rules", label: "Access domains", icon: "shield" },
   { href: "/admin/deployments/access-requests", label: "Access requests", icon: "inbox" },
+  { href: "/admin/deployments/admin-users", label: "Admin users", icon: "users" },
   { href: "/admin/deployments/audit", label: "Audit", icon: "audit" },
 ] as const;
 
@@ -68,6 +73,13 @@ function NavIcon({ name }: { name: (typeof nav)[number]["icon"] }) {
           <path {...common} d="M4 13h5l2 3h2l2-3h5" />
           <path {...common} d="M5 13 7 5h10l2 8v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z" />
         </>
+      ) : name === "users" ? (
+        <>
+          <path {...common} d="M16 19v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1" />
+          <circle {...common} cx="10" cy="8" r="3" />
+          <path {...common} d="M20 19v-1a3 3 0 0 0-2-2.8" />
+          <path {...common} d="M16 4.2a3 3 0 0 1 0 5.6" />
+        </>
       ) : (
         <>
           <path {...common} d="M7 4h10v16H7z" />
@@ -79,9 +91,17 @@ function NavIcon({ name }: { name: (typeof nav)[number]["icon"] }) {
 }
 
 export function AdminDeploymentsShell({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
+  const { navigate, prefetch, isNavActive, pendingHref } = useAdminShellNavigation();
+
+  useEffect(() => {
+    for (const item of nav) {
+      prefetch(item.href);
+    }
+  }, [prefetch]);
 
   return (
+    <AdminConfirmProvider>
+    <AdminRouteToast />
     <div className="w-full px-4 py-8 sm:px-6 lg:px-8 xl:px-10">
       <div className="flex w-full flex-col gap-8 lg:flex-row lg:items-start lg:gap-8 xl:gap-10">
         <aside className="shrink-0 lg:sticky lg:top-16 lg:z-[90] lg:w-72 lg:self-start">
@@ -97,12 +117,16 @@ export function AdminDeploymentsShell({ children }: { children: ReactNode }) {
             <nav className="mt-3 flex flex-col gap-1" aria-label="Deployment admin">
               {nav.map((item) => {
                 const active =
-                  pathname === item.href ||
-                  (item.href !== "/admin/deployments" && pathname.startsWith(`${item.href}/`));
+                  item.href === "/admin/deployments"
+                    ? isNavActive(item.href, { exact: true })
+                    : isNavActive(item.href);
                 return (
-                  <Link
+                  <AdminTransitionLink
                     key={item.href}
                     href={item.href}
+                    prefetch
+                    onNavigate={navigate}
+                    aria-current={active ? "page" : undefined}
                     className={`group flex items-center justify-between gap-3 rounded-2xl px-3 py-2.5 text-sm transition ${
                       active
                         ? "bg-keyra-bg font-semibold text-keyra-primary shadow-sm ring-1 ring-black/10"
@@ -121,16 +145,21 @@ export function AdminDeploymentsShell({ children }: { children: ReactNode }) {
                       </span>
                       <span className="truncate">{item.label}</span>
                     </span>
-                  </Link>
+                  </AdminTransitionLink>
                 );
               })}
             </nav>
           </div>
         </aside>
-        <div id="admin-deployments-main" className="relative min-w-0 flex-1 lg:min-h-0">
+        <AdminShellMainContent
+          id="admin-deployments-main"
+          pendingHref={pendingHref}
+          className="relative min-w-0 flex-1 lg:min-h-0"
+        >
           {children}
-        </div>
+        </AdminShellMainContent>
       </div>
     </div>
+    </AdminConfirmProvider>
   );
 }

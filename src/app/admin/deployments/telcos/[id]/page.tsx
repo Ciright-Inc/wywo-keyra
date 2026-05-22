@@ -1,12 +1,22 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { assertAdminServer } from "@/lib/assertAdminServer";
 import { countryWhereFromAuth } from "@/lib/deployments/adminContext";
 import { updateTelco } from "@/app/admin/deployments/actions";
 import { Button } from "@/components/ui/Button";
+import { AdminEditPageHeader } from "@/components/admin/AdminEditPageHeader";
 import { DeploymentAdminRole } from "@prisma/client";
 import { canPatchTelco, isComplianceReviewer, isReadOnlyRole } from "@/lib/deployments/adminAuthz";
+import {
+  adminBody,
+  adminCheckbox,
+  adminFormCheckboxLabel,
+  adminFormStack,
+  adminLabel,
+  adminLegacyInput,
+  adminPanel,
+  adminSectionTitle,
+} from "@/lib/admin/adminUiClasses";
 
 type Params = { id: string };
 
@@ -54,166 +64,141 @@ export default async function AdminTelcoEditPage({ params }: { params: Promise<P
       !isComplianceReviewer(auth) &&
       canPatchTelco(auth, telco, telco.country));
 
+  const inputClass = adminLegacyInput;
+  const selectClass = adminLegacyInput;
+
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-keyra-primary">Telco</h1>
-          <p className="mt-2 text-sm text-keyra-text-2">{telco.name}</p>
-        </div>
-        <Link href="/admin/deployments/telcos" className="text-sm text-keyra-accent underline-offset-4 hover:underline">
-          Back to list
-        </Link>
-      </div>
+      <AdminEditPageHeader title="Edit telco" subtitle={telco.name} backHref="/admin/deployments/telcos" />
 
-      <form action={updateTelco} className="mt-8 keyra-card space-y-3 p-6">
-        <input type="hidden" name="id" value={telco.id} />
-        <label className="block text-sm text-keyra-text-2">
-          Country
-          <select
-            name="countryId"
-            required
-            disabled={!canEdit}
-            defaultValue={telco.countryId}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          >
-            {countries.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name} ({c.iso2})
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Name
-          <input
-            name="name"
-            defaultValue={telco.name}
-            required
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Slug
-          <input
-            name="slug"
-            defaultValue={telco.slug}
-            required
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Telco subdomain
-          <input
-            name="telcoSubdomain"
-            defaultValue={telco.telcoSubdomain}
-            required
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Official domain
-          <input
-            name="officialDomain"
-            defaultValue={telco.officialDomain ?? ""}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Status
-          <select
-            name="status"
-            defaultValue={telco.status}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          >
-            {STATUS_OPTIONS.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Status change reason (optional)
-          <input name="statusChangeReason" disabled={!canEdit} className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60" />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Status note
-          <input
-            name="statusNote"
-            defaultValue={telco.statusNote ?? ""}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Subscribers
-          <input
-            name="subscribers"
-            type="number"
-            defaultValue={telco.subscribers ?? ""}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Subscribers display
-          <input
-            name="subscribersDisplay"
-            defaultValue={telco.subscribersDisplay ?? ""}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Source label
-          <input
-            name="sourceLabel"
-            defaultValue={telco.sourceLabel ?? ""}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Source URL
-          <input
-            name="sourceUrl"
-            defaultValue={telco.sourceUrl ?? ""}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Source verified at (ISO)
-          <input
-            name="sourceVerifiedAt"
-            type="datetime-local"
-            defaultValue={telco.sourceVerifiedAt ? telco.sourceVerifiedAt.toISOString().slice(0, 16) : ""}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm text-keyra-text-2">
-          Sort order
-          <input
-            name="sortOrder"
-            type="number"
-            defaultValue={telco.sortOrder}
-            disabled={!canEdit}
-            className="mt-1 w-full rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary disabled:opacity-60"
-          />
-        </label>
-        <label className="flex items-center gap-2 text-sm text-keyra-text-2">
-          <input name="isPublished" type="checkbox" defaultChecked={telco.isPublished} disabled={!canEdit} className="size-4" />
-          Published
-        </label>
-        {canEdit ? <Button type="submit">Save</Button> : <p className="text-sm text-keyra-text-2">Read-only for your role.</p>}
-      </form>
+      <div className={`${adminPanel} mt-6`}>
+        <h2 className={adminSectionTitle}>Telco details</h2>
+        <p className={`${adminBody} mt-1 text-[var(--ds-body)]`}>
+          Same fields as create. Leave Telco subdomain empty to derive it from the country and slug.
+        </p>
+
+        <form action={updateTelco} className={adminFormStack}>
+          <input type="hidden" name="id" value={telco.id} />
+          <label className={adminLabel}>
+            Country
+            <select name="countryId" required disabled={!canEdit} defaultValue={telco.countryId} className={selectClass}>
+              {countries.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name} ({c.iso2})
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={adminLabel}>
+            Name
+            <input name="name" defaultValue={telco.name} required disabled={!canEdit} className={inputClass} />
+          </label>
+          <label className={adminLabel}>
+            Slug
+            <input name="slug" defaultValue={telco.slug} required disabled={!canEdit} placeholder="telco-slug" className={inputClass} />
+          </label>
+          <label className={adminLabel}>
+            Telco subdomain
+            <input
+              name="telcoSubdomain"
+              defaultValue={telco.telcoSubdomain}
+              disabled={!canEdit}
+              placeholder="Optional — derived from country + slug if empty"
+              className={inputClass}
+            />
+          </label>
+          <label className={adminLabel}>
+            Official domain
+            <input
+              name="officialDomain"
+              defaultValue={telco.officialDomain ?? ""}
+              disabled={!canEdit}
+              placeholder="example.com"
+              className={inputClass}
+            />
+          </label>
+          <label className={adminLabel}>
+            Status
+            <select name="status" defaultValue={telco.status} disabled={!canEdit} className={selectClass}>
+              {STATUS_OPTIONS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={adminLabel}>
+            Status change reason (optional)
+            <input
+              name="statusChangeReason"
+              disabled={!canEdit}
+              placeholder="Recorded on initial status history for this telco"
+              className={inputClass}
+            />
+          </label>
+          <label className={adminLabel}>
+            Status note
+            <input name="statusNote" defaultValue={telco.statusNote ?? ""} disabled={!canEdit} className={inputClass} />
+          </label>
+          <label className={adminLabel}>
+            Subscribers
+            <input
+              name="subscribers"
+              type="number"
+              min={0}
+              defaultValue={telco.subscribers ?? ""}
+              disabled={!canEdit}
+              placeholder="Numeric count"
+              className={inputClass}
+            />
+          </label>
+          <label className={adminLabel}>
+            Subscribers display
+            <input
+              name="subscribersDisplay"
+              defaultValue={telco.subscribersDisplay ?? ""}
+              disabled={!canEdit}
+              placeholder='e.g. "120M+"'
+              className={inputClass}
+            />
+          </label>
+          <label className={adminLabel}>
+            Source label
+            <input name="sourceLabel" defaultValue={telco.sourceLabel ?? ""} disabled={!canEdit} className={inputClass} />
+          </label>
+          <label className={adminLabel}>
+            Source URL
+            <input name="sourceUrl" type="url" defaultValue={telco.sourceUrl ?? ""} disabled={!canEdit} className={inputClass} />
+          </label>
+          <label className={adminLabel}>
+            Source verified at (ISO)
+            <input
+              name="sourceVerifiedAt"
+              type="datetime-local"
+              defaultValue={telco.sourceVerifiedAt ? telco.sourceVerifiedAt.toISOString().slice(0, 16) : ""}
+              disabled={!canEdit}
+              className={inputClass}
+            />
+          </label>
+          <label className={adminLabel}>
+            Sort order
+            <input name="sortOrder" type="number" defaultValue={telco.sortOrder} disabled={!canEdit} className={inputClass} />
+          </label>
+          <label className={adminFormCheckboxLabel}>
+            <input name="isPublished" type="checkbox" defaultChecked={telco.isPublished} disabled={!canEdit} className={adminCheckbox} />
+            Published
+          </label>
+          <div className="pt-2">
+            {canEdit ? (
+              <Button type="submit" variant="primary">
+                Save changes
+              </Button>
+            ) : (
+              <p className={adminLabel}>Read-only for your role.</p>
+            )}
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

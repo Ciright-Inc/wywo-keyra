@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "users": [
+    {
+      "email": "global@seed.keyra",
+      "displayName": "Global Admin",
+      "phoneE164": null,
+      "role": "GLOBAL_ADMIN",
+      "isActive": true
+    },
+    {
+      "email": "devisha@keyra.ie",
+      "displayName": "Devisha",
+      "phoneE164": "+919054223823",
+      "role": "GLOBAL_ADMIN",
+      "isActive": true
+    },
+    {
+      "email": "bhavika@keyra.ie",
+      "displayName": "Bhavika",
+      "phoneE164": "+919537581424",
+      "role": "GLOBAL_ADMIN",
+      "isActive": true
+    },
+    {
+      "email": "joseph.callahan@keyra.ie",
+      "displayName": "Joseph Callahan",
+      "phoneE164": "+16013899551",
+      "role": "GLOBAL_ADMIN",
+      "isActive": true
+    }
+  ]
+}

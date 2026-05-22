@@ -5,8 +5,34 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { RowActions } from "@/components/admin/RowActions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { deleteTelcoMessage } from "@/lib/admin/adminDeleteMessages";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
+import { useToast } from "@/components/ui/Toast";
+import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
+import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
+import { buildListHref } from "@/lib/admin/listSearchParams";
+import { useAdminRouteTransition } from "@/lib/admin/useAdminRouteTransition";
+import {
+  adminBody,
+  adminCheckbox,
+  adminFormCheckboxLabelWide,
+  adminCountBadge,
+  adminEyebrow,
+  adminLabel,
+  adminLegacyInput,
+  adminPageTitle,
+  adminPanel,
+  adminSectionTitle,
+  adminTable,
+  adminTableScroll,
+  adminTableWrap,
+} from "@/lib/admin/adminUiClasses";
 
 const STATUS_OPTIONS = ["IDENTIFIED", "INSTITUTIONAL_AWARENESS", "TVIP", "OPERATIONAL"] as const;
+const TELCOS_BASE_HREF = "/admin/deployments/telcos";
+
+export type TelcoSortKey = "name" | "country" | "subdomain" | "status" | "published" | "created";
 
 type CountryOption = { id: string; name: string; iso2: string };
 
@@ -33,14 +59,26 @@ function buildTelcosListHref(
   pageSize: number,
   defaultPageSize: number,
   searchQuery: string,
+  sortBy: TelcoSortKey,
+  sortDir: "asc" | "desc",
 ): string {
-  const sp = new URLSearchParams();
-  const sq = searchQuery.trim();
-  if (sq) sp.set("q", sq);
-  if (page > 1) sp.set("page", String(page));
-  if (pageSize !== defaultPageSize) sp.set("perPage", String(pageSize));
-  const q = sp.toString();
-  return `/admin/deployments/telcos${q ? `?${q}` : ""}`;
+  return buildListHref(
+    TELCOS_BASE_HREF,
+    { page, pageSize, searchQuery },
+    defaultPageSize,
+    sortBy === "created" && sortDir === "desc"
+      ? undefined
+      : { sort: sortBy === "created" ? undefined : sortBy, dir: sortDir },
+  );
+}
+
+function nextSortState(
+  column: TelcoSortKey,
+  sortBy: TelcoSortKey,
+  sortDir: "asc" | "desc",
+): { sort: TelcoSortKey; dir: "asc" | "desc" } {
+  if (sortBy === column) return { sort: column, dir: sortDir === "asc" ? "desc" : "asc" };
+  return { sort: column, dir: "asc" };
 }
 
 function pageNumbers(current: number, total: number): (number | "gap")[] {
@@ -70,6 +108,8 @@ type Props = {
   defaultPageSize: number;
   /** URL `q` param; server trims and caps length */
   searchQuery: string;
+  sortBy: TelcoSortKey;
+  sortDir: "asc" | "desc";
   countries: CountryOption[];
   showCreate: boolean;
   /** Mirrors the server-side `canMutate` check — gates per-row delete buttons. */
@@ -84,6 +124,8 @@ export function TelcosDirectoryClient({
   pageSizeOptions,
   defaultPageSize,
   searchQuery,
+  sortBy,
+  sortDir,
   countries,
   showCreate,
   canDelete,
@@ -97,6 +139,9 @@ export function TelcosDirectoryClient({
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
+  const confirm = useAdminConfirm();
+  const toast = useToast();
+  const { isPending, navigate } = useAdminRouteTransition();
   const { page, pageSize, totalCount, totalPages, showingFrom, showingTo } = pagination;
   const canUseCreate = showCreate && countries.length > 0;
 
@@ -105,7 +150,7 @@ export function TelcosDirectoryClient({
    * transaction, writes an audit row, and triggers cache revalidation. We only need to
    * confirm with the user and refresh the route on success. */
   async function handleDelete(id: string, name: string) {
-    if (!confirm(`Delete telco "${name}"? This cannot be undone.`)) return;
+    if (!(await confirm(deleteTelcoMessage(name)))) return;
     setDeletingId(id);
     setDeleteError(null);
     try {
@@ -117,6 +162,7 @@ export function TelcosDirectoryClient({
         const data = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(data.error ?? `Delete failed (${res.status})`);
       }
+      showAdminActionToast(toast, "deleted", "telco", { name });
       router.refresh();
     } catch (e) {
       setDeleteError(e instanceof Error ? e.message : "Delete failed");
@@ -126,6 +172,25 @@ export function TelcosDirectoryClient({
   }
 
   const pagerItems = useMemo(() => pageNumbers(page, totalPages), [page, totalPages]);
+
+  function sortHref(column: TelcoSortKey, targetPage = 1): string {
+    const next = nextSortState(column, sortBy, sortDir);
+    return buildTelcosListHref(targetPage, pageSize, defaultPageSize, searchQuery, next.sort, next.dir);
+  }
+
+  function sortIndicator(column: TelcoSortKey): string {
+    if (sortBy !== column) return "";
+    return sortDir === "asc" ? " ↑" : " ↓";
+  }
+
+  const sortableTh = (label: string, column: TelcoSortKey) => (
+    <th aria-sort={sortBy === column ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+      <AdminTransitionLink href={sortHref(column, 1)} onNavigate={navigate} className="ds-table-sort">
+        {label}
+        <span aria-hidden>{sortIndicator(column)}</span>
+      </AdminTransitionLink>
+    </th>
+  );
 
   /** Sync local input when URL `q` changes (e.g. via pagination links). */
   useEffect(() => {
@@ -147,10 +212,10 @@ export function TelcosDirectoryClient({
     const next = qInput.trim();
     if (next === searchQuery.trim()) return;
     const t = setTimeout(() => {
-      router.push(buildTelcosListHref(1, pageSize, defaultPageSize, next));
+      navigate(buildTelcosListHref(1, pageSize, defaultPageSize, next, sortBy, sortDir));
     }, 280);
     return () => clearTimeout(t);
-  }, [qInput, searchQuery, router, pageSize, defaultPageSize]);
+  }, [qInput, searchQuery, navigate, pageSize, defaultPageSize, sortBy, sortDir]);
 
   function toggleSearchPanel() {
     setSearchExpanded((open) => !open);
@@ -160,15 +225,15 @@ export function TelcosDirectoryClient({
     if (clearQuery) {
       setQInput("");
       if (hasSearch) {
-        router.push(buildTelcosListHref(1, pageSize, defaultPageSize, ""));
+        navigate(buildTelcosListHref(1, pageSize, defaultPageSize, "", sortBy, sortDir));
       }
     }
     setSearchExpanded(false);
   }
 
   const inputClass =
-    "mt-1 h-10 w-full rounded-lg border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary shadow-sm outline-none transition focus-visible:border-black/25 focus-visible:keyra-focus disabled:opacity-60";
-  const selectClass = `${inputClass} bg-keyra-bg`;
+    adminLegacyInput;
+  const selectClass = adminLegacyInput;
 
   const pageLinkClass =
     "inline-flex min-w-10 items-center justify-center rounded-xl border px-3 py-2 text-sm font-medium transition";
@@ -178,17 +243,17 @@ export function TelcosDirectoryClient({
   return (
     <div>
       {/* Hero */}
-      <div className="ds-panel is-dashboard">
+      <div className={adminPanel}>
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl">Telcos</h1>
-              <span className="rounded-full border border-keyra-border bg-keyra-bg px-2.5 py-0.5 text-[11px] font-medium text-keyra-text-2">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h1 className={adminPageTitle}>Telcos</h1>
+              <span className={adminCountBadge}>
                 {totalCount.toLocaleString()} total
               </span>
             </div>
-            <p className="mt-1.5 max-w-xl text-sm leading-snug text-keyra-text-2">
-              Full telco catalog — newest additions appear first. Create and edits stay limited by your deployment role.
+            <p className={`${adminBody} mt-1.5 max-w-xl text-[var(--ds-body)]`}>
+              Full telco catalog — click any column header to sort. Default order is newest first.
             </p>
           </div>
 
@@ -234,7 +299,7 @@ export function TelcosDirectoryClient({
                       placeholder="Name, slug, subdomain, country…"
                       autoComplete="off"
                       aria-label="Search telcos"
-                      className={`h-9 rounded-lg border border-keyra-border bg-keyra-bg py-0 pl-3 text-sm text-keyra-primary outline-none transition-opacity duration-300 focus-visible:border-black/25 focus-visible:keyra-focus ${
+                      className={`ds-text-input is-sm h-9 py-0 pl-3 transition-opacity duration-300 ${
                         searchExpanded ? "w-44 pr-8 opacity-100 sm:w-64" : "w-44 pointer-events-none opacity-0 sm:w-64"
                       }`}
                     />
@@ -266,18 +331,14 @@ export function TelcosDirectoryClient({
             <Link
               href="/api/admin/deployments/telcos/csv"
               prefetch={false}
-              className="inline-flex items-center justify-center rounded-full border border-keyra-border bg-keyra-bg px-3.5 py-2 text-sm font-medium text-keyra-primary transition hover:border-black/20 hover:bg-keyra-surface"
+              className="ds-btn-secondary is-sm"
             >
               Download CSV
             </Link>
             {canUseCreate ? (
               <button
                 type="button"
-                className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ring-1 ${
-                  createOpen
-                    ? "border border-[var(--keyra-action-border)] bg-keyra-bg text-keyra-primary ring-[var(--keyra-action-border)] hover:bg-keyra-surface"
-                    : "bg-[var(--keyra-action)] text-keyra-primary ring-[var(--keyra-action-border)] hover:bg-keyra-surface"
-                }`}
+                className={createOpen ? "ds-btn-secondary is-sm" : "ds-btn-primary is-sm"}
                 onClick={() => setCreateOpen((open) => !open)}
               >
                 {createOpen ? "Close create form" : "Create telco"}
@@ -288,15 +349,15 @@ export function TelcosDirectoryClient({
 
         {/* Expandable create — fields aligned with `/admin/deployments/telcos/[id]` edit form */}
         {canUseCreate && createOpen ? (
-          <div className="mt-5 border-t border-keyra-border pt-5">
-            <h2 className="text-lg font-semibold text-keyra-primary">New telco</h2>
-            <p className="mt-1 text-sm text-keyra-text-2">
+          <div className="mt-5 border-t border-[var(--ds-hairline)] pt-5">
+            <h2 className={adminSectionTitle}>New telco</h2>
+            <p className={`${adminBody} mt-1 text-[var(--ds-body)]`}>
               Same fields as the telco edit screen. Leave Telco subdomain empty to derive it from the country and slug.
             </p>
 
             <form action={createTelco} className="ds-feature-card is-dashboard mt-4 space-y-4">
               <input type="hidden" name="_telcosPageSize" value={pagination.pageSize} />
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Country
                 <select name="countryId" required className={selectClass}>
                   {countries.map((c) => (
@@ -306,15 +367,15 @@ export function TelcosDirectoryClient({
                   ))}
                 </select>
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Name
                 <input name="name" required className={inputClass} />
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Slug
                 <input name="slug" required placeholder="telco-slug" className={inputClass} />
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Telco subdomain
                 <input
                   name="telcoSubdomain"
@@ -322,11 +383,11 @@ export function TelcosDirectoryClient({
                   className={inputClass}
                 />
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Official domain
                 <input name="officialDomain" className={inputClass} placeholder="example.com" />
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Status
                 <select name="status" className={selectClass} defaultValue={STATUS_OPTIONS[0]}>
                   {STATUS_OPTIONS.map((s) => (
@@ -336,7 +397,7 @@ export function TelcosDirectoryClient({
                   ))}
                 </select>
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Status change reason (optional)
                 <input
                   name="statusChangeReason"
@@ -344,36 +405,36 @@ export function TelcosDirectoryClient({
                   placeholder="Recorded on initial status history for this telco"
                 />
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Status note
                 <input name="statusNote" className={inputClass} />
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Subscribers
                 <input name="subscribers" type="number" min={0} className={inputClass} placeholder="Numeric count" />
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Subscribers display
                 <input name="subscribersDisplay" className={inputClass} placeholder='e.g. "120M+"' />
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Source label
                 <input name="sourceLabel" className={inputClass} />
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Source URL
                 <input name="sourceUrl" type="url" className={inputClass} />
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Source verified at (ISO)
                 <input name="sourceVerifiedAt" type="datetime-local" className={inputClass} />
               </label>
-              <label className="block text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Sort order
                 <input name="sortOrder" type="number" defaultValue={0} className={inputClass} />
               </label>
-              <label className="flex items-center gap-3 text-sm text-keyra-text-2">
-                <input name="isPublished" type="checkbox" className="size-4 rounded border-keyra-border accent-keyra-primary" />
+              <label className={adminFormCheckboxLabelWide}>
+                <input name="isPublished" type="checkbox" className={adminCheckbox} />
                 Published
               </label>
               <div className="pt-2">
@@ -395,46 +456,45 @@ export function TelcosDirectoryClient({
       ) : null}
 
       {/* Table */}
-      <div className="ds-table-wrap mt-3">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[42rem] text-left text-sm">
-            <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
+      <div className={`${adminTableWrap} mt-3 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
+        <div className={adminTableScroll}>
+          <table className={`${adminTable} min-w-[42rem]`}>
+            <thead>
               <tr>
-                <th className="px-3 py-2">Telco</th>
-                <th className="px-3 py-2">Country</th>
-                <th className="px-3 py-2">Subdomain</th>
-                <th className="px-3 py-2">Status</th>
-                <th className="px-3 py-2">Published</th>
-                <th className="w-px whitespace-nowrap px-2 py-2 text-right">Actions</th>
+                {sortableTh("Telco", "name")}
+                {sortableTh("Country", "country")}
+                {sortableTh("Subdomain", "subdomain")}
+                {sortableTh("Status", "status")}
+                {sortableTh("Published", "published")}
+                <th className="is-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
+            <tbody>
               {telcos.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-3 py-8 text-center text-sm text-keyra-text-2">
-                    {hasSearch
-                      ? "No telcos match your search. Try different keywords or clear the search."
-                      : "No telcos in this catalog."}
-                  </td>
-                </tr>
+                <AdminListEmptyState
+                  variant="table-row"
+                  colSpan={6}
+                  hasSearch={hasSearch}
+                  entityName="telcos"
+                />
               ) : (
                 telcos.map((t) => {
                   const isDeleting = deletingId === t.id;
                   return (
-                    <tr key={t.id} className={`transition hover:bg-keyra-surface ${isDeleting ? "opacity-60" : ""}`}>
-                      <td className="px-3 py-2 font-medium text-keyra-primary">{t.name}</td>
-                      <td className="px-3 py-2 text-keyra-text-2">
+                    <tr key={t.id} className={isDeleting ? "opacity-60" : undefined}>
+                      <td>{t.name}</td>
+                      <td className="is-muted">
                         {t.country.name}{" "}
-                        <span className="text-keyra-text-2/80">({t.country.iso2})</span>
+                        <span className="text-[var(--ds-muted)]">({t.country.iso2})</span>
                       </td>
-                      <td className="max-w-[10rem] truncate px-3 py-2 font-mono text-xs text-keyra-text-2">{t.telcoSubdomain}</td>
-                      <td className="px-3 py-2">
-                        <span className="inline-flex rounded-full border border-keyra-border bg-keyra-bg px-2 py-0.5 text-xs font-medium text-keyra-primary">
+                      <td className="max-w-[10rem] truncate font-mono text-xs">{t.telcoSubdomain}</td>
+                      <td>
+                        <span className="ds-status-pill">
                           {t.status}
                         </span>
                       </td>
-                      <td className="px-3 py-2 text-keyra-text-2">{t.isPublished ? "Yes" : "No"}</td>
-                      <td className="w-px whitespace-nowrap px-2 py-2 text-right">
+                      <td className="is-muted">{t.isPublished ? "Yes" : "No"}</td>
+                      <td className="is-actions">
                         <RowActions
                           editHref={`/admin/deployments/telcos/${t.id}`}
                           editAriaLabel={`Edit ${t.name}`}
@@ -455,7 +515,7 @@ export function TelcosDirectoryClient({
         {/* Pagination */}
         {totalCount > 0 ? (
           <div className="flex flex-col gap-3 border-t border-keyra-border bg-keyra-bg/50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-            <p className="text-sm text-keyra-text-2">
+            <p className={adminLabel}>
               Page{" "}
               <span className="font-semibold text-keyra-primary">{page}</span> of{" "}
               <span className="font-semibold text-keyra-primary">{totalPages}</span>
@@ -477,27 +537,27 @@ export function TelcosDirectoryClient({
                     {sz}
                   </span>
                 ) : (
-                  <Link
+                  <AdminTransitionLink
                     key={sz}
-                    href={buildTelcosListHref(1, sz, defaultPageSize, searchQuery)}
-                    prefetch={false}
+                    href={buildTelcosListHref(1, sz, defaultPageSize, searchQuery, sortBy, sortDir)}
+                    onNavigate={navigate}
                     className={inactivePageClass}
                   >
                     {sz}
-                  </Link>
+                  </AdminTransitionLink>
                 ),
               )}
             </div>
 
             <div className="flex flex-wrap items-center justify-end gap-2">
-              <Link
-                href={buildTelcosListHref(Math.max(1, page - 1), pageSize, defaultPageSize, searchQuery)}
-                prefetch={false}
+              <AdminTransitionLink
+                href={buildTelcosListHref(Math.max(1, page - 1), pageSize, defaultPageSize, searchQuery, sortBy, sortDir)}
+                onNavigate={navigate}
                 aria-disabled={page <= 1}
                 className={`${inactivePageClass} ${page <= 1 ? "pointer-events-none opacity-40" : ""}`}
               >
                 Previous
-              </Link>
+              </AdminTransitionLink>
               {pagerItems.map((item, i) =>
                 item === "gap" ? (
                   <span key={`gap-${i}`} className="px-2 text-keyra-text-2">
@@ -508,24 +568,24 @@ export function TelcosDirectoryClient({
                     {item}
                   </span>
                 ) : (
-                  <Link
+                  <AdminTransitionLink
                     key={item}
-                    href={buildTelcosListHref(item, pageSize, defaultPageSize, searchQuery)}
-                    prefetch={false}
+                    href={buildTelcosListHref(item, pageSize, defaultPageSize, searchQuery, sortBy, sortDir)}
+                    onNavigate={navigate}
                     className={inactivePageClass}
                   >
                     {item}
-                  </Link>
+                  </AdminTransitionLink>
                 ),
               )}
-              <Link
-                href={buildTelcosListHref(Math.min(totalPages, page + 1), pageSize, defaultPageSize, searchQuery)}
-                prefetch={false}
+              <AdminTransitionLink
+                href={buildTelcosListHref(Math.min(totalPages, page + 1), pageSize, defaultPageSize, searchQuery, sortBy, sortDir)}
+                onNavigate={navigate}
                 aria-disabled={page >= totalPages}
                 className={`${inactivePageClass} ${page >= totalPages ? "pointer-events-none opacity-40" : ""}`}
               >
                 Next
-              </Link>
+              </AdminTransitionLink>
             </div>
           </div>
         ) : null}

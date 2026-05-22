@@ -56,31 +56,61 @@ function AppTileIcon({ label }: { label: string }) {
   );
 }
 
+function AppTileSkeleton() {
+  return (
+    <div className="flex min-h-[4.25rem] flex-col items-center justify-center gap-1 rounded-xl px-1 py-2">
+      <div className="keyra-skeleton size-10 rounded-xl" aria-hidden />
+      <div className="keyra-skeleton mt-0.5 h-3 w-12 rounded" aria-hidden />
+    </div>
+  );
+}
+
+function AppLauncherSkeleton({ count = 9 }: { count?: number }) {
+  return (
+    <>
+      {Array.from({ length: count }, (_, index) => (
+        <li key={index} className="min-w-0">
+          <AppTileSkeleton />
+        </li>
+      ))}
+    </>
+  );
+}
+
 export function KeyraAppLauncher() {
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith("/admin");
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [apps, setApps] = useState<LauncherApp[]>(() => (isAdminRoute ? [] : getKeyraAdminAppLinks()));
   const wrapRef = useRef<HTMLDivElement>(null);
   const tiles = useMemo(() => apps, [apps]);
+  const showSkeleton = loading && tiles.length === 0;
 
-  function refreshLauncherApps() {
-    if (isAdminRoute) setApps([]);
+  function refreshLauncherApps(options?: { clearFirst?: boolean }) {
+    setLoading(true);
+    if (isAdminRoute && options?.clearFirst !== false) setApps([]);
     fetch(`/api/deployments/apps/launcher?t=${Date.now()}`, {
       cache: "no-store",
     })
       .then((res) => (res.ok ? res.json() : null))
       .then((data: { apps?: LauncherApp[] } | null) => {
-        if (Array.isArray(data?.apps) && data.apps.length > 0) setApps(data.apps);
+        if (Array.isArray(data?.apps) && data.apps.length > 0) {
+          setApps(data.apps);
+          return;
+        }
+        if (!isAdminRoute) setApps(getKeyraAdminAppLinks());
       })
       .catch(() => {
         if (!isAdminRoute) setApps(getKeyraAdminAppLinks());
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
   useEffect(() => {
-    if (isAdminRoute) setApps([]);
-    if (!isAdminRoute) refreshLauncherApps();
+    refreshLauncherApps({ clearFirst: isAdminRoute });
     return () => {
       // Keep the hook shape stable for Fast Refresh.
     };
@@ -119,7 +149,7 @@ export function KeyraAppLauncher() {
           e.stopPropagation();
           const nextOpen = !open;
           setOpen(nextOpen);
-          if (nextOpen) refreshLauncherApps();
+          if (nextOpen) refreshLauncherApps({ clearFirst: false });
         }}
       >
         <NineDotTriggerIcon />
@@ -134,8 +164,14 @@ export function KeyraAppLauncher() {
             Keyra apps
           </p>
           <div className="keyra-app-launcher-scroll-wrap min-h-0 flex-1 overflow-hidden">
-            <ul className="keyra-app-launcher-scroll grid h-full min-h-0 max-h-[min(28rem,calc(100dvh-9rem))] grid-cols-3 gap-2 overflow-y-auto overscroll-y-contain py-0.5 pl-1 pr-1.5">
-            {tiles.map((item) => (
+            <ul
+              className="keyra-app-launcher-scroll grid h-full min-h-0 max-h-[min(28rem,calc(100dvh-9rem))] grid-cols-2 gap-2 overflow-y-auto overscroll-y-contain py-0.5 pl-1 pr-1.5 sm:grid-cols-3"
+              aria-busy={showSkeleton}
+            >
+            {showSkeleton ? (
+              <AppLauncherSkeleton count={9} />
+            ) : (
+              tiles.map((item) => (
               <li key={item.id} className="min-w-0">
                 <a
                   role="menuitem"
@@ -152,7 +188,8 @@ export function KeyraAppLauncher() {
                   </span>
                 </a>
               </li>
-            ))}
+            ))
+            )}
             </ul>
           </div>
         </div>

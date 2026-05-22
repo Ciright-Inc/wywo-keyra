@@ -1,0 +1,620 @@
+/**
+ * Admin dashboard surface — scoped to [data-surface="dashboard"] (design.md §2).
+ * Import only from admin layouts; does not affect public marketing pages.
+ */
+
+[data-surface="dashboard"] {
+  --admin-sidebar-width: 240px;
+  --admin-topbar-height: 56px;
+  --admin-content-padding: 24px;
+  --ds-input-focus-border: #c4c8cf;
+  --ds-input-focus-ring: rgba(96, 100, 108, 0.1);
+  background: var(--ds-canvas-soft);
+  color: var(--ds-ink);
+  font-family: var(--ds-font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100dvh;
+}
+
+@media (min-width: 1280px) {
+  [data-surface="dashboard"] {
+    --admin-content-padding: 32px;
+  }
+}
+
+/* ----- Layout shell ------------------------------------------------------- */
+.admin-dashboard {
+  display: flex;
+  min-height: 100dvh;
+  width: 100%;
+}
+
+.admin-dashboard__main {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.admin-dashboard__content {
+  flex: 1;
+  min-width: 0;
+  padding: var(--admin-content-padding);
+}
+
+/* Desktop: lock shell to viewport — sidebar stays put, main column scrolls */
+@media (min-width: 1024px) {
+  [data-surface="dashboard"].admin-dashboard {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .admin-dashboard__main {
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  [data-surface="dashboard"] .ds-sidebar {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+  }
+
+  body:has([data-surface="dashboard"]) {
+    overflow: hidden;
+  }
+
+  body:has([data-surface="dashboard"]) main {
+    min-height: 0;
+  }
+}
+
+/* Mobile: sidebar becomes overlay drawer */
+@media (max-width: 1023px) {
+  .admin-dashboard {
+    flex-direction: column;
+  }
+
+  .ds-sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+
+  .admin-dashboard__content {
+    padding: 20px 16px 32px;
+  }
+}
+
+/* ----- Sidebar (design.md §2.6) ------------------------------------------- */
+[data-surface="dashboard"] .ds-sidebar {
+  width: var(--admin-sidebar-width);
+  min-height: 100dvh;
+  background: var(--ds-surface-dark);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+[data-surface="dashboard"] .ds-sidebar-brand {
+  padding: 20px 16px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-surface="dashboard"] .ds-sidebar-brand__eyebrow {
+  font: 600 11px/1.4 var(--ds-font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-on-dark-soft, #b0b4ba);
+}
+
+[data-surface="dashboard"] .ds-sidebar-brand__title {
+  margin-top: 6px;
+  font: 600 16px/1.25 var(--ds-font-sans);
+  color: var(--ds-on-dark);
+}
+
+[data-surface="dashboard"] .ds-sidebar-brand__desc {
+  margin-top: 4px;
+  font: 400 13px/1.4 var(--ds-font-sans);
+  color: rgba(255, 255, 255, 0.62);
+}
+
+[data-surface="dashboard"] .ds-sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0 16px;
+}
+
+[data-surface="dashboard"] .ds-sidebar-heading {
+  padding: 16px 16px 8px;
+  font: 600 11px/1.4 var(--ds-font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b0b4ba;
+}
+
+[data-surface="dashboard"] .ds-sidebar-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  padding: 10px 16px;
+  color: rgba(255, 255, 255, 0.88);
+  font: 500 14px/1.4 var(--ds-font-sans);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+[data-surface="dashboard"] .ds-sidebar-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-surface="dashboard"] .ds-sidebar-row.is-active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+[data-surface="dashboard"] .ds-sidebar-row.is-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  border-radius: 0 1px 1px 0;
+  background: #ffffff;
+}
+
+[data-surface="dashboard"] .ds-sidebar-row .material-symbols-outlined {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+[data-surface="dashboard"] .ds-sidebar-row__label {
+  min-width: 0;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ----- Top bar (design.md §2.7) ------------------------------------------- */
+[data-surface="dashboard"] .ds-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--admin-topbar-height);
+  background: var(--ds-surface-card);
+  border-bottom: 1px solid var(--ds-hairline-strong);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 var(--admin-content-padding);
+}
+
+[data-surface="dashboard"] .ds-topbar__title {
+  font: 600 14px/1.4 var(--ds-font-sans);
+  color: var(--ds-ink);
+}
+
+[data-surface="dashboard"] .ds-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ----- Page header pattern ------------------------------------------------ */
+[data-surface="dashboard"] .ds-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 640px) {
+  [data-surface="dashboard"] .ds-page-header {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+}
+
+[data-surface="dashboard"] .ds-page-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-surface="dashboard"] .ds-page-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-surface="dashboard"] .ds-catalog-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  [data-surface="dashboard"] .ds-catalog-stat-grid {
+    width: auto;
+    min-width: 18rem;
+  }
+}
+
+[data-surface="dashboard"] .ds-catalog-stat-box {
+  background: var(--ds-surface-card);
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-lg);
+  padding: 12px 16px;
+}
+
+[data-surface="dashboard"] .ds-catalog-stat-box__label {
+  font: 600 10px/1.4 var(--ds-font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ds-body);
+}
+
+[data-surface="dashboard"] .ds-catalog-stat-box__value {
+  margin-top: 4px;
+  font: 600 22px/1.25 var(--ds-font-sans);
+  color: var(--ds-ink);
+}
+
+/* ----- Tables (design.md §2.4) -------------------------------------------- */
+[data-surface="dashboard"] .ds-table-wrap {
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-lg);
+  overflow: hidden;
+  background: var(--ds-surface-card);
+}
+
+[data-surface="dashboard"] .ds-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+[data-surface="dashboard"] .ds-table thead tr {
+  background: var(--ds-canvas-soft);
+}
+
+[data-surface="dashboard"] .ds-table thead th {
+  padding: 12px 16px;
+  font: 600 11px/1.4 var(--ds-font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ds-body);
+  text-align: left;
+  white-space: nowrap;
+}
+
+[data-surface="dashboard"] .ds-table thead th.is-right {
+  text-align: right;
+}
+
+[data-surface="dashboard"] .ds-table tbody td {
+  padding: 12px 16px;
+  font: 400 14px/1.4 var(--ds-font-sans);
+  color: var(--ds-ink);
+  border-top: 1px solid var(--ds-hairline);
+  vertical-align: middle;
+}
+
+[data-surface="dashboard"] .ds-table tbody tr:hover td {
+  background: var(--ds-canvas-soft);
+}
+
+[data-surface="dashboard"] .ds-table td.is-numeric,
+[data-surface="dashboard"] .ds-table th.is-numeric {
+  text-align: right;
+  font: 400 13px/1.4 var(--ds-font-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+[data-surface="dashboard"] .ds-table td.is-muted {
+  color: var(--ds-body);
+}
+
+[data-surface="dashboard"] .ds-table td.is-actions {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+}
+
+[data-surface="dashboard"] .ds-table-scroll {
+  overflow-x: auto;
+}
+
+[data-surface="dashboard"] .ds-table-scroll.is-dense-y {
+  max-height: min(85vh, calc(100dvh - 11rem));
+  min-height: 260px;
+  overflow: auto;
+}
+
+[data-surface="dashboard"] .ds-table-scroll.is-dense-y .ds-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--ds-canvas-soft);
+}
+
+[data-surface="dashboard"] .ds-table.is-dense tbody td {
+  padding: 6px 10px;
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+[data-surface="dashboard"] .ds-table.is-dense thead th {
+  padding: 10px 12px;
+  font-size: 11px;
+}
+
+/* Sortable column header button */
+[data-surface="dashboard"] .ds-table-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+
+[data-surface="dashboard"] .ds-table-sort:hover {
+  color: var(--ds-ink);
+}
+
+/* ----- Forms (design.md §2.5) — aliases for ds-input-* -------------------- */
+[data-surface="dashboard"] .ds-field-label,
+[data-surface="dashboard"] .ds-input-label {
+  display: block;
+  font: 600 13px/1 var(--ds-font-sans);
+  color: var(--ds-ink);
+  margin-bottom: 6px;
+}
+
+[data-surface="dashboard"] .ds-field-helper,
+[data-surface="dashboard"] .ds-input-helper {
+  font: 400 12px/1.4 var(--ds-font-sans);
+  color: var(--ds-body);
+  margin-top: 4px;
+}
+
+[data-surface="dashboard"] .ds-field-error,
+[data-surface="dashboard"] .ds-input-error {
+  font: 600 12px/1.4 var(--ds-font-sans);
+  color: var(--ds-error);
+  margin-top: 4px;
+}
+
+[data-surface="dashboard"] .ds-form-grid {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  [data-surface="dashboard"] .ds-form-grid--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ----- Admin utilities ---------------------------------------------------- */
+[data-surface="dashboard"] .ds-admin-error-banner {
+  margin-top: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--ds-error);
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-surface-card);
+  font: 600 13px/1.4 var(--ds-font-sans);
+  color: var(--ds-error);
+}
+
+[data-surface="dashboard"] .ds-admin-panel {
+  background: var(--ds-surface-card);
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-lg);
+  padding: 20px;
+}
+
+[data-surface="dashboard"] .ds-admin-empty {
+  padding: 32px 16px;
+  text-align: center;
+  font: 400 14px/1.5 var(--ds-font-sans);
+  color: var(--ds-body);
+}
+
+[data-surface="dashboard"] .ds-admin-modal-panel {
+  width: min(92vw, 440px);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-hairline-strong);
+  background: var(--ds-surface-card);
+  padding: 24px;
+  color: var(--ds-ink);
+  box-shadow: var(--ds-shadow-soft);
+}
+
+[data-surface="dashboard"] .ds-admin-pagination {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--ds-hairline);
+  background: var(--ds-canvas-soft);
+  padding: 12px 16px;
+}
+
+@media (min-width: 640px) {
+  [data-surface="dashboard"] .ds-admin-pagination {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+[data-surface="dashboard"] .ds-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: var(--ds-surface-strong);
+  color: var(--ds-ink);
+  font: 600 11px/1.4 var(--ds-font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--ds-radius-pill);
+  white-space: nowrap;
+}
+
+/* KPI card structure (design.md §2.8) */
+[data-surface="dashboard"] .ds-kpi-value {
+  font: 600 28px/1.2 var(--ds-font-sans);
+  color: var(--ds-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+[data-surface="dashboard"] .ds-kpi-delta {
+  font: 400 14px/1.4 var(--ds-font-sans);
+  color: var(--ds-body);
+}
+
+[data-surface="dashboard"] .ds-kpi-delta .is-up {
+  color: var(--ds-success);
+}
+
+[data-surface="dashboard"] .ds-kpi-delta .is-down {
+  color: var(--ds-error);
+}
+
+/* Density toggle (design.md §2.10) */
+[data-surface="dashboard"][data-density="compact"] .ds-feature-card.is-dashboard,
+[data-surface="dashboard"][data-density="compact"] .ds-admin-panel {
+  padding: 16px;
+}
+
+[data-surface="dashboard"][data-density="compact"] .ds-table tbody td {
+  padding: 8px 12px;
+}
+
+[data-surface="dashboard"][data-density="compact"] .ds-text-input.is-sm {
+  min-height: 36px;
+  padding: 8px 12px;
+}
+
+/* Input value text — must not inherit semibold label weight (auth countries pattern) */
+[data-surface="dashboard"] label.ds-field-label .ds-text-input,
+[data-surface="dashboard"] .ds-text-input {
+  font-weight: 400;
+  color: var(--ds-ink);
+}
+
+[data-surface="dashboard"] .ds-text-input.is-sm {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Softer focus — lighter border + subtle ring (all admin form/search inputs) */
+[data-surface="dashboard"] .ds-text-input:focus,
+[data-surface="dashboard"] .ds-text-input:focus-visible {
+  border-width: 1px;
+  border-color: var(--ds-input-focus-border);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ds-input-focus-ring);
+}
+
+[data-surface="dashboard"] .ds-text-input:focus {
+  padding: 12px 16px;
+}
+
+[data-surface="dashboard"] .ds-text-input.is-sm:focus,
+[data-surface="dashboard"] .ds-text-input.is-sm:focus-visible {
+  padding: 8px 12px;
+}
+
+[data-surface="dashboard"] .ds-text-input.is-sm.h-9:focus,
+[data-surface="dashboard"] .ds-text-input.is-sm.h-9:focus-visible {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+[data-surface="dashboard"] .ds-text-input.is-error:focus,
+[data-surface="dashboard"] .ds-text-input.is-error:focus-visible,
+[data-surface="dashboard"] .ds-text-input[aria-invalid="true"]:focus,
+[data-surface="dashboard"] .ds-text-input[aria-invalid="true"]:focus-visible {
+  border-color: var(--ds-error);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+/* Form checkboxes — spaced label, black checked state */
+[data-surface="dashboard"] .ds-form-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 400 14px/1.4 var(--ds-font-sans);
+  color: var(--ds-ink);
+  cursor: pointer;
+}
+
+[data-surface="dashboard"] .ds-form-checkbox-label:has(.ds-admin-checkbox:disabled) {
+  cursor: not-allowed;
+}
+
+[data-surface="dashboard"] .ds-admin-checkbox {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  margin: 0;
+  border-radius: var(--ds-radius-xs);
+  border: 1px solid var(--ds-hairline-strong);
+  accent-color: var(--ds-ink);
+  cursor: pointer;
+}
+
+[data-surface="dashboard"] .ds-admin-checkbox:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Edit page back link — black, normal size, no underline */
+[data-surface="dashboard"] .ds-edit-back-link {
+  color: var(--ds-ink);
+  text-decoration: none;
+  font: 400 14px/1.4 var(--ds-font-sans);
+  transition: opacity var(--ds-motion-base) var(--ds-ease);
+}
+
+[data-surface="dashboard"] .ds-edit-back-link:hover,
+[data-surface="dashboard"] .ds-edit-back-link:focus-visible {
+  color: var(--ds-ink);
+  text-decoration: none;
+  opacity: 0.72;
+}
+
+[data-surface="dashboard"] .ds-edit-back-link:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+[data-surface="dashboard"] .ds-edit-back-link .material-symbols-outlined {
+  font-size: 14px;
+  text-decoration: none;
+}

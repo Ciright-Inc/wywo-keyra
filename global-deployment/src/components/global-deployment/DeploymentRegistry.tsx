@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/components/ui/cn";
 import { OfficialDomainLink } from "@/components/global-deployment/OfficialDomainLink";
@@ -114,6 +114,7 @@ function CountryCard({
           <button
             type="button"
             className="flex min-w-0 flex-1 items-start gap-2 text-left focus-visible:outline-none focus-visible:keyra-focus"
+            aria-label={`Registry row: ${country.name}`}
             aria-expanded={open}
             onClick={onToggle}
           >
@@ -180,6 +181,8 @@ function CountryCard({
 
 function RegionBlock({
   region,
+  expanded,
+  onToggle,
   expandedCountryId,
   onToggleCountry,
   onInspectCountry,
@@ -187,6 +190,8 @@ function RegionBlock({
   onRequestTelcoAccess,
 }: {
   region: PublicRegion;
+  expanded: boolean;
+  onToggle: () => void;
   expandedCountryId: string | null;
   onToggleCountry: (id: string) => void;
   onInspectCountry: (id: string) => void;
@@ -196,36 +201,64 @@ function RegionBlock({
   const marketCount = region.countries.length;
 
   return (
-    <section className="space-y-4">
-      <header className="flex flex-wrap items-end justify-between gap-3 px-1">
-        <div>
+    <section className="overflow-hidden rounded-[var(--keyra-radius-lg)] border border-keyra-border bg-keyra-bg shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+      <button
+        type="button"
+        className="flex w-full flex-wrap items-end justify-between gap-3 px-4 py-4 text-left transition-colors hover:bg-keyra-surface/40 focus-visible:outline-none focus-visible:keyra-focus sm:px-5 sm:py-5"
+        aria-expanded={expanded}
+        aria-controls={`region-panel-${region.id}`}
+        onClick={onToggle}
+      >
+        <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-keyra-text-2">
             UN M49 · {region.continentCode} / {region.subregionCode}
           </p>
           <h2 className="mt-1 text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl">{region.name}</h2>
         </div>
-        <p className="rounded-full border border-keyra-border bg-keyra-bg px-2.5 py-0.5 text-[11px] font-medium text-keyra-text-2">
-          {marketCount} market{marketCount === 1 ? "" : "s"}
-        </p>
-      </header>
+        <div className="flex shrink-0 items-center gap-2">
+          <p className="rounded-full border border-keyra-border bg-keyra-surface/60 px-2.5 py-0.5 text-[11px] font-medium text-keyra-text-2">
+            {marketCount} market{marketCount === 1 ? "" : "s"}
+          </p>
+          <span
+            className={cn(
+              "text-xs text-keyra-text-2 transition-transform duration-200",
+              expanded ? "rotate-180" : "",
+            )}
+            aria-hidden
+          >
+            ▾
+          </span>
+        </div>
+      </button>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {region.countries.map((country) => {
-          const open = expandedCountryId === country.id;
-          return (
-            <CountryCard
-              key={country.id}
-              country={country}
-              open={open}
-              className={open ? "md:col-span-2 xl:col-span-3" : undefined}
-              onToggle={() => onToggleCountry(country.id)}
-              onInspect={() => onInspectCountry(country.id)}
-              onRequestCountryAccess={() => onRequestCountryAccess(country)}
-              onRequestTelcoAccess={(telco) => onRequestTelcoAccess(country, telco)}
-            />
-          );
-        })}
-      </div>
+      {expanded ? (
+        <div
+          id={`region-panel-${region.id}`}
+          className="border-t border-keyra-border bg-keyra-surface/20 px-4 pb-4 pt-3 sm:px-5 sm:pb-5"
+        >
+          {region.countries.length === 0 ? (
+            <p className="px-1 py-2 text-[13px] text-keyra-text-2">No countries assigned to this region in admin yet.</p>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {region.countries.map((country) => {
+                const open = expandedCountryId === country.id;
+                return (
+                  <CountryCard
+                    key={country.id}
+                    country={country}
+                    open={open}
+                    className={open ? "md:col-span-2 xl:col-span-3" : undefined}
+                    onToggle={() => onToggleCountry(country.id)}
+                    onInspect={() => onInspectCountry(country.id)}
+                    onRequestCountryAccess={() => onRequestCountryAccess(country)}
+                    onRequestTelcoAccess={(telco) => onRequestTelcoAccess(country, telco)}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -245,32 +278,63 @@ export function DeploymentRegistry({
   onRequestCountryAccess: (country: PublicCountry) => void;
   onRequestTelcoAccess: (country: PublicCountry, telco: PublicTelco) => void;
 }) {
+  const [expandedRegionIds, setExpandedRegionIds] = useState<Set<string>>(() => new Set());
+
+  useEffect(() => {
+    if (!expandedCountryId) return;
+
+    for (const region of regions) {
+      if (region.countries.some((country) => country.id === expandedCountryId)) {
+        setExpandedRegionIds((current) => {
+          if (current.has(region.id)) return current;
+          const next = new Set(current);
+          next.add(region.id);
+          return next;
+        });
+        break;
+      }
+    }
+  }, [expandedCountryId, regions]);
+
+  const toggleRegion = (regionId: string) => {
+    setExpandedRegionIds((current) => {
+      const next = new Set(current);
+      if (next.has(regionId)) {
+        next.delete(regionId);
+      } else {
+        next.add(regionId);
+      }
+      return next;
+    });
+  };
+
   return (
     <div className="space-y-8">
       <div className="max-w-3xl">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-keyra-text-2">Published registry</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-keyra-text-2">Admin registry</p>
         <h2 className="mt-2 text-2xl font-semibold tracking-tight text-keyra-primary sm:text-3xl">
           Regional deployment records
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-keyra-text-2">
-          Authoritative country and operator posture — expand a market card to review carrier-level detail.
+          Pulled live from Keyra admin regions and countries — select a region to review its assigned countries, then
+          expand a market card for carrier-level detail.
         </p>
       </div>
 
-      <div className="space-y-8">
-        {regions.map((region) =>
-          region.countries.length > 0 ? (
-            <RegionBlock
-              key={region.id}
-              region={region}
-              expandedCountryId={expandedCountryId}
-              onToggleCountry={onToggleCountry}
-              onInspectCountry={onInspectCountry}
-              onRequestCountryAccess={onRequestCountryAccess}
-              onRequestTelcoAccess={onRequestTelcoAccess}
-            />
-          ) : null,
-        )}
+      <div className="space-y-3">
+        {regions.map((region) => (
+          <RegionBlock
+            key={region.id}
+            region={region}
+            expanded={expandedRegionIds.has(region.id)}
+            onToggle={() => toggleRegion(region.id)}
+            expandedCountryId={expandedCountryId}
+            onToggleCountry={onToggleCountry}
+            onInspectCountry={onInspectCountry}
+            onRequestCountryAccess={onRequestCountryAccess}
+            onRequestTelcoAccess={onRequestTelcoAccess}
+          />
+        ))}
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
 import type { CountryDeployment, Region, TelcoDeployment } from "@prisma/client";
-import { unstable_cache } from "next/cache";
+import type { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { PUBLIC_DEPLOYMENTS_CACHE_TAG } from "@/lib/deployments/cacheTags";
 
 export type PublicTelco = Pick<
   TelcoDeployment,
@@ -81,24 +80,17 @@ function publicSlugFromSubdomain(countrySubdomain: string): string {
   return idx === -1 ? lower : lower.slice(0, idx);
 }
 
-async function loadTree(): Promise<PublicDeploymentTree> {
-  const regions = await prisma.region.findMany({
-    where: { isPublished: true },
-    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-    include: {
-      countries: {
-        where: { isPublished: true },
-        orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-        include: {
-          telcos: {
-            where: { isPublished: true },
-            orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-          },
-        },
-      },
-    },
-  });
+type RegionWithRelations = Prisma.RegionGetPayload<{
+  include: {
+    countries: {
+      include: {
+        telcos: true;
+      };
+    };
+  };
+}>;
 
+export function shapeDeploymentTree(regions: RegionWithRelations[]): PublicDeploymentTree {
   const shaped: PublicRegion[] = regions.map((r) => ({
     id: r.id,
     continentCode: r.continentCode,
@@ -162,18 +154,36 @@ async function loadTree(): Promise<PublicDeploymentTree> {
     })),
   }));
 
-  const mapKeys = Array.from(
-    new Set(shaped.map((r) => r.mapKey).filter(Boolean)),
-  ).sort();
+  const mapKeys = Array.from(new Set(shaped.map((r) => r.mapKey).filter(Boolean))).sort();
 
   return { regions: shaped, mapKeys };
 }
 
-export const getPublicDeploymentTree = unstable_cache(
-  async () => loadTree(),
-  ["deployment-tree-v2"],
-  { tags: [PUBLIC_DEPLOYMENTS_CACHE_TAG] },
-);
+async function loadPublishedTree(): Promise<PublicDeploymentTree> {
+  const regions = await prisma.region.findMany({
+    where: { isPublished: true },
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    include: {
+      countries: {
+        where: { isPublished: true },
+        orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+        include: {
+          telcos: {
+            where: { isPublished: true },
+            orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+          },
+        },
+      },
+    },
+  });
+
+  return shapeDeploymentTree(regions);
+}
+
+/** Published-only tree for the deployment map and public APIs. */
+export async function getPublicDeploymentTree(): Promise<PublicDeploymentTree> {
+  return loadPublishedTree();
+}
 
 export function filterPublicTree(
   tree: PublicDeploymentTree,

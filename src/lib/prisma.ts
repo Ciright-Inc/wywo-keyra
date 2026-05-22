@@ -1,3 +1,5 @@
+import "server-only";
+
 import { PrismaClient } from "@prisma/client";
 
 /** Bump when Prisma schema changes so dev HMR picks up a new generated client. */

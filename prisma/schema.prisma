@@ -68,6 +68,7 @@ model AdminUser {
   id           String               @id @default(cuid())
   email        String               @unique
   displayName  String?
+  phoneE164    String?              @unique
   passwordHash String
   role         DeploymentAdminRole
   /** JSON: { "regionIds"?: string[], "countryIds"?: string[], "telcoIds"?: string[] } */

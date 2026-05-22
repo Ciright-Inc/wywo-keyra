@@ -352,6 +352,29 @@ export async function listDeploymentApps(
   });
 }
 
+export type DeploymentAppEditNeighbor = {
+  id: string;
+  label: string;
+};
+
+export async function getDeploymentAppEditNeighbors(appId: string): Promise<{
+  index: number;
+  total: number;
+  prev: DeploymentAppEditNeighbor | null;
+  next: DeploymentAppEditNeighbor | null;
+}> {
+  const apps = await listDeploymentApps({ newestFirst: true });
+  const index = apps.findIndex((app) => app.id === appId);
+  const pick = (app: DeploymentApp): DeploymentAppEditNeighbor => ({ id: app.id, label: app.label });
+
+  return {
+    index: index === -1 ? 0 : index + 1,
+    total: apps.length,
+    prev: index > 0 ? pick(apps[index - 1]!) : null,
+    next: index >= 0 && index < apps.length - 1 ? pick(apps[index + 1]!) : null,
+  };
+}
+
 export function toDeploymentAppView(app: DeploymentApp): DeploymentAppView {
   return {
     id: app.id,

@@ -56,8 +56,11 @@ export function SiteHeader() {
   const nav = useMemo(() => buildNav(), []);
 
   async function handleAdminSignOut() {
-    await fetch("/api/admin/auth/logout", { method: "POST" });
-    window.location.href = "/admin/login";
+    await Promise.all([
+      fetch("/api/auth/logout", { method: "POST", credentials: "include" }),
+      fetch("/api/keyra/session/logout", { method: "POST", credentials: "include" }),
+    ]);
+    window.location.href = "/";
   }
 
   return (

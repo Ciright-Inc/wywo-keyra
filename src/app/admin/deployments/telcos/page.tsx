@@ -4,17 +4,51 @@ import { assertAdminServer } from "@/lib/assertAdminServer";
 import { countryWhereFromAuth } from "@/lib/deployments/adminContext";
 import { createTelco } from "@/app/admin/deployments/actions";
 import { isComplianceReviewer, isReadOnlyRole } from "@/lib/deployments/adminAuthz";
-import { TelcosDirectoryClient } from "./TelcosDirectoryClient";
+import { TelcosDirectoryClient, type TelcoSortKey } from "./TelcosDirectoryClient";
 
 const DEFAULT_PAGE_SIZE = 25;
 const PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
 const SEARCH_QUERY_MAX_LEN = 120;
 
-type Search = { page?: string; perPage?: string; q?: string };
+const SORTABLE_COLUMNS = new Set<TelcoSortKey>(["name", "country", "subdomain", "status", "published"]);
+
+type Search = { page?: string; perPage?: string; q?: string; sort?: string; dir?: string };
 
 function parseSearchQuery(raw: string | undefined): string {
   const s = typeof raw === "string" ? raw.trim() : "";
   return s.slice(0, SEARCH_QUERY_MAX_LEN);
+}
+
+function parseTelcoSort(
+  rawSort: string | undefined,
+  rawDir: string | undefined,
+): { sort: TelcoSortKey; dir: "asc" | "desc" } {
+  if (!rawSort?.trim()) return { sort: "created", dir: "desc" };
+  const sort = rawSort.trim() as TelcoSortKey;
+  if (!SORTABLE_COLUMNS.has(sort)) return { sort: "created", dir: "desc" };
+  const dir = rawDir === "asc" || rawDir === "desc" ? rawDir : "asc";
+  return { sort, dir };
+}
+
+function telcoOrderBy(
+  sort: TelcoSortKey,
+  dir: "asc" | "desc",
+): Prisma.TelcoDeploymentOrderByWithRelationInput[] {
+  switch (sort) {
+    case "name":
+      return [{ name: dir }];
+    case "country":
+      return [{ country: { name: dir } }, { name: "asc" }];
+    case "subdomain":
+      return [{ telcoSubdomain: dir }, { name: "asc" }];
+    case "status":
+      return [{ status: dir }, { name: "asc" }];
+    case "published":
+      return [{ isPublished: dir }, { name: "asc" }];
+    case "created":
+    default:
+      return [{ createdAt: dir }, { sortOrder: "asc" }, { name: "asc" }];
+  }
 }
 
 function telcoSearchWhere(query: string): Prisma.TelcoDeploymentWhereInput | undefined {
@@ -47,33 +81,45 @@ function parsePageSize(raw: string | undefined): number {
 export default async function AdminTelcosPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;
   const pageSize = parsePageSize(sp.perPage);
-  let page = parsePage(sp.page);
+  const requestedPage = parsePage(sp.page);
   const searchQuery = parseSearchQuery(sp.q);
+  const { sort, dir } = parseTelcoSort(sp.sort, sp.dir);
   const telcoWhere = telcoSearchWhere(searchQuery);
 
   const auth = await assertAdminServer();
 
   const cw = await countryWhereFromAuth(auth);
-  const [totalCount, countries] = await Promise.all([
+  const skip = (requestedPage - 1) * pageSize;
+
+  const [totalCount, countries, telcoRows] = await Promise.all([
     prisma.telcoDeployment.count({ where: telcoWhere }),
     prisma.countryDeployment.findMany({
       where: cw ?? {},
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       select: { id: true, name: true, iso2: true },
     }),
+    prisma.telcoDeployment.findMany({
+      where: telcoWhere,
+      orderBy: telcoOrderBy(sort, dir),
+      skip,
+      take: pageSize,
+      include: { country: { select: { name: true, iso2: true, id: true } } },
+    }),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-  page = Math.min(page, totalPages);
+  const page = Math.min(requestedPage, totalPages);
 
-  /** Full catalog paging; create/edit still enforced per-row in actions and detail pages. */
-  const telcos = await prisma.telcoDeployment.findMany({
-    where: telcoWhere,
-    orderBy: [{ createdAt: "desc" }, { sortOrder: "asc" }, { name: "asc" }],
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-    include: { country: { select: { name: true, iso2: true, id: true } } },
-  });
+  const telcos =
+    page === requestedPage
+      ? telcoRows
+      : await prisma.telcoDeployment.findMany({
+          where: telcoWhere,
+          orderBy: telcoOrderBy(sort, dir),
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          include: { country: { select: { name: true, iso2: true, id: true } } },
+        });
 
   const canMutate =
     auth.kind === "legacy_super" ||
@@ -105,6 +151,8 @@ export default async function AdminTelcosPage({ searchParams }: { searchParams: 
       pageSizeOptions={PAGE_SIZE_OPTIONS}
       defaultPageSize={DEFAULT_PAGE_SIZE}
       searchQuery={searchQuery}
+      sortBy={sort}
+      sortDir={dir}
       countries={countries}
       showCreate={showCreate}
       canDelete={canMutate}

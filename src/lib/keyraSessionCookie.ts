@@ -1,16 +1,13 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
+import "server-only";
 
-export type KeyraSessionUser = {
-  phoneE164: string;
-  displayName?: string;
-  email?: string;
-  country?: string;
-};
+import { createHmac, timingSafeEqual } from "crypto";
+import {
+  KEYRA_SESSION_COOKIE,
+  KEYRA_SESSION_MAX_AGE,
+  type KeyraSessionUser,
+} from "@/lib/keyraSessionTypes";
 
-export const KEYRA_SESSION_COOKIE = "keyra_session";
-
-/** 30 days */
-export const KEYRA_SESSION_MAX_AGE = 60 * 60 * 24 * 30;
+export { KEYRA_SESSION_COOKIE, KEYRA_SESSION_MAX_AGE, type KeyraSessionUser };
 
 function sessionSecret(): string | null {
   const s = process.env.KEYRA_SESSION_SECRET?.trim();

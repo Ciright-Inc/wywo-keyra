@@ -4,9 +4,29 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { deleteAccessDomainRuleMessage } from "@/lib/admin/adminDeleteMessages";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
+import { useToast } from "@/components/ui/Toast";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { buildListHref } from "@/lib/admin/listSearchParams";
+import {
+  adminBody,
+  adminCheckbox,
+  adminFormCheckboxLabel,
+  adminCountBadge,
+  adminEyebrow,
+  adminLabel,
+  adminLegacyInput,
+  adminPageTitle,
+  adminPanel,
+  adminSectionTitle,
+  adminTable,
+  adminTableScroll,
+  adminTableWrap,
+} from "@/lib/admin/adminUiClasses";
 
 export type AccessDomainRuleRow = {
   id: string;
@@ -53,11 +73,13 @@ export function AccessDomainRulesDirectoryClient({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const router = useRouter();
+  const confirm = useAdminConfirm();
+  const toast = useToast();
   const { page, pageSize, totalCount } = pagination;
 
   /** Delete an access domain rule via the server route. Auth/audit/revalidate server-side. */
   async function handleDelete(id: string, label: string) {
-    if (!confirm(`Delete access rule for "${label}"? This cannot be undone.`)) return;
+    if (!(await confirm(deleteAccessDomainRuleMessage(label)))) return;
     setDeletingId(id);
     setDeleteError(null);
     try {
@@ -69,6 +91,7 @@ export function AccessDomainRulesDirectoryClient({
         const data = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(data.error ?? `Delete failed (${res.status})`);
       }
+      showAdminActionToast(toast, "deleted", "access-domain-rule", { name: label });
       router.refresh();
     } catch (e) {
       setDeleteError(e instanceof Error ? e.message : "Delete failed");
@@ -78,8 +101,8 @@ export function AccessDomainRulesDirectoryClient({
   }
 
   const inputClass =
-    "mt-1 h-10 w-full rounded-lg border border-keyra-border bg-keyra-bg px-3 text-sm text-keyra-primary shadow-sm outline-none transition focus-visible:border-black/25 focus-visible:keyra-focus disabled:opacity-60";
-  const selectClass = `${inputClass} bg-keyra-bg`;
+    adminLegacyInput;
+  const selectClass = adminLegacyInput;
 
   const buildSearchHref = useCallback(
     (query: string) => buildListHref(BASE_HREF, { page: 1, pageSize, searchQuery: query }, defaultPageSize),
@@ -100,16 +123,16 @@ export function AccessDomainRulesDirectoryClient({
 
   return (
     <div>
-      <div className="ds-panel is-dashboard">
+      <div className={adminPanel}>
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl">Access domain rules</h1>
-              <span className="rounded-full border border-keyra-border bg-keyra-bg px-2.5 py-0.5 text-[11px] font-medium text-keyra-text-2">
+              <h1 className={adminPageTitle}>Access domain rules</h1>
+              <span className={adminCountBadge}>
                 {totalCount.toLocaleString()} total
               </span>
             </div>
-            <p className="mt-1.5 max-w-xl text-sm leading-snug text-keyra-text-2">
+            <p className={`${adminBody} mt-1.5 max-w-xl text-[var(--ds-body)]`}>
               Approved corporate email domains for governed access.
             </p>
           </div>
@@ -124,11 +147,7 @@ export function AccessDomainRulesDirectoryClient({
             {canUseCreate ? (
               <button
                 type="button"
-                className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ring-1 ${
-                  createOpen
-                    ? "border border-[var(--keyra-action-border)] bg-keyra-bg text-keyra-primary ring-[var(--keyra-action-border)] hover:bg-keyra-surface"
-                    : "bg-[var(--keyra-action)] text-keyra-primary ring-[var(--keyra-action-border)] hover:bg-keyra-surface"
-                }`}
+                className={createOpen ? "ds-btn-secondary is-sm" : "ds-btn-primary is-sm"}
                 onClick={() => setCreateOpen((open) => !open)}
               >
                 {createOpen ? "Close create form" : "Create rule"}
@@ -138,17 +157,17 @@ export function AccessDomainRulesDirectoryClient({
         </div>
 
         {canUseCreate && createOpen ? (
-          <div className="mt-5 border-t border-keyra-border pt-5">
-            <h2 className="text-lg font-semibold text-keyra-primary">New rule</h2>
-            <form action={createAccessDomainRule} className="keyra-card mt-4 grid gap-3 p-5 sm:grid-cols-2">
-              <label className="text-sm text-keyra-text-2 sm:col-span-2">
+          <div className="mt-5 border-t border-[var(--ds-hairline)] pt-5">
+            <h2 className={adminSectionTitle}>New rule</h2>
+            <form action={createAccessDomainRule} className="ds-form-grid ds-form-grid--2 mt-4">
+              <label className={`${adminLabel} sm:col-span-2`}>
                 Target type
                 <select name="targetType" required className={selectClass}>
                   <option value="COUNTRY">COUNTRY</option>
                   <option value="TELCO">TELCO</option>
                 </select>
               </label>
-              <label className="text-sm text-keyra-text-2 sm:col-span-2">
+              <label className={`${adminLabel} sm:col-span-2`}>
                 Country target
                 <select name="targetIdCountry" className={selectClass}>
                   <option value="">—</option>
@@ -159,7 +178,7 @@ export function AccessDomainRulesDirectoryClient({
                   ))}
                 </select>
               </label>
-              <label className="text-sm text-keyra-text-2 sm:col-span-2">
+              <label className={`${adminLabel} sm:col-span-2`}>
                 Telco target
                 <select name="targetIdTelco" className={selectClass}>
                   <option value="">—</option>
@@ -170,11 +189,11 @@ export function AccessDomainRulesDirectoryClient({
                   ))}
                 </select>
               </label>
-              <label className="text-sm text-keyra-text-2 sm:col-span-2">
+              <label className={`${adminLabel} sm:col-span-2`}>
                 Allowed email domain
                 <input name="allowedEmailDomain" required className={inputClass} />
               </label>
-              <label className="text-sm text-keyra-text-2">
+              <label className={adminLabel}>
                 Verification method
                 <select name="verificationMethod" className={selectClass}>
                   <option value="EMAIL_OTP">EMAIL_OTP</option>
@@ -182,8 +201,8 @@ export function AccessDomainRulesDirectoryClient({
                   <option value="INVITE_ONLY">INVITE_ONLY</option>
                 </select>
               </label>
-              <label className="flex items-center gap-2 text-sm text-keyra-text-2">
-                <input name="isActive" type="checkbox" defaultChecked className="size-4" />
+              <label className={adminFormCheckboxLabel}>
+                <input name="isActive" type="checkbox" defaultChecked className={adminCheckbox} />
                 Active
               </label>
               <div className="sm:col-span-2">
@@ -211,30 +230,29 @@ export function AccessDomainRulesDirectoryClient({
                 <th className="px-3 py-2">Domain</th>
                 <th className="px-3 py-2">Method</th>
                 <th className="px-3 py-2">Active</th>
-                <th className="w-px whitespace-nowrap px-2 py-2 text-right">Actions</th>
+                <th className="is-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
+            <tbody>
               {rules.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-3 py-8 text-center text-sm text-keyra-text-2">
-                    {hasSearch
-                      ? "No rules match your search. Try different keywords or clear the search."
-                      : "No access domain rules visible to your account."}
-                  </td>
-                </tr>
+                <AdminListEmptyState
+                  variant="table-row"
+                  colSpan={5}
+                  hasSearch={hasSearch}
+                  entityName="access rules"
+                />
               ) : (
                 rules.map((r) => {
                   const isDeleting = deletingId === r.id;
                   return (
-                    <tr key={r.id} className={`transition hover:bg-keyra-surface ${isDeleting ? "opacity-60" : ""}`}>
+                    <tr key={r.id} className={isDeleting ? "opacity-60" : undefined}>
                       <td className="max-w-[18rem] truncate px-3 py-2 font-mono text-xs text-keyra-text-2">
                         {r.targetType} · {r.targetId}
                       </td>
-                      <td className="px-3 py-2 font-medium text-keyra-primary">{r.allowedEmailDomain}</td>
-                      <td className="px-3 py-2 text-keyra-text-2">{r.verificationMethod}</td>
-                      <td className="px-3 py-2 text-keyra-text-2">{r.isActive ? "Yes" : "No"}</td>
-                      <td className="w-px whitespace-nowrap px-2 py-2 text-right">
+                      <td>{r.allowedEmailDomain}</td>
+                      <td className="is-muted">{r.verificationMethod}</td>
+                      <td className="is-muted">{r.isActive ? "Yes" : "No"}</td>
+                      <td className="is-actions">
                         <RowActions
                           editHref={`/admin/deployments/access-domain-rules/${r.id}`}
                           editAriaLabel={`Edit rule for ${r.allowedEmailDomain}`}

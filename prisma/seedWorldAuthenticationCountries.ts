@@ -151,11 +151,16 @@ async function main() {
   );
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+const runStandalone =
+  typeof process !== "undefined" && process.argv[1]?.includes("seedWorldAuthenticationCountries");
+
+if (runStandalone) {
+  void main()
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}

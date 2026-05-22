@@ -28,8 +28,8 @@ export function GlobalDeploymentHero() {
           Global deployment
         </h1>
         <p className="mt-4 max-w-2xl text-pretty text-sm leading-relaxed text-zinc-200 sm:text-base">
-          A calm view of where Keyra is identified, validated, and operational — organized by formal region taxonomy
-          and published country and operator records.
+          A calm view of where Keyra is identified, validated, and operational — organized by the same region and
+          country records maintained in Keyra admin.
         </p>
 
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
