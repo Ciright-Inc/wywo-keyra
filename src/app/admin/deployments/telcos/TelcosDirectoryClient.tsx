@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/Button";
 import { RowActions } from "@/components/admin/RowActions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import { deleteTelcoMessage } from "@/lib/admin/adminDeleteMessages";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
+import { useToast } from "@/components/ui/Toast";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
 import { buildListHref } from "@/lib/admin/listSearchParams";
@@ -123,6 +125,7 @@ export function TelcosDirectoryClient({
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
   const confirm = useAdminConfirm();
+  const toast = useToast();
   const { isPending, navigate } = useAdminRouteTransition();
   const { page, pageSize, totalCount, totalPages, showingFrom, showingTo } = pagination;
   const canUseCreate = showCreate && countries.length > 0;
@@ -144,6 +147,7 @@ export function TelcosDirectoryClient({
         const data = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(data.error ?? `Delete failed (${res.status})`);
       }
+      showAdminActionToast(toast, "deleted", "telco", { name });
       router.refresh();
     } catch (e) {
       setDeleteError(e instanceof Error ? e.message : "Delete failed");

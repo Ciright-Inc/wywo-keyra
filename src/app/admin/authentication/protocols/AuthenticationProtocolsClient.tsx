@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { useToast } from "@/components/ui/Toast";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import {
   deleteAuthenticationProtocolMessage,
@@ -10,8 +11,18 @@ import {
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
+import { AdminFormPanelCloseButton } from "@/components/admin/AdminFormPanelCloseButton";
 import { ClientTablePagination } from "@/components/admin/ClientTablePagination";
+import { AuthenticationProtocolFormFields } from "./AuthenticationProtocolFormFields";
+import {
+  emptyProtocolFormValues,
+  protocolFormValuesFromRow,
+  protocolFormValuesToPayload,
+  validateProtocolForm,
+  type ProtocolFormValues,
+} from "@/lib/authenticationFeed/protocolFormValidation";
 import { SAT_PROTOCOL_CATEGORIES } from "@/lib/satProtocol/categories";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 
 const DEFAULT_PAGE_SIZE = 25;
 const PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
@@ -100,6 +111,7 @@ export function AuthenticationProtocolsClient({
   initialProtocols?: ProtocolRow[];
 }) {
   const confirm = useAdminConfirm();
+  const toast = useToast();
   const skipInitialFetch = useRef(initialProtocols != null);
   const fetchAbortRef = useRef<AbortController | null>(null);
   const [rows, setRows] = useState<ProtocolRow[] | null>(initialProtocols ?? null);
@@ -115,6 +127,11 @@ export function AuthenticationProtocolsClient({
   const [selected, setSelected] = useState<Record<string, true>>({});
   const [dirtyIds, setDirtyIds] = useState<Record<string, boolean>>({});
   const [addProtocolOpen, setAddProtocolOpen] = useState(false);
+  const [addDraft, setAddDraft] = useState<ProtocolFormValues>(() => emptyProtocolFormValues());
+  const [addErrors, setAddErrors] = useState<Record<string, string>>({});
+  const [editRow, setEditRow] = useState<ProtocolRow | null>(null);
+  const [editDraft, setEditDraft] = useState<ProtocolFormValues>(() => emptyProtocolFormValues());
+  const [editErrors, setEditErrors] = useState<Record<string, string>>({});
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
 
@@ -169,11 +186,49 @@ export function AuthenticationProtocolsClient({
   useEffect(() => {
     if (!addProtocolOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setAddProtocolOpen(false);
+      if (e.key === "Escape") {
+        setAddProtocolOpen(false);
+        setAddErrors({});
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [addProtocolOpen]);
+
+  useEffect(() => {
+    if (!editRow) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeEditPanel();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [editRow]);
+
+  function openEditPanel(row: ProtocolRow) {
+    if (editRow?.id === row.id) {
+      closeEditPanel();
+      return;
+    }
+    setError(null);
+    setAddProtocolOpen(false);
+    setAddErrors({});
+    setEditRow(row);
+    setEditDraft(protocolFormValuesFromRow(row));
+    setEditErrors({});
+  }
+
+  function closeEditPanel() {
+    setEditRow(null);
+    setEditErrors({});
+  }
+
+  function openAddPanel() {
+    closeEditPanel();
+    setError(null);
+    setAddDraft(emptyProtocolFormValues());
+    setAddErrors({});
+    setAddProtocolOpen(true);
+  }
 
   const selectedIds = Object.keys(selected);
   const dirtyRowIds = useMemo(() => Object.keys(dirtyIds).filter((id) => dirtyIds[id]), [dirtyIds]);
@@ -226,6 +281,7 @@ export function AuthenticationProtocolsClient({
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Save failed");
+      showAdminActionToast(toast, "saved", "auth-protocol", { name: r.protocolName });
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed");
@@ -242,6 +298,7 @@ export function AuthenticationProtocolsClient({
       const res = await fetch(`/api/admin/sat-protocols/${id}`, { method: "DELETE", credentials: "include" });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Delete failed");
+      showAdminActionToast(toast, "deleted", "auth-protocol", { name: row?.protocolName });
       setSelected((m) => {
         const n = { ...m };
         delete n[id];
@@ -263,6 +320,15 @@ export function AuthenticationProtocolsClient({
       setError("No unsaved changes. Edit a row first.");
       return;
     }
+    for (const id of dirtyRowIds) {
+      const row = dataRows.find((x) => x.id === id);
+      if (!row) continue;
+      const rowErrors = validateProtocolForm(protocolFormValuesFromRow(row));
+      if (Object.keys(rowErrors).length > 0) {
+        setError(`Fix validation errors on "${row.protocolName}" before saving. Use Edit for a full form.`);
+        return;
+      }
+    }
     setBusy(true);
     setError(null);
     try {
@@ -278,6 +344,7 @@ export function AuthenticationProtocolsClient({
         const data = (await res.json()) as { error?: string };
         if (!res.ok) throw new Error(data.error ?? "Save failed");
       }
+      showAdminActionToast(toast, "saved", "auth-protocol", { count: dirtyRowIds.length });
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed");
@@ -309,6 +376,7 @@ export function AuthenticationProtocolsClient({
         const data = (await res.json()) as { error?: string };
         if (!res.ok) throw new Error(data.error ?? "Delete failed");
       }
+      showAdminActionToast(toast, "deleted", "auth-protocol", { count: selectedIds.length, name: firstName });
       setSelected({});
       await load();
     } catch (e) {
@@ -318,46 +386,65 @@ export function AuthenticationProtocolsClient({
     }
   }
 
-  const [draft, setDraft] = useState({
-    protocolName: "",
-    protocolCode: "",
-    protocolCategory: "Identity",
-    percentageWeight: 60,
-    protocolMemo: "",
-    homePercentage: 40,
-    roamingPercentage: 60,
-  });
-
   async function add() {
+    const errors = validateProtocolForm(addDraft);
+    if (Object.keys(errors).length > 0) {
+      setAddErrors(errors);
+      setError("Fix the highlighted fields before adding this protocol.");
+      return;
+    }
     setBusy(true);
     setError(null);
+    setAddErrors({});
     try {
       const res = await fetch("/api/admin/sat-protocols", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...draft,
-          active: true,
+          ...protocolFormValuesToPayload(addDraft),
           protocolUrlEnabled: false,
           allowProtocolLink: false,
         }),
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Create failed");
-      setDraft({
-        protocolName: "",
-        protocolCode: "",
-        protocolCategory: "Identity",
-        percentageWeight: 60,
-        protocolMemo: "",
-        homePercentage: 40,
-        roamingPercentage: 60,
-      });
+      showAdminActionToast(toast, "created", "auth-protocol", { name: addDraft.protocolName });
+      setAddDraft(emptyProtocolFormValues());
       setAddProtocolOpen(false);
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Create failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function saveEditRow() {
+    if (!editRow) return;
+    const errors = validateProtocolForm(editDraft);
+    if (Object.keys(errors).length > 0) {
+      setEditErrors(errors);
+      setError("Fix the highlighted fields before saving.");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    setEditErrors({});
+    try {
+      const res = await fetch(`/api/admin/sat-protocols/${editRow.id}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(protocolFormValuesToPayload(editDraft)),
+      });
+      const data = (await res.json()) as { error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Save failed");
+      showAdminActionToast(toast, "saved", "auth-protocol", { name: editDraft.protocolName });
+      closeEditPanel();
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Save failed");
     } finally {
       setBusy(false);
     }
@@ -376,6 +463,7 @@ export function AuthenticationProtocolsClient({
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Bulk status failed");
+      showAdminActionToast(toast, "updated", "auth-protocol", { count: selectedIds.length });
       setSelected({});
       await load();
     } catch (e) {
@@ -403,6 +491,7 @@ export function AuthenticationProtocolsClient({
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Bulk weights failed");
+      showAdminActionToast(toast, "updated", "auth-protocol", { count: selectedIds.length });
       setSelected({});
       await load();
     } catch (e) {
@@ -615,7 +704,7 @@ export function AuthenticationProtocolsClient({
             type="button"
             variant="secondary"
             className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold"
-            onClick={() => setAddProtocolOpen((open) => !open)}
+            onClick={() => (addProtocolOpen ? setAddProtocolOpen(false) : openAddPanel())}
             aria-expanded={addProtocolOpen}
           >
             {addProtocolOpen ? "Close add" : "Add protocol"}
@@ -646,79 +735,76 @@ export function AuthenticationProtocolsClient({
             <div>
               <h2 className="text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Add protocol</h2>
               <p className="mt-1 text-xs text-keyra-text-2">
-                New rows default to active. Home + roaming must total 100%.
+                Same fields as the list. Required: name, code, category, weight. Home + roam must total 100%.
               </p>
             </div>
-            <button
-              type="button"
-              className="rounded-md border border-keyra-border px-3 py-1.5 text-xs font-semibold text-keyra-primary hover:bg-keyra-bg"
+            <AdminFormPanelCloseButton
+              label="Close add protocol form"
+              disabled={busy}
               onClick={() => setAddProtocolOpen(false)}
-            >
-              Close
-            </button>
+            />
           </div>
-          <div className="mt-3 grid gap-3 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4 sm:grid-cols-2">
-            <input
-              className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm"
-              placeholder="Name"
-              value={draft.protocolName}
-              onChange={(e) => setDraft((d) => ({ ...d, protocolName: e.target.value }))}
+          <div className="mt-4 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
+            <AuthenticationProtocolFormFields
+              values={addDraft}
+              errors={addErrors}
               disabled={busy}
+              onChange={(patch) => {
+                setAddDraft((current) => ({ ...current, ...patch }));
+                setAddErrors((current) => {
+                  const next = { ...current };
+                  for (const key of Object.keys(patch)) delete next[key];
+                  return next;
+                });
+              }}
             />
-            <input
-              className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm"
-              placeholder="Code e.g. SAT-ID"
-              value={draft.protocolCode}
-              onChange={(e) => setDraft((d) => ({ ...d, protocolCode: e.target.value }))}
+            <div className="mt-4 flex justify-end">
+              <Button type="button" disabled={busy} onClick={() => void add()}>
+                Add protocol
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {editRow ? (
+        <div className="rounded-2xl border border-keyra-border bg-keyra-surface/95 p-4 shadow-sm sm:p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Edit protocol</h2>
+              <p className="mt-1 text-xs text-keyra-text-2">
+                Editing <span className="font-medium text-keyra-primary">{editRow.protocolName}</span>. Home + roam must
+                total 100%.
+              </p>
+            </div>
+            <AdminFormPanelCloseButton
+              label="Close edit protocol form"
               disabled={busy}
+              onClick={closeEditPanel}
             />
-            <input
-              className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm sm:col-span-2"
-              placeholder="Category"
-              value={draft.protocolCategory}
-              onChange={(e) => setDraft((d) => ({ ...d, protocolCategory: e.target.value }))}
+          </div>
+          <div className="mt-4 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
+            <AuthenticationProtocolFormFields
+              values={editDraft}
+              errors={editErrors}
               disabled={busy}
+              onChange={(patch) => {
+                setEditDraft((current) => ({ ...current, ...patch }));
+                setEditErrors((current) => {
+                  const next = { ...current };
+                  for (const key of Object.keys(patch)) delete next[key];
+                  return next;
+                });
+              }}
             />
-            <textarea
-              className="min-h-[72px] rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm sm:col-span-2"
-              placeholder="Protocol memo (modal body)"
-              value={draft.protocolMemo}
-              onChange={(e) => setDraft((d) => ({ ...d, protocolMemo: e.target.value }))}
-              disabled={busy}
-            />
-            <label className="flex items-center gap-2 text-sm text-keyra-text-2">
-              Weight
-              <input
-                type="number"
-                className="w-24 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-                value={draft.percentageWeight}
-                onChange={(e) => setDraft((d) => ({ ...d, percentageWeight: Number(e.target.value) }))}
-                disabled={busy}
-              />
-            </label>
-            <label className="flex items-center gap-2 text-sm text-keyra-text-2">
-              Home %
-              <input
-                type="number"
-                className="w-20 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-                value={draft.homePercentage}
-                onChange={(e) => setDraft((d) => ({ ...d, homePercentage: Number(e.target.value) }))}
-                disabled={busy}
-              />
-            </label>
-            <label className="flex items-center gap-2 text-sm text-keyra-text-2">
-              Roam %
-              <input
-                type="number"
-                className="w-20 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-keyra-primary"
-                value={draft.roamingPercentage}
-                onChange={(e) => setDraft((d) => ({ ...d, roamingPercentage: Number(e.target.value) }))}
-                disabled={busy}
-              />
-            </label>
-            <Button type="button" disabled={busy} onClick={() => void add()}>
-              Add protocol
-            </Button>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button type="button" variant="secondary" disabled={busy} onClick={closeEditPanel}>
+                Cancel
+              </Button>
+              <Button type="button" disabled={busy} onClick={() => void saveEditRow()}>
+                Save changes
+              </Button>
+            </div>
           </div>
         </div>
       ) : null}
@@ -755,11 +841,17 @@ export function AuthenticationProtocolsClient({
               {sortableTh("Global", "globalAvailability", "center")}
               {sortableTh("API", "apiReady", "center")}
               {sortableTh("Active", "active", "center")}
+              <th className="px-2 py-2.5 pr-4 align-middle text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {pagedRows.map((r) => (
-              <tr key={r.id} className="border-b border-keyra-border/50 align-top">
+              <tr
+                key={r.id}
+                className={`border-b border-keyra-border/50 align-top ${
+                  editRow?.id === r.id ? "bg-keyra-primary/5 ring-1 ring-inset ring-keyra-primary/15" : ""
+                }`}
+              >
                 <td className="pl-4 pr-2 py-1 align-middle">
                   <input
                     type="checkbox"
@@ -913,6 +1005,25 @@ export function AuthenticationProtocolsClient({
                       disabled={busy}
                     />
                   </div>
+                </td>
+                <td className="px-2 py-1 pr-4 align-middle text-right">
+                  <button
+                    type="button"
+                    title="Edit"
+                    aria-label={`Edit ${r.protocolName}`}
+                    disabled={busy}
+                    onClick={() => openEditPanel(r)}
+                    className={`inline-flex size-8 items-center justify-center rounded-md border bg-keyra-bg transition disabled:opacity-50 ${
+                      editRow?.id === r.id
+                        ? "border-keyra-primary/30 text-keyra-primary ring-1 ring-keyra-primary/20"
+                        : "border-keyra-border text-keyra-primary hover:border-black/20 hover:bg-keyra-surface"
+                    }`}
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d="M12 20h9" />
+                      <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
+                    </svg>
+                  </button>
                 </td>
               </tr>
             ))}

@@ -3,11 +3,22 @@
 import type { AuthenticationCountry } from "@prisma/client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { useToast } from "@/components/ui/Toast";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import { deleteAuthenticationCountriesMessage } from "@/lib/admin/adminDeleteMessages";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
+import { AdminFormPanelCloseButton } from "@/components/admin/AdminFormPanelCloseButton";
 import { ClientTablePagination } from "@/components/admin/ClientTablePagination";
+import { AuthenticationCountryFormFields } from "./AuthenticationCountryFormFields";
+import {
+  authCountryFormValuesFromRow,
+  authCountryFormValuesToPayload,
+  emptyAuthCountryFormValues,
+  validateAuthCountryForm,
+  type AuthCountryFormValues,
+} from "@/lib/authenticationFeed/countryFormValidation";
 
 type SortKey = "priority" | "weight" | "name" | "iso2" | "updated";
 
@@ -29,6 +40,7 @@ export function AuthenticationCountriesClient({
   initialCountries?: AuthenticationCountry[];
 }) {
   const confirm = useAdminConfirm();
+  const toast = useToast();
   const skipInitialFetch = useRef(initialCountries != null);
   const fetchAbortRef = useRef<AbortController | null>(null);
   const [rows, setRows] = useState<AuthenticationCountry[] | null>(initialCountries ?? null);
@@ -47,6 +59,11 @@ export function AuthenticationCountriesClient({
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [addCountryOpen, setAddCountryOpen] = useState(false);
+  const [addDraft, setAddDraft] = useState<AuthCountryFormValues>(() => emptyAuthCountryFormValues());
+  const [addErrors, setAddErrors] = useState<Record<string, string>>({});
+  const [editRow, setEditRow] = useState<AuthenticationCountry | null>(null);
+  const [editDraft, setEditDraft] = useState<AuthCountryFormValues>(() => emptyAuthCountryFormValues());
+  const [editErrors, setEditErrors] = useState<Record<string, string>>({});
   const [searchExpanded, setSearchExpanded] = useState(false);
   /** Client-side paging over the already-loaded `rows`. Server fetch returns everything matching
    * the current filters in one pass, so paging here is just a render slice — keeps cross-page
@@ -134,11 +151,49 @@ export function AuthenticationCountriesClient({
   useEffect(() => {
     if (!addCountryOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setAddCountryOpen(false);
+      if (e.key === "Escape") {
+        setAddCountryOpen(false);
+        setAddErrors({});
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [addCountryOpen]);
+
+  useEffect(() => {
+    if (!editRow) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeEditPanel();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [editRow]);
+
+  function openEditPanel(row: AuthenticationCountry) {
+    if (editRow?.id === row.id) {
+      closeEditPanel();
+      return;
+    }
+    setError(null);
+    setAddCountryOpen(false);
+    setAddErrors({});
+    setEditRow(row);
+    setEditDraft(authCountryFormValuesFromRow(row));
+    setEditErrors({});
+  }
+
+  function closeEditPanel() {
+    setEditRow(null);
+    setEditErrors({});
+  }
+
+  function openAddPanel() {
+    closeEditPanel();
+    setError(null);
+    setAddDraft(emptyAuthCountryFormValues());
+    setAddErrors({});
+    setAddCountryOpen(true);
+  }
 
   function patchRow(id: string, patch: Partial<AuthenticationCountry>) {
     setRows((prev) => (prev ?? []).map((r) => (r.id === id ? { ...r, ...patch } : r)));
@@ -213,6 +268,15 @@ export function AuthenticationCountriesClient({
       setError("No unsaved changes. Edit a row first.");
       return;
     }
+    for (const id of dirtyRowIds) {
+      const row = dataRows.find((x) => x.id === id);
+      if (!row) continue;
+      const rowErrors = validateAuthCountryForm(authCountryFormValuesFromRow(row));
+      if (Object.keys(rowErrors).length > 0) {
+        setError(`Fix validation errors on "${row.countryName}" before saving. Use Edit for a full form.`);
+        return;
+      }
+    }
     setBusy(true);
     setError(null);
     try {
@@ -228,6 +292,7 @@ export function AuthenticationCountriesClient({
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Save failed");
+      showAdminActionToast(toast, "saved", "auth-country", { count: dirtyRowIds.length });
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed");
@@ -256,6 +321,7 @@ export function AuthenticationCountriesClient({
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Bulk save failed");
+      showAdminActionToast(toast, "saved", "auth-country", { count: selectedIds.length });
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Bulk save failed");
@@ -305,6 +371,7 @@ export function AuthenticationCountriesClient({
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Bulk update failed");
+      showAdminActionToast(toast, "updated", "auth-country", { count: selectedIds.length });
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Bulk update failed");
@@ -330,6 +397,7 @@ export function AuthenticationCountriesClient({
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Bulk update failed");
+      showAdminActionToast(toast, "updated", "auth-country", { count: selectedIds.length });
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Bulk update failed");
@@ -355,6 +423,7 @@ export function AuthenticationCountriesClient({
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Bulk update failed");
+      showAdminActionToast(toast, "updated", "auth-country", { count: selectedIds.length });
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Bulk update failed");
@@ -374,6 +443,7 @@ export function AuthenticationCountriesClient({
       });
       const data = (await res.json()) as { error?: string; updated?: number };
       if (!res.ok) throw new Error(data.error ?? "Reset failed");
+      showAdminActionToast(toast, "updated", "auth-country");
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Reset failed");
@@ -403,6 +473,7 @@ export function AuthenticationCountriesClient({
         const data = (await res.json()) as { error?: string };
         if (!res.ok) throw new Error(data.error ?? "Delete failed");
       }
+      showAdminActionToast(toast, "deleted", "auth-country", { count: selectedIds.length, name: firstName });
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Delete failed");
@@ -411,35 +482,61 @@ export function AuthenticationCountriesClient({
     }
   }
 
-  const [draft, setDraft] = useState({
-    countryName: "",
-    iso2: "",
-    region: "",
-    percentageWeight: 5,
-    displayPriority: 0,
-  });
-
   async function addRow() {
+    const errors = validateAuthCountryForm(addDraft);
+    if (Object.keys(errors).length > 0) {
+      setAddErrors(errors);
+      setError("Fix the highlighted fields before adding this country.");
+      return;
+    }
     setBusy(true);
     setError(null);
+    setAddErrors({});
     try {
       const res = await fetch("/api/admin/authentication-countries", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...draft,
-          active: true,
-          authenticationEnabled: true,
-        }),
+        body: JSON.stringify(authCountryFormValuesToPayload(addDraft)),
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Create failed");
-      setDraft({ countryName: "", iso2: "", region: "", percentageWeight: 5, displayPriority: 0 });
+      showAdminActionToast(toast, "created", "auth-country", { name: addDraft.countryName });
+      setAddDraft(emptyAuthCountryFormValues());
       setAddCountryOpen(false);
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Create failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function saveEditRow() {
+    if (!editRow) return;
+    const errors = validateAuthCountryForm(editDraft);
+    if (Object.keys(errors).length > 0) {
+      setEditErrors(errors);
+      setError("Fix the highlighted fields before saving.");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    setEditErrors({});
+    try {
+      const res = await fetch(`/api/admin/authentication-countries/${editRow.id}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(authCountryFormValuesToPayload(editDraft)),
+      });
+      const data = (await res.json()) as { error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Save failed");
+      showAdminActionToast(toast, "saved", "auth-country", { name: editDraft.countryName });
+      closeEditPanel();
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Save failed");
     } finally {
       setBusy(false);
     }
@@ -614,7 +711,7 @@ export function AuthenticationCountriesClient({
             type="button"
             variant="secondary"
             className="!h-9 !min-h-0 !py-0 shrink-0 px-4 text-xs font-semibold"
-            onClick={() => setAddCountryOpen((open) => !open)}
+            onClick={() => (addCountryOpen ? setAddCountryOpen(false) : openAddPanel())}
             aria-expanded={addCountryOpen}
           >
             {addCountryOpen ? "Close add" : "Add country"}
@@ -644,47 +741,77 @@ export function AuthenticationCountriesClient({
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Add country</h2>
-              <p className="mt-1 text-xs text-keyra-text-2">ISO-2 must be unique. Default weight 5.</p>
+              <p className="mt-1 text-xs text-keyra-text-2">Same fields as the list. Required: name, ISO-2, region, weight.</p>
             </div>
-            <button
-              type="button"
-              className="rounded-md border border-keyra-border px-3 py-1.5 text-xs font-semibold text-keyra-primary hover:bg-keyra-bg"
+            <AdminFormPanelCloseButton
+              label="Close add country form"
+              disabled={busy}
               onClick={() => setAddCountryOpen(false)}
-            >
-              Close
-            </button>
+            />
           </div>
-          <div className="mt-3 grid gap-3 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4 sm:grid-cols-2">
-            <input
-              className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm"
-              placeholder="Country name"
-              value={draft.countryName}
-              onChange={(e) => setDraft((d) => ({ ...d, countryName: e.target.value }))}
+          <div className="mt-4 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
+            <AuthenticationCountryFormFields
+              values={addDraft}
+              errors={addErrors}
+              disabled={busy}
+              flagFirst
+              onChange={(patch) => {
+                setAddDraft((current) => ({ ...current, ...patch }));
+                setAddErrors((current) => {
+                  const next = { ...current };
+                  for (const key of Object.keys(patch)) delete next[key];
+                  return next;
+                });
+              }}
             />
-            <input
-              className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm"
-              placeholder="ISO2"
-              value={draft.iso2}
-              onChange={(e) => setDraft((d) => ({ ...d, iso2: e.target.value }))}
+            <div className="mt-4 flex justify-end">
+              <Button type="button" disabled={busy} onClick={() => void addRow()}>
+                Add country
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {editRow ? (
+        <div className="rounded-2xl border border-keyra-border bg-keyra-surface/95 p-4 shadow-sm sm:p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-keyra-text-2">Edit country</h2>
+              <p className="mt-1 text-xs text-keyra-text-2">
+                Editing <span className="font-medium text-keyra-primary">{editRow.countryName}</span>. Required: name,
+                ISO-2, region, weight.
+              </p>
+            </div>
+            <AdminFormPanelCloseButton
+              label="Close edit country form"
+              disabled={busy}
+              onClick={closeEditPanel}
             />
-            <input
-              className="rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm"
-              placeholder="Region (continent)"
-              value={draft.region}
-              onChange={(e) => setDraft((d) => ({ ...d, region: e.target.value }))}
+          </div>
+          <div className="mt-4 rounded-lg border border-keyra-border bg-keyra-bg/40 p-4">
+            <AuthenticationCountryFormFields
+              values={editDraft}
+              errors={editErrors}
+              disabled={busy}
+              flagFirst
+              onChange={(patch) => {
+                setEditDraft((current) => ({ ...current, ...patch }));
+                setEditErrors((current) => {
+                  const next = { ...current };
+                  for (const key of Object.keys(patch)) delete next[key];
+                  return next;
+                });
+              }}
             />
-            <label className="flex items-center gap-2 text-sm text-keyra-text-2">
-              Weight
-              <input
-                type="number"
-                className="w-24 rounded-md border border-keyra-border bg-keyra-bg px-3 py-2 text-sm text-keyra-primary"
-                value={draft.percentageWeight}
-                onChange={(e) => setDraft((d) => ({ ...d, percentageWeight: Number(e.target.value) }))}
-              />
-            </label>
-            <Button type="button" disabled={busy} onClick={() => void addRow()}>
-              Add country
-            </Button>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button type="button" variant="secondary" disabled={busy} onClick={closeEditPanel}>
+                Cancel
+              </Button>
+              <Button type="button" disabled={busy} onClick={() => void saveEditRow()}>
+                Save changes
+              </Button>
+            </div>
           </div>
         </div>
       ) : null}
@@ -716,6 +843,7 @@ export function AuthenticationCountriesClient({
               <th className="px-2 py-2.5 align-middle">Wt</th>
               <th className="px-2 py-2.5 align-middle">Pri</th>
               <th className="px-2 py-2.5 align-middle">Updated</th>
+              <th className="px-2 py-2.5 pr-4 align-middle text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -727,6 +855,8 @@ export function AuthenticationCountriesClient({
                 dirty={Boolean(dirtyIds[r.id])}
                 onToggleSelect={() => toggleSelect(r.id)}
                 onChange={patchRow}
+                onEdit={() => openEditPanel(r)}
+                isEditing={editRow?.id === r.id}
                 disabled={busy}
               />
             ))}
@@ -772,6 +902,8 @@ function CountryEditorRow({
   dirty,
   onToggleSelect,
   onChange,
+  onEdit,
+  isEditing,
   disabled,
 }: {
   row: AuthenticationCountry;
@@ -779,6 +911,8 @@ function CountryEditorRow({
   dirty: boolean;
   onToggleSelect: () => void;
   onChange: (id: string, patch: Partial<AuthenticationCountry>) => void;
+  onEdit: () => void;
+  isEditing: boolean;
   disabled: boolean;
 }) {
   const inp =
@@ -786,7 +920,13 @@ function CountryEditorRow({
   return (
     <tr
       className={`border-b border-keyra-border/50 align-middle transition-colors hover:bg-keyra-bg/40 ${
-        dirty ? "bg-amber-500/5 ring-1 ring-inset ring-amber-500/20" : selected ? "bg-keyra-bg/50" : ""
+        isEditing
+          ? "bg-keyra-primary/5 ring-1 ring-inset ring-keyra-primary/15"
+          : dirty
+            ? "bg-amber-500/5 ring-1 ring-inset ring-amber-500/20"
+            : selected
+              ? "bg-keyra-bg/50"
+              : ""
       }`}
     >
       <td className="w-10 pl-4 pr-2 py-1.5 align-middle">
@@ -803,7 +943,7 @@ function CountryEditorRow({
           disabled={disabled}
         />
       </td>
-      <td className="px-2 py-1.5 align-middle text-center text-base leading-none" title="Flag emoji">
+      <td className="w-14 px-2 py-1.5 align-middle text-center text-xl leading-none" title={row.countryName}>
         {row.flagEmoji ?? "—"}
       </td>
       <td className="px-2 py-1.5 align-middle">
@@ -885,6 +1025,25 @@ function CountryEditorRow({
         />
       </td>
       <td className="whitespace-nowrap px-2 py-1.5 align-middle text-[10px] text-keyra-text-2">{fmtDate(row.updatedAt)}</td>
+      <td className="px-2 py-1.5 pr-4 align-middle text-right">
+        <button
+          type="button"
+          title="Edit"
+          aria-label={`Edit ${row.countryName}`}
+          disabled={disabled}
+          onClick={onEdit}
+          className={`inline-flex size-8 items-center justify-center rounded-md border bg-keyra-bg transition disabled:opacity-50 ${
+            isEditing
+              ? "border-keyra-primary/30 text-keyra-primary ring-1 ring-keyra-primary/20"
+              : "border-keyra-border text-keyra-primary hover:border-black/20 hover:bg-keyra-surface"
+          }`}
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
+          </svg>
+        </button>
+      </td>
     </tr>
   );
 }

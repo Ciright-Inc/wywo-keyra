@@ -1,4 +1,5 @@
-/** Keep the previous page visible during navigation — list clients handle pending state. */
+import { AdminTabRouteLoading } from "@/components/admin/AdminTabRouteLoading";
+
 export default function Loading() {
-  return null;
+  return <AdminTabRouteLoading tab="deployments-admin-users" />;
 }

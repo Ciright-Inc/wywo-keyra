@@ -1,9 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import type { ReactNode } from "react";
 import { AdminConfirmProvider } from "@/components/admin/AdminConfirmProvider";
+import { AdminRouteToast } from "@/components/admin/AdminRouteToast";
+import { AdminShellMainContent } from "@/components/admin/AdminShellMainContent";
+import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
+import { useAdminShellNavigation } from "@/lib/admin/useAdminShellNavigation";
 
 const nav = [
   { href: "/admin/authentication/countries", label: "Authentication countries", icon: "globe" },
@@ -43,10 +46,18 @@ function AuthNavIcon({ name }: { name: (typeof nav)[number]["icon"] }) {
 }
 
 export function AuthenticationAdminShell({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
+  const { navigate, prefetch, isNavActive, pendingHref } = useAdminShellNavigation();
+
+  useEffect(() => {
+    for (const item of nav) {
+      prefetch(item.href);
+    }
+    prefetch("/admin/deployments");
+  }, [prefetch]);
 
   return (
     <AdminConfirmProvider>
+    <AdminRouteToast />
     <div className="w-full px-4 py-8 sm:px-6 lg:px-8 xl:px-10">
       <div className="flex w-full flex-col gap-8 lg:flex-row lg:items-start lg:gap-8 xl:gap-10">
         <aside className="shrink-0 lg:sticky lg:top-16 lg:z-[90] lg:w-72 lg:self-start">
@@ -61,12 +72,14 @@ export function AuthenticationAdminShell({ children }: { children: ReactNode }) 
 
             <nav className="mt-3 flex flex-col gap-1" aria-label="Authentication admin">
               {nav.map((item) => {
-                const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                const active = isNavActive(item.href);
                 return (
-                  <Link
+                  <AdminTransitionLink
                     key={item.href}
                     href={item.href}
                     prefetch
+                    onNavigate={navigate}
+                    aria-current={active ? "page" : undefined}
                     className={`group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm transition ${
                       active
                         ? "bg-keyra-bg font-semibold text-keyra-primary shadow-sm ring-1 ring-black/10"
@@ -83,22 +96,25 @@ export function AuthenticationAdminShell({ children }: { children: ReactNode }) 
                       <AuthNavIcon name={item.icon} />
                     </span>
                     <span className="truncate">{item.label}</span>
-                  </Link>
+                  </AdminTransitionLink>
                 );
               })}
             </nav>
 
-            <Link
+            <AdminTransitionLink
               href="/admin/deployments"
               prefetch
+              onNavigate={navigate}
               className="mt-4 flex items-center gap-2 rounded-2xl border border-keyra-border bg-keyra-bg/70 px-3 py-2.5 text-sm font-medium text-keyra-text-2 transition hover:border-black/15 hover:text-keyra-primary"
             >
               <span aria-hidden>&lt;-</span>
               <span>Deployments admin</span>
-            </Link>
+            </AdminTransitionLink>
           </div>
         </aside>
-        <div className="min-w-0 flex-1 lg:min-h-0">{children}</div>
+        <AdminShellMainContent pendingHref={pendingHref} className="min-w-0 flex-1 lg:min-h-0">
+          {children}
+        </AdminShellMainContent>
       </div>
     </div>
     </AdminConfirmProvider>

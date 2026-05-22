@@ -11,7 +11,9 @@ import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { useToast } from "@/components/ui/Toast";
 import { deleteDeploymentAppMessage } from "@/lib/admin/adminDeleteMessages";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import { GensparkSlidePanel } from "./GensparkSlidePanel";
 
 function AppListIcon({ label }: { label: string }) {
@@ -81,6 +83,7 @@ type Props = {
 
 export function AppsDirectoryClient({ initialApps, categories }: Props) {
   const confirm = useAdminConfirm();
+  const toast = useToast();
   const [apps, setApps] = useState(initialApps);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -117,8 +120,9 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
         throw new Error(data?.error ?? "Delete failed.");
       }
       setApps((current) => current.filter((item) => item.id !== app.id));
+      showAdminActionToast(toast, "deleted", "app", { name: app.label });
     } catch (err) {
-      window.alert(err instanceof Error ? err.message : "Delete failed.");
+      toast.error("Delete failed", err instanceof Error ? err.message : "Delete failed.");
     } finally {
       setBusyId(null);
     }

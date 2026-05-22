@@ -1,34 +1,42 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useTransition, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { adminHrefMatchesPathname } from "@/lib/admin/adminRouteTab";
 
 type NavActiveOptions = {
   /** Only match the exact href (used for section overview roots). */
   exact?: boolean;
 };
 
-/** Soft navigation: keep current page visible with a light pending state instead of route loading UI. */
-export function useAdminRouteTransition() {
+/** Sidebar tab navigation: instant route loading UI (page header + list skeleton). */
+export function useAdminShellNavigation() {
   const router = useRouter();
   const pathname = usePathname();
-  const [isPending, startTransition] = useTransition();
   const [pendingHref, setPendingHref] = useState<string | null>(null);
 
   useEffect(() => {
     if (!pendingHref) return;
-    if (pathname === pendingHref || pathname.startsWith(`${pendingHref}/`)) {
-      setPendingHref(null);
-    }
+    if (!adminHrefMatchesPathname(pendingHref, pathname)) return;
+
+    let innerFrame = 0;
+    const outerFrame = requestAnimationFrame(() => {
+      innerFrame = requestAnimationFrame(() => {
+        setPendingHref(null);
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(outerFrame);
+      if (innerFrame) cancelAnimationFrame(innerFrame);
+    };
   }, [pathname, pendingHref]);
 
   const navigate = useCallback(
     (href: string) => {
       if (href === pathname || href === pendingHref) return;
       setPendingHref(href);
-      startTransition(() => {
-        router.push(href);
-      });
+      router.push(href);
     },
     [pathname, pendingHref, router],
   );
@@ -49,5 +57,5 @@ export function useAdminRouteTransition() {
     [pathname, pendingHref],
   );
 
-  return { isPending, navigate, prefetch, isNavActive, pendingHref };
+  return { navigate, prefetch, isNavActive, pendingHref };
 }

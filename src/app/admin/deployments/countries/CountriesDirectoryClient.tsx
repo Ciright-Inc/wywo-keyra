@@ -10,6 +10,8 @@ import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import { deleteCountryMessage } from "@/lib/admin/adminDeleteMessages";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
+import { useToast } from "@/components/ui/Toast";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { buildListHref } from "@/lib/admin/listSearchParams";
 import { useAdminRouteTransition } from "@/lib/admin/useAdminRouteTransition";
@@ -81,6 +83,7 @@ export function CountriesDirectoryClient({
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const router = useRouter();
   const confirm = useAdminConfirm();
+  const toast = useToast();
   const { isPending, navigate } = useAdminRouteTransition();
   const { page, pageSize, totalCount } = pagination;
 
@@ -99,6 +102,7 @@ export function CountriesDirectoryClient({
         const data = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(data.error ?? `Delete failed (${res.status})`);
       }
+      showAdminActionToast(toast, "deleted", "country", { name });
       router.refresh();
     } catch (e) {
       setDeleteError(e instanceof Error ? e.message : "Delete failed");

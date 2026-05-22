@@ -30,6 +30,7 @@ import {
   isComplianceReviewer,
   isReadOnlyRole,
 } from "@/lib/deployments/adminAuthz";
+import { adminToastQuery } from "@/lib/admin/adminToastMessages";
 
 export async function createRegion(formData: FormData) {
   const auth = await assertAdminServer();
@@ -60,7 +61,7 @@ export async function createRegion(formData: FormData) {
   revalidatePublicDeployments();
   revalidatePath("/admin/deployments/regions");
   /** Match Telcos UX: drop the user back at the list so the new row is visible. */
-  redirect("/admin/deployments/regions");
+  redirect(`/admin/deployments/regions?${adminToastQuery("created", "region", { name })}`);
 }
 
 export async function updateRegion(formData: FormData) {
@@ -87,6 +88,8 @@ export async function updateRegion(formData: FormData) {
   await writeAudit({ entityType: "Region", entityId: id, action: "UPDATE", payload: { slug } });
   revalidatePublicDeployments();
   revalidatePath("/admin/deployments/regions");
+  revalidatePath(`/admin/deployments/regions/${id}`);
+  redirect(`/admin/deployments/regions/${id}?${adminToastQuery("saved", "region", { name })}`);
 }
 
 const assetLoaders = {
@@ -128,11 +131,12 @@ function parseTelcosListPerPage(formData: FormData): number {
 }
 
 /** After create — page 1 so the new row (sorted by newest) is visible immediately. */
-function redirectToTelcosListPageOne(perPage: number): never {
+function redirectToTelcosListPageOne(perPage: number, name?: string): never {
+  const toast = adminToastQuery("created", "telco", name ? { name } : undefined);
   if (perPage === TELCOS_DEFAULT_PAGE_SIZE) {
-    redirect("/admin/deployments/telcos");
+    redirect(`/admin/deployments/telcos?${toast}`);
   }
-  redirect(`/admin/deployments/telcos?perPage=${perPage}`);
+  redirect(`/admin/deployments/telcos?perPage=${perPage}&${toast}`);
 }
 
 export async function createCountry(formData: FormData) {
@@ -200,7 +204,7 @@ export async function createCountry(formData: FormData) {
   });
   revalidateDeploymentSurfaces();
   /** Match Telcos UX: drop the user back at the list so the new row is visible. */
-  redirect("/admin/deployments/countries");
+  redirect(`/admin/deployments/countries?${adminToastQuery("created", "country", { name })}`);
 }
 
 export async function updateCountry(formData: FormData) {
@@ -336,6 +340,8 @@ export async function updateCountry(formData: FormData) {
   await writeAudit({ entityType: "CountryDeployment", entityId: id, action: "PATCH", payload: data });
   revalidateDeploymentSurfaces();
   revalidatePath(`/admin/deployments/countries/${id}`);
+  const savedName = String(data.name ?? existing.name);
+  redirect(`/admin/deployments/countries/${id}?${adminToastQuery("saved", "country", { name: savedName })}`);
 }
 
 export async function createTelco(formData: FormData) {
@@ -403,7 +409,7 @@ export async function createTelco(formData: FormData) {
   });
   const listPerPage = parseTelcosListPerPage(formData);
   revalidateDeploymentSurfaces();
-  redirectToTelcosListPageOne(listPerPage);
+  redirectToTelcosListPageOne(listPerPage, String(formData.get("name") ?? "").trim() || undefined);
 }
 
 export async function updateTelco(formData: FormData) {
@@ -470,6 +476,8 @@ export async function updateTelco(formData: FormData) {
   await writeAudit({ entityType: "TelcoDeployment", entityId: id, action: "PATCH", payload: data });
   revalidateDeploymentSurfaces();
   revalidatePath(`/admin/deployments/telcos/${id}`);
+  const savedName = String(data.name ?? existing.name);
+  redirect(`/admin/deployments/telcos/${id}?${adminToastQuery("saved", "telco", { name: savedName })}`);
 }
 
 export async function createServerNode(formData: FormData) {
@@ -509,7 +517,7 @@ export async function createServerNode(formData: FormData) {
   await writeAudit({ entityType: "ServerNode", entityId: created.id, action: "CREATE", payload: { fqdn } });
   revalidateDeploymentSurfaces();
   /** Match Telcos UX: drop the user back at the list so the new row is visible. */
-  redirect("/admin/deployments/server-nodes");
+  redirect(`/admin/deployments/server-nodes?${adminToastQuery("created", "server-node", { name: fqdn })}`);
 }
 
 export async function createServerNodeFromForm(formData: FormData) {
@@ -561,6 +569,8 @@ export async function updateServerNode(formData: FormData) {
   await writeAudit({ entityType: "ServerNode", entityId: id, action: "PATCH", payload: data });
   revalidateDeploymentSurfaces();
   revalidatePath(`/admin/deployments/server-nodes/${id}`);
+  const savedName = String(data.fqdn ?? existing.fqdn);
+  redirect(`/admin/deployments/server-nodes/${id}?${adminToastQuery("saved", "server-node", { name: savedName })}`);
 }
 
 export async function createAccessDomainRule(formData: FormData) {
@@ -595,7 +605,9 @@ export async function createAccessDomainRule(formData: FormData) {
   });
   revalidateDeploymentSurfaces();
   /** Match Telcos UX: drop the user back at the list so the new row is visible. */
-  redirect("/admin/deployments/access-domain-rules");
+  redirect(
+    `/admin/deployments/access-domain-rules?${adminToastQuery("created", "access-domain-rule", { name: allowedEmailDomain })}`,
+  );
 }
 
 export async function createAccessDomainRuleFromForm(formData: FormData) {
@@ -636,4 +648,8 @@ export async function updateAccessDomainRule(formData: FormData) {
   await writeAudit({ entityType: "AccessDomainRule", entityId: id, action: "PATCH", payload: data });
   revalidateDeploymentSurfaces();
   revalidatePath(`/admin/deployments/access-domain-rules/${id}`);
+  const savedName = String(data.allowedEmailDomain ?? existing.allowedEmailDomain);
+  redirect(
+    `/admin/deployments/access-domain-rules/${id}?${adminToastQuery("saved", "access-domain-rule", { name: savedName })}`,
+  );
 }

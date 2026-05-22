@@ -8,6 +8,8 @@ import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import { deleteAccessDomainRuleMessage } from "@/lib/admin/adminDeleteMessages";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
+import { useToast } from "@/components/ui/Toast";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { buildListHref } from "@/lib/admin/listSearchParams";
 
@@ -57,6 +59,7 @@ export function AccessDomainRulesDirectoryClient({
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const router = useRouter();
   const confirm = useAdminConfirm();
+  const toast = useToast();
   const { page, pageSize, totalCount } = pagination;
 
   /** Delete an access domain rule via the server route. Auth/audit/revalidate server-side. */
@@ -73,6 +76,7 @@ export function AccessDomainRulesDirectoryClient({
         const data = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(data.error ?? `Delete failed (${res.status})`);
       }
+      showAdminActionToast(toast, "deleted", "access-domain-rule", { name: label });
       router.refresh();
     } catch (e) {
       setDeleteError(e instanceof Error ? e.message : "Delete failed");

@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, startTransition } from "react";
 import { Button } from "@/components/ui/Button";
+import { useToast } from "@/components/ui/Toast";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
@@ -18,6 +21,8 @@ type Row = {
 
 export function AccessRequestsClient({ initialRequests }: { initialRequests?: Row[] }) {
   const skipInitialFetch = useRef(initialRequests != null);
+  const confirm = useAdminConfirm();
+  const toast = useToast();
   const [rows, setRows] = useState<Row[] | null>(initialRequests ?? null);
   const [loading, setLoading] = useState(initialRequests == null);
   const [error, setError] = useState<string | null>(null);
@@ -143,13 +148,25 @@ export function AccessRequestsClient({ initialRequests }: { initialRequests?: Ro
                       className="h-9 px-3 text-xs"
                       disabled={r.approvalStatus !== "PENDING" || r.verificationStatus !== "VERIFIED"}
                       onClick={async () => {
+                        if (
+                          !(await confirm({
+                            message: `Approve access request for "${r.workEmail}"?`,
+                            confirmLabel: "Approve",
+                          }))
+                        ) {
+                          return;
+                        }
                         const res = await fetch(`/api/admin/deployments/access-requests/${r.id}`, {
                           method: "PATCH",
                           headers: { "Content-Type": "application/json" },
                           credentials: "include",
                           body: JSON.stringify({ approvalStatus: "APPROVED" }),
                         });
-                        if (!res.ok) window.alert("Unable to approve.");
+                        if (!res.ok) {
+                          toast.error("Unable to approve", "The access request could not be approved.");
+                          return;
+                        }
+                        showAdminActionToast(toast, "approved", "access-request", { name: r.workEmail });
                         await load();
                       }}
                     >
@@ -161,6 +178,14 @@ export function AccessRequestsClient({ initialRequests }: { initialRequests?: Ro
                       className="h-9 px-3 text-xs"
                       disabled={r.approvalStatus !== "PENDING"}
                       onClick={async () => {
+                        if (
+                          !(await confirm({
+                            message: `Reject access request for "${r.workEmail}"?`,
+                            confirmLabel: "Reject",
+                          }))
+                        ) {
+                          return;
+                        }
                         const reason = window.prompt("Rejection reason (internal record):") ?? "";
                         if (!reason.trim()) return;
                         const res = await fetch(`/api/admin/deployments/access-requests/${r.id}`, {
@@ -169,7 +194,11 @@ export function AccessRequestsClient({ initialRequests }: { initialRequests?: Ro
                           credentials: "include",
                           body: JSON.stringify({ approvalStatus: "REJECTED", rejectionReason: reason.trim() }),
                         });
-                        if (!res.ok) window.alert("Unable to reject.");
+                        if (!res.ok) {
+                          toast.error("Unable to reject", "The access request could not be rejected.");
+                          return;
+                        }
+                        showAdminActionToast(toast, "rejected", "access-request", { name: r.workEmail });
                         await load();
                       }}
                     >

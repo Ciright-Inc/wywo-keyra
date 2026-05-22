@@ -8,6 +8,8 @@ import {
   deleteAppCategoryWithReassignMessage,
 } from "@/lib/admin/adminDeleteMessages";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { useToast } from "@/components/ui/Toast";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import {
   DEPLOYMENT_APP_CATEGORY_MAX_LENGTH,
   normalizeDeploymentAppCategory,
@@ -49,6 +51,7 @@ export function ManageCategoriesModal({
   onCategoriesChange,
 }: Props) {
   const confirm = useAdminConfirm();
+  const toast = useToast();
   const [mounted, setMounted] = useState(false);
   const [categoryList, setCategoryList] = useState(() => sortCategories(categories));
   const [orderNumber, setOrderNumber] = useState("");
@@ -200,7 +203,14 @@ export function ManageCategoriesModal({
         nextSelected,
       );
 
+      const wasEditing = editingOriginalName;
       resetForm();
+      showAdminActionToast(
+        toast,
+        wasEditing ? "saved" : "created",
+        "app-category",
+        { name: saved.name },
+      );
     } finally {
       setBusyAction(null);
     }
@@ -247,6 +257,7 @@ export function ManageCategoriesModal({
         setReassignFor(null);
         setReassignTarget("");
       }
+      showAdminActionToast(toast, "deleted", "app-category", { name });
     } finally {
       setBusyAction(null);
     }

@@ -9,6 +9,7 @@ import { AdminFieldError, fieldClass } from "@/components/admin/AdminFieldError"
 import { RowActions } from "@/components/admin/RowActions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import { deleteAdminUserMessage } from "@/lib/admin/adminDeleteMessages";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { Button } from "@/components/ui/Button";
@@ -125,6 +126,7 @@ export function AdminUsersDirectoryClient({
         const data = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(data.error ?? `Delete failed (${res.status})`);
       }
+      showAdminActionToast(toast, "deleted", "admin-user", { name });
       router.refresh();
     } catch (e) {
       setDeleteError(e instanceof Error ? e.message : "Delete failed");

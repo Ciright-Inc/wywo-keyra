@@ -165,12 +165,33 @@ function renderStaticHeader(tab: AdminSkeletonTab) {
   }
 }
 
+function AuthSettingsFormSkeleton() {
+  return (
+    <div className="mt-6 max-w-xl space-y-4">
+      <div className="space-y-3">
+        <div className="keyra-skeleton h-5 w-28" aria-hidden />
+        <div className="keyra-skeleton h-5 w-32" aria-hidden />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {Array.from({ length: 6 }, (_, index) => (
+          <div key={index}>
+            <div className="keyra-skeleton h-4 w-32" aria-hidden />
+            <div className="keyra-skeleton mt-1 h-10 w-full rounded-md" aria-hidden />
+          </div>
+        ))}
+      </div>
+      <div className="keyra-skeleton h-10 w-32 rounded-full" aria-hidden />
+    </div>
+  );
+}
+
 /** Route-level loading: real page title + list-area skeleton only. */
 export function AdminTabRouteLoading({ tab }: { tab: AdminSkeletonTab }) {
   if (tab === "auth-settings") {
     return (
       <div aria-busy="true" aria-label="Loading">
         {renderStaticHeader(tab)}
+        <AuthSettingsFormSkeleton />
       </div>
     );
   }

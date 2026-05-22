@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
+import { useToast } from "@/components/ui/Toast";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import {
   normalizeDeploymentAppCategory,
   type DeploymentAppCategoryView,
@@ -25,6 +27,7 @@ function sortCategories(categories: DeploymentAppCategoryView[]): DeploymentAppC
 
 export function AppForm({ mode, app, categories }: Props) {
   const router = useRouter();
+  const toast = useToast();
   const [label, setLabel] = useState(app?.label ?? "");
   const [description, setDescription] = useState(app?.description ?? "");
   const [href, setHref] = useState(app?.href ?? "");
@@ -88,6 +91,12 @@ export function AppForm({ mode, app, categories }: Props) {
       return;
     }
 
+    showAdminActionToast(
+      toast,
+      mode === "edit" ? "saved" : "created",
+      "app",
+      { name: label.trim() },
+    );
     router.push("/admin/deployments/apps");
     router.refresh();
   }

@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { useToast } from "@/components/ui/Toast";
 import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
+import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 
 type Settings = {
   id: string;
@@ -28,6 +30,7 @@ export function AuthenticationFeedSettingsClient({
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(initialSettings == null);
+  const toast = useToast();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -62,6 +65,7 @@ export function AuthenticationFeedSettingsClient({
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Save failed");
+      showAdminActionToast(toast, "saved", "auth-settings");
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed");
