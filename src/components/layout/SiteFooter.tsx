@@ -17,11 +17,6 @@ function siteLinks(): SiteLink[] {
   ];
 }
 
-function splitInHalf<T>(arr: T[]): [T[], T[]] {
-  const mid = Math.ceil(arr.length / 2);
-  return [arr.slice(0, mid), arr.slice(mid)];
-}
-
 function FooterAppLinkItem({ item }: { item: KeyraEcosystemAppLink }) {
   return (
     <li>
@@ -73,9 +68,7 @@ function FooterSiteLinkItem({ link }: { link: SiteLink }) {
 
 export function SiteFooter() {
   const appLinks = getKeyraEcosystemAppLinks();
-  const [appLinksLeft, appLinksRight] = splitInHalf(appLinks);
   const links = siteLinks();
-  const [siteLinksLeft, siteLinksRight] = splitInHalf(links);
   const year = new Date().getFullYear();
 
   return (
@@ -93,36 +86,22 @@ export function SiteFooter() {
           <section className="keyra-site-footer__block">
             <h2 className="keyra-site-footer__label">On this site</h2>
             <nav className="keyra-site-footer__nav" aria-label="Footer">
-              <div className="keyra-site-footer__columns">
-                <ul className="keyra-site-footer__column">
-                  {siteLinksLeft.map((link) => (
-                    <FooterSiteLinkItem key={link.label} link={link} />
-                  ))}
-                </ul>
-                <ul className="keyra-site-footer__column keyra-site-footer__column--end">
-                  {siteLinksRight.map((link) => (
-                    <FooterSiteLinkItem key={link.label} link={link} />
-                  ))}
-                </ul>
-              </div>
+              <ul className="keyra-site-footer__link-grid keyra-site-footer__link-grid--site">
+                {links.map((link) => (
+                  <FooterSiteLinkItem key={link.label} link={link} />
+                ))}
+              </ul>
             </nav>
           </section>
 
           <section className="keyra-site-footer__block">
             <h2 className="keyra-site-footer__label">Keyra apps</h2>
             <nav className="keyra-site-footer__nav" aria-label="Keyra apps">
-              <div className="keyra-site-footer__columns">
-                <ul className="keyra-site-footer__column">
-                  {appLinksLeft.map((item) => (
-                    <FooterAppLinkItem key={item.id} item={item} />
-                  ))}
-                </ul>
-                <ul className="keyra-site-footer__column keyra-site-footer__column--end">
-                  {appLinksRight.map((item) => (
-                    <FooterAppLinkItem key={item.id} item={item} />
-                  ))}
-                </ul>
-              </div>
+              <ul className="keyra-site-footer__link-grid keyra-site-footer__link-grid--apps">
+                {appLinks.map((item) => (
+                  <FooterAppLinkItem key={item.id} item={item} />
+                ))}
+              </ul>
             </nav>
           </section>
         </div>
