@@ -13,12 +13,10 @@ type Props = {
 };
 
 export function AdminAccessGate({ reason, phoneE164, nextPath }: Props) {
-  const loginHref = useMemo(() => {
-    if (typeof window !== "undefined") {
-      return buildGetStartedAccessUrl(`${window.location.origin}${nextPath}`);
-    }
-    return buildGetStartedAccessUrl(`${keyraMarketingOrigin()}${nextPath}`);
-  }, [nextPath]);
+  const loginHref = useMemo(
+    () => buildGetStartedAccessUrl(`${keyraMarketingOrigin()}${nextPath}`),
+    [nextPath],
+  );
 
   const isNoAccess = reason === "no_access";
 

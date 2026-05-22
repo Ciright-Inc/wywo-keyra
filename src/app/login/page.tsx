@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { buildGetStartedAccessUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
+import { buildGetStartedAccessUrl, keyraMarketingOrigin, normalizeKeyraReturnUrl } from "@/lib/keyraAppUrls";
 
 type Props = {
   searchParams: Promise<{ next?: string }>;
@@ -19,7 +19,8 @@ export default async function LoginPage({ searchParams }: Props) {
         ? "https"
         : "http";
   const path = sp.next?.startsWith("/") ? sp.next : "/";
-  const returnUrl =
-    host.length > 0 ? `${proto}://${host}${path}` : `${keyraMarketingOrigin()}${path === "/" ? "" : path}`;
+  const returnUrl = normalizeKeyraReturnUrl(
+    host.length > 0 ? `${proto}://${host}${path}` : `${keyraMarketingOrigin()}${path === "/" ? "" : path}`,
+  );
   redirect(buildGetStartedAccessUrl(returnUrl));
 }
