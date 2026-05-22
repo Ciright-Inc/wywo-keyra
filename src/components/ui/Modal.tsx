@@ -1,7 +1,9 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { lockDocumentScroll } from "@/lib/documentScrollLock";
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "./cn";
 
 /**
@@ -38,18 +40,36 @@ export function Modal({
   layout?: ModalLayout;
   panelClassName?: string;
 }) {
+  const [mounted, setMounted] = useState(false);
   const ariaLabel = title ?? "Dialog";
   const panelBase =
     "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border border-[var(--ds-hairline-strong)] bg-[var(--ds-surface-card)] text-[var(--ds-ink)] shadow-[var(--ds-shadow-soft)] rounded-[var(--ds-radius-lg)]";
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    return lockDocumentScroll();
+  }, [open]);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open ? (
         <motion.div
-          className="fixed inset-0 z-50"
+          className="fixed inset-0 z-[var(--keyra-z-modal,500)] overscroll-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          onWheel={(event) => {
+            if (event.target === event.currentTarget) event.preventDefault();
+          }}
+          onTouchMove={(event) => {
+            if (event.target === event.currentTarget) event.preventDefault();
+          }}
         >
           {/* Solid scrim, no backdrop-filter (TR-5). */}
           <button
@@ -73,6 +93,7 @@ export function Modal({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.98 }}
             transition={{ duration: 0.2 }}
+            onClick={(event) => event.stopPropagation()}
           >
             {layout === "legacy" ? (
               <>
@@ -112,6 +133,7 @@ export function Modal({
           </motion.div>
         </motion.div>
       ) : null}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

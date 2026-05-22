@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { cn } from "@/components/ui/cn";
 import { IconDevices, IconShieldCheck } from "@/components/ui/Icons";
+import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/ui/Toast";
 
 function deviceDisplayName(label: string): string {
@@ -465,11 +466,12 @@ export function ProtectionDashboard() {
   const router = useRouter();
   const pathname = usePathname();
   const loginNext = pathname?.startsWith("/") ? pathname : "/";
-  const { push } = useToast();
+  const toast = useToast();
   const [data, setData] = useState<ProtectionDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [scanning, setScanning] = useState(false);
   const [locking, setLocking] = useState(false);
+  const [showLockConfirm, setShowLockConfirm] = useState(false);
   const [locationLabel, setLocationLabel] = useState("");
   const [showAddLocation, setShowAddLocation] = useState(false);
 
@@ -487,15 +489,14 @@ export function ProtectionDashboard() {
       if (!res.ok) throw new Error("Could not load protection data.");
       setData((await res.json()) as ProtectionDashboard);
     } catch (err) {
-      push({
-        kind: "error",
-        title: "Protection",
-        message: err instanceof Error ? err.message : "Something went wrong.",
-      });
+      toast.error(
+        "Protection",
+        err instanceof Error ? err.message : "Something went wrong.",
+      );
     } finally {
       setLoading(false);
     }
-  }, [push, router, loginNext]);
+  }, [toast, router, loginNext]);
 
   useEffect(() => {
     void load();
@@ -511,13 +512,9 @@ export function ProtectionDashboard() {
       });
       if (!res.ok) throw new Error("Scan failed.");
       await load();
-      push({ kind: "success", title: "Scan complete", message: "No compromised credentials found." });
+      toast.success("Scan complete", "No compromised credentials found.");
     } catch (err) {
-      push({
-        kind: "error",
-        title: "Scan",
-        message: err instanceof Error ? err.message : "Scan failed.",
-      });
+      toast.error("Scan", err instanceof Error ? err.message : "Scan failed.");
     } finally {
       setScanning(false);
     }
@@ -538,18 +535,17 @@ export function ProtectionDashboard() {
       setLocationLabel("");
       setShowAddLocation(false);
       await load();
-      push({ kind: "success", title: "Location added", message: label });
+      toast.success("Location added", label);
     } catch (err) {
-      push({
-        kind: "error",
-        title: "Location",
-        message: err instanceof Error ? err.message : "Could not add location.",
-      });
+      toast.error(
+        "Location",
+        err instanceof Error ? err.message : "Could not add location.",
+      );
     }
   }
 
   async function lockAllDevices() {
-    if (!confirm("Sign out all devices and lock your Keyra session?")) return;
+    setShowLockConfirm(false);
     setLocking(true);
     try {
       const res = await fetch("/api/keyra/protection/emergency/lock", {
@@ -557,14 +553,16 @@ export function ProtectionDashboard() {
         credentials: "include",
       });
       if (!res.ok) throw new Error("Lock failed.");
-      push({ kind: "success", title: "Devices locked", message: "You have been signed out everywhere." });
+      toast.success(
+        "All devices locked",
+        "You have been signed out on every device. Sign in again when you are ready.",
+      );
       router.replace(`/login?next=${encodeURIComponent(loginNext)}`);
     } catch (err) {
-      push({
-        kind: "error",
-        title: "Emergency lock",
-        message: err instanceof Error ? err.message : "Lock failed.",
-      });
+      toast.error(
+        "Emergency lock",
+        err instanceof Error ? err.message : "Lock failed.",
+      );
     } finally {
       setLocking(false);
     }
@@ -665,7 +663,7 @@ export function ProtectionDashboard() {
               variant="destructive"
               className="!border-red-200 !bg-red-600 !text-white hover:!bg-red-700"
               disabled={!data.emergency.lockAvailable || locking}
-              onClick={() => void lockAllDevices()}
+              onClick={() => setShowLockConfirm(true)}
             >
               {locking ? "Locking…" : "Lock All Devices"}
             </Button>
@@ -674,6 +672,38 @@ export function ProtectionDashboard() {
             Lock signs you out on all devices.
           </p>
         </Card>
+
+        <Modal
+          open={showLockConfirm}
+          onClose={() => !locking && setShowLockConfirm(false)}
+          title="Lock all devices?"
+          footer={
+            <div className="flex flex-wrap justify-end gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={locking}
+                onClick={() => setShowLockConfirm(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                className="!border-red-200 !bg-red-600 !text-white hover:!bg-red-700"
+                disabled={locking}
+                onClick={() => void lockAllDevices()}
+              >
+                {locking ? "Locking…" : "Lock all devices"}
+              </Button>
+            </div>
+          }
+        >
+          <p className="ds-body-sm text-[var(--ds-body)]">
+            This signs you out of Keyra on every browser and device, including this one. You will
+            need to sign in again to continue.
+          </p>
+        </Modal>
 
         <Card className="lg:col-span-2">
           <CardHeader

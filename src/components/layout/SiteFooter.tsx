@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
-import { KeyraHomeLink } from "@/components/layout/KeyraHomeLink";
 import { getKeyraEcosystemAppLinks, type KeyraEcosystemAppLink } from "@/lib/keyraAppUrls";
 
 type SiteLink = { href: string; label: string; external?: boolean };
@@ -84,12 +83,11 @@ export function SiteFooter() {
       <div className="keyra-site-footer__inner mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="keyra-site-footer__grid">
           <section className="keyra-site-footer__block keyra-site-footer__block--brand">
-            <KeyraLogo variant="footer" wordmarkClassName="text-white/95" />
+            <KeyraLogo variant="footer" showWordmark={false} />
             <p className="keyra-site-footer__lede">
               Choose the experience that matches your context — consumer protection, enterprise deployment, or
               partner tooling.
             </p>
-            <KeyraHomeLink className="keyra-site-footer__cta">Keyra home</KeyraHomeLink>
           </section>
 
           <section className="keyra-site-footer__block">
