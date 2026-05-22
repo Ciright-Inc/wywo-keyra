@@ -9,6 +9,7 @@ import {
 } from "@/lib/admin/adminDeleteMessages";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import { AdminDeleteIconButton, AdminEditIconButton } from "@/components/admin/AdminEditIconButton";
+import { AdminSelectMenu } from "@/components/admin/AdminSelectMenu";
 import { fieldClass as adminFieldClass } from "@/components/admin/AdminFieldError";
 import { useToast } from "@/components/ui/Toast";
 import { adminLabel, adminLegacyInput } from "@/lib/admin/adminUiClasses";
@@ -436,22 +437,22 @@ export function ManageCategoriesModal({
                     <p className="text-sm font-medium text-amber-950">
                       Move apps from &ldquo;{reassignFor}&rdquo; to:
                     </p>
-                    <select
-                      value={reassignTarget}
-                      onChange={(event) => {
-                        setReassignTarget(event.target.value);
-                        if (fieldErrors.reassign) {
-                          setFieldErrors((current) => ({ ...current, reassign: undefined }));
-                        }
-                      }}
-                      className={`${adminLegacyInput} mt-2`}
-                    >
-                      {reassignOptions.map((category) => (
-                        <option key={category.name} value={category.name}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="mt-2">
+                      <AdminSelectMenu
+                        value={reassignTarget}
+                        onChange={(value) => {
+                          setReassignTarget(value);
+                          if (fieldErrors.reassign) {
+                            setFieldErrors((current) => ({ ...current, reassign: undefined }));
+                          }
+                        }}
+                        aria-label="Reassign apps to category"
+                        options={reassignOptions.map((category) => ({
+                          value: category.name,
+                          label: category.name,
+                        }))}
+                      />
+                    </div>
                     {fieldErrors.reassign ? (
                       <p className="mt-1.5 text-xs text-red-600">{fieldErrors.reassign}</p>
                     ) : null}

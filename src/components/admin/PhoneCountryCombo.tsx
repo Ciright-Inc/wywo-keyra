@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/components/ui/cn";
-import { adminInput } from "@/lib/admin/adminUiClasses";
+import { adminInput, adminListboxOption } from "@/lib/admin/adminUiClasses";
 import { flagEmojiFromIso2 } from "@/lib/deployments/flagEmoji";
 import { PHONE_COUNTRY_OPTIONS, type PhoneCountryOption } from "@/lib/phoneCountryOptions";
 
@@ -116,14 +116,19 @@ export function PhoneCountryCombo({
           <span className="font-medium">{selected.dial}</span>
           <span className="hidden text-[var(--ds-body)] sm:inline"> · {selected.name}</span>
         </span>
-        <span
-          className={cn(
-            "material-symbols-outlined shrink-0 text-[18px] text-[var(--ds-muted)] transition",
-            open && "rotate-180",
-          )}
-          aria-hidden
-        >
-          expand_more
+        <span className={cn("ds-filter-select__chevron shrink-0", open && "is-open")} aria-hidden>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="m6 9 6 6 6-6" />
+          </svg>
         </span>
       </button>
 
@@ -141,7 +146,7 @@ export function PhoneCountryCombo({
               className={cn(adminInput, "h-9 min-h-9 py-0")}
             />
           </div>
-          <ul role="listbox" aria-labelledby={id} className="max-h-56 overflow-y-auto py-1">
+          <ul role="listbox" aria-labelledby={id} className="max-h-56 overflow-y-auto p-1">
             {filtered.length === 0 ? (
               <li className="px-3 py-2 ds-body-sm text-[var(--ds-body)]">No countries match your search.</li>
             ) : (
@@ -151,10 +156,7 @@ export function PhoneCountryCombo({
                   <li key={option.code} role="option" aria-selected={active}>
                     <button
                       type="button"
-                      className={cn(
-                        "flex w-full items-center gap-2.5 px-3 py-2 text-left ds-body-sm transition hover:bg-[var(--ds-canvas-soft)]",
-                        active && "bg-[var(--ds-canvas-soft)] font-medium",
-                      )}
+                      className={cn(adminListboxOption, active && "is-selected")}
                       onClick={() => pick(option)}
                     >
                       <span className="shrink-0 text-base leading-none" aria-hidden>

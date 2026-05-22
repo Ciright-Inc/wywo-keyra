@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { AdminConfirmProvider } from "@/components/admin/AdminConfirmProvider";
 import { AdminRouteToast } from "@/components/admin/AdminRouteToast";
 import { AdminShellMainContent } from "@/components/admin/AdminShellMainContent";
+import { AdminSidebarIcon } from "@/components/admin/AdminSidebarIcon";
 import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
 import { useAdminShellNavigation } from "@/lib/admin/useAdminShellNavigation";
 
@@ -62,9 +63,7 @@ function SidebarNavGroup({
             aria-current={active ? "page" : undefined}
             className={`ds-sidebar-row${active ? " is-active" : ""}`}
           >
-            <span className="material-symbols-outlined" aria-hidden>
-              {item.icon}
-            </span>
+            <AdminSidebarIcon name={item.icon} />
             <span className="ds-sidebar-row__label">{item.label}</span>
           </AdminTransitionLink>
         );

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/components/ui/cn";
 import { fieldClass } from "@/components/admin/AdminFieldError";
-import { adminInput } from "@/lib/admin/adminUiClasses";
+import { adminInput, adminListboxOption } from "@/lib/admin/adminUiClasses";
 import {
   COUNTRY_FLAG_OPTIONS,
   findCountryFlagOption,
@@ -119,12 +119,12 @@ export function CountryFlagCombo({
               className={cn(adminInput, "h-9 min-h-9 py-0")}
             />
           </div>
-          <ul role="listbox" aria-labelledby={id} className="max-h-56 overflow-y-auto py-1">
+          <ul role="listbox" aria-labelledby={id} className="max-h-56 overflow-y-auto p-1">
             {flagEmoji ? (
               <li role="option" aria-selected={false}>
                 <button
                   type="button"
-                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left ds-body-sm text-[var(--ds-body)] transition hover:bg-[var(--ds-canvas-soft)]"
+                  className={adminListboxOption}
                   onClick={clearSelection}
                 >
                   Clear flag
@@ -140,10 +140,7 @@ export function CountryFlagCombo({
                   <li key={option.iso2} role="option" aria-selected={active}>
                     <button
                       type="button"
-                      className={cn(
-                        "flex w-full items-center gap-2.5 px-3 py-2 text-left ds-body-sm transition hover:bg-[var(--ds-canvas-soft)]",
-                        active && "bg-[var(--ds-canvas-soft)] font-medium",
-                      )}
+                      className={cn(adminListboxOption, active && "is-selected")}
                       onClick={() => pick(option)}
                     >
                       <span className="shrink-0 text-base leading-none" aria-hidden>

@@ -50,12 +50,17 @@ export const adminCatalogStatLabel = "ds-catalog-stat-box__label";
 export const adminCatalogStatValue = "ds-catalog-stat-box__value";
 
 /** Inline toolbar filters (auth catalog tabs) */
-export const adminFilterLabel = "inline-flex items-center gap-2 ds-caption text-[var(--ds-body)]";
-export const adminFilterSelect = `${adminInput} h-9 min-h-9 w-auto min-w-[5.5rem] py-0 px-2 font-normal`;
+export const adminFilterLabel =
+  "inline-flex shrink-0 items-center gap-2 ds-caption text-[var(--ds-body)] whitespace-nowrap";
+export const adminFilterSelect = "ds-filter-select";
+export const adminListboxOption = "ds-listbox-option";
+export const adminListboxMenu = "ds-filter-select-menu";
+export const adminFilterToolbar =
+  "flex min-w-0 w-full flex-1 flex-wrap items-center gap-3 sm:w-auto";
 export const adminToolbarMeta =
   "inline-flex shrink-0 items-center rounded-full border border-[var(--ds-hairline-strong)] bg-[var(--ds-canvas-soft)] px-3 py-1.5 ds-caption text-[var(--ds-body)]";
 export const adminToolbarStrip =
-  "ds-admin-panel sticky top-14 z-20 mt-3 flex flex-col gap-3 sm:flex-row sm:items-center";
+  "ds-admin-panel ds-admin-toolbar-strip sticky top-14 z-20 mt-3 flex flex-col gap-3 sm:flex-row sm:items-center";
 export const adminInlineFormBody = "mt-4 border-t border-[var(--ds-hairline)] pt-5";
 export const adminTableCellInput = `${adminInput} h-8 min-h-8 py-1 px-2 text-xs font-normal`;
 export const adminTableDenseScroll = "ds-table-scroll is-dense-y";

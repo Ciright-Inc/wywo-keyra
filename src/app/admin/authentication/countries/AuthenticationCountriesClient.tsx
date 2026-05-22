@@ -12,6 +12,7 @@ import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { AdminFormPanelCloseButton } from "@/components/admin/AdminFormPanelCloseButton";
 import { AdminEditIconButton } from "@/components/admin/AdminEditIconButton";
 import { ClientTablePagination } from "@/components/admin/ClientTablePagination";
+import { AdminSelectMenu } from "@/components/admin/AdminSelectMenu";
 import { AdminCatalogHero } from "@/components/admin/AdminCatalogHero";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AuthenticationCountryFormFields } from "./AuthenticationCountryFormFields";
@@ -19,7 +20,7 @@ import {
   adminBody,
   adminCheckbox,
   adminFilterLabel,
-  adminFilterSelect,
+  adminFilterToolbar,
   adminInlineFormBody,
   adminPageTitle,
   adminPageToolbar,
@@ -583,47 +584,50 @@ export function AuthenticationCountriesClient({
       />
 
       <div className={adminToolbarStrip}>
-        <div className="flex min-w-0 w-full flex-1 flex-wrap items-center gap-3 sm:w-auto">
+        <div className={adminFilterToolbar}>
           <label className={adminFilterLabel}>
             Active
-            <select
-              className={adminFilterSelect}
+            <AdminSelectMenu
               value={activeFilter}
-              onChange={(e) => setActiveFilter(e.target.value as "" | "true" | "false")}
+              onChange={(value) => setActiveFilter(value as "" | "true" | "false")}
               disabled={busy}
-            >
-              <option value="">All</option>
-              <option value="true">Active</option>
-              <option value="false">Inactive</option>
-            </select>
+              aria-label="Filter by active status"
+              options={[
+                { value: "", label: "All" },
+                { value: "true", label: "Active" },
+                { value: "false", label: "Inactive" },
+              ]}
+            />
           </label>
           <label className={adminFilterLabel}>
             Auth feed
-            <select
-              className={adminFilterSelect}
+            <AdminSelectMenu
               value={authFilter}
-              onChange={(e) => setAuthFilter(e.target.value as "" | "true" | "false")}
+              onChange={(value) => setAuthFilter(value as "" | "true" | "false")}
               disabled={busy}
-            >
-              <option value="">All</option>
-              <option value="true">Enabled</option>
-              <option value="false">Disabled</option>
-            </select>
+              aria-label="Filter by auth feed"
+              options={[
+                { value: "", label: "All" },
+                { value: "true", label: "Enabled" },
+                { value: "false", label: "Disabled" },
+              ]}
+            />
           </label>
           <label className={adminFilterLabel}>
             Sort
-            <select
-              className={adminFilterSelect}
+            <AdminSelectMenu
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortKey)}
+              onChange={(value) => setSortBy(value as SortKey)}
               disabled={busy}
-            >
-              <option value="name">Name</option>
-              <option value="iso2">ISO-2</option>
-              <option value="priority">Display priority</option>
-              <option value="weight">Weight (desc)</option>
-              <option value="updated">Updated (desc)</option>
-            </select>
+              aria-label="Sort countries"
+              options={[
+                { value: "name", label: "Name" },
+                { value: "iso2", label: "ISO-2" },
+                { value: "priority", label: "Display priority" },
+                { value: "weight", label: "Weight (desc)" },
+                { value: "updated", label: "Updated (desc)" },
+              ]}
+            />
           </label>
           <span className={adminToolbarMeta}>
             Selected: <span className="font-medium text-[var(--ds-ink)]">{selectedIds.length}</span>

@@ -8,6 +8,7 @@ import {
   deleteAuthenticationProtocolMessage,
   deleteAuthenticationProtocolsMessage,
 } from "@/lib/admin/adminDeleteMessages";
+import { AdminSelectMenu } from "@/components/admin/AdminSelectMenu";
 import { AdminCatalogHero } from "@/components/admin/AdminCatalogHero";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
@@ -29,7 +30,7 @@ import {
   adminBody,
   adminCheckbox,
   adminFilterLabel,
-  adminFilterSelect,
+  adminFilterToolbar,
   adminInlineFormBody,
   adminPageTitle,
   adminPageToolbar,
@@ -613,42 +614,52 @@ export function AuthenticationProtocolsClient({
       />
 
       <div className={adminToolbarStrip}>
-        <div className="flex min-w-0 w-full flex-1 flex-wrap items-center gap-3 sm:w-auto">
+        <div className={adminFilterToolbar}>
           <label className={adminFilterLabel}>
             Category
-            <select className={adminFilterSelect} value={category} onChange={(e) => setCategory(e.target.value)} disabled={busy}>
-              <option value="">All</option>
-              {SAT_PROTOCOL_CATEGORIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
+            <AdminSelectMenu
+              value={category}
+              onChange={setCategory}
+              disabled={busy}
+              wide
+              aria-label="Filter by category"
+              options={[
+                { value: "", label: "All" },
+                ...SAT_PROTOCOL_CATEGORIES.map((c) => ({ value: c, label: c })),
+              ]}
+            />
           </label>
           <label className={adminFilterLabel}>
             Active
-            <select
-              className={adminFilterSelect}
+            <AdminSelectMenu
               value={activeFilter}
-              onChange={(e) => setActiveFilter(e.target.value as typeof activeFilter)}
+              onChange={(value) => setActiveFilter(value as typeof activeFilter)}
               disabled={busy}
-            >
-              <option value="all">All</option>
-              <option value="true">Active</option>
-              <option value="false">Inactive</option>
-            </select>
+              aria-label="Filter by active status"
+              options={[
+                { value: "all", label: "All" },
+                { value: "true", label: "Active" },
+                { value: "false", label: "Inactive" },
+              ]}
+            />
           </label>
           <label className={adminFilterLabel}>
             Sort
-            <select className={adminFilterSelect} value={sortKey} onChange={(e) => setSortKey(e.target.value)} disabled={busy}>
-              <option value="displayOrder">Display order</option>
-              <option value="protocolName">Name</option>
-              <option value="protocolCode">Code</option>
-              <option value="protocolCategory">Category</option>
-              <option value="percentageWeight">Weight</option>
-              <option value="trustLevel">Trust</option>
-              <option value="active">Active</option>
-            </select>
+            <AdminSelectMenu
+              value={sortKey}
+              onChange={setSortKey}
+              disabled={busy}
+              aria-label="Sort protocols"
+              options={[
+                { value: "displayOrder", label: "Display order" },
+                { value: "protocolName", label: "Name" },
+                { value: "protocolCode", label: "Code" },
+                { value: "protocolCategory", label: "Category" },
+                { value: "percentageWeight", label: "Weight" },
+                { value: "trustLevel", label: "Trust" },
+                { value: "active", label: "Active" },
+              ]}
+            />
           </label>
           <span className={adminToolbarMeta}>
             Selected: <span className="font-medium text-[var(--ds-ink)]">{selectedIds.length}</span>

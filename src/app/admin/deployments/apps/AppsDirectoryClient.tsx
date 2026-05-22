@@ -7,6 +7,7 @@ import {
   ALL_APP_CATEGORIES_FILTER,
   type DeploymentAppView,
 } from "@/lib/deploymentAppConstants";
+import { AdminSelectMenu } from "@/components/admin/AdminSelectMenu";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
@@ -20,12 +21,15 @@ import {
   adminCheckbox,
   adminCountBadge,
   adminEyebrow,
+  adminFilterLabel,
+  adminFilterToolbar,
   adminLabel,
   adminLegacyInput,
   adminPageTitle,
   adminPanel,
   adminSectionTitle,
   adminTable,
+  adminToolbarStrip,
   adminTableScroll,
   adminTableWrap,
 } from "@/lib/admin/adminUiClasses";
@@ -173,23 +177,22 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
         </p>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-3">
-        <label className={`flex items-center gap-2 ${adminLabel}`}>
-          <span>Category</span>
-          <select
-            value={categoryFilter}
-            onChange={(event) => setCategoryFilter(event.target.value)}
-            className="ds-text-input is-sm sm:w-auto sm:min-w-[12rem]"
-            aria-label="Filter apps by category"
-          >
-            <option value={ALL_APP_CATEGORIES_FILTER}>All apps</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </label>
+      <div className={adminToolbarStrip}>
+        <div className={adminFilterToolbar}>
+          <label className={adminFilterLabel}>
+            Category
+            <AdminSelectMenu
+              value={categoryFilter}
+              onChange={setCategoryFilter}
+              wide
+              aria-label="Filter apps by category"
+              options={[
+                { value: ALL_APP_CATEGORIES_FILTER, label: "All apps" },
+                ...categories.map((category) => ({ value: category, label: category })),
+              ]}
+            />
+          </label>
+        </div>
       </div>
 
       {totalVisible === 0 ? (

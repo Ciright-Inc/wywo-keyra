@@ -15,6 +15,7 @@ import { LANE_HEADER, parseKeyraDesignLaneHeader } from "@/lib/keyraDesignLane";
 import { ToastProvider } from "@/components/ui/Toast";
 import { PlausibleScripts } from "@/components/analytics/PlausibleScripts";
 import { RailwayPlausibleScripts } from "@/components/analytics/RailwayPlausibleScripts";
+import { AdminAnalyticsScripts } from "@/components/analytics/AdminAnalyticsScripts";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -99,6 +100,7 @@ export default async function RootLayout({
         />
         <PlausibleScripts />
         <RailwayPlausibleScripts />
+        <AdminAnalyticsScripts />
       </head>
       <body
         className="flex min-h-full min-w-0 flex-col font-sans"
