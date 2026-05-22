@@ -222,13 +222,8 @@
   position: sticky;
   top: 0;
   height: 64px;
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid var(--color-hairline);
   background: var(--keyra-bg);
-  transition: border-color var(--ds-motion-base) var(--ds-ease);
-}
-
-.keyra-site-header-shell.is-scrolled {
-  border-bottom-color: var(--ds-hairline-strong);
 }
 
 .keyra-site-header-shell--fixed {
@@ -239,8 +234,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .keyra-site-header-shell {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
     background: var(--keyra-bg);
   }
 }
