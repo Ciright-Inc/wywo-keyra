@@ -248,6 +248,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .keyra-site-header-shell {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -321,6 +325,7 @@ html[data-keyra-lane="developer"] {
 }
 
 html {
+  scroll-behavior: smooth;
   /* clip avoids horizontal bleed without breaking fixed/sticky headers (hidden does) */
   overflow-x: clip;
 }
@@ -614,6 +619,29 @@ html[data-keyra-lane="developer"] .keyra-code-block {
     0 8px 24px rgba(0, 0, 0, 0.06) !important;
 }
 
+.keyra-home-card--lift {
+  transition:
+    transform var(--keyra-motion-mg, 500ms) cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow var(--ds-motion-base) var(--ds-ease),
+    border-color var(--ds-motion-base) var(--ds-ease);
+}
+
+.keyra-home-card--lift:hover {
+  transform: translateY(-3px);
+}
+
+.keyra-finale-card {
+  transition:
+    box-shadow var(--keyra-motion-mg, 500ms) cubic-bezier(0.22, 0.61, 0.36, 1),
+    border-color var(--ds-motion-base) var(--ds-ease);
+}
+
+.keyra-finale-card:hover {
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.15),
+    0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
 .keyra-home-card:hover {
   border-color: rgba(0, 0, 0, 0.2) !important;
   box-shadow:
@@ -637,6 +665,25 @@ html[data-keyra-lane="developer"] .keyra-code-block {
 
 .keyra-band--dark .keyra-home-card.keyra-surface-light {
   border-color: var(--color-hairline-strong) !important;
+}
+
+/* Narrative grids — equal-height cards across rows (homepage, partners) */
+.keyra-narrative-card-grid {
+  align-items: stretch;
+}
+
+.keyra-narrative-card--equal {
+  display: flex;
+  height: 100%;
+  min-height: 5.5rem;
+  align-items: center;
+}
+
+.keyra-narrative-audience-panel {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
 }
 
 .keyra-home-panel {
@@ -875,6 +922,22 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   background:
     radial-gradient(ellipse 65% 50% at 8% 35%, rgba(0, 0, 0, 0.03), transparent 58%),
     radial-gradient(ellipse 45% 40% at 92% 12%, rgba(0, 0, 0, 0.02), transparent 55%);
+}
+
+@keyframes keyra-hero-glow {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: scale(1) translate(0, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02) translate(6px, -4px);
+  }
+}
+
+.animate-keyra-hero-glow {
+  animation: keyra-hero-glow 18s ease-in-out infinite;
 }
 
 .keyra-hero-bento__grid {
@@ -1477,12 +1540,19 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   .animate-keyra-float-delayed,
   .animate-keyra-pulse-soft,
   .animate-keyra-signal,
-  .animate-keyra-drift {
+  .animate-keyra-drift,
+  .animate-keyra-hero-glow {
     animation: none !important;
   }
 
-  .keyra-card {
+  .keyra-card,
+  .keyra-home-card--lift,
+  .keyra-finale-card {
     transition: none;
+  }
+
+  .keyra-home-card--lift:hover {
+    transform: none;
   }
 }
 

@@ -592,6 +592,25 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   border-color: var(--color-hairline-strong) !important;
 }
 
+/* Narrative grids — equal-height cards across rows (homepage, partners) */
+.keyra-narrative-card-grid {
+  align-items: stretch;
+}
+
+.keyra-narrative-card--equal {
+  display: flex;
+  height: 100%;
+  min-height: 5.5rem;
+  align-items: center;
+}
+
+.keyra-narrative-audience-panel {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+}
+
 .keyra-home-panel {
   border: 2px solid var(--color-hairline-strong);
   border-radius: var(--keyra-radius-card);

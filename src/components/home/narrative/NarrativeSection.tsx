@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { CinematicReveal } from "@/components/motion/CinematicReveal";
+import { StaggerReveal } from "@/components/motion/StaggerReveal";
 
 type NarrativeSectionProps = {
   id: string;
@@ -11,6 +12,10 @@ type NarrativeSectionProps = {
   /** Full-bleed background: pure white or pure black (`keyra-band--*`),for SLC-style alternation. */
   band?: "light" | "dark";
   align?: "left" | "center";
+  /** When true, direct children reveal in sequence (use on card grids, not single CTAs). */
+  stagger?: boolean;
+  /** Layout classes on the children container (e.g. grid columns). */
+  childrenClassName?: string;
 };
 
 /**
@@ -25,7 +30,10 @@ export function NarrativeSection({
   className = "",
   band = "light",
   align = "left",
+  stagger = false,
+  childrenClassName = "",
 }: NarrativeSectionProps) {
+  const childrenWrapClass = `mt-8 w-full ${childrenClassName}`.trim();
   const bandClass = band === "dark" ? "keyra-band--dark" : "keyra-band--light";
 
   const alignClass = align === "center" ? "text-center items-center" : "text-left items-start";
@@ -51,9 +59,15 @@ export function NarrativeSection({
           </CinematicReveal>
         ) : null}
         {children ? (
-          <CinematicReveal depth="background" delay={0.18} className="mt-8 w-full">
-            {children}
-          </CinematicReveal>
+          stagger ? (
+            <StaggerReveal className={childrenWrapClass} delay={0.12} stagger={0.06}>
+              {children}
+            </StaggerReveal>
+          ) : (
+            <CinematicReveal depth="background" delay={0.18} className={childrenWrapClass}>
+              {children}
+            </CinematicReveal>
+          )
         ) : null}
       </div>
     </section>

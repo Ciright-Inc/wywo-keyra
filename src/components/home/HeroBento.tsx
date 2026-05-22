@@ -18,7 +18,10 @@ export function HeroBento({ clientReady }: HeroBentoProps) {
   return (
     <section className="keyra-hero-bento relative overflow-hidden">
       <div className="keyra-hero-bento__bg pointer-events-none absolute inset-0" aria-hidden />
-      <div className="keyra-hero-bento__glow pointer-events-none absolute inset-0" aria-hidden />
+      <div
+        className="keyra-hero-bento__glow animate-keyra-hero-glow pointer-events-none absolute inset-0"
+        aria-hidden
+      />
 
       <div className="relative z-10 mx-auto w-full min-w-0 max-w-[1440px] px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-14">
         <div className="keyra-hero-bento__grid min-w-0">

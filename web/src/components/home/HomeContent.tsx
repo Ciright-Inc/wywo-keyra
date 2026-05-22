@@ -8,8 +8,12 @@ import { GlobalVerificationSignalsLive } from "@/components/home/GlobalVerificat
 import { KeyraHomeGlobe } from "@/components/home/KeyraHomeGlobe";
 import { HomeRegistrationCTAs } from "@/components/registration/HomeRegistrationCTAs";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { NarrativeLineCardGrid } from "@/components/home/narrative/NarrativeLineCardGrid";
 import { NarrativeSection } from "@/components/home/narrative/NarrativeSection";
+import {
+  narrativeAudienceGridClass,
+  narrativeEqualPanel,
+} from "@/components/home/narrative/narrativeGrid";
 import { keyraDeveloperPortalUrl, keyraGovernmentsUrl } from "@/lib/keyraAppUrls";
 
 const easeTrust = [0.22, 0.61, 0.36, 1] as const;
@@ -121,20 +125,16 @@ export function HomeContent() {
         title="The internet lost identity."
         lead="We built connection without certainty. Fraud, impersonation, and synthetic voices spread where proof should live — and hesitation became normal."
       >
-        <div className="grid w-full max-w-5xl gap-3 sm:grid-cols-2 sm:gap-4">
-          {[
+        <NarrativeLineCardGrid
+          lines={[
             "Uncertainty replaced recognition.",
             "Trust became probabilistic.",
             "Humans and agents blurred.",
             "Institutions needed proof, not patches.",
-          ].map((line) => (
-            <Card key={line} className={homeCardOnDark}>
-              <p className="text-[15px] font-medium leading-snug tracking-tight text-keyra-primary sm:text-[16px]">
-                {line}
-              </p>
-            </Card>
-          ))}
-        </div>
+          ]}
+          cardClassName={homeCardOnDark}
+          columns={2}
+        />
       </NarrativeSection>
 
       {/* SECTION 3 — THE SHIFT */}
@@ -145,17 +145,15 @@ export function HomeContent() {
         title="AI changed the internet forever."
         lead="Generative scale collided with ambiguous identity. The next era requires orchestration between verified humans, verified systems, and verified carriers — not louder alerts."
       >
-        <div className="grid w-full max-w-5xl gap-3 sm:grid-cols-3 sm:gap-4">
-          {[
+        <NarrativeLineCardGrid
+          lines={[
             "Human + AI trust is now infrastructure.",
             "Proof must travel with the interaction.",
             "Calm defaults beat frantic friction.",
-          ].map((line) => (
-            <Card key={line} className={homeCard}>
-              <p className="text-[15px] font-medium leading-snug text-keyra-primary">{line}</p>
-            </Card>
-          ))}
-        </div>
+          ]}
+          cardClassName={homeCard}
+          columns={3}
+        />
       </NarrativeSection>
 
       {/* SECTION 4 — THE FRACTURE */}
@@ -184,20 +182,19 @@ export function HomeContent() {
         title="Invisible systems, rendered with restraint."
         lead="Protection expressed as atmosphere — signal choreography instead of noise. Identity pulses quietly across carrier paths, hardware truth, and institutional policy."
       >
-        <div className="grid w-full max-w-5xl gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
-          {[
+        <NarrativeLineCardGrid
+          lines={[
             "SIM / eSIM identity verification",
             "Secure carrier-scale authentication",
             "Cryptographic trust orchestration",
             "Identity signal intelligence",
             "Deterministic verification routing",
             "Institutional continuity — calm by default",
-          ].map((line) => (
-            <Card key={line} className={homeCardOnDark}>
-              <p className="text-[14px] font-medium leading-relaxed text-keyra-primary sm:text-[15px]">{line}</p>
-            </Card>
-          ))}
-        </div>
+          ]}
+          cardClassName={homeCardOnDark}
+          columns={3}
+          density="compact"
+        />
       </NarrativeSection>
 
       {/* SECTION 7 — GLOBAL */}
@@ -228,7 +225,7 @@ export function HomeContent() {
         title="Everyone who depends on certainty."
         lead="One quiet standard across households, enterprises, and nations — verification that feels human because it is mathematically composed."
       >
-        <div className="grid w-full gap-6 md:grid-cols-2">
+        <div className={narrativeAudienceGridClass}>
           {[
             {
               title: "Individuals",
@@ -251,7 +248,7 @@ export function HomeContent() {
               body: "Infrastructure for citizens, institutions, and national continuity.",
             },
           ].map((item) => (
-            <div key={item.title} className={homeAudienceCard}>
+            <div key={item.title} className={narrativeEqualPanel(homeAudienceCard)}>
               <p className="keyra-eyebrow text-[10px]">{item.title}</p>
               <h3 className="mt-4 text-balance text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl">
                 {item.headline}
@@ -270,17 +267,15 @@ export function HomeContent() {
         title="Verified agents. Verified humans. Verified interactions."
         lead="Orchestration that distinguishes authenticity from synthesis — without theatrical friction. Trust becomes ambient infrastructure."
       >
-        <div className="grid w-full max-w-5xl gap-3 sm:grid-cols-3">
-          {[
+        <NarrativeLineCardGrid
+          lines={[
             "Agents inherit institutional policy.",
             "Humans carry cryptographic continuity.",
             "Every surface inherits quiet assurance.",
-          ].map((line) => (
-            <Card key={line} className={homeCard}>
-              <p className="text-[15px] font-medium leading-snug text-keyra-primary">{line}</p>
-            </Card>
-          ))}
-        </div>
+          ]}
+          cardClassName={homeCard}
+          columns={3}
+        />
       </NarrativeSection>
 
       {/* SECTION 10 — DEVELOPER PLATFORM */}

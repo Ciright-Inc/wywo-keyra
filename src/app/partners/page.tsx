@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageIntentRibbon } from "@/components/trust/PageIntentRibbon";
+import { FadeIn } from "@/components/motion/FadeIn";
+import { StaggerReveal } from "@/components/motion/StaggerReveal";
+import { narrativeCardGridClass, narrativeEqualPanel } from "@/components/home/narrative/narrativeGrid";
 import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
 
 export const metadata: Metadata = {
@@ -16,42 +19,46 @@ export default function PartnersPage() {
         problem="Authentication fragmentation increases fraud and operational complexity."
         nextAction="Explore partnership opportunities with Keyra's identity infrastructure."
       />
-      <p className="keyra-eyebrow">Partner Ecosystem</p>
-      <h1 className="keyra-display mt-3">Build trust at scale.</h1>
-      <p className="keyra-prose mt-5 text-balance">
-        Partner with Keyra to integrate deterministic identity verification into your products and services.
-        Our carrier-grade APIs provide rooted authentication that scales across enterprises and ecosystems.
-      </p>
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
-        <div className="keyra-card border-keyra-border/80 p-6">
+      <FadeIn>
+        <p className="keyra-eyebrow">Partner Ecosystem</p>
+        <h1 className="keyra-display mt-3">Build trust at scale.</h1>
+        <p className="keyra-prose mt-5 text-balance">
+          Partner with Keyra to integrate deterministic identity verification into your products and services.
+          Our carrier-grade APIs provide rooted authentication that scales across enterprises and ecosystems.
+        </p>
+      </FadeIn>
+      <StaggerReveal className={narrativeCardGridClass(2, "mt-8 max-w-none")}>
+        <div className={narrativeEqualPanel("keyra-card keyra-home-card--lift border-keyra-border/80 p-6")}>
           <h3 className="text-lg font-semibold text-keyra-primary">Enterprise Integration</h3>
           <p className="mt-2 text-sm text-keyra-text-2">
-            Embed Keyra's verification into your enterprise applications.
+            Embed Keyra&apos;s verification into your enterprise applications.
           </p>
         </div>
-        <div className="keyra-card border-keyra-border/80 p-6">
+        <div className={narrativeEqualPanel("keyra-card keyra-home-card--lift border-keyra-border/80 p-6")}>
           <h3 className="text-lg font-semibold text-keyra-primary">Carrier Partners</h3>
           <p className="mt-2 text-sm text-keyra-text-2">
             Join the global carrier network for identity verification.
           </p>
         </div>
-      </div>
-      <p className="mt-8 text-sm text-keyra-text-2">
-        Explore our{" "}
-        <a
-          href={keyraDeveloperPortalUrl()}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-keyra-accent underline-offset-2 hover:underline"
-        >
-          developer platform
-        </a>
-        {" "}and{" "}
-        <Link href="/contact" className="font-medium text-keyra-accent underline-offset-2 hover:underline">
-          contact us
-        </Link>
-        {" "}to discuss partnership opportunities.
-      </p>
+      </StaggerReveal>
+      <FadeIn className="mt-8">
+        <p className="text-sm text-keyra-text-2">
+          Explore our{" "}
+          <a
+            href={keyraDeveloperPortalUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-keyra-accent underline-offset-2 hover:underline"
+          >
+            developer platform
+          </a>
+          {" "}and{" "}
+          <Link href="/contact" className="font-medium text-keyra-accent underline-offset-2 hover:underline">
+            contact us
+          </Link>
+          {" "}to discuss partnership opportunities.
+        </p>
+      </FadeIn>
     </div>
   );
 }
