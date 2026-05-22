@@ -130,10 +130,11 @@ export function KeyraAppLauncher() {
           aria-label="Keyra apps"
           className="absolute right-0 top-[calc(100%+8px)] z-[65] flex max-h-[min(34rem,calc(100vh-6rem))] w-[min(calc(100vw-1.5rem),20rem)] flex-col rounded-xl border border-black/12 bg-keyra-bg p-3 shadow-[0_24px_64px_rgba(0,0,0,0.14),0_0_0_1px_rgba(0,0,0,0.05)] sm:w-[20rem]"
         >
-          <p className="px-1 pb-2 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
+          <p className="shrink-0 px-1 pb-2 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
             Keyra apps
           </p>
-          <ul className="keyra-app-launcher-scroll grid min-h-0 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3">
+          <div className="keyra-app-launcher-scroll-wrap">
+            <ul className="keyra-app-launcher-scroll grid max-h-[min(28rem,calc(100vh-9rem))] grid-cols-2 gap-2 overflow-y-auto overscroll-y-contain py-0.5 pl-1 pr-1.5 sm:grid-cols-3">
             {tiles.map((item) => (
               <li key={item.id} className="min-w-0">
                 <a
@@ -152,7 +153,8 @@ export function KeyraAppLauncher() {
                 </a>
               </li>
             ))}
-          </ul>
+            </ul>
+          </div>
         </div>
       ) : null}
     </div>

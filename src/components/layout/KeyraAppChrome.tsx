@@ -31,6 +31,11 @@ export function KeyraAppChrome({
   return (
     <>
       <HeaderNoSSR />
+      <div
+        className="pointer-events-none shrink-0"
+        style={{ height: "var(--keyra-header-offset)" }}
+        aria-hidden
+      />
       <main className="min-w-0 flex-1">{children}</main>
       <ElevenLabsHomeAgent />
       {footer}

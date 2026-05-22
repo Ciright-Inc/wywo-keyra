@@ -57,7 +57,7 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="keyra-site-header-shell z-[var(--keyra-z-header)]">
+    <header className="keyra-site-header-shell z-[var(--keyra-z-header)] w-full shrink-0">
       <div
         className={
           isAdminRoute

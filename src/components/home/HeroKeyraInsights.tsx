@@ -142,21 +142,23 @@ function HeroInsightPanel({
 const timelineSteps: {
   l: string;
   t: string;
+  t2?: string;
   icon: HeroIcon;
 }[] = [
   {
     l: "Who this is for",
-    t: "Households, professionals, and institutions who live and work online.",
+    t: "Keyra is for everyone operating in the digital world — from individuals and households to enterprises, telecom operators, financial institutions, governments, and global platforms that require trusted identity, secure access, and sovereign digital trust infrastructure.",
     icon: IconUsers,
   },
   {
     l: "Problem",
-    t: "Identity is fragmented; fraud and synthetic deception are routine.",
+    t: "Identity today is fragmented, unverifiable, and increasingly vulnerable to synthetic deception. As AI accelerates impersonation and fraud, the internet requires a hardware-rooted global trust layer capable of authenticating people, devices, applications, and transactions with certainty.",
     icon: IconAlertTriangle,
   },
   {
     l: "What to do next",
-    t: "Continue below, or sign in to manage your Keyra account.",
+    t: "Continue below to provision your Keyra identity and establish a hardware-rooted trust relationship designed to protect individuals, families, enterprises, and national digital ecosystems from fraud and synthetic threats.",
+    t2: "Existing members may sign in to administer identity, authentication, and trust policies.",
     icon: IconArrowRight,
   },
 ];
@@ -220,6 +222,7 @@ export function HeroKeyraTimeline({ variant = "default" }: { variant?: HeroVaria
               <div className="min-w-0">
                 <p className="keyra-bento-eyebrow--on-dark">{item.l}</p>
                 <p className="keyra-bento-body mt-2">{item.t}</p>
+                {item.t2 ? <p className="keyra-bento-body mt-2">{item.t2}</p> : null}
               </div>
             </div>
           </motion.div>
@@ -262,6 +265,11 @@ export function HeroKeyraTimeline({ variant = "default" }: { variant?: HeroVaria
               <p className="mt-2 text-[13px] leading-[1.65] text-[var(--color-body-strong)]">
                 {item.t}
               </p>
+              {item.t2 ? (
+                <p className="mt-2 text-[13px] leading-[1.65] text-[var(--color-body-strong)]">
+                  {item.t2}
+                </p>
+              ) : null}
             </motion.div>
           </div>
         ))}

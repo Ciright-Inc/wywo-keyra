@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { HeroBento } from "@/components/home/HeroBento";
 import { useClientReady } from "@/lib/useClientReady";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { NarrativeSection } from "@/components/home/narrative/NarrativeSection";
-import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
+import { keyraDeveloperPortalUrl, keyraGovernmentsUrl } from "@/lib/keyraAppUrls";
 
 const easeTrust = [0.22, 0.61, 0.36, 1] as const;
 
@@ -120,13 +119,14 @@ export function HomeContent() {
         lead="Built in Ireland as a trust institution for the digital age — composed for global deployment without compromising sovereignty or clarity."
       >
         <div className={`${homeHeroPanel} inline-flex w-fit px-4 py-4`}>
-          <Link
-            href="/global-deployment"
-            prefetch={false}
+          <a
+            href={keyraGovernmentsUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex focus-visible:outline-none focus-visible:keyra-focus rounded-[var(--keyra-radius-pill)]"
           >
             <Button variant="secondary">View global deployment</Button>
-          </Link>
+          </a>
         </div>
       </NarrativeSection>
 
@@ -144,29 +144,21 @@ export function HomeContent() {
               title: "Individuals",
               headline: "Know who you are connecting with.",
               body: "Identity should protect you — everywhere you go online.",
-              href: "/signup",
-              cta: "Protect your identity",
             },
             {
               title: "Families",
               headline: "Protect those who don’t see every risk.",
               body: "Peace of mind for the people you care about most.",
-              href: "/app/family",
-              cta: "Protect your family",
             },
             {
               title: "Businesses",
               headline: "Build trust in every interaction.",
               body: "Reduce fraud. Elevate confidence. Protect your brand.",
-              href: "/contact",
-              cta: "Secure your organization",
             },
             {
               title: "Governments",
               headline: "Sovereign digital identity.",
               body: "Infrastructure for citizens, institutions, and national continuity.",
-              href: "/contact",
-              cta: "Partner with Keyra",
             },
           ].map((item) => (
             <div key={item.title} className={homeAudienceCard}>
@@ -175,9 +167,6 @@ export function HomeContent() {
                 {item.headline}
               </h3>
               <p className="mt-3 text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px]">{item.body}</p>
-              <Link href={item.href} prefetch={false} className="mt-7 inline-flex">
-                <Button variant="secondary">{item.cta}</Button>
-              </Link>
             </div>
           ))}
         </div>

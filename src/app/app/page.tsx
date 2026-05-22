@@ -73,23 +73,7 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <div className="mt-6 grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader
-            title="Family"
-            description="Protection for the people you care about."
-          />
-          <p className="mt-4 text-[14px] leading-relaxed text-keyra-text-2">
-            Add a family member in seconds. Keep their protection visible and
-            simple.
-          </p>
-          <div className="mt-6">
-            <Link href="/app/family" className="inline-flex">
-              <Button variant="secondary">Open family view</Button>
-            </Link>
-          </div>
-        </Card>
-
+      <div className="mt-6">
         <Card>
           <CardHeader
             title="Peace of mind"
