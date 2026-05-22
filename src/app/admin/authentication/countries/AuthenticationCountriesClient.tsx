@@ -3,6 +3,8 @@
 import type { AuthenticationCountry } from "@prisma/client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { deleteAuthenticationCountriesMessage } from "@/lib/admin/adminDeleteMessages";
 import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { ClientTablePagination } from "@/components/admin/ClientTablePagination";
@@ -26,6 +28,7 @@ export function AuthenticationCountriesClient({
 }: {
   initialCountries?: AuthenticationCountry[];
 }) {
+  const confirm = useAdminConfirm();
   const skipInitialFetch = useRef(initialCountries != null);
   const fetchAbortRef = useRef<AbortController | null>(null);
   const [rows, setRows] = useState<AuthenticationCountry[] | null>(initialCountries ?? null);
@@ -361,7 +364,7 @@ export function AuthenticationCountriesClient({
   }
 
   async function resetAllWeights() {
-    if (!confirm("Set percentage weight to 5 for every country in the database?")) return;
+    if (!(await confirm({ message: "Set weight to 5 for all countries?", confirmLabel: "Apply" }))) return;
     setBusy(true);
     setError(null);
     try {
@@ -384,7 +387,11 @@ export function AuthenticationCountriesClient({
       setError("Select at least one row to delete.");
       return;
     }
-    if (!confirm(`Delete ${selectedIds.length} country row(s)? This cannot be undone.`)) return;
+    const selectedNames = dataRows
+      .filter((r) => selectedIds.includes(r.id))
+      .map((r) => r.countryName);
+    const firstName = selectedNames[0];
+    if (!(await confirm(deleteAuthenticationCountriesMessage(selectedIds.length, firstName)))) return;
     setBusy(true);
     setError(null);
     try {

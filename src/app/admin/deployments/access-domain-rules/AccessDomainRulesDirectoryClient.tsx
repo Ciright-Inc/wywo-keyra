@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { deleteAccessDomainRuleMessage } from "@/lib/admin/adminDeleteMessages";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { buildListHref } from "@/lib/admin/listSearchParams";
 
@@ -54,11 +56,12 @@ export function AccessDomainRulesDirectoryClient({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const router = useRouter();
+  const confirm = useAdminConfirm();
   const { page, pageSize, totalCount } = pagination;
 
   /** Delete an access domain rule via the server route. Auth/audit/revalidate server-side. */
   async function handleDelete(id: string, label: string) {
-    if (!confirm(`Delete access rule for "${label}"? This cannot be undone.`)) return;
+    if (!(await confirm(deleteAccessDomainRuleMessage(label)))) return;
     setDeletingId(id);
     setDeleteError(null);
     try {

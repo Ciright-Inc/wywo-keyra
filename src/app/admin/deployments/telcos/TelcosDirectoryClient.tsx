@@ -5,8 +5,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { RowActions } from "@/components/admin/RowActions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { deleteTelcoMessage } from "@/lib/admin/adminDeleteMessages";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
+import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
 import { buildListHref } from "@/lib/admin/listSearchParams";
+import { useAdminRouteTransition } from "@/lib/admin/useAdminRouteTransition";
 
 const STATUS_OPTIONS = ["IDENTIFIED", "INSTITUTIONAL_AWARENESS", "TVIP", "OPERATIONAL"] as const;
 const TELCOS_BASE_HREF = "/admin/deployments/telcos";
@@ -118,6 +122,8 @@ export function TelcosDirectoryClient({
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
+  const confirm = useAdminConfirm();
+  const { isPending, navigate } = useAdminRouteTransition();
   const { page, pageSize, totalCount, totalPages, showingFrom, showingTo } = pagination;
   const canUseCreate = showCreate && countries.length > 0;
 
@@ -126,7 +132,7 @@ export function TelcosDirectoryClient({
    * transaction, writes an audit row, and triggers cache revalidation. We only need to
    * confirm with the user and refresh the route on success. */
   async function handleDelete(id: string, name: string) {
-    if (!confirm(`Delete telco "${name}"? This cannot be undone.`)) return;
+    if (!(await confirm(deleteTelcoMessage(name)))) return;
     setDeletingId(id);
     setDeleteError(null);
     try {
@@ -160,14 +166,14 @@ export function TelcosDirectoryClient({
 
   const sortableTh = (label: string, column: TelcoSortKey) => (
     <th className="px-3 py-2" aria-sort={sortBy === column ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-      <Link
+      <AdminTransitionLink
         href={sortHref(column, 1)}
-        prefetch={false}
+        onNavigate={navigate}
         className="inline-flex items-center gap-0.5 font-semibold text-keyra-text-2 transition hover:text-keyra-primary"
       >
         {label}
         <span aria-hidden>{sortIndicator(column)}</span>
-      </Link>
+      </AdminTransitionLink>
     </th>
   );
 
@@ -191,10 +197,10 @@ export function TelcosDirectoryClient({
     const next = qInput.trim();
     if (next === searchQuery.trim()) return;
     const t = setTimeout(() => {
-      router.push(buildTelcosListHref(1, pageSize, defaultPageSize, next, sortBy, sortDir));
+      navigate(buildTelcosListHref(1, pageSize, defaultPageSize, next, sortBy, sortDir));
     }, 280);
     return () => clearTimeout(t);
-  }, [qInput, searchQuery, router, pageSize, defaultPageSize]);
+  }, [qInput, searchQuery, navigate, pageSize, defaultPageSize, sortBy, sortDir]);
 
   function toggleSearchPanel() {
     setSearchExpanded((open) => !open);
@@ -204,7 +210,7 @@ export function TelcosDirectoryClient({
     if (clearQuery) {
       setQInput("");
       if (hasSearch) {
-        router.push(buildTelcosListHref(1, pageSize, defaultPageSize, "", sortBy, sortDir));
+        navigate(buildTelcosListHref(1, pageSize, defaultPageSize, "", sortBy, sortDir));
       }
     }
     setSearchExpanded(false);
@@ -439,7 +445,7 @@ export function TelcosDirectoryClient({
       ) : null}
 
       {/* Table */}
-      <div className="ds-table-wrap mt-3">
+      <div className={`ds-table-wrap mt-3 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[42rem] text-left text-sm">
             <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
@@ -520,27 +526,27 @@ export function TelcosDirectoryClient({
                     {sz}
                   </span>
                 ) : (
-                  <Link
+                  <AdminTransitionLink
                     key={sz}
                     href={buildTelcosListHref(1, sz, defaultPageSize, searchQuery, sortBy, sortDir)}
-                    prefetch={false}
+                    onNavigate={navigate}
                     className={inactivePageClass}
                   >
                     {sz}
-                  </Link>
+                  </AdminTransitionLink>
                 ),
               )}
             </div>
 
             <div className="flex flex-wrap items-center justify-end gap-2">
-              <Link
+              <AdminTransitionLink
                 href={buildTelcosListHref(Math.max(1, page - 1), pageSize, defaultPageSize, searchQuery, sortBy, sortDir)}
-                prefetch={false}
+                onNavigate={navigate}
                 aria-disabled={page <= 1}
                 className={`${inactivePageClass} ${page <= 1 ? "pointer-events-none opacity-40" : ""}`}
               >
                 Previous
-              </Link>
+              </AdminTransitionLink>
               {pagerItems.map((item, i) =>
                 item === "gap" ? (
                   <span key={`gap-${i}`} className="px-2 text-keyra-text-2">
@@ -551,24 +557,24 @@ export function TelcosDirectoryClient({
                     {item}
                   </span>
                 ) : (
-                  <Link
+                  <AdminTransitionLink
                     key={item}
                     href={buildTelcosListHref(item, pageSize, defaultPageSize, searchQuery, sortBy, sortDir)}
-                    prefetch={false}
+                    onNavigate={navigate}
                     className={inactivePageClass}
                   >
                     {item}
-                  </Link>
+                  </AdminTransitionLink>
                 ),
               )}
-              <Link
+              <AdminTransitionLink
                 href={buildTelcosListHref(Math.min(totalPages, page + 1), pageSize, defaultPageSize, searchQuery, sortBy, sortDir)}
-                prefetch={false}
+                onNavigate={navigate}
                 aria-disabled={page >= totalPages}
                 className={`${inactivePageClass} ${page >= totalPages ? "pointer-events-none opacity-40" : ""}`}
               >
                 Next
-              </Link>
+              </AdminTransitionLink>
             </div>
           </div>
         ) : null}

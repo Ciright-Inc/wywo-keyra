@@ -1,5 +1,4 @@
-import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
-
+/** Keep the previous page visible during navigation — list clients handle pending state. */
 export default function Loading() {
-  return <AdminDirectorySkeleton tab="auth-settings" />;
+  return null;
 }

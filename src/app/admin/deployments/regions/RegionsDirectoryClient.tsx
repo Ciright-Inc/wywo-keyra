@@ -1,14 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { deleteRegionMessage } from "@/lib/admin/adminDeleteMessages";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { buildListHref } from "@/lib/admin/listSearchParams";
+import { useAdminRouteTransition } from "@/lib/admin/useAdminRouteTransition";
 
 export type RegionSortKey = "name" | "slug" | "map" | "published" | "sortOrder";
 
@@ -68,17 +71,14 @@ export function RegionsDirectoryClient({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const router = useRouter();
+  const confirm = useAdminConfirm();
+  const { isPending, navigate } = useAdminRouteTransition();
   const { page, pageSize, totalCount } = pagination;
 
   /** Delete a region via the server route. The route handles cascade + audit + revalidate;
    * client just confirms (with cascade warning) and refreshes. */
   async function handleDelete(id: string, name: string) {
-    if (
-      !confirm(
-        `Delete region "${name}"? This also deletes every country and telco under it. This cannot be undone.`,
-      )
-    )
-      return;
+    if (!(await confirm(deleteRegionMessage(name)))) return;
     setDeletingId(id);
     setDeleteError(null);
     try {
@@ -140,14 +140,14 @@ export function RegionsDirectoryClient({
 
   const sortableTh = (label: string, column: RegionSortKey) => (
     <th className="px-3 py-2" aria-sort={sortBy === column ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-      <Link
+      <AdminTransitionLink
         href={sortHref(column)}
-        prefetch={false}
+        onNavigate={navigate}
         className="inline-flex items-center gap-0.5 font-semibold text-keyra-text-2 transition hover:text-keyra-primary"
       >
         {label}
         <span aria-hidden>{sortIndicator(column)}</span>
-      </Link>
+      </AdminTransitionLink>
     </th>
   );
 
@@ -240,7 +240,7 @@ export function RegionsDirectoryClient({
       ) : null}
 
       {/* Table */}
-      <div className="ds-table-wrap mt-3">
+      <div className={`ds-table-wrap mt-3 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[36rem] text-left text-sm">
             <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
@@ -293,6 +293,7 @@ export function RegionsDirectoryClient({
           pageSize={pageSize}
           pageSizeOptions={pageSizeOptions}
           buildHref={buildPaginationHref}
+          onNavigate={navigate}
         />
       </div>
     </div>

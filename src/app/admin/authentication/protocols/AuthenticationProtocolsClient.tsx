@@ -2,6 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import {
+  deleteAuthenticationProtocolMessage,
+  deleteAuthenticationProtocolsMessage,
+} from "@/lib/admin/adminDeleteMessages";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
@@ -94,6 +99,7 @@ export function AuthenticationProtocolsClient({
 }: {
   initialProtocols?: ProtocolRow[];
 }) {
+  const confirm = useAdminConfirm();
   const skipInitialFetch = useRef(initialProtocols != null);
   const fetchAbortRef = useRef<AbortController | null>(null);
   const [rows, setRows] = useState<ProtocolRow[] | null>(initialProtocols ?? null);
@@ -229,7 +235,8 @@ export function AuthenticationProtocolsClient({
   }
 
   async function deleteRow(id: string) {
-    if (!confirm("Delete protocol?")) return;
+    const row = dataRows.find((r) => r.id === id);
+    if (!(await confirm(deleteAuthenticationProtocolMessage(row?.protocolName ?? "this protocol")))) return;
     setBusy(true);
     try {
       const res = await fetch(`/api/admin/sat-protocols/${id}`, { method: "DELETE", credentials: "include" });
@@ -286,7 +293,11 @@ export function AuthenticationProtocolsClient({
       setError("Select at least one row to delete.");
       return;
     }
-    if (!confirm(`Delete ${selectedIds.length} protocol row(s)? This cannot be undone.`)) return;
+    const selectedNames = dataRows
+      .filter((r) => selectedIds.includes(r.id))
+      .map((r) => r.protocolName);
+    const firstName = selectedNames[0];
+    if (!(await confirm(deleteAuthenticationProtocolsMessage(selectedIds.length, firstName)))) return;
     setBusy(true);
     setError(null);
     try {

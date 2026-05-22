@@ -10,6 +10,8 @@ import {
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { deleteDeploymentAppMessage } from "@/lib/admin/adminDeleteMessages";
 import { GensparkSlidePanel } from "./GensparkSlidePanel";
 
 function AppListIcon({ label }: { label: string }) {
@@ -78,6 +80,7 @@ type Props = {
 };
 
 export function AppsDirectoryClient({ initialApps, categories }: Props) {
+  const confirm = useAdminConfirm();
   const [apps, setApps] = useState(initialApps);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -102,7 +105,7 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
   const totalVisible = visibleApps.length;
 
   async function deleteApp(app: DeploymentAppView) {
-    if (!window.confirm(`Delete ${app.label}?`)) return;
+    if (!(await confirm(deleteDeploymentAppMessage(app.label)))) return;
     setBusyId(app.id);
     try {
       const res = await fetch(`/api/admin/deployments/apps/${encodeURIComponent(app.id)}`, {

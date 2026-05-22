@@ -1,11 +1,16 @@
+"use client";
+
 import Link from "next/link";
-import type { DeploymentAppEditNeighbor } from "@/lib/deploymentApps";
+
+type AppNeighbor = { id: string; label: string };
 
 type Props = {
-  prevApp: DeploymentAppEditNeighbor | null;
-  nextApp: DeploymentAppEditNeighbor | null;
+  prevApp: AppNeighbor | null;
+  nextApp: AppNeighbor | null;
   index: number;
   total: number;
+  /** When set, prev/next swap apps client-side without a full route reload. */
+  onNavigate?: (appId: string) => void;
 };
 
 const btnClass =
@@ -39,7 +44,7 @@ function ChevronRight() {
   );
 }
 
-export function AppEditSiblingNav({ prevApp, nextApp, index, total }: Props) {
+export function AppEditSiblingNav({ prevApp, nextApp, index, total, onNavigate }: Props) {
   return (
     <div className="flex shrink-0 flex-col items-end gap-2">
       {total > 0 ? (
@@ -49,15 +54,28 @@ export function AppEditSiblingNav({ prevApp, nextApp, index, total }: Props) {
       ) : null}
       <div className="flex items-center gap-2">
         {prevApp ? (
-          <Link
-            href={`/admin/deployments/apps/${prevApp.id}/edit`}
-            className={btnClass}
-            title={`Previous: ${prevApp.label}`}
-            aria-label={`Previous app: ${prevApp.label}`}
-          >
-            <ChevronLeft />
-            Previous
-          </Link>
+          onNavigate ? (
+            <button
+              type="button"
+              className={btnClass}
+              title={`Previous: ${prevApp.label}`}
+              aria-label={`Previous app: ${prevApp.label}`}
+              onClick={() => onNavigate(prevApp.id)}
+            >
+              <ChevronLeft />
+              Previous
+            </button>
+          ) : (
+            <Link
+              href={`/admin/deployments/apps/${prevApp.id}/edit`}
+              className={btnClass}
+              title={`Previous: ${prevApp.label}`}
+              aria-label={`Previous app: ${prevApp.label}`}
+            >
+              <ChevronLeft />
+              Previous
+            </Link>
+          )
         ) : (
           <button type="button" className={btnClass} disabled aria-label="No previous app">
             <ChevronLeft />
@@ -65,15 +83,28 @@ export function AppEditSiblingNav({ prevApp, nextApp, index, total }: Props) {
           </button>
         )}
         {nextApp ? (
-          <Link
-            href={`/admin/deployments/apps/${nextApp.id}/edit`}
-            className={btnClass}
-            title={`Next: ${nextApp.label}`}
-            aria-label={`Next app: ${nextApp.label}`}
-          >
-            Next
-            <ChevronRight />
-          </Link>
+          onNavigate ? (
+            <button
+              type="button"
+              className={btnClass}
+              title={`Next: ${nextApp.label}`}
+              aria-label={`Next app: ${nextApp.label}`}
+              onClick={() => onNavigate(nextApp.id)}
+            >
+              Next
+              <ChevronRight />
+            </button>
+          ) : (
+            <Link
+              href={`/admin/deployments/apps/${nextApp.id}/edit`}
+              className={btnClass}
+              title={`Next: ${nextApp.label}`}
+              aria-label={`Next app: ${nextApp.label}`}
+            >
+              Next
+              <ChevronRight />
+            </Link>
+          )
         ) : (
           <button type="button" className={btnClass} disabled aria-label="No next app">
             Next

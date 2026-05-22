@@ -1,3 +1,4 @@
+import { cache } from "react";
 import "server-only";
 
 import { redirect } from "next/navigation";
@@ -15,8 +16,13 @@ function adminLoginHref(nextPath: string, reason?: "sign_in" | "no_access"): str
   return `/admin/login${q ? `?${q}` : ""}`;
 }
 
+/** Per-request dedupe for layout + page auth checks. */
+export const getAdminAuth = cache(async (): Promise<DeploymentAuth | null> => {
+  return resolveDeploymentAuthFromCookies();
+});
+
 export async function assertAdminServer(nextPath = "/admin/deployments"): Promise<DeploymentAuth> {
-  const auth = await resolveDeploymentAuthFromCookies();
+  const auth = await getAdminAuth();
   if (auth) return auth;
 
   const access = await resolveAdminAccessState();

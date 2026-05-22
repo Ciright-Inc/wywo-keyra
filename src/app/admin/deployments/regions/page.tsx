@@ -61,7 +61,7 @@ function regionSearchWhere(query: string): Prisma.RegionWhereInput | undefined {
 export default async function AdminRegionsPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;
   const pageSize = parsePageSize(sp.perPage, PAGE_SIZE_OPTIONS, DEFAULT_PAGE_SIZE);
-  let page = parsePage(sp.page);
+  const requestedPage = parsePage(sp.page);
   const searchQuery = parseSearchQuery(sp.q);
   const { sort, dir } = parseRegionSort(sp.sort, sp.dir);
 
@@ -74,16 +74,28 @@ export default async function AdminRegionsPage({ searchParams }: { searchParams:
     AND: [rw ?? {}, searchWhere ?? {}].filter((part) => Object.keys(part).length > 0),
   };
 
-  const totalCount = await prisma.region.count({ where });
-  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-  page = Math.min(page, totalPages);
+  const skip = (requestedPage - 1) * pageSize;
+  const [totalCount, regionRows] = await Promise.all([
+    prisma.region.count({ where }),
+    prisma.region.findMany({
+      where,
+      orderBy: regionOrderBy(sort, dir),
+      skip,
+      take: pageSize,
+    }),
+  ]);
 
-  const regions = await prisma.region.findMany({
-    where,
-    orderBy: regionOrderBy(sort, dir),
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-  });
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  const page = Math.min(requestedPage, totalPages);
+  const regions =
+    page === requestedPage
+      ? regionRows
+      : await prisma.region.findMany({
+          where,
+          orderBy: regionOrderBy(sort, dir),
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+        });
 
   const showCreate = auth.kind === "legacy_super" || (auth.kind === "user" && canCreateRegion(auth));
   /** Same gate the DELETE route enforces: read-only and compliance-reviewer roles cannot delete. */

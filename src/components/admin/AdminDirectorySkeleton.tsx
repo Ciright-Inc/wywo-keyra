@@ -20,8 +20,19 @@ type Props = {
   rows?: number;
 };
 
+type TableColumn = {
+  label: string;
+  alignRight?: boolean;
+};
+
 function SkeletonBar({ className }: { className: string }) {
   return <div className={`keyra-skeleton ${className}`} aria-hidden />;
+}
+
+function TableHeaderCell({ column }: { column: TableColumn }) {
+  return (
+    <th className={`px-3 py-2 ${column.alignRight ? "text-right" : ""}`}>{column.label}</th>
+  );
 }
 
 function DeploymentsPanelHeader({
@@ -54,10 +65,10 @@ function DeploymentsPanelHeader({
 }
 
 function DeploymentsTable({
-  columnWidths,
+  columns,
   rows = 8,
 }: {
-  columnWidths: string[];
+  columns: TableColumn[];
   rows?: number;
 }) {
   return (
@@ -66,19 +77,17 @@ function DeploymentsTable({
         <table className="w-full min-w-[36rem] text-left text-sm">
           <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
             <tr>
-              {columnWidths.map((width, i) => (
-                <th key={i} className={`px-3 py-2 ${i === columnWidths.length - 1 ? "text-right" : ""}`}>
-                  <SkeletonBar className={`h-3 ${width}`} />
-                </th>
+              {columns.map((column) => (
+                <TableHeaderCell key={column.label} column={column} />
               ))}
             </tr>
           </thead>
           <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
             {Array.from({ length: rows }, (_, row) => (
               <tr key={row}>
-                {columnWidths.map((width, col) => (
-                  <td key={col} className={`px-3 py-2 ${col === columnWidths.length - 1 ? "text-right" : ""}`}>
-                    <SkeletonBar className={`h-4 ${col === 0 ? "w-36" : width}`} />
+                {columns.map((column, col) => (
+                  <td key={col} className={`px-3 py-2 ${column.alignRight ? "text-right" : ""}`}>
+                    <SkeletonBar className={`h-4 ${col === 0 ? "w-36" : "w-24"}`} />
                   </td>
                 ))}
               </tr>
@@ -105,25 +114,30 @@ function DeploymentsTable({
 }
 
 function AccessRequestsTable({ rows = 6 }: { rows?: number }) {
-  const columns = ["w-20", "w-36", "w-28", "w-16", "w-16", "w-20"];
+  const columns: TableColumn[] = [
+    { label: "Created" },
+    { label: "Email" },
+    { label: "Target" },
+    { label: "Verify" },
+    { label: "Approval" },
+    { label: "Actions", alignRight: true },
+  ];
   return (
-    <div className="mt-8 overflow-x-auto rounded-[var(--keyra-radius-card)] border border-keyra-border">
+    <div className="overflow-x-auto rounded-[var(--keyra-radius-card)] border border-keyra-border">
       <table className="w-full min-w-[36rem] text-left text-sm">
         <thead className="bg-[rgba(255,255,255,0.03)] text-xs uppercase tracking-wider text-keyra-text-2">
           <tr>
-            {columns.map((width, i) => (
-              <th key={i} className={`px-3 py-2 ${i === columns.length - 1 ? "text-right" : ""}`}>
-                <SkeletonBar className={`h-3 ${width}`} />
-              </th>
+            {columns.map((column) => (
+              <TableHeaderCell key={column.label} column={column} />
             ))}
           </tr>
         </thead>
         <tbody className="divide-y divide-keyra-border">
           {Array.from({ length: rows }, (_, row) => (
             <tr key={row}>
-              {columns.map((width, col) => (
-                <td key={col} className={`px-3 py-3 ${col === columns.length - 1 ? "text-right" : ""}`}>
-                  <SkeletonBar className={`h-4 ${col === 1 ? "w-40" : width}`} />
+              {columns.map((column, col) => (
+                <td key={col} className={`px-3 py-3 ${column.alignRight ? "text-right" : ""}`}>
+                  <SkeletonBar className={`h-4 ${col === 1 ? "w-40" : "w-24"}`} />
                 </td>
               ))}
             </tr>
@@ -174,7 +188,7 @@ function AppsGrid({ rows = 6 }: { rows?: number }) {
   return (
     <>
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <SkeletonBar className="h-4 w-16" />
+        <span className="text-sm font-medium text-keyra-text-2">Category</span>
         <SkeletonBar className="h-10 w-48 rounded-2xl" />
       </div>
       <div className="mt-6 rounded-3xl border border-keyra-border bg-keyra-surface/45 p-2.5 shadow-[0_18px_54px_rgba(0,0,0,0.04)] sm:p-3">
@@ -209,14 +223,19 @@ function AppsGrid({ rows = 6 }: { rows?: number }) {
   );
 }
 
-function AuditSection({ titleWidth, columns, rows = 5 }: { titleWidth: string; columns: string[]; rows?: number }) {
+function AuditSection({
+  sectionTitle,
+  columns,
+  rows = 5,
+}: {
+  sectionTitle: string;
+  columns: TableColumn[];
+  rows?: number;
+}) {
   return (
     <div className="mt-5">
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <SkeletonBar className={`h-4 ${titleWidth}`} />
-          <SkeletonBar className="h-5 w-14 rounded-full" />
-        </div>
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-keyra-text-2">{sectionTitle}</h2>
         <SkeletonBar className="h-9 w-44 rounded-full" />
       </div>
       <div className="overflow-hidden rounded-2xl border border-keyra-border bg-keyra-surface/45 shadow-[0_12px_36px_rgba(0,0,0,0.03)]">
@@ -224,19 +243,17 @@ function AuditSection({ titleWidth, columns, rows = 5 }: { titleWidth: string; c
           <table className="w-full min-w-[36rem] text-left text-sm">
             <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
               <tr>
-                {columns.map((width, i) => (
-                  <th key={i} className="px-3 py-2">
-                    <SkeletonBar className={`h-3 ${width}`} />
-                  </th>
+                {columns.map((column) => (
+                  <TableHeaderCell key={column.label} column={column} />
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-keyra-border bg-keyra-surface/70">
               {Array.from({ length: rows }, (_, row) => (
                 <tr key={row}>
-                  {columns.map((width, col) => (
-                    <td key={col} className="px-3 py-2">
-                      <SkeletonBar className={`h-4 ${col === 0 ? "w-28" : width}`} />
+                  {columns.map((column, col) => (
+                    <td key={col} className={`px-3 py-2 ${column.alignRight ? "text-right" : ""}`}>
+                      <SkeletonBar className={`h-4 ${col === 0 ? "w-28" : "w-24"}`} />
                     </td>
                   ))}
                 </tr>
@@ -295,15 +312,31 @@ function AuthToolbar({ buttonCount = 4 }: { buttonCount?: number }) {
 }
 
 function AuthWideTable({ rows = 8 }: { rows?: number }) {
-  const columns = ["w-8", "w-24", "w-20", "w-10", "w-10", "w-16", "w-12", "w-12", "w-10", "w-10", "w-8", "w-8", "w-8", "w-10", "w-12"];
+  const columns = [
+    { label: "", className: "w-10 pl-4 pr-2 py-2.5 align-middle" },
+    { label: "Name", className: "px-2 py-2.5 align-middle" },
+    { label: "Official", className: "px-2 py-2.5 align-middle" },
+    { label: "Flag", className: "px-2 py-2.5 align-middle" },
+    { label: "ISO2", className: "px-2 py-2.5 align-middle" },
+    { label: "ISO3", className: "px-2 py-2.5 align-middle" },
+    { label: "Region", className: "px-2 py-2.5 align-middle" },
+    { label: "Sub", className: "px-2 py-2.5 align-middle" },
+    { label: "Phone", className: "px-2 py-2.5 align-middle" },
+    { label: "Currency", className: "px-2 py-2.5 align-middle" },
+    { label: "Auth", className: "px-2 py-2.5 align-middle" },
+    { label: "Active", className: "px-2 py-2.5 align-middle" },
+    { label: "Wt", className: "px-2 py-2.5 align-middle" },
+    { label: "Pri", className: "px-2 py-2.5 align-middle" },
+    { label: "Updated", className: "px-2 py-2.5 align-middle" },
+  ];
   return (
     <div className="max-h-[min(85vh,calc(100dvh-11rem))] min-h-[260px] overflow-auto rounded-2xl border border-keyra-border bg-keyra-surface/50 shadow-[0_18px_54px_rgba(0,0,0,0.05)]">
       <table className="min-w-[1200px] w-full border-collapse text-left text-xs">
-        <thead className="sticky top-0 z-10 border-b border-keyra-border bg-keyra-bg/95 backdrop-blur-sm">
+        <thead className="sticky top-0 z-10 border-b border-keyra-border bg-keyra-bg/95 text-[10px] uppercase tracking-wider text-keyra-text-2 backdrop-blur-sm">
           <tr>
-            {columns.map((width, i) => (
-              <th key={i} className={`px-2 py-2.5 ${i === 0 ? "pl-4" : ""}`}>
-                <SkeletonBar className={`h-3 ${i === 0 ? "size-3.5 rounded" : width}`} />
+            {columns.map((column) => (
+              <th key={column.label || "select"} className={column.className} scope="col">
+                {column.label}
               </th>
             ))}
           </tr>
@@ -311,7 +344,7 @@ function AuthWideTable({ rows = 8 }: { rows?: number }) {
         <tbody>
           {Array.from({ length: rows }, (_, row) => (
             <tr key={row} className="border-b border-keyra-border/50">
-              {columns.map((width, col) => (
+              {columns.map((column, col) => (
                 <td key={col} className={`px-2 py-2 ${col === 0 ? "pl-4" : ""}`}>
                   <SkeletonBar className={`h-8 ${col === 0 ? "size-3.5 rounded" : col <= 2 ? "w-24" : "w-12"}`} />
                 </td>
@@ -325,15 +358,29 @@ function AuthWideTable({ rows = 8 }: { rows?: number }) {
 }
 
 function AuthProtocolsTable({ rows = 8 }: { rows?: number }) {
-  const columns = ["w-8", "w-10", "w-28", "w-16", "w-20", "w-10", "w-10", "w-10", "w-10", "w-16", "w-10", "w-10", "w-10"];
+  const columns = [
+    { label: "", className: "w-10 pl-4 pr-2 py-2.5 align-middle" },
+    { label: "SAT", className: "px-1.5 py-2.5 align-middle" },
+    { label: "Name", className: "px-1.5 py-2.5 text-left" },
+    { label: "Code", className: "px-1.5 py-2.5 text-left" },
+    { label: "Category", className: "px-1.5 py-2.5 text-left" },
+    { label: "Wt", className: "px-1.5 py-2.5 text-left" },
+    { label: "Home", className: "px-1.5 py-2.5 text-left" },
+    { label: "Roam", className: "px-1.5 py-2.5 text-left" },
+    { label: "Trust", className: "px-1.5 py-2.5 text-left" },
+    { label: "Flags", className: "px-1 py-2" },
+    { label: "Global", className: "px-1.5 py-2.5 w-14 text-center" },
+    { label: "API", className: "px-1.5 py-2.5 w-14 text-center" },
+    { label: "Active", className: "px-1.5 py-2.5 w-14 text-center" },
+  ];
   return (
     <div className="max-h-[min(85vh,calc(100dvh-var(--keyra-header-offset)-8rem))] min-h-[260px] overflow-auto overscroll-x-contain rounded-2xl border border-keyra-border bg-keyra-surface/50 shadow-[0_18px_54px_rgba(0,0,0,0.05)]">
       <table className="min-w-[1100px] w-full border-collapse text-left text-xs">
-        <thead className="sticky top-0 z-10 border-b border-keyra-border bg-keyra-bg/95 backdrop-blur-sm">
+        <thead className="sticky top-0 z-10 border-b border-keyra-border bg-keyra-bg/95 text-[10px] uppercase tracking-wider text-keyra-text-2 backdrop-blur-sm">
           <tr>
-            {columns.map((width, i) => (
-              <th key={i} className={`px-1.5 py-2.5 ${i === 0 ? "pl-4" : ""}`}>
-                <SkeletonBar className={`h-3 ${i === 1 ? "w-8" : width}`} />
+            {columns.map((column) => (
+              <th key={column.label || "select"} className={column.className} scope="col">
+                {column.label}
               </th>
             ))}
           </tr>
@@ -347,9 +394,9 @@ function AuthProtocolsTable({ rows = 8 }: { rows?: number }) {
               <td className="px-1 py-1">
                 <SkeletonBar className="size-9 rounded-md" />
               </td>
-              {columns.slice(2).map((width, col) => (
-                <td key={col} className="px-1 py-1">
-                  <SkeletonBar className={`h-8 ${col === 0 ? "w-28" : width}`} />
+              {columns.slice(2).map((column, col) => (
+                <td key={column.label} className="px-1 py-1">
+                  <SkeletonBar className={`h-8 ${col === 0 ? "w-28" : "w-16"}`} />
                 </td>
               ))}
             </tr>
@@ -363,21 +410,15 @@ function AuthProtocolsTable({ rows = 8 }: { rows?: number }) {
 function OverviewSkeleton() {
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-3xl border border-keyra-border bg-keyra-surface px-6 py-7 shadow-[0_24px_70px_rgba(0,0,0,0.06)] sm:px-8">
-        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-2xl space-y-3">
-            <SkeletonBar className="h-3 w-36" />
-            <SkeletonBar className="h-10 w-72 max-w-full sm:h-11" />
-            <SkeletonBar className="h-4 w-full max-w-xl" />
-            <SkeletonBar className="mt-1 h-4 w-full max-w-lg" />
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <SkeletonBar className="h-10 w-32 rounded-full" />
-            <SkeletonBar className="h-10 w-32 rounded-full" />
-          </div>
-        </div>
-      </section>
+      <OverviewBodySkeleton />
+    </div>
+  );
+}
 
+/** Stats + lower panels only — use with DeploymentsOverviewStaticHeader during route loading. */
+export function OverviewBodySkeleton() {
+  return (
+    <>
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {Array.from({ length: 4 }, (_, i) => (
           <div key={i} className="rounded-2xl border border-keyra-border bg-keyra-surface/75 p-5">
@@ -416,7 +457,7 @@ function OverviewSkeleton() {
           <SkeletonBar className="mt-5 h-10 w-32 rounded-full" />
         </div>
       </section>
-    </div>
+    </>
   );
 }
 
@@ -462,15 +503,26 @@ function AuthSettingsSkeleton() {
 }
 
 function renderTabSkeleton(tab: AdminSkeletonTab, rows: number, tableOnly: boolean) {
+  const actionsCol: TableColumn = { label: "Actions", alignRight: true };
+
   switch (tab) {
     case "deployments-overview":
-      return <OverviewSkeleton />;
+      return tableOnly ? <OverviewBodySkeleton /> : <OverviewSkeleton />;
 
     case "deployments-regions":
       return (
         <>
           {!tableOnly ? <DeploymentsPanelHeader titleWidth="w-24" showCreate /> : null}
-          <DeploymentsTable columnWidths={["w-16", "w-12", "w-12", "w-14", "w-14"]} rows={rows} />
+          <DeploymentsTable
+            columns={[
+              { label: "Name" },
+              { label: "Slug" },
+              { label: "Map" },
+              { label: "Published" },
+              actionsCol,
+            ]}
+            rows={rows}
+          />
         </>
       );
 
@@ -478,7 +530,18 @@ function renderTabSkeleton(tab: AdminSkeletonTab, rows: number, tableOnly: boole
       return (
         <>
           {!tableOnly ? <DeploymentsPanelHeader titleWidth="w-28" showCsv showCreate /> : null}
-          <DeploymentsTable columnWidths={["w-20", "w-24", "w-10", "w-24", "w-16", "w-14", "w-14"]} rows={rows} />
+          <DeploymentsTable
+            columns={[
+              { label: "Country" },
+              { label: "Region" },
+              { label: "ISO2" },
+              { label: "Subdomain" },
+              { label: "Status" },
+              { label: "Published" },
+              actionsCol,
+            ]}
+            rows={rows}
+          />
         </>
       );
 
@@ -486,7 +549,17 @@ function renderTabSkeleton(tab: AdminSkeletonTab, rows: number, tableOnly: boole
       return (
         <>
           {!tableOnly ? <DeploymentsPanelHeader titleWidth="w-20" showCsv showCreate /> : null}
-          <DeploymentsTable columnWidths={["w-20", "w-24", "w-20", "w-16", "w-14", "w-14"]} rows={rows} />
+          <DeploymentsTable
+            columns={[
+              { label: "Telco" },
+              { label: "Country" },
+              { label: "Subdomain" },
+              { label: "Status" },
+              { label: "Published" },
+              actionsCol,
+            ]}
+            rows={rows}
+          />
         </>
       );
 
@@ -494,7 +567,16 @@ function renderTabSkeleton(tab: AdminSkeletonTab, rows: number, tableOnly: boole
       return (
         <>
           {!tableOnly ? <DeploymentsPanelHeader titleWidth="w-32" showCreate /> : null}
-          <DeploymentsTable columnWidths={["w-28", "w-12", "w-32", "w-16", "w-14"]} rows={rows} />
+          <DeploymentsTable
+            columns={[
+              { label: "FQDN" },
+              { label: "Env" },
+              { label: "Target" },
+              { label: "Status" },
+              actionsCol,
+            ]}
+            rows={rows}
+          />
         </>
       );
 
@@ -502,7 +584,16 @@ function renderTabSkeleton(tab: AdminSkeletonTab, rows: number, tableOnly: boole
       return (
         <>
           {!tableOnly ? <DeploymentsPanelHeader titleWidth="w-36" showCreate /> : null}
-          <DeploymentsTable columnWidths={["w-32", "w-24", "w-16", "w-12", "w-14"]} rows={rows} />
+          <DeploymentsTable
+            columns={[
+              { label: "Target" },
+              { label: "Domain" },
+              { label: "Method" },
+              { label: "Active" },
+              actionsCol,
+            ]}
+            rows={rows}
+          />
         </>
       );
 
@@ -510,7 +601,17 @@ function renderTabSkeleton(tab: AdminSkeletonTab, rows: number, tableOnly: boole
       return (
         <>
           {!tableOnly ? <AdminUsersHeader /> : null}
-          <DeploymentsTable columnWidths={["w-24", "w-24", "w-32", "w-20", "w-12", "w-14"]} rows={rows} />
+          <DeploymentsTable
+            columns={[
+              { label: "Name" },
+              { label: "Mobile" },
+              { label: "Email" },
+              { label: "Role" },
+              { label: "Active" },
+              actionsCol,
+            ]}
+            rows={rows}
+          />
         </>
       );
 
@@ -539,8 +640,16 @@ function renderTabSkeleton(tab: AdminSkeletonTab, rows: number, tableOnly: boole
               <SkeletonBar className="mt-2 h-4 w-full max-w-xl" />
             </div>
           ) : null}
-          <AuditSection titleWidth="w-24" columns={["w-16", "w-20", "w-32"]} rows={rows} />
-          <AuditSection titleWidth="w-28" columns={["w-16", "w-32", "w-24"]} rows={rows} />
+          <AuditSection
+            sectionTitle="Audit events"
+            columns={[{ label: "When" }, { label: "Action" }, { label: "Entity" }]}
+            rows={rows}
+          />
+          <AuditSection
+            sectionTitle="Status history"
+            columns={[{ label: "When" }, { label: "Target" }, { label: "Change" }]}
+            rows={rows}
+          />
         </>
       );
 

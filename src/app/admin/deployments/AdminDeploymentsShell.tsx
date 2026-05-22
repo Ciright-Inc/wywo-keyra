@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { AdminConfirmProvider } from "@/components/admin/AdminConfirmProvider";
 
 const nav = [
   { href: "/admin/authentication", label: "Auth feed", icon: "pulse" },
@@ -90,6 +91,7 @@ export function AdminDeploymentsShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   return (
+    <AdminConfirmProvider>
     <div className="w-full px-4 py-8 sm:px-6 lg:px-8 xl:px-10">
       <div className="flex w-full flex-col gap-8 lg:flex-row lg:items-start lg:gap-8 xl:gap-10">
         <aside className="shrink-0 lg:sticky lg:top-16 lg:z-[90] lg:w-72 lg:self-start">
@@ -111,6 +113,7 @@ export function AdminDeploymentsShell({ children }: { children: ReactNode }) {
                   <Link
                     key={item.href}
                     href={item.href}
+                    prefetch
                     className={`group flex items-center justify-between gap-3 rounded-2xl px-3 py-2.5 text-sm transition ${
                       active
                         ? "bg-keyra-bg font-semibold text-keyra-primary shadow-sm ring-1 ring-black/10"
@@ -140,5 +143,6 @@ export function AdminDeploymentsShell({ children }: { children: ReactNode }) {
         </div>
       </div>
     </div>
+    </AdminConfirmProvider>
   );
 }

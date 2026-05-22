@@ -60,7 +60,8 @@ export async function requireDeploymentAuth(req: Request): Promise<DeploymentAut
   return auth;
 }
 
-export async function countryWhereFromAuth(auth: DeploymentAuth): Promise<Prisma.CountryDeploymentWhereInput | undefined> {
+export const countryWhereFromAuth = cache(
+  async (auth: DeploymentAuth): Promise<Prisma.CountryDeploymentWhereInput | undefined> => {
   if (auth.kind === "legacy_super") return undefined;
   const role = auth.user.role;
   if (role === R.GLOBAL_ADMIN || role === R.READ_ONLY || role === R.COMPLIANCE_REVIEWER) return undefined;
@@ -81,9 +82,11 @@ export async function countryWhereFromAuth(auth: DeploymentAuth): Promise<Prisma
     return { id: { in: ids } };
   }
   return undefined;
-}
+  },
+);
 
-export async function telcoWhereFromAuth(auth: DeploymentAuth): Promise<Prisma.TelcoDeploymentWhereInput | undefined> {
+export const telcoWhereFromAuth = cache(
+  async (auth: DeploymentAuth): Promise<Prisma.TelcoDeploymentWhereInput | undefined> => {
   const cw = await countryWhereFromAuth(auth);
   if (!cw) return undefined;
   if ("id" in cw && cw.id && typeof cw.id === "object" && "in" in cw.id && Array.isArray((cw.id as { in: string[] }).in)) {
@@ -94,9 +97,11 @@ export async function telcoWhereFromAuth(auth: DeploymentAuth): Promise<Prisma.T
     return { country: { regionId: { in: regionIds } } };
   }
   return undefined;
-}
+  },
+);
 
-export async function regionWhereFromAuth(auth: DeploymentAuth): Promise<Prisma.RegionWhereInput | undefined> {
+export const regionWhereFromAuth = cache(
+  async (auth: DeploymentAuth): Promise<Prisma.RegionWhereInput | undefined> => {
   if (auth.kind === "legacy_super") return undefined;
   const role = auth.user.role;
   if (role === R.GLOBAL_ADMIN || role === R.READ_ONLY || role === R.COMPLIANCE_REVIEWER || role === R.COUNTRY_ADMIN) {
@@ -118,7 +123,8 @@ export async function regionWhereFromAuth(auth: DeploymentAuth): Promise<Prisma.
     return { id: { in: rids } };
   }
   return undefined;
-}
+  },
+);
 
 export async function canApproveAccessRequestRow(
   auth: DeploymentAuth,

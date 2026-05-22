@@ -69,37 +69,46 @@ function countrySearchWhere(query: string): Prisma.CountryDeploymentWhereInput |
 export default async function AdminCountriesPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;
   const pageSize = parsePageSize(sp.perPage, PAGE_SIZE_OPTIONS, DEFAULT_PAGE_SIZE);
-  let page = parsePage(sp.page);
+  const requestedPage = parsePage(sp.page);
   const searchQuery = parseSearchQuery(sp.q);
   const { sort, dir } = parseCountrySort(sp.sort, sp.dir);
 
   const auth = await assertAdminServer();
-  const cw = await countryWhereFromAuth(auth);
+  const [cw, rw] = await Promise.all([countryWhereFromAuth(auth), regionWhereFromAuth(auth)]);
   const searchWhere = countrySearchWhere(searchQuery);
   const where: Prisma.CountryDeploymentWhereInput = {
     AND: [cw ?? {}, searchWhere ?? {}].filter((part) => Object.keys(part).length > 0),
   };
 
-  const rw = await regionWhereFromAuth(auth);
-  const [totalCount, regions] = await Promise.all([
+  const skip = (requestedPage - 1) * pageSize;
+  const [totalCount, regions, countryRows] = await Promise.all([
     prisma.countryDeployment.count({ where }),
     prisma.region.findMany({
       where: rw ?? {},
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       select: { id: true, name: true, slug: true },
     }),
+    prisma.countryDeployment.findMany({
+      where,
+      orderBy: countryOrderBy(sort, dir),
+      skip,
+      take: pageSize,
+      include: { region: { select: { name: true, slug: true } } },
+    }),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-  page = Math.min(page, totalPages);
-
-  const countries = await prisma.countryDeployment.findMany({
-    where,
-    orderBy: countryOrderBy(sort, dir),
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-    include: { region: { select: { name: true, slug: true } } },
-  });
+  const page = Math.min(requestedPage, totalPages);
+  const countries =
+    page === requestedPage
+      ? countryRows
+      : await prisma.countryDeployment.findMany({
+          where,
+          orderBy: countryOrderBy(sort, dir),
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          include: { region: { select: { name: true, slug: true } } },
+        });
 
   const canMutate =
     auth.kind === "legacy_super" ||

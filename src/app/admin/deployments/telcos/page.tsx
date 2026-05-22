@@ -81,7 +81,7 @@ function parsePageSize(raw: string | undefined): number {
 export default async function AdminTelcosPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;
   const pageSize = parsePageSize(sp.perPage);
-  let page = parsePage(sp.page);
+  const requestedPage = parsePage(sp.page);
   const searchQuery = parseSearchQuery(sp.q);
   const { sort, dir } = parseTelcoSort(sp.sort, sp.dir);
   const telcoWhere = telcoSearchWhere(searchQuery);
@@ -89,26 +89,37 @@ export default async function AdminTelcosPage({ searchParams }: { searchParams: 
   const auth = await assertAdminServer();
 
   const cw = await countryWhereFromAuth(auth);
-  const [totalCount, countries] = await Promise.all([
+  const skip = (requestedPage - 1) * pageSize;
+
+  const [totalCount, countries, telcoRows] = await Promise.all([
     prisma.telcoDeployment.count({ where: telcoWhere }),
     prisma.countryDeployment.findMany({
       where: cw ?? {},
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       select: { id: true, name: true, iso2: true },
     }),
+    prisma.telcoDeployment.findMany({
+      where: telcoWhere,
+      orderBy: telcoOrderBy(sort, dir),
+      skip,
+      take: pageSize,
+      include: { country: { select: { name: true, iso2: true, id: true } } },
+    }),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-  page = Math.min(page, totalPages);
+  const page = Math.min(requestedPage, totalPages);
 
-  /** Full catalog paging; create/edit still enforced per-row in actions and detail pages. */
-  const telcos = await prisma.telcoDeployment.findMany({
-    where: telcoWhere,
-    orderBy: telcoOrderBy(sort, dir),
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-    include: { country: { select: { name: true, iso2: true, id: true } } },
-  });
+  const telcos =
+    page === requestedPage
+      ? telcoRows
+      : await prisma.telcoDeployment.findMany({
+          where: telcoWhere,
+          orderBy: telcoOrderBy(sort, dir),
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          include: { country: { select: { name: true, iso2: true, id: true } } },
+        });
 
   const canMutate =
     auth.kind === "legacy_super" ||

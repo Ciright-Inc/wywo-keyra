@@ -4,6 +4,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import {
+  deleteAppCategoryMessage,
+  deleteAppCategoryWithReassignMessage,
+} from "@/lib/admin/adminDeleteMessages";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import {
   DEPLOYMENT_APP_CATEGORY_MAX_LENGTH,
   normalizeDeploymentAppCategory,
   type DeploymentAppCategoryView,
@@ -43,6 +48,7 @@ export function ManageCategoriesModal({
   selectedCategory,
   onCategoriesChange,
 }: Props) {
+  const confirm = useAdminConfirm();
   const [mounted, setMounted] = useState(false);
   const [categoryList, setCategoryList] = useState(() => sortCategories(categories));
   const [orderNumber, setOrderNumber] = useState("");
@@ -246,11 +252,17 @@ export function ManageCategoriesModal({
     }
   }
 
+  async function beginDeleteCategory(name: string) {
+    if (!(await confirm(deleteAppCategoryMessage(name)))) return;
+    await deleteCategory(name);
+  }
+
   async function confirmReassignAndDelete() {
     if (!reassignFor || !reassignTarget) {
       setFieldErrors({ reassign: "Choose a category to move apps to." });
       return;
     }
+    if (!(await confirm(deleteAppCategoryWithReassignMessage(reassignFor, reassignTarget)))) return;
     await deleteCategory(reassignFor, reassignTarget);
   }
 
@@ -418,7 +430,7 @@ export function ManageCategoriesModal({
                           title="Delete"
                           aria-label={`Delete ${category.name}`}
                           disabled={busyAction === `delete:${category.name}` || categoryList.length <= 1}
-                          onClick={() => void deleteCategory(category.name)}
+                          onClick={() => void beginDeleteCategory(category.name)}
                           className="inline-flex size-8 items-center justify-center rounded-md border border-keyra-border bg-keyra-bg text-red-700 transition hover:border-red-500/30 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           <svg

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 type UrlModeProps = {
@@ -46,6 +46,7 @@ export function CollapsibleSearchBar(props: Props) {
   const ariaLabel = props.ariaLabel ?? "Search";
 
   const router = useRouter();
+  const [, startTransition] = useTransition();
   const hasSearch = props.searchQuery.trim().length > 0;
   const [expanded, setExpanded] = useState(hasSearch);
   const [qInput, setQInput] = useState(props.searchQuery);
@@ -70,7 +71,9 @@ export function CollapsibleSearchBar(props: Props) {
     if (next === props.searchQuery.trim()) return;
     const debounceMs = props.debounceMs ?? 280;
     const t = setTimeout(() => {
-      router.push(props.buildHref(next));
+      startTransition(() => {
+        router.push(props.buildHref(next));
+      });
     }, debounceMs);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,7 +89,9 @@ export function CollapsibleSearchBar(props: Props) {
     if (isClientMode) {
       props.onChange("");
     } else if (hasSearch) {
-      router.push(props.buildHref(""));
+      startTransition(() => {
+        router.push(props.buildHref(""));
+      });
     }
     setExpanded(false);
   }

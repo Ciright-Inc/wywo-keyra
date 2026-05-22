@@ -7,10 +7,14 @@ import { DeploymentAdminRole } from "@prisma/client";
 import { AdminPhoneField } from "@/components/admin/AdminPhoneField";
 import { AdminFieldError, fieldClass } from "@/components/admin/AdminFieldError";
 import { RowActions } from "@/components/admin/RowActions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
+import { deleteAdminUserMessage } from "@/lib/admin/adminDeleteMessages";
+import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 import { buildListHref } from "@/lib/admin/listSearchParams";
+import { useAdminRouteTransition } from "@/lib/admin/useAdminRouteTransition";
 import {
   type AdminUserFieldErrors,
   validateAdminUserCreate,
@@ -103,11 +107,13 @@ export function AdminUsersDirectoryClient({
   const [phoneNational, setPhoneNational] = useState("");
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
+  const confirm = useAdminConfirm();
+  const { isPending, navigate } = useAdminRouteTransition();
   const toast = useToast();
   const { page, pageSize, totalCount, totalPages, showingFrom, showingTo } = pagination;
 
   async function handleDelete(id: string, name: string) {
-    if (!confirm(`Delete admin user "${name}"? This cannot be undone.`)) return;
+    if (!(await confirm(deleteAdminUserMessage(name)))) return;
     setDeletingId(id);
     setDeleteError(null);
     try {
@@ -220,12 +226,10 @@ export function AdminUsersDirectoryClient({
     const next = qInput.trim();
     if (next === searchQuery.trim()) return;
     const t = setTimeout(() => {
-      router.push(
-        buildListHref(baseHref, { page: 1, pageSize, searchQuery: next }, defaultPageSize),
-      );
+      navigate(buildListHref(baseHref, { page: 1, pageSize, searchQuery: next }, defaultPageSize));
     }, 280);
     return () => clearTimeout(t);
-  }, [qInput, searchQuery, router, pageSize, defaultPageSize, baseHref]);
+  }, [qInput, searchQuery, navigate, pageSize, defaultPageSize, baseHref]);
 
   function toggleSearchPanel() {
     setSearchExpanded((open) => !open);
@@ -235,9 +239,7 @@ export function AdminUsersDirectoryClient({
     if (clearQuery) {
       setQInput("");
       if (hasSearch) {
-        router.push(
-          buildListHref(baseHref, { page: 1, pageSize, searchQuery: "" }, defaultPageSize),
-        );
+        navigate(buildListHref(baseHref, { page: 1, pageSize, searchQuery: "" }, defaultPageSize));
       }
     }
     setSearchExpanded(false);
@@ -437,7 +439,7 @@ export function AdminUsersDirectoryClient({
 
       {deleteError ? <p className="mt-3 ds-admin-error-banner">{deleteError}</p> : null}
 
-      <div className="ds-table-wrap mt-3">
+      <div className={`ds-table-wrap mt-3 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[42rem] text-left text-sm">
             <thead className="border-b border-keyra-border bg-keyra-bg/80 text-[11px] font-semibold uppercase tracking-wider text-keyra-text-2">
@@ -512,22 +514,27 @@ export function AdminUsersDirectoryClient({
                     {sz}
                   </span>
                 ) : (
-                  <Link key={sz} href={buildListHref(baseHref, { page: 1, pageSize: sz, searchQuery }, defaultPageSize)} prefetch={false} className={inactivePageClass}>
+                  <AdminTransitionLink
+                    key={sz}
+                    href={buildListHref(baseHref, { page: 1, pageSize: sz, searchQuery }, defaultPageSize)}
+                    onNavigate={navigate}
+                    className={inactivePageClass}
+                  >
                     {sz}
-                  </Link>
+                  </AdminTransitionLink>
                 ),
               )}
             </div>
 
             <div className="flex flex-wrap items-center justify-end gap-2">
-              <Link
+              <AdminTransitionLink
                 href={buildListHref(baseHref, { page: Math.max(1, page - 1), pageSize, searchQuery }, defaultPageSize)}
-                prefetch={false}
+                onNavigate={navigate}
                 aria-disabled={page <= 1}
                 className={`${inactivePageClass} ${page <= 1 ? "pointer-events-none opacity-40" : ""}`}
               >
                 Previous
-              </Link>
+              </AdminTransitionLink>
               {pagerItems.map((item, i) =>
                 item === "gap" ? (
                   <span key={`gap-${i}`} className="px-2 text-keyra-text-2">
@@ -538,19 +545,24 @@ export function AdminUsersDirectoryClient({
                     {item}
                   </span>
                 ) : (
-                  <Link key={item} href={buildListHref(baseHref, { page: item, pageSize, searchQuery }, defaultPageSize)} prefetch={false} className={inactivePageClass}>
+                  <AdminTransitionLink
+                    key={item}
+                    href={buildListHref(baseHref, { page: item, pageSize, searchQuery }, defaultPageSize)}
+                    onNavigate={navigate}
+                    className={inactivePageClass}
+                  >
                     {item}
-                  </Link>
+                  </AdminTransitionLink>
                 ),
               )}
-              <Link
+              <AdminTransitionLink
                 href={buildListHref(baseHref, { page: Math.min(totalPages, page + 1), pageSize, searchQuery }, defaultPageSize)}
-                prefetch={false}
+                onNavigate={navigate}
                 aria-disabled={page >= totalPages}
                 className={`${inactivePageClass} ${page >= totalPages ? "pointer-events-none opacity-40" : ""}`}
               >
                 Next
-              </Link>
+              </AdminTransitionLink>
             </div>
           </div>
         ) : null}
