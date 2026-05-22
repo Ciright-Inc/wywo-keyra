@@ -1,7 +1,7 @@
 import Script from "next/script";
 
 const RAILWAY_PLAUSIBLE_SCRIPT_SRC =
-  "https://nexa-people-production.up.railway.app/js/script.js";
+  "https://analytics.ciright.com/js/script.js";
 
 /**
  * Plausible analytics for keyra.ie (hosted on Railway).
@@ -17,7 +17,7 @@ export function RailwayPlausibleScripts() {
       <Script
         src={RAILWAY_PLAUSIBLE_SCRIPT_SRC}
         data-domain="keyra.ie"
-        data-api="https://nexa-people-production.up.railway.app/api/event"
+        data-api="https://analytics.ciright.com/api/event"
         defer
         strategy="afterInteractive"
       />

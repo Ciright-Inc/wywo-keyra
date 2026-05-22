@@ -2,12 +2,12 @@
 
 import type { ProtectionDashboard } from "@/lib/keyraProtection";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { cn } from "@/components/ui/cn";
-import { IconDevices } from "@/components/ui/Icons";
+import { IconDevices, IconShieldCheck } from "@/components/ui/Icons";
 import { useToast } from "@/components/ui/Toast";
 
 function deviceDisplayName(label: string): string {
@@ -45,46 +45,424 @@ function IconSiren({ className }: { className?: string }) {
   );
 }
 
-function SecurityScoreGauge({ percent }: { percent: number }) {
+type SecurityTier = ProtectionDashboard["securityScore"]["tier"];
+
+const tierMeta: Record<
+  SecurityTier,
+  { label: string; badge: string; fill: string }
+> = {
+  excellent: {
+    label: "Excellent",
+    badge: "bg-emerald-50 text-emerald-800",
+    fill: "#059669",
+  },
+  good: {
+    label: "Good",
+    badge: "bg-sky-50 text-sky-800",
+    fill: "#0284c7",
+  },
+  fair: {
+    label: "Fair",
+    badge: "bg-amber-50 text-amber-900",
+    fill: "#d97706",
+  },
+  needs_attention: {
+    label: "Needs attention",
+    badge: "bg-orange-50 text-orange-900",
+    fill: "#ea580c",
+  },
+};
+
+function SecurityScoreGauge({
+  percent,
+  tier,
+}: {
+  percent: number;
+  tier: SecurityTier;
+}) {
   const clamped = Math.max(0, Math.min(100, percent));
-  const angle = -180 + (clamped / 100) * 180;
-  const rad = (angle * Math.PI) / 180;
-  const cx = 60;
-  const cy = 58;
-  const r = 42;
-  const nx = cx + r * Math.cos(rad);
-  const ny = cy + r * Math.sin(rad);
+  const arcLen = (clamped / 100) * 126;
+  const { fill } = tierMeta[tier];
 
   return (
-    <div className="flex items-center gap-4">
-      <svg viewBox="0 0 120 72" className="h-[72px] w-[120px] shrink-0" aria-hidden>
+    <div
+      className="h-[76px] w-[120px] shrink-0"
+      role="img"
+      aria-label={`Security score ${clamped} percent`}
+    >
+      <svg viewBox="0 0 120 76" className="size-full" aria-hidden>
         <path
-          d="M 18 58 A 42 42 0 0 1 102 58"
+          d="M 16 60 A 44 44 0 0 1 104 60"
           fill="none"
-          stroke="var(--keyra-border)"
-          strokeWidth="8"
+          stroke="var(--color-hairline-strong)"
+          strokeWidth="7"
           strokeLinecap="round"
         />
         <path
-          d="M 18 58 A 42 42 0 0 1 102 58"
+          d="M 16 60 A 44 44 0 0 1 104 60"
           fill="none"
-          stroke="var(--keyra-accent)"
-          strokeWidth="8"
+          stroke={fill}
+          strokeWidth="7"
           strokeLinecap="round"
-          strokeDasharray={`${(clamped / 100) * 132} 132`}
+          strokeDasharray={`${arcLen} 126`}
         />
-        <line x1={cx} y1={cy} x2={nx} y2={ny} stroke="var(--keyra-primary)" strokeWidth="2.5" strokeLinecap="round" />
-        <circle cx={cx} cy={cy} r="4" fill="var(--keyra-primary)" />
+        <text
+          x="60"
+          y="54"
+          textAnchor="middle"
+          fill="var(--color-ink)"
+          style={{ fontSize: 22, fontWeight: 700, fontFamily: "var(--font-inter), Inter, sans-serif" }}
+        >
+          {clamped}%
+        </text>
       </svg>
-      <p className="text-[40px] font-bold leading-none tracking-tight text-keyra-primary">
-        {clamped}%
-      </p>
     </div>
   );
 }
 
+const PANEL_LIST_SLOTS = 3;
+
+const identityWatchChecks = [
+  "Email addresses linked to your account",
+  "Password and credential pairs",
+  "Usernames on known breach databases",
+];
+
+const scoreIncludedFactors = [
+  { id: "session", label: "Authenticated session" },
+  { id: "monitoring", label: "Protection monitoring active" },
+  { id: "devices", label: "Device tracking enabled" },
+];
+
+type PanelStat = { label: string; value: string };
+
+function ProtectionPanelStatGrid({ stats }: { stats: [PanelStat, PanelStat] }) {
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {stats.map((stat) => (
+        <div
+          key={stat.label}
+          className="rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3"
+        >
+          <p className="text-[11px] font-medium uppercase tracking-wide text-keyra-text-2">
+            {stat.label}
+          </p>
+          <p className="mt-1 text-[14px] font-medium text-keyra-primary">{stat.value}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ProtectionPanelHero({
+  visual,
+  badge,
+  badgeClass,
+  meta,
+  summary,
+  progressPercent,
+  progressFill,
+  progressLabel,
+}: {
+  visual: ReactNode;
+  badge: string;
+  badgeClass: string;
+  meta: string;
+  summary: string;
+  progressPercent: number;
+  progressFill: string;
+  progressLabel: string;
+}) {
+  return (
+    <div className="flex items-start gap-5">
+      {visual}
+      <div className="min-w-0 flex-1 pt-1">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span
+            className={cn(
+              "inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide",
+              badgeClass,
+            )}
+          >
+            {badge}
+          </span>
+          <span className="text-[13px] text-keyra-text-2">{meta}</span>
+        </div>
+        <p className="mt-2 text-[14px] leading-relaxed text-keyra-text-2">{summary}</p>
+        <div
+          className="mt-4 h-1 overflow-hidden rounded-full bg-[var(--color-hairline)]"
+          role="progressbar"
+          aria-valuenow={progressPercent}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={progressLabel}
+        >
+          <div
+            className="h-full rounded-full transition-[width] duration-500 ease-out"
+            style={{ width: `${progressPercent}%`, backgroundColor: progressFill }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProtectionPanelList({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return (
+    <ul className="flex min-h-[10.75rem] flex-col justify-start gap-2">{children}</ul>
+  );
+}
+
+function ProtectionPanelListRow({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <li
+      className={cn(
+        "flex min-h-[3.25rem] items-center gap-3 rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3 text-[14px]",
+        className,
+      )}
+    >
+      {children}
+    </li>
+  );
+}
+
+function ProtectionPanelCard({
+  header,
+  hero,
+  stats,
+  list,
+  footer,
+}: {
+  header: ReactNode;
+  hero: ReactNode;
+  stats: ReactNode;
+  list: ReactNode;
+  footer: ReactNode;
+}) {
+  return (
+    <Card className="flex h-full flex-col">
+      {header}
+      <div className="mt-6 flex flex-1 flex-col gap-6">
+        {hero}
+        {stats}
+        {list}
+        <div className="mt-auto shrink-0">{footer}</div>
+      </div>
+    </Card>
+  );
+}
+
+function buildSecurityScoreRows(
+  score: ProtectionDashboard["securityScore"],
+): Array<{
+  id: string;
+  label: string;
+  href?: string;
+  points?: number;
+  done: boolean;
+}> {
+  const pending = score.recommendations.map((rec) => ({
+    id: rec.id,
+    label: rec.label,
+    href: rec.href,
+    points: rec.points,
+    done: false,
+  }));
+  const rows = [...pending];
+  for (const factor of scoreIncludedFactors) {
+    if (rows.length >= PANEL_LIST_SLOTS) break;
+    if (pending.some((p) => p.id === factor.id)) continue;
+    rows.push({ ...factor, done: true });
+  }
+  return rows.slice(0, PANEL_LIST_SLOTS);
+}
+
+function IdentityWatchPanel({
+  watch,
+  scanning,
+  onScan,
+}: {
+  watch: ProtectionDashboard["identityWatch"];
+  scanning: boolean;
+  onScan: () => void;
+}) {
+  const isClear = watch.status === "clear";
+  const statusBadge = isClear
+    ? "bg-emerald-50 text-emerald-800"
+    : "bg-red-50 text-red-800";
+  const fill = isClear ? "#059669" : "#dc2626";
+
+  return (
+    <ProtectionPanelCard
+      header={
+        <CardHeader
+          title="Identity Watch"
+          description="Keyra monitors your credentials on the dark web."
+          icon={<IconGlobeSearch className="h-5 w-5" />}
+        />
+      }
+      hero={
+        <ProtectionPanelHero
+          visual={
+            <div
+              className={cn(
+                "flex h-[76px] w-[120px] shrink-0 flex-col items-center justify-center rounded-[var(--keyra-radius-card)]",
+                isClear ? "bg-emerald-50" : "bg-red-50",
+              )}
+            >
+              <IconGlobeSearch
+                className={cn("h-8 w-8", isClear ? "text-emerald-600" : "text-red-600")}
+              />
+              <span
+                className={cn(
+                  "mt-1.5 text-[11px] font-semibold uppercase tracking-wide",
+                  isClear ? "text-emerald-800" : "text-red-800",
+                )}
+              >
+                {isClear ? "Clear" : "Alert"}
+              </span>
+            </div>
+          }
+          badge={isClear ? "No breaches found" : "Review needed"}
+          badgeClass={statusBadge}
+          meta={watch.monitoringActive ? "Monitoring on" : "Monitoring paused"}
+          summary={watch.statusLabel}
+          progressPercent={isClear ? 100 : 40}
+          progressFill={fill}
+          progressLabel="Identity watch coverage"
+        />
+      }
+      stats={
+        <ProtectionPanelStatGrid
+          stats={[
+            { label: "Last scan", value: watch.lastScanLabel ?? "Not yet" },
+            {
+              label: "Coverage",
+              value: watch.monitoringActive ? "24/7 active" : "Sign in to enable",
+            },
+          ]}
+        />
+      }
+      list={
+        <ProtectionPanelList>
+          {identityWatchChecks.map((item) => (
+            <ProtectionPanelListRow key={item} className="text-keyra-text-2">
+              <span
+                className={cn(
+                  "size-2 shrink-0 rounded-full",
+                  isClear ? "bg-emerald-500" : "bg-amber-500",
+                )}
+                aria-hidden
+              />
+              <span>{item}</span>
+            </ProtectionPanelListRow>
+          ))}
+        </ProtectionPanelList>
+      }
+      footer={
+        <Button onClick={onScan} disabled={scanning}>
+          {scanning ? "Scanning…" : "Run New Scan"}
+        </Button>
+      }
+    />
+  );
+}
+
+function SecurityScorePanel({
+  score,
+}: {
+  score: ProtectionDashboard["securityScore"];
+}) {
+  const { label, badge, fill } = tierMeta[score.tier];
+  const remaining = Math.max(0, 100 - score.percent);
+  const rows = buildSecurityScoreRows(score);
+
+  return (
+    <ProtectionPanelCard
+      header={
+        <CardHeader
+          title="Security Score"
+          description="Based on your live Keyra profile and sign-in."
+          icon={<IconShieldCheck className="h-5 w-5" />}
+        />
+      }
+      hero={
+        <ProtectionPanelHero
+          visual={<SecurityScoreGauge percent={score.percent} tier={score.tier} />}
+          badge={label}
+          badgeClass={badge}
+          meta={
+            remaining > 0 ? `${remaining}% to full score` : "Full score reached"
+          }
+          summary={score.summary}
+          progressPercent={score.percent}
+          progressFill={fill}
+          progressLabel="Protection strength"
+        />
+      }
+      stats={
+        <ProtectionPanelStatGrid
+          stats={[
+            { label: "Current score", value: `${score.percent}%` },
+            { label: "Status", value: label },
+          ]}
+        />
+      }
+      list={
+        <ProtectionPanelList>
+          {rows.map((row) =>
+            row.done ? (
+              <ProtectionPanelListRow key={row.id} className="text-keyra-text-2">
+                <span className="size-2 shrink-0 rounded-full bg-emerald-500" aria-hidden />
+                <span>{row.label}</span>
+              </ProtectionPanelListRow>
+            ) : (
+              <li key={row.id}>
+                <Link
+                  href={row.href!}
+                  className="flex min-h-[3.25rem] items-center justify-between gap-3 rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3 text-[14px] transition-colors hover:bg-[var(--color-surface-strong)]"
+                >
+                  <span className="min-w-0 font-medium text-keyra-primary">{row.label}</span>
+                  <span className="shrink-0 text-[12px] font-medium text-keyra-text-2">
+                    +{row.points}%
+                  </span>
+                </Link>
+              </li>
+            ),
+          )}
+        </ProtectionPanelList>
+      }
+      footer={
+        <Link href="/verify" className="inline-flex">
+          <Button variant="secondary">Improve score</Button>
+        </Link>
+      }
+    />
+  );
+}
+
+function protectionFetchHeaders(): HeadersInit {
+  const headers: Record<string, string> = {};
+  if (typeof navigator !== "undefined" && navigator.userAgent) {
+    headers["X-Keyra-Client-UA"] = navigator.userAgent;
+  }
+  return headers;
+}
+
 export function ProtectionDashboard() {
   const router = useRouter();
+  const pathname = usePathname();
+  const loginNext = pathname?.startsWith("/") ? pathname : "/";
   const { push } = useToast();
   const [data, setData] = useState<ProtectionDashboard | null>(null);
   const [loading, setLoading] = useState(true);
@@ -96,9 +474,12 @@ export function ProtectionDashboard() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/keyra/protection", { credentials: "include" });
+      const res = await fetch("/api/keyra/protection", {
+        credentials: "include",
+        headers: protectionFetchHeaders(),
+      });
       if (res.status === 401) {
-        router.replace("/login?next=/app");
+        router.replace(`/login?next=${encodeURIComponent(loginNext)}`);
         return;
       }
       if (!res.ok) throw new Error("Could not load protection data.");
@@ -112,7 +493,7 @@ export function ProtectionDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [push, router]);
+  }, [push, router, loginNext]);
 
   useEffect(() => {
     void load();
@@ -124,6 +505,7 @@ export function ProtectionDashboard() {
       const res = await fetch("/api/keyra/protection/scan", {
         method: "POST",
         credentials: "include",
+        headers: protectionFetchHeaders(),
       });
       if (!res.ok) throw new Error("Scan failed.");
       await load();
@@ -174,7 +556,7 @@ export function ProtectionDashboard() {
       });
       if (!res.ok) throw new Error("Lock failed.");
       push({ kind: "success", title: "Devices locked", message: "You have been signed out everywhere." });
-      router.replace("/login?next=/app");
+      router.replace(`/login?next=${encodeURIComponent(loginNext)}`);
     } catch (err) {
       push({
         kind: "error",
@@ -212,69 +594,14 @@ export function ProtectionDashboard() {
         Live view of your identity watch, security score, signed-in devices, trusted locations, and emergency controls.
       </p>
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader
-            title="Identity Watch"
-            description="Keyra monitors your credentials on the dark web."
-            icon={<IconGlobeSearch className="h-5 w-5" />}
-          />
-          <div
-            className={cn(
-              "mt-6 flex items-center gap-2 rounded-[var(--keyra-radius-card)] px-4 py-3 text-[14px]",
-              data.identityWatch.status === "clear"
-                ? "bg-keyra-bg text-keyra-text-2"
-                : "bg-red-50 text-red-800",
-            )}
-          >
-            <span
-              className={cn(
-                "size-2.5 shrink-0 rounded-full",
-                data.identityWatch.status === "clear" ? "bg-emerald-500" : "bg-red-500",
-              )}
-              aria-hidden
-            />
-            <span>{data.identityWatch.statusLabel}</span>
-          </div>
-          <div className="mt-6">
-            <Button onClick={() => void runScan()} disabled={scanning}>
-              {scanning ? "Scanning…" : "Run New Scan"}
-            </Button>
-          </div>
-        </Card>
+      <div className="mt-10 grid items-stretch gap-6 lg:grid-cols-2">
+        <IdentityWatchPanel
+          watch={data.identityWatch}
+          scanning={scanning}
+          onScan={() => void runScan()}
+        />
 
-        <Card>
-          <CardHeader title="Security Score" description="Based on your live Keyra profile and sign-in." />
-          <div className="mt-6">
-            <SecurityScoreGauge percent={data.securityScore.percent} />
-          </div>
-          <p className="mt-4 text-[14px] leading-relaxed text-keyra-text-2">
-            {data.securityScore.summary}
-          </p>
-          {data.securityScore.recommendations.length > 0 ? (
-            <ul className="mt-4 space-y-2">
-              {data.securityScore.recommendations.map((rec) => (
-                <li key={rec.id}>
-                  <Link
-                    href={rec.href}
-                    className="text-[14px] font-medium text-keyra-accent underline-offset-2 hover:underline"
-                  >
-                    {rec.label}
-                  </Link>
-                  <span className="ml-2 text-[12px] text-keyra-text-2">+{rec.points}%</span>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-          <div className="mt-6 flex flex-wrap gap-4 text-[14px]">
-            <Link href="/app/profile" className="font-medium text-keyra-accent underline-offset-2 hover:underline">
-              View recommendations
-            </Link>
-            <Link href="/verify" className="font-medium text-keyra-primary underline-offset-2 hover:underline">
-              Improve score
-            </Link>
-          </div>
-        </Card>
+        <SecurityScorePanel score={data.securityScore} />
 
         <Card>
           <CardHeader
@@ -328,10 +655,10 @@ export function ProtectionDashboard() {
         <Card>
           <CardHeader
             title="Emergency Services"
-            description="One-tap actions for account lock or recovery."
+            description="One-tap action to lock your account on all devices."
             icon={<IconSiren className="h-5 w-5 text-red-600" />}
           />
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <div className="mt-6">
             <Button
               variant="destructive"
               className="!border-red-200 !bg-red-600 !text-white hover:!bg-red-700"
@@ -340,12 +667,9 @@ export function ProtectionDashboard() {
             >
               {locking ? "Locking…" : "Lock All Devices"}
             </Button>
-            <Link href="/verify" className="inline-flex">
-              <Button variant="secondary">Begin Recovery</Button>
-            </Link>
           </div>
           <p className="mt-4 text-[13px] text-keyra-text-2">
-            Lock signs you out on all devices. Recovery starts a fresh verification on this device.
+            Lock signs you out on all devices.
           </p>
         </Card>
 

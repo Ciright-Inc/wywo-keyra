@@ -46,56 +46,158 @@ async function clearKeyraCookieSession(): Promise<void> {
   }
 }
 
-async function fetchSessionUser(signal?: AbortSignal): Promise<KeyraSessionUser | null> {
-  let payload: AuthSessionPayload | null = null;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), SESSION_TIMEOUT_MS);
+/** Clear SimSecure session cookie (proxy + same-origin fallback, mirrors fetchAuthSessionPayload). */
+async function clearSimsecureAuthSession(): Promise<void> {
+  try {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch {
+    // continue to direct backend
+  }
 
+  const authBackendUrl =
+    typeof process !== "undefined" ? process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL?.trim() : "";
+  if (!authBackendUrl) return;
+
+  try {
+    const base = authBackendUrl.replace(/\/+$/, "");
+    await fetch(`${base}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch {
+    // ignore
+  }
+}
+
+async function fetchKeyraCookieUser(signal?: AbortSignal): Promise<KeyraSessionUser | null> {
+  try {
+    const res = await fetch("/api/keyra/session/me", {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+      signal,
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as { user?: KeyraSessionUser | null };
+    return json.user?.phoneE164 ? json.user : null;
+  } catch {
+    return null;
+  }
+}
+
+async function syncKeyraSessionFromAuth(signal?: AbortSignal): Promise<KeyraSessionUser | null> {
+  try {
+    const res = await fetch("/api/keyra/session/sync", {
+      method: "POST",
+      credentials: "include",
+      cache: "no-store",
+      signal,
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as { user?: KeyraSessionUser };
+    return json.user?.phoneE164 ? json.user : null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchAuthSessionPayload(signal?: AbortSignal): Promise<AuthSessionPayload | null> {
   try {
     const res = await fetch("/api/auth/session", {
       method: "GET",
       credentials: "include",
       cache: "no-store",
       headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
-      signal: controller.signal,
+      signal,
     });
     if (res.ok) {
-      payload = await res.json();
+      return (await res.json()) as AuthSessionPayload;
     }
   } catch {
     // continue to fallback
-  } finally {
-    clearTimeout(timeout);
   }
 
-  const authBackendUrl = typeof process !== "undefined" ? process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL : "";
-  if ((!payload?.authenticated || !payload?.user) && authBackendUrl?.trim()) {
-    try {
-      const base = authBackendUrl.replace(/\/+$/, "");
-      const res2 = await fetch(`${base}/auth/session`, {
-        method: "GET",
-        credentials: "include",
-        cache: "no-store",
-        headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
-        signal,
-      });
-      if (res2.ok) {
-        payload = await res2.json();
-      }
-    } catch {
-      // keep payload
+  const authBackendUrl =
+    typeof process !== "undefined" ? process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL : "";
+  if (!authBackendUrl?.trim()) return null;
+
+  try {
+    const base = authBackendUrl.replace(/\/+$/, "");
+    const res2 = await fetch(`${base}/auth/session`, {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+      signal,
+    });
+    if (res2.ok) {
+      return (await res2.json()) as AuthSessionPayload;
     }
+  } catch {
+    // ignore
   }
+  return null;
+}
 
-  if (!payload?.authenticated || !payload?.user?.phone) {
-    return null;
-  }
-
+function userFromAuthPayload(payload: AuthSessionPayload): KeyraSessionUser | null {
+  if (!payload?.authenticated || !payload?.user?.phone) return null;
   const phone = payload.user.phone.startsWith("+") ? payload.user.phone : `+${payload.user.phone}`;
   return {
     phoneE164: phone,
     displayName: authSessionDisplayName(payload.user),
   };
+}
+
+function mergeKeyraSessionUsers(
+  cookieUser: KeyraSessionUser | null,
+  authUser: KeyraSessionUser | null,
+): KeyraSessionUser | null {
+  if (!cookieUser && !authUser) return null;
+  const phoneE164 = authUser?.phoneE164 ?? cookieUser?.phoneE164 ?? "";
+  if (!phoneE164) return null;
+  return {
+    phoneE164,
+    displayName:
+      cookieUser?.displayName?.trim() ||
+      authUser?.displayName?.trim() ||
+      undefined,
+    email: cookieUser?.email ?? authUser?.email,
+    country: cookieUser?.country ?? authUser?.country,
+  };
+}
+
+/**
+ * Always checks SimSecure /api/auth/session (for fullName/username) on each refresh/poll.
+ * Uses keyra_session cookie when present, but enriches display name from the auth session API.
+ */
+async function fetchSessionUser(signal?: AbortSignal): Promise<KeyraSessionUser | null> {
+  const [cookieUser, payload] = await Promise.all([
+    fetchKeyraCookieUser(signal),
+    fetchAuthSessionPayload(signal),
+  ]);
+
+  const authUser =
+    payload?.authenticated && payload?.user?.phone ? userFromAuthPayload(payload) : null;
+
+  if (!cookieUser && authUser) {
+    const synced = await syncKeyraSessionFromAuth(signal);
+    return synced ?? authUser;
+  }
+
+  if (cookieUser && authUser) {
+    const merged = mergeKeyraSessionUsers(cookieUser, authUser);
+    if (merged && !cookieUser.displayName?.trim() && authUser.displayName?.trim()) {
+      void syncKeyraSessionFromAuth(signal).catch(() => {
+        // Best-effort: persist auth name into keyra_session cookie.
+      });
+    }
+    return merged;
+  }
+
+  return cookieUser ?? authUser ?? null;
 }
 
 type KeyraSessionContextValue = {
@@ -221,13 +323,7 @@ export function KeyraSessionProvider({
   }, []);
 
   const logout = useCallback(async () => {
-    await Promise.all([
-      fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      }),
-      clearKeyraCookieSession(),
-    ]);
+    await Promise.all([clearSimsecureAuthSession(), clearKeyraCookieSession()]);
     setUserState(null);
     try {
       new BroadcastChannel(AUTH_CHANNEL).postMessage({ type: "logout" });

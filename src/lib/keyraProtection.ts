@@ -53,24 +53,57 @@ export type ProtectionDashboard = {
   };
 };
 
-function deviceKindFromUserAgent(ua: string): "Mobile" | "Desktop" | "Other" {
-  if (/Mobile|Android|iPhone|iPad|webOS|BlackBerry|IEMobile|Opera Mini/i.test(ua)) {
-    return "Mobile";
-  }
-  if (/Macintosh|Windows NT|Win64|X11|Linux|CrOS/i.test(ua)) {
-    return "Desktop";
-  }
-  return "Other";
+/** Prefer real browser UA from client fetch (avoids missing/wrong User-Agent on some dev setups). */
+export function resolveClientUserAgent(req: Request): string {
+  const fromClient = req.headers.get("x-keyra-client-ua")?.trim();
+  if (fromClient) return fromClient.slice(0, 512);
+  const platform = req.headers.get("sec-ch-ua-platform")?.replace(/"/g, "").trim();
+  const ua = req.headers.get("user-agent")?.trim() ?? "";
+  if (ua) return ua.slice(0, 512);
+  if (platform) return `Client-Hint-Platform/${platform}`;
+  return "";
 }
 
-function deviceLabelFromUserAgent(ua: string, kind: string): string {
-  if (/iPhone/i.test(ua)) return "iPhone";
-  if (/iPad/i.test(ua)) return "iPad";
-  if (/Android/i.test(ua)) return "Android device";
-  if (/Macintosh/i.test(ua)) return "Mac";
-  if (/Windows/i.test(ua)) return "Windows PC";
-  if (/Linux/i.test(ua)) return "Linux device";
-  return `${kind} browser`;
+function browserNameFromUserAgent(ua: string): string {
+  if (/Edg\//i.test(ua)) return "Edge";
+  if (/OPR\/|Opera/i.test(ua)) return "Opera";
+  if (/Chrome\//i.test(ua) && !/Edg\//i.test(ua)) return "Chrome";
+  if (/Firefox\//i.test(ua)) return "Firefox";
+  if (/Safari\//i.test(ua) && !/Chrome\//i.test(ua)) return "Safari";
+  return "Browser";
+}
+
+function parseDeviceFromUserAgent(ua: string): {
+  label: string;
+  deviceKind: "Mobile" | "Desktop" | "Other";
+} {
+  const s = ua.trim();
+  if (!s) return { label: "Unknown browser", deviceKind: "Other" };
+
+  const browser = browserNameFromUserAgent(s);
+
+  // Desktop first — do not treat Windows/Mac/Linux as Android.
+  if (/Windows NT|Win64|WOW64|Windows/i.test(s)) {
+    return { label: `Windows · ${browser}`, deviceKind: "Desktop" };
+  }
+  if ((/Macintosh|Mac OS X/i.test(s) || /Mac OS/i.test(s)) && !/iPhone|iPad/i.test(s)) {
+    return { label: `Mac · ${browser}`, deviceKind: "Desktop" };
+  }
+  if (/CrOS/i.test(s)) {
+    return { label: "Chromebook", deviceKind: "Desktop" };
+  }
+  if (/Linux|X11|x86_64|Ubuntu|Fedora/i.test(s) && !/Android/i.test(s)) {
+    return { label: `Linux · ${browser}`, deviceKind: "Desktop" };
+  }
+
+  if (/iPhone/i.test(s)) return { label: "iPhone", deviceKind: "Mobile" };
+  if (/iPad/i.test(s)) return { label: "iPad", deviceKind: "Mobile" };
+  if (/Android/i.test(s)) return { label: "Android phone", deviceKind: "Mobile" };
+  if (/Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(s)) {
+    return { label: `Mobile · ${browser}`, deviceKind: "Mobile" };
+  }
+
+  return { label: `${browser} (desktop)`, deviceKind: "Desktop" };
 }
 
 export function userAgentHash(ua: string): string {
@@ -105,12 +138,13 @@ function formatRelativeDate(iso: string | Date | null): string {
 export async function fetchAuthSessionSnapshot(
   req: Request,
 ): Promise<AuthSessionSnapshot> {
-  const base = process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL?.trim();
+  const { resolveAuthBackendUrl } = await import("@/lib/resolveAuthBackendUrl");
+  const base = resolveAuthBackendUrl(req);
   if (!base) {
     return { authenticated: false };
   }
   try {
-    const res = await fetch(`${base.replace(/\/+$/, "")}/auth/session`, {
+    const res = await fetch(`${base}/auth/session`, {
       method: "GET",
       headers: { cookie: req.headers.get("cookie") ?? "" },
       cache: "no-store",
@@ -200,7 +234,7 @@ function computeSecurityScore(
     recommendations.push({
       id: "country",
       label: "Set your country or region",
-      href: "/app/profile",
+      href: "/app/profile?focus=country",
       points: 10,
     });
   }
@@ -247,10 +281,9 @@ export async function syncProtectionEntities(
 ): Promise<void> {
   if (!isPostgresDatabaseUrlConfigured()) return;
 
-  const ua = req.headers.get("user-agent") ?? "";
+  const ua = resolveClientUserAgent(req);
   const hash = userAgentHash(ua);
-  const kind = deviceKindFromUserAgent(ua);
-  const label = deviceLabelFromUserAgent(ua, kind);
+  const { label, deviceKind: kind } = parseDeviceFromUserAgent(ua);
   const now = new Date();
 
   await prisma.$transaction([

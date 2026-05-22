@@ -3,14 +3,8 @@ import {
   rateLimitResponse,
   readJsonObject,
 } from "@/app/api/keyra/_routeHelpers";
-import {
-  KEYRA_SESSION_COOKIE,
-  KEYRA_SESSION_MAX_AGE,
-  serializeSession,
-  type KeyraSessionUser,
-} from "@/lib/keyraSessionCookie";
 import { isValidMobileE164 } from "@/lib/keyraRegistrationValidation";
-import { loadSavedProfileFields } from "@/lib/keyraSiteUserProfileDb";
+import { buildKeyraSessionUser, jsonWithKeyraSession } from "@/lib/keyraSessionResponse";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -31,13 +25,9 @@ export async function POST(req: Request) {
     );
   }
 
-  const saved = await loadSavedProfileFields(phone);
-  const user: KeyraSessionUser = {
-    phoneE164: phone,
-    ...saved,
-  };
-  const token = serializeSession(user);
-  if (!token) {
+  const user = await buildKeyraSessionUser(phone);
+  const res = jsonWithKeyraSession(user);
+  if (!res) {
     return NextResponse.json(
       {
         error:
@@ -46,16 +36,5 @@ export async function POST(req: Request) {
       { status: 503 },
     );
   }
-
-  const res = NextResponse.json({ ok: true, user });
-  res.cookies.set({
-    name: KEYRA_SESSION_COOKIE,
-    value: token,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: KEYRA_SESSION_MAX_AGE,
-  });
   return res;
 }

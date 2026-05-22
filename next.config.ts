@@ -1,5 +1,14 @@
 import type { NextConfig } from "next";
 
+function parseAllowedDevOrigins(): string[] | undefined {
+  if (process.env.NODE_ENV !== "development") return undefined;
+  const raw = process.env.KEYRA_ALLOWED_DEV_ORIGINS?.trim();
+  if (!raw) return undefined;
+  return raw.split(",").map((s) => s.trim()).filter(Boolean);
+}
+
+const allowedDevOrigins = parseAllowedDevOrigins();
+
 /**
  * Next.js 16: `experimental.turbopackPersistentCaching` is not in `ExperimentalConfig` and breaks
  * `next build` typecheck (Railway / Railpack). Use `turbopackFileSystemCacheForBuild` to control
@@ -29,9 +38,19 @@ const nextConfig: NextConfig = {
    * /admin/login even after a successful POST to /api/admin/auth/login.
    * Add or remove hosts as needed; localhost / 127.0.0.1 are trusted automatically.
    */
-  allowedDevOrigins: ["192.168.0.12", "192.168.0.0/16"],
+  ...(allowedDevOrigins?.length ? { allowedDevOrigins } : {}),
   experimental: {
     turbopackFileSystemCacheForBuild: false,
+  },
+  /** Dev-only: same-origin proxy to simsecure-auth-session on :4000. Production uses NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL. */
+  async rewrites() {
+    if (process.env.NODE_ENV !== "development") return [];
+    return [
+      {
+        source: "/api/simsecure-auth/:path*",
+        destination: "http://127.0.0.1:4000/:path*",
+      },
+    ];
   },
   /** Prevent CDN/browser from serving a stale /verify-device document pointing at old client bundles. */
   async headers() {

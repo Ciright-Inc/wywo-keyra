@@ -205,16 +205,14 @@ export function HomeContent() {
         title="Carrier-scale architecture for national resilience."
         lead="Built in Ireland as a trust institution for the digital age — composed for global deployment without compromising sovereignty or clarity."
       >
-        <div className={`${homeHeroPanel} inline-flex w-fit px-4 py-4`}>
-          <a
-            href={keyraGovernmentsUrl()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex focus-visible:outline-none focus-visible:keyra-focus rounded-[var(--keyra-radius-pill)]"
-          >
-            <Button variant="secondary">View global deployment</Button>
-          </a>
-        </div>
+        <a
+          href={keyraGovernmentsUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex focus-visible:outline-none focus-visible:keyra-focus rounded-[var(--keyra-radius-pill)]"
+        >
+          <Button variant="secondary">View global deployment</Button>
+        </a>
       </NarrativeSection>
 
       {/* SECTION 8 — WHO IT'S FOR */}

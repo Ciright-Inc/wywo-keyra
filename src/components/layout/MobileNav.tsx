@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/Button";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
+import { KEYRA_HEADER_ACTION_MENU } from "./headerActionClasses";
 import { buildGetStartedAccessUrl, keyraDeveloperPortalUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
@@ -52,16 +52,15 @@ export function MobileNav() {
 
   return (
     <div className="relative z-10 shrink-0 lg:hidden">
-      <Button
+      <button
         type="button"
-        variant="secondary"
-        className="h-10 shrink-0 px-2.5 text-[13px] sm:px-4 sm:text-sm"
+        className={`${KEYRA_HEADER_ACTION_MENU} cursor-pointer`}
         aria-expanded={open}
         aria-controls="mobile-nav-panel"
         onClick={() => setOpen((o) => !o)}
       >
         Menu
-      </Button>
+      </button>
       <AnimatePresence>
         {open ? (
           <>

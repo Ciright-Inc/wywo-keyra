@@ -1,6 +1,7 @@
 import { rateLimitResponse } from "@/app/api/keyra/_routeHelpers";
 import { KEYRA_SESSION_COOKIE } from "@/lib/keyraSessionCookie";
 import { requireKeyraSessionUser } from "@/lib/keyraProtectionSession";
+import { resolveAuthBackendUrl } from "@/lib/resolveAuthBackendUrl";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -14,10 +15,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
-  const authBase = process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL?.trim();
-  if (authBase) {
+  const raw = process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL?.trim();
+  if (raw) {
+    const base = resolveAuthBackendUrl(req);
     try {
-      await fetch(`${authBase.replace(/\/+$/, "")}/auth/logout`, {
+      await fetch(`${base}/auth/logout`, {
         method: "POST",
         headers: { cookie: req.headers.get("cookie") ?? "" },
         cache: "no-store",

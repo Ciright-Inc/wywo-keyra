@@ -40,6 +40,14 @@ const ToastContext = createContext<ToastApi | null>(null);
 export const TOAST_AUTO_DISMISS_MS = 3200;
 export const TOAST_MAX_VISIBLE = 3;
 
+/** randomUUID requires a secure context; LAN http://192.168.x.x often lacks it on mobile Safari. */
+function newToastId(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return `toast-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+}
+
 /** Left-accent color carries the semantic meaning — body/text stay neutral. */
 const accentBarClass: Record<ToastKind, string> = {
   success: "before:bg-[var(--ds-success)]",
@@ -51,7 +59,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<ToastItem[]>([]);
 
   const push = useCallback((t: ToastInput) => {
-    const id = crypto.randomUUID();
+    const id = newToastId();
     const item: ToastItem = { id, ...t };
     setItems((prev) => [item, ...prev].slice(0, TOAST_MAX_VISIBLE));
     window.setTimeout(() => {

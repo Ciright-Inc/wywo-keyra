@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { KeyraLogo } from "@/components/brand/KeyraLogo";
 import { KeyraHomeLink } from "@/components/layout/KeyraHomeLink";
 import { getKeyraEcosystemAppLinks, type KeyraEcosystemAppLink } from "@/lib/keyraAppUrls";
 
@@ -22,19 +23,13 @@ function splitInHalf<T>(arr: T[]): [T[], T[]] {
   return [arr.slice(0, mid), arr.slice(mid)];
 }
 
-const linkClass =
-  "text-sm text-keyra-text-2 transition hover:text-keyra-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-keyra-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-sm";
-
-const sectionTitleClass =
-  "text-[11px] font-semibold uppercase tracking-[0.14em] text-keyra-text-2";
-
-function FooterAppLinkItem({ item, linkClass }: { item: KeyraEcosystemAppLink; linkClass: string }) {
+function FooterAppLinkItem({ item }: { item: KeyraEcosystemAppLink }) {
   return (
-    <li className="min-w-0">
+    <li>
       {item.internalPath ? (
         <Link
           href={item.internalPath}
-          className={`${linkClass} block`}
+          className="keyra-site-footer__link"
           title={`${item.label} — ${item.description}`}
         >
           {item.label}
@@ -44,12 +39,34 @@ function FooterAppLinkItem({ item, linkClass }: { item: KeyraEcosystemAppLink; l
           href={item.href}
           target="_blank"
           rel="noopener noreferrer"
-          className={`${linkClass} block`}
+          className="keyra-site-footer__link"
           title={`${item.label} — ${item.description}`}
         >
           {item.label}
           <span className="sr-only"> (opens in a new tab)</span>
         </a>
+      )}
+    </li>
+  );
+}
+
+function FooterSiteLinkItem({ link }: { link: SiteLink }) {
+  return (
+    <li>
+      {link.external ? (
+        <a
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="keyra-site-footer__link"
+        >
+          {link.label}
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      ) : (
+        <Link href={link.href} className="keyra-site-footer__link">
+          {link.label}
+        </Link>
       )}
     </li>
   );
@@ -63,92 +80,56 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="keyra-site-footer border-t border-keyra-border">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:py-11">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-12 xl:gap-14">
-          <div className="min-w-0">
-            <h2 className={sectionTitleClass}>Keyra ecosystem</h2>
-            <p className="mt-2 max-w-md text-[13px] leading-relaxed text-keyra-text-2">
+    <footer className="keyra-site-footer">
+      <div className="keyra-site-footer__inner mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="keyra-site-footer__grid">
+          <section className="keyra-site-footer__block keyra-site-footer__block--brand">
+            <KeyraLogo variant="footer" wordmarkClassName="text-white/95" />
+            <p className="keyra-site-footer__lede">
               Choose the experience that matches your context — consumer protection, enterprise deployment, or
               partner tooling.
             </p>
-            <KeyraHomeLink className="mt-5 inline-flex text-sm font-semibold text-keyra-primary underline-offset-4 transition hover:underline">
-              Keyra home
-            </KeyraHomeLink>
-          </div>
+            <KeyraHomeLink className="keyra-site-footer__cta">Keyra home</KeyraHomeLink>
+          </section>
 
-          <div className="min-w-0">
-            <h2 className={sectionTitleClass}>On this site</h2>
-            <nav className="mt-3" aria-label="Footer">
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-x-5">
-                <ul className="flex min-w-0 flex-col gap-2">
+          <section className="keyra-site-footer__block">
+            <h2 className="keyra-site-footer__label">On this site</h2>
+            <nav className="keyra-site-footer__nav" aria-label="Footer">
+              <div className="keyra-site-footer__columns">
+                <ul className="keyra-site-footer__column">
                   {siteLinksLeft.map((link) => (
-                    <li key={link.label} className="min-w-0">
-                      {link.external ? (
-                        <a
-                          href={link.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`${linkClass} block`}
-                        >
-                          {link.label}
-                          <span className="sr-only"> (opens in a new tab)</span>
-                        </a>
-                      ) : (
-                        <Link href={link.href} className={`${linkClass} block`}>
-                          {link.label}
-                        </Link>
-                      )}
-                    </li>
+                    <FooterSiteLinkItem key={link.label} link={link} />
                   ))}
                 </ul>
-                <ul className="flex min-w-0 flex-col gap-2">
+                <ul className="keyra-site-footer__column keyra-site-footer__column--end">
                   {siteLinksRight.map((link) => (
-                    <li key={link.label} className="min-w-0">
-                      {link.external ? (
-                        <a
-                          href={link.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`${linkClass} block`}
-                        >
-                          {link.label}
-                          <span className="sr-only"> (opens in a new tab)</span>
-                        </a>
-                      ) : (
-                        <Link href={link.href} className={`${linkClass} block`}>
-                          {link.label}
-                        </Link>
-                      )}
-                    </li>
+                    <FooterSiteLinkItem key={link.label} link={link} />
                   ))}
                 </ul>
               </div>
             </nav>
-          </div>
+          </section>
 
-          <div className="min-w-0">
-            <h2 className={sectionTitleClass}>Keyra apps</h2>
-            <nav className="mt-3" aria-label="Keyra apps">
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-x-5">
-                <ul className="flex min-w-0 flex-col gap-2">
+          <section className="keyra-site-footer__block">
+            <h2 className="keyra-site-footer__label">Keyra apps</h2>
+            <nav className="keyra-site-footer__nav" aria-label="Keyra apps">
+              <div className="keyra-site-footer__columns">
+                <ul className="keyra-site-footer__column">
                   {appLinksLeft.map((item) => (
-                    <FooterAppLinkItem key={item.id} item={item} linkClass={linkClass} />
+                    <FooterAppLinkItem key={item.id} item={item} />
                   ))}
                 </ul>
-                <ul className="flex min-w-0 flex-col gap-2">
+                <ul className="keyra-site-footer__column keyra-site-footer__column--end">
                   {appLinksRight.map((item) => (
-                    <FooterAppLinkItem key={item.id} item={item} linkClass={linkClass} />
+                    <FooterAppLinkItem key={item.id} item={item} />
                   ))}
                 </ul>
               </div>
             </nav>
-          </div>
+          </section>
         </div>
 
-        <div className="mt-8 border-t border-keyra-border/80 pt-6 text-center text-xs text-keyra-text-2 sm:text-left">
-          <p>© {year} Keyra. All rights reserved.</p>
-        </div>
+        <p className="keyra-site-footer__meta">© {year} Keyra. All rights reserved.</p>
       </div>
     </footer>
   );

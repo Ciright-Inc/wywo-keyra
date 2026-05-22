@@ -1,11 +1,12 @@
+import { resolveAuthBackendUrl } from "@/lib/resolveAuthBackendUrl";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET(request: Request) {
-  const AUTH_BACKEND = process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL;
-  if (!AUTH_BACKEND) {
+  const base = resolveAuthBackendUrl(request);
+  if (!base) {
     return NextResponse.json({ authenticated: false, user: null });
   }
 
@@ -14,7 +15,7 @@ export async function GET(request: Request) {
   const timeout = setTimeout(() => controller.abort(), 3000);
 
   try {
-    const res = await fetch(`${AUTH_BACKEND.replace(/\/+$/, "")}/auth/session`, {
+    const res = await fetch(`${base}/auth/session`, {
       method: "GET",
       headers: { cookie: cookieHeader },
       signal: controller.signal,

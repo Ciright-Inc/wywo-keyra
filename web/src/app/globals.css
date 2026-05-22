@@ -451,27 +451,236 @@ body {
   color: var(--color-ink);
 }
 
-/* Site footer — full-width black */
+/* Site footer — institutional dark band */
 .keyra-site-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--color-surface-dark);
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.72);
   --keyra-bg: var(--color-surface-dark);
-  --keyra-surface: rgba(255, 255, 255, 0.07);
-  --keyra-primary: var(--color-on-dark);
-  --keyra-text: var(--color-on-dark);
-  --keyra-text-secondary: rgba(255, 255, 255, 0.65);
-  --keyra-border: rgba(255, 255, 255, 0.14);
-  --keyra-accent: var(--color-on-dark);
-  --keyra-accent-2: rgba(255, 255, 255, 0.88);
+  --keyra-surface: rgba(255, 255, 255, 0.06);
+  --keyra-primary: #ffffff;
+  --keyra-text: #ffffff;
+  --keyra-text-secondary: rgba(255, 255, 255, 0.62);
+  --keyra-border: rgba(255, 255, 255, 0.12);
+  --keyra-accent: #ffffff;
+  --keyra-accent-2: rgba(255, 255, 255, 0.9);
   --keyra-ring: rgba(255, 255, 255, 0.35);
-  --keyra-action: rgba(255, 255, 255, 0.12);
-  --keyra-action-border: rgba(255, 255, 255, 0.28);
-  --keyra-action-text: var(--color-on-dark);
+  --keyra-action: rgba(255, 255, 255, 0.1);
+  --keyra-action-border: rgba(255, 255, 255, 0.22);
+  --keyra-action-text: #ffffff;
 }
 
-.keyra-site-footer-logo img {
+.keyra-site-footer .keyra-site-footer-logo img,
+.keyra-site-footer img[alt="Keyra"] {
   filter: brightness(0) invert(1);
-  opacity: 0.95;
+  opacity: 0.92;
+}
+
+.keyra-site-footer__inner {
+  box-sizing: border-box;
+  padding-top: 2.5rem;
+  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 1023px) {
+  .keyra-site-footer__inner {
+    padding-left: max(1rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  }
+}
+
+@media (min-width: 640px) {
+  .keyra-site-footer__inner {
+    padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (min-width: 1024px) {
+  .keyra-site-footer__inner {
+    padding-top: 3rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+.keyra-site-footer__grid {
+  display: grid;
+  width: 100%;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .keyra-site-footer__grid {
+    gap: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .keyra-site-footer__grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2.5rem 3rem;
+  }
+}
+
+.keyra-site-footer__block {
+  min-width: 0;
+}
+
+.keyra-site-footer__block--brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.keyra-site-footer__label {
+  margin: 0 0 0.75rem;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.keyra-site-footer__lede {
+  margin: 0;
+  max-width: 22rem;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+@media (max-width: 1023px) {
+  .keyra-site-footer__lede {
+    max-width: none;
+  }
+
+  .keyra-site-footer__block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .keyra-site-footer__block--brand {
+    align-items: center;
+  }
+
+  .keyra-site-footer__nav {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.keyra-site-footer__cta {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.keyra-site-footer__cta:hover {
+  border-color: rgba(255, 255, 255, 0.36);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 1023px) {
+  .keyra-site-footer__cta {
+    align-self: center;
+  }
+}
+
+.keyra-site-footer__nav {
+  width: 100%;
+}
+
+.keyra-site-footer__columns {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.375rem 2rem;
+  align-items: start;
+}
+
+@media (max-width: 1023px) {
+  .keyra-site-footer__columns {
+    display: grid;
+    width: auto;
+    max-width: 100%;
+    margin-inline: auto;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    gap: 0.375rem clamp(1.5rem, 8vw, 2.5rem);
+  }
+
+  .keyra-site-footer__column {
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.keyra-site-footer__column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.keyra-site-footer__link {
+  display: block;
+  padding-block: 0.3rem;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.keyra-site-footer__link:hover {
+  color: #ffffff;
+}
+
+.keyra-site-footer__link:focus-visible {
+  outline: none;
+  border-radius: 2px;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.keyra-site-footer__meta {
+  margin: 2rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.42);
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .keyra-site-footer__meta {
+    text-align: left;
+  }
+}
+
+@media (max-width: 1023px) {
+  elevenlabs-convai#keyra-elevenlabs-convai {
+    z-index: 56 !important;
+    right: 1rem !important;
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
 }
 
 /* Hero with sky-blue gradient atmospheric wash (Expo-inspired) */

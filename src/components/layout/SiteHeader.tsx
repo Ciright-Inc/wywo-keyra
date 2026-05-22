@@ -9,6 +9,10 @@ import { KeyraLogo } from "@/components/brand/KeyraLogo";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { buildGetStartedAccessUrl, keyraDeveloperPortalUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
 import { useMemo, useEffect, useState } from "react";
+import {
+  KEYRA_HEADER_ACTION_ACCESS,
+  KEYRA_HEADER_ACTIONS_GROUP,
+} from "./headerActionClasses";
 
 type NavItem = { href: string; label: string; external?: boolean };
 
@@ -144,36 +148,35 @@ export function SiteHeader() {
         >
           {!isAdminRoute ? (
             <>
-              <MobileNav />
+              <div className={KEYRA_HEADER_ACTIONS_GROUP}>
+                <MobileNav />
+                {!user ? (
+                  <a
+                    href={accessHref}
+                    className={`${KEYRA_HEADER_ACTION_ACCESS} no-underline`}
+                  >
+                    Access
+                  </a>
+                ) : null}
+              </div>
               <AccountMenu />
             </>
           ) : null}
 
-          {isAdminLoginRoute ? null : (
+          {isAdminLoginRoute ? null : isProtectedAdminRoute ? (
             <div
-              className="flex min-w-0 shrink-0 flex-row flex-wrap items-stretch rounded-[var(--keyra-radius-pill)] border border-keyra-border bg-keyra-surface/90 p-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md sm:flex-nowrap sm:p-0 mr-1.5 sm:mr-2"
-              aria-label="Access Get Started and Be Protected Online"
+              className="mr-1.5 flex min-w-0 shrink-0 items-center sm:mr-2"
+              aria-label="Admin session"
             >
-              {isProtectedAdminRoute ? (
-                <button
-                  type="button"
-                  onClick={handleAdminSignOut}
-                  className="flex shrink-0 items-center whitespace-nowrap px-1.5 py-2 text-xs font-medium leading-none text-keyra-accent transition-colors duration-150 ease-out active:bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-2 sm:text-sm"
-                >
-                  Sign out
-                </button>
-              ) : !user ? (
-                <>
-                  <a
-                    href={accessHref}
-                    className="flex shrink-0 items-center whitespace-nowrap rounded-full bg-keyra-accent px-4 py-1.5 text-xs font-semibold leading-none text-white transition-colors duration-150 ease-out active:bg-keyra-accent/80 hover:bg-keyra-accent/90 sm:px-5 sm:text-sm"
-                  >
-                    Access
-                  </a>
-                </>
-              ) : null}
+              <button
+                type="button"
+                onClick={handleAdminSignOut}
+                className="flex shrink-0 items-center whitespace-nowrap px-1.5 py-2 text-xs font-medium leading-none text-keyra-accent transition-colors duration-150 ease-out active:bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-2 sm:text-sm"
+              >
+                Sign out
+              </button>
             </div>
-          )}
+          ) : null}
 
           <KeyraAppLauncher />
         </div>

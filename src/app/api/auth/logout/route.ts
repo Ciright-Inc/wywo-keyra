@@ -1,14 +1,17 @@
+import { resolveAuthBackendUrl } from "@/lib/resolveAuthBackendUrl";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const AUTH_BACKEND = process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL;
-  if (!AUTH_BACKEND) {
+  const raw = process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL?.trim();
+  if (!raw) {
     return new NextResponse(null, { status: 204 });
   }
 
+  const base = resolveAuthBackendUrl(request);
+
   try {
     const cookieHeader = request.headers.get("cookie") || "";
-    const res = await fetch(`${AUTH_BACKEND.replace(/\/+$/, "")}/auth/logout`, {
+    const res = await fetch(`${base}/auth/logout`, {
       method: "POST",
       headers: { cookie: cookieHeader },
     });
