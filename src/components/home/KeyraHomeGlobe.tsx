@@ -2,6 +2,9 @@
 
 import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
+import { useGlobePulseBatch } from "@/hooks/useGlobePulseBatch";
+import { useGlobePulseEvents } from "@/hooks/useGlobePulseEvents";
+import type { KeyraRealisticGlobeSceneProps } from "@/components/home/globe/KeyraRealisticGlobeScene";
 
 type KeyraHomeGlobeProps = {
   className?: string;
@@ -11,15 +14,16 @@ type KeyraHomeGlobeProps = {
 };
 
 /**
- * Photorealistic Earth (three.js / R3F). Scene loads only after mount so SSR and the
- * first client paint match — avoids hydration mismatches from `next/dynamic` wrappers.
+ * Photorealistic Earth with simsecure-style verification pulses (three.js / R3F).
  */
 export function KeyraHomeGlobe({
   className = "",
   "aria-label": ariaLabel,
   opaque = false,
 }: KeyraHomeGlobeProps) {
-  const [Scene, setScene] = useState<ComponentType<{ opaque?: boolean }> | null>(null);
+  const events = useGlobePulseEvents();
+  const { activePulses, activeLinks } = useGlobePulseBatch(events);
+  const [Scene, setScene] = useState<ComponentType<KeyraRealisticGlobeSceneProps> | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -35,11 +39,11 @@ export function KeyraHomeGlobe({
     <div
       className={className}
       role="img"
-      aria-label={ariaLabel ?? "Photorealistic Earth globe"}
+      aria-label={ariaLabel ?? "Photorealistic Earth globe with live verification signals"}
       suppressHydrationWarning
     >
       {Scene ? (
-        <Scene opaque={opaque} />
+        <Scene opaque={opaque} activePulses={activePulses} activeLinks={activeLinks} />
       ) : (
         <div className="h-full w-full min-h-[160px] bg-[#fafafa]" aria-hidden />
       )}

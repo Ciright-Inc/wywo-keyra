@@ -36,6 +36,9 @@ export async function GET(req: Request) {
   if (!Number.isFinite(cursor) || cursor < 1) {
     return NextResponse.json({ error: "cursor must be a positive integer." }, { status: 400 });
   }
+  const limitParam = Number(url.searchParams.get("limit") ?? "");
+  const requestedLimit =
+    Number.isFinite(limitParam) && limitParam >= 1 ? Math.floor(limitParam) : null;
 
   const jar = await cookies();
   const sessionUuid = jar.get(KEYRA_FEED_SESSION_COOKIE)?.value;
@@ -61,7 +64,7 @@ export async function GET(req: Request) {
     );
   }
 
-  const limit = Math.min(settings.batchSize, remaining);
+  const limit = Math.min(requestedLimit ?? settings.batchSize, settings.batchSize, remaining);
   const pairs = pairsUsedFromJson(session.pairsUsedJson);
 
   const countryInputs = toFeedCountryInputs(countries);

@@ -1,0 +1,14 @@
+export const DOT_LIFETIME_MS = 5000;
+export const DOT_DESPAWN_MS = 1000;
+export const LINK_DRAW_MS = DOT_LIFETIME_MS;
+
+export const ROAMING_LINE_RATE = 0.05;
+export const ROAMING_HOME_DISTANCE_MIN_DEG = 32;
+export const ROAMING_HOME_DISTANCE_MAX_DEG = 148;
+
+export const STREAM_FIRST_WAVE_COUNT = 1;
+export const STREAM_SECOND_WAVE_COUNT = 2;
+export const STREAM_REFILL_WAVE_COUNT = 6;
+export const STREAM_SECOND_WAVE_DELAY_MS = 120;
+export const STREAM_SPAWN_STAGGER_MS = 50;
+export const STREAM_EXPIRE_TRIGGER_COUNT = 4;
