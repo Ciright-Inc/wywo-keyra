@@ -4,6 +4,7 @@ import type { LatestAuthRecord } from "@/lib/authenticationFeed/types";
 import { protocolOpenAction } from "@/lib/authenticationFeed/protocolOpenBehavior";
 import { resolvePublicFeedJson } from "@/lib/authenticationFeed/feedClientResolve";
 import { FeedTurnstileGate } from "@/components/home/FeedTurnstileGate";
+import { useGlobeAuthFeedContext } from "@/contexts/GlobeAuthFeedContext";
 import { cn } from "@/components/ui/cn";
 import { IconSatSignal } from "@/components/ui/Icons";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -82,6 +83,14 @@ type ProtocolDetail = {
 
 const ROW_EST = 40;
 const SESSION_FETCH_MS = 12_000;
+const LIVE_BATCH_LIMIT = 1;
+const CATALOG_TICK_MS = 1_800;
+
+function maxVisibleRows(variant: FeedVariant) {
+  if (variant === "bento") return 10;
+  if (variant === "hero") return 14;
+  return 24;
+}
 
 /** When the live feed session is unavailable, show active countries × protocols from public catalog APIs. */
 async function fetchCatalogAuthRows(limit = 8): Promise<LatestAuthRecord[]> {
@@ -168,6 +177,7 @@ function readBatchPayload(json: Record<string, unknown>): {
 }
 
 export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: FeedVariant }) {
+  const globeAuthFeed = useGlobeAuthFeedContext();
   const ui = feedUi(variant);
   const isCompact = variant === "hero" || variant === "bento";
   const needsTurnstile = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim());
@@ -182,17 +192,40 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
   const [loadingMore, setLoadingMore] = useState(false);
   const [done, setDone] = useState(false);
   const [modal, setModal] = useState<ProtocolDetail | null>(null);
+  const [animationSpeedMs, setAnimationSpeedMs] = useState(400);
+  const [isCatalogFallback, setIsCatalogFallback] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const bootRef = useRef(false);
+  const nextCursorRef = useRef(0);
+  const feedEnabledRef = useRef(true);
+  const doneRef = useRef(false);
+  const livePollRef = useRef(false);
+  const catalogPoolRef = useRef<LatestAuthRecord[]>([]);
+  const catalogIndexRef = useRef(0);
+
+  useEffect(() => {
+    if (!globeAuthFeed) return;
+    if (!feedEnabled || records.length === 0) {
+      globeAuthFeed.syncRecords([]);
+      return;
+    }
+    globeAuthFeed.syncRecords(records);
+  }, [records, feedEnabled, globeAuthFeed]);
 
   const applyCatalogFallback = useCallback(async (): Promise<boolean> => {
     const rows = await fetchCatalogAuthRows(8);
     if (!rows.length) return false;
+    catalogPoolRef.current = rows;
+    catalogIndexRef.current = rows.length;
+    setIsCatalogFallback(true);
     setFeedEnabled(true);
+    feedEnabledRef.current = true;
     setRecords(rows);
     setNextCursor(0);
+    nextCursorRef.current = 0;
     setDone(true);
+    doneRef.current = true;
     setHint(null);
+    setAnimationSpeedMs(CATALOG_TICK_MS);
     return true;
   }, []);
 
@@ -202,12 +235,13 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
       setHint(message);
       setRecords([]);
       setFeedEnabled(false);
+      feedEnabledRef.current = false;
     },
     [applyCatalogFallback],
   );
 
-  const startSession = useCallback(async (turnstile?: string) => {
-    setLoading(true);
+  const startSession = useCallback(async (turnstile?: string, options?: { silent?: boolean }) => {
+    if (!options?.silent) setLoading(true);
     setHint(null);
     const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), SESSION_FETCH_MS);
@@ -252,10 +286,19 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
         setHint("No authentication events yet. Enable countries and protocols in admin.");
         return;
       }
+      setIsCatalogFallback(false);
+      const cursor = data.nextCursor ?? 1;
       setRecords(rows);
-      setNextCursor(data.nextCursor ?? 1);
+      setNextCursor(cursor);
+      nextCursorRef.current = cursor;
       setThreshold(data.fetchThreshold ?? 30);
-      setDone((data.nextCursor ?? 1) < 1);
+      const sessionDone = cursor < 1;
+      setDone(sessionDone);
+      doneRef.current = sessionDone;
+      feedEnabledRef.current = true;
+      if (typeof data.animationSpeedMs === "number" && data.animationSpeedMs >= 50) {
+        setAnimationSpeedMs(data.animationSpeedMs);
+      }
     } catch (err) {
       const timedOut = err instanceof DOMException && err.name === "AbortError";
       await failFeed(
@@ -265,30 +308,40 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
       );
     } finally {
       window.clearTimeout(timeoutId);
-      setLoading(false);
+      if (!options?.silent) setLoading(false);
     }
   }, [applyCatalogFallback, failFeed]);
 
   useEffect(() => {
     if (captchaToken === null) return;
-    if (bootRef.current) return;
-    bootRef.current = true;
+    let cancelled = false;
     const token = captchaToken === "ready" ? undefined : captchaToken;
     // Yield until App Router finishes hydration (avoids Next.js 16 action-queue races).
     const id = window.setTimeout(() => {
-      void startSession(token);
+      if (!cancelled) void startSession(token);
     }, 0);
-    return () => window.clearTimeout(id);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(id);
+    };
   }, [captchaToken, startSession]);
 
-  const fetchNext = useCallback(async () => {
-    if (!feedEnabled || done || loadingMore || nextCursor < 1) return;
-    setLoadingMore(true);
-    try {
-      const res = await fetch(`/api/keyra/latest-authentications/batch?cursor=${nextCursor}`, {
+  const fetchBatch = useCallback(
+    async (
+      cursor: number,
+      { limit, mode }: { limit?: number; mode: "append" | "prepend" },
+    ): Promise<boolean> => {
+      const params = new URLSearchParams({ cursor: String(cursor) });
+      if (limit != null && limit >= 1) params.set("limit", String(limit));
+
+      const res = await fetch(`/api/keyra/latest-authentications/batch?${params}`, {
         credentials: "include",
+        cache: "no-store",
       });
       const rawUnknown: unknown = await res.json();
+
+      if (res.status === 401) return false;
+
       if (!res.ok) {
         const err =
           typeof rawUnknown === "object" &&
@@ -299,27 +352,111 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
             : "Batch failed.";
         setHint(err);
         setDone(true);
-        return;
+        doneRef.current = true;
+        return false;
       }
+
       const resolved = await resolvePublicFeedJson(rawUnknown, "batch");
       if (!resolved.ok) {
         setHint(resolved.error);
         setDone(true);
-        return;
+        doneRef.current = true;
+        return false;
       }
+
       const data = readBatchPayload(resolved.json);
       if (!data) {
         setHint("Invalid batch payload.");
         setDone(true);
-        return;
+        doneRef.current = true;
+        return false;
       }
-      if (data.done) setDone(true);
-      setRecords((prev) => [...prev, ...(data.records ?? [])]);
-      if (typeof data.nextCursor === "number") setNextCursor(data.nextCursor);
+
+      if (data.done) {
+        setDone(true);
+        doneRef.current = true;
+      }
+
+      const incoming = data.records ?? [];
+      if (incoming.length) {
+        setRecords((prev) => {
+          if (mode === "prepend") {
+            return [...incoming, ...prev].slice(0, maxVisibleRows(variant));
+          }
+          return [...prev, ...incoming];
+        });
+      }
+
+      if (typeof data.nextCursor === "number") {
+        setNextCursor(data.nextCursor);
+        nextCursorRef.current = data.nextCursor;
+      }
+
+      return true;
+    },
+    [variant],
+  );
+
+  const fetchNext = useCallback(async () => {
+    if (!feedEnabled || done || loadingMore || nextCursor < 1) return;
+    setLoadingMore(true);
+    try {
+      await fetchBatch(nextCursor, { mode: "append" });
     } finally {
       setLoadingMore(false);
     }
-  }, [feedEnabled, done, loadingMore, nextCursor]);
+  }, [feedEnabled, done, loadingMore, nextCursor, fetchBatch]);
+
+  const fetchLiveTick = useCallback(async () => {
+    if (livePollRef.current || loading || !feedEnabledRef.current || doneRef.current) return;
+    const cursor = nextCursorRef.current;
+    if (cursor < 1) return;
+
+    livePollRef.current = true;
+    try {
+      const ok = await fetchBatch(cursor, { limit: LIVE_BATCH_LIMIT, mode: "prepend" });
+      if (!ok) {
+        const token = captchaToken === "ready" ? undefined : captchaToken ?? undefined;
+        await startSession(token, { silent: true });
+      }
+    } finally {
+      livePollRef.current = false;
+    }
+  }, [loading, fetchBatch, captchaToken, startSession]);
+
+  useEffect(() => {
+    if (loading || !feedEnabled || isCatalogFallback) return undefined;
+
+    const reducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const intervalMs = reducedMotion ? Math.max(animationSpeedMs * 4, 2000) : animationSpeedMs;
+
+    const id = window.setInterval(() => {
+      void fetchLiveTick();
+    }, intervalMs);
+
+    return () => window.clearInterval(id);
+  }, [loading, feedEnabled, isCatalogFallback, animationSpeedMs, fetchLiveTick]);
+
+  useEffect(() => {
+    if (loading || !isCatalogFallback) return undefined;
+    const pool = catalogPoolRef.current;
+    if (!pool.length) return undefined;
+
+    const id = window.setInterval(() => {
+      const source = pool[catalogIndexRef.current % pool.length]!;
+      catalogIndexRef.current += 1;
+      const row: LatestAuthRecord = {
+        ...source,
+        t: new Date().toISOString(),
+        x: `REF-${source.pl}-${catalogIndexRef.current}`,
+      };
+      setRecords((prev) => [row, ...prev].slice(0, maxVisibleRows(variant)));
+    }, animationSpeedMs);
+
+    return () => window.clearInterval(id);
+  }, [loading, isCatalogFallback, animationSpeedMs, variant]);
 
   useEffect(() => {
     if (loading || loadingMore || done || !feedEnabled) return;
@@ -430,9 +567,12 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
 
   if (!feedEnabled || records.length === 0) {
     return (
-      <div className={ui.empty}>
-        {hint ??
-          "Authentication feed will appear here when the database is configured and countries/protocols are seeded."}
+      <div className={ui.empty} role="status">
+        <p>{hint ?? "Authentication feed will appear here when the database is configured and countries/protocols are seeded."}</p>
+        <p className={cn("mt-2 opacity-80", ui.muted)}>
+          Local: run <code className="text-[0.95em]">npm run db:seed:local-latest-auth</code>, restart{" "}
+          <code className="text-[0.95em]">npm run dev</code>, then hard-refresh.
+        </p>
       </div>
     );
   }

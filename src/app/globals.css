@@ -1286,8 +1286,45 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   pointer-events: auto;
   border: 1px solid var(--bento-border-strong);
   background: #ffffff;
-  box-shadow: none;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+    0 12px 40px rgba(13, 116, 206, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.06);
   isolation: isolate;
+}
+
+.keyra-bento-globe-card__orb::before {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 42% 38%,
+    rgba(13, 116, 206, 0.12) 0%,
+    rgba(0, 200, 83, 0.06) 28%,
+    transparent 62%
+  );
+  animation: keyra-globe-orb-glow 14s ease-in-out infinite alternate;
+}
+
+@keyframes keyra-globe-orb-glow {
+  from {
+    opacity: 0.55;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .keyra-bento-globe-card__orb::before {
+    animation: none;
+    opacity: 0.7;
+  }
 }
 
 /* Mobile / tablet: stack copy above globe — no overlap */

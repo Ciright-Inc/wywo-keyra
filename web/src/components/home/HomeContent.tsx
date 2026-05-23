@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ActiveAuthenticationCountriesWidget } from "@/components/home/ActiveAuthenticationCountriesWidget";
 import { ActiveSatProtocolsWidget } from "@/components/home/ActiveSatProtocolsWidget";
 import { GlobalVerificationSignalsLive } from "@/components/home/GlobalVerificationSignalsLive";
@@ -14,16 +14,48 @@ import {
   narrativeAudienceGridClass,
   narrativeEqualPanel,
 } from "@/components/home/narrative/narrativeGrid";
+import { HoverLiftCard } from "@/components/motion/HoverLiftCard";
 import { keyraDeveloperPortalUrl, keyraGovernmentsUrl } from "@/lib/keyraAppUrls";
-
-const easeTrust = [0.22, 0.61, 0.36, 1] as const;
+import {
+  easeAnticipate,
+  easeCircOut,
+  heroEntrance,
+  slideInRight,
+  staggerContainer,
+  staggerItem,
+} from "@/lib/keyraMotion";
 
 const homeCard = "keyra-home-card px-6 py-5";
 const homeCardOnDark = "keyra-home-card keyra-surface-light px-6 py-5";
 const homeAudienceCard = "keyra-card keyra-home-card p-7 sm:p-8";
 const homeHeroPanel = "keyra-home-panel";
 
+const heroCtaItems = [
+  {
+    t: "Protect Your Identity",
+    d: "Secure your personal identity, mobile device, and digital presence with Keyra.",
+    h: "/signup",
+  },
+  {
+    t: "Protect Your Family",
+    d: "Create a protected family identity registry for every family member.",
+    h: "/app/family",
+  },
+  {
+    t: "Secure Your Organization",
+    d: "Protect your company domains, data, and team identities.",
+    h: "/contact",
+  },
+  {
+    t: "Partner With Keyra",
+    d: "Join Keyra as a telecom, technology, or service partner.",
+    h: "/partners",
+  },
+] as const;
+
 export function HomeContent() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <>
       {/* SECTION 1 — HERO */}
@@ -32,22 +64,69 @@ export function HomeContent() {
         <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.04]" aria-hidden style={{backgroundImage:"url('/image.png')",filter:"blur(60px)"}} />
 
         <div className="relative z-10 mx-auto max-w-[1440px] px-12 pb-16 pt-8 lg:px-20 lg:pb-20 lg:pt-12">
-          <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6,ease:easeTrust}}>
-            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-500">Sovereign trust infrastructure</p>
-            <h1 className="mt-5 text-[clamp(3rem,5.5vw,5.8rem)] font-semibold leading-[1.05] tracking-[-0.03em]">Be Protected Online.</h1>
-            <p className="mt-5 max-w-lg text-[15px] leading-[1.65] text-slate-400">The internet finally became trustworthy — calm, deterministic identity for people, institutions, and verified intelligence.</p>
-          </motion.div>
+          <div>
+            <motion.p
+              className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-500"
+              variants={heroEntrance}
+              initial={reduceMotion ? false : "hidden"}
+              animate="visible"
+            >
+              Sovereign trust infrastructure
+            </motion.p>
+            <motion.h1
+              className="mt-5 text-[clamp(3rem,5.5vw,5.8rem)] font-semibold leading-[1.05] tracking-[-0.03em]"
+              variants={heroEntrance}
+              initial={reduceMotion ? false : "hidden"}
+              animate="visible"
+              transition={{ duration: reduceMotion ? 0.01 : 0.8, ease: easeCircOut, delay: reduceMotion ? 0 : 0.05 }}
+            >
+              Be Protected Online.
+            </motion.h1>
+            <motion.p
+              className="mt-5 max-w-lg text-[15px] leading-[1.65] text-slate-400"
+              variants={heroEntrance}
+              initial={reduceMotion ? false : "hidden"}
+              animate="visible"
+              transition={{ duration: reduceMotion ? 0.01 : 0.8, ease: easeCircOut, delay: reduceMotion ? 0 : 0.14 }}
+            >
+              The internet finally became trustworthy — calm, deterministic identity for people, institutions, and verified intelligence.
+            </motion.p>
+          </div>
 
           <div className="mt-12 grid grid-cols-1 gap-10 lg:mt-14 lg:grid-cols-[minmax(0,42%)_minmax(0,1fr)] lg:items-start lg:gap-8">
             {/* LEFT: Globe */}
-            <div className="relative lg:-ml-12 xl:-ml-20">
-              <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" aria-hidden style={{width:"120%",height:"120%",background:"radial-gradient(circle,rgba(59,130,246,0.12) 0%,rgba(37,99,235,0.03) 50%,transparent 70%)",filter:"blur(40px)"}} />
-              <div className="relative mx-auto w-full max-w-[500px] lg:max-w-[440px] xl:max-w-[500px]">
+            <motion.div
+              className="relative lg:-ml-12 xl:-ml-20"
+              initial={reduceMotion ? false : { opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: reduceMotion ? 0.01 : 0.9, ease: easeAnticipate, delay: reduceMotion ? 0 : 0.2 }}
+            >
+              <div
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 keyra-globe-orbit-ring rounded-full border border-blue-400/15"
+                aria-hidden
+                style={{ width: "128%", height: "128%" }}
+              />
+              <div
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                aria-hidden
+                style={{
+                  width: "120%",
+                  height: "120%",
+                  background:
+                    "radial-gradient(circle,rgba(59,130,246,0.12) 0%,rgba(37,99,235,0.03) 50%,transparent 70%)",
+                  filter: "blur(40px)",
+                }}
+              />
+              <motion.div
+                className="relative mx-auto w-full max-w-[500px] lg:max-w-[440px] xl:max-w-[500px]"
+                whileHover={reduceMotion ? undefined : { scale: 1.05 }}
+                transition={{ duration: 0.45, ease: easeCircOut }}
+              >
                 <div className="relative aspect-square w-full overflow-hidden rounded-full">
                   <KeyraHomeGlobe className="block h-full w-full touch-pan-y" />
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* RIGHT: Timeline + widgets, then 4 CTAs directly below */}
             <div className="flex min-w-0 flex-col gap-8 lg:gap-10">
@@ -74,7 +153,13 @@ export function HomeContent() {
                           )}
                         </div>
 
-                        <motion.div className={`flex-1 ${homeHeroPanel} px-5 py-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.2+i*0.08,ease:easeTrust}}>
+                        <motion.div
+                          className={`flex-1 ${homeHeroPanel} px-5 py-4`}
+                          variants={slideInRight}
+                          initial="hidden"
+                          animate="visible"
+                          transition={{ duration: 0.55, delay: 0.2 + i * 0.08, ease: easeCircOut }}
+                        >
                           <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">{item.l}</p>
                           <p className="mt-2 text-[13px] leading-[1.6] text-slate-600">{item.t}</p>
                         </motion.div>
@@ -85,31 +170,39 @@ export function HomeContent() {
 
                 {/* Widgets */}
                 <div className="flex flex-col gap-3 lg:pt-1">
-                  <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.35,ease:easeTrust}}>
+                  <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.35,ease:easeCircOut}}>
                     <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Global verification signals</p>
                     <GlobalVerificationSignalsLive variant="hero" />
                     <div className="mt-3 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-2 text-center"><span className="text-[11px] text-slate-500">Global numbers verified — live by region</span></div>
                   </motion.div>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.42,ease:easeTrust}}>
+                    <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.42,ease:easeCircOut}}>
                       <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-500">Latest authentications</p>
                       <ActiveAuthenticationCountriesWidget />
                     </motion.div>
-                    <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.48,ease:easeTrust}}>
+                    <motion.div className={`${homeHeroPanel} p-4`} initial={{opacity:0,x:12}} animate={{opacity:1,x:0}} transition={{duration:0.5,delay:0.48,ease:easeCircOut}}>
                       <ActiveSatProtocolsWidget />
                     </motion.div>
                   </div>
                 </div>
               </div>
 
-              <motion.div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6,delay:0.5,ease:easeTrust}}>
-                {[{t:"Protect Your Identity",d:"Secure your personal identity, mobile device, and digital presence with Keyra.",h:"/signup"},{t:"Protect Your Family",d:"Create a protected family identity registry for every family member.",h:"/app/family"},{t:"Secure Your Organization",d:"Protect your company domains, data, and team identities.",h:"/contact"},{t:"Partner With Keyra",d:"Join Keyra as a telecom, technology, or service partner.",h:"/partners"}].map(item=>(
-                  <Link key={item.t} href={item.h} className="group block">
-                    <div className={`h-full ${homeHeroPanel} p-6`}>
-                      <h3 className="text-[15px] font-semibold leading-snug text-slate-900">{item.t}</h3>
-                      <p className="mt-2 text-[13px] leading-[1.6] text-slate-500">{item.d}</p>
-                    </div>
-                  </Link>
+              <motion.div
+                className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
+                variants={staggerContainer}
+                initial={reduceMotion ? false : "hidden"}
+                animate="visible"
+                transition={{ delay: reduceMotion ? 0 : 0.45 }}
+              >
+                {heroCtaItems.map((item) => (
+                  <motion.div key={item.t} variants={staggerItem}>
+                    <Link href={item.h} className="group block h-full">
+                      <div className={`h-full ${homeHeroPanel} p-6`}>
+                        <h3 className="text-[15px] font-semibold leading-snug text-slate-900">{item.t}</h3>
+                        <p className="mt-2 text-[13px] leading-[1.6] text-slate-500">{item.d}</p>
+                      </div>
+                    </Link>
+                  </motion.div>
                 ))}
               </motion.div>
             </div>
@@ -246,13 +339,13 @@ export function HomeContent() {
               body: "Infrastructure for citizens, institutions, and national continuity.",
             },
           ].map((item) => (
-            <div key={item.title} className={narrativeEqualPanel(homeAudienceCard)}>
+            <HoverLiftCard key={item.title} className={narrativeEqualPanel(homeAudienceCard)}>
               <p className="keyra-eyebrow text-[10px]">{item.title}</p>
               <h3 className="mt-4 text-balance text-xl font-semibold tracking-tight text-keyra-primary sm:text-2xl">
                 {item.headline}
               </h3>
               <p className="mt-3 text-[15px] leading-relaxed text-keyra-text-2 sm:text-[16px]">{item.body}</p>
-            </div>
+            </HoverLiftCard>
           ))}
         </div>
       </NarrativeSection>

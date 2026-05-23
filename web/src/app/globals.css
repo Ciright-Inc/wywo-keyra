@@ -853,7 +853,7 @@ html[data-keyra-lane="developer"] .keyra-code-block {
     0 8px 24px rgba(0, 0, 0, 0.06) !important;
 }
 
-.keyra-home-card:hover {
+.keyra-home-card:not(.keyra-hover-lift):hover {
   border-color: rgba(0, 0, 0, 0.2) !important;
   box-shadow:
     0 4px 14px rgba(0, 0, 0, 0.1),
@@ -867,7 +867,7 @@ html[data-keyra-lane="developer"] .keyra-code-block {
     0 8px 24px rgba(0, 0, 0, 0.22) !important;
 }
 
-.keyra-band--dark .keyra-home-card:not(.keyra-surface-light):hover {
+.keyra-band--dark .keyra-home-card:not(.keyra-surface-light):not(.keyra-hover-lift):hover {
   border-color: rgba(255, 255, 255, 0.36) !important;
   box-shadow:
     0 4px 14px rgba(0, 0, 0, 0.32),
@@ -909,11 +909,48 @@ html[data-keyra-lane="developer"] .keyra-code-block {
     border-color var(--keyra-motion-base) var(--keyra-ease-out);
 }
 
-.keyra-home-panel:hover {
+.keyra-home-panel:not(.keyra-hover-lift):hover {
   border-color: rgba(0, 0, 0, 0.2);
   box-shadow:
     0 4px 14px rgba(0, 0, 0, 0.1),
     0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.keyra-hover-lift.keyra-home-card,
+.keyra-hover-lift.keyra-home-panel {
+  transition: none !important;
+}
+
+.keyra-hover-lift {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .keyra-hover-lift {
+    transform: none;
+    backface-visibility: visible;
+  }
+}
+
+/* Hero globe — ambient orbital ring */
+@keyframes keyra-globe-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.keyra-globe-orbit-ring {
+  animation: keyra-globe-orbit 90s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .keyra-globe-orbit-ring {
+    animation: none;
+  }
 }
 
 .keyra-focus {
@@ -1301,7 +1338,7 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   padding: 24px;
   transition: box-shadow var(--ds-motion-base) var(--ds-ease);
 }
-.ds-feature-card:hover { box-shadow: var(--ds-shadow-soft); }
+.ds-feature-card:not(.keyra-hover-lift):hover { box-shadow: var(--ds-shadow-soft); }
 
 .ds-panel {
   background: var(--ds-surface-card);
