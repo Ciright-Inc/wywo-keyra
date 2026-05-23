@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
 import { RowActions } from "@/components/admin/RowActions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import { deleteTelcoMessage } from "@/lib/admin/adminDeleteMessages";
@@ -133,11 +134,8 @@ export function TelcosDirectoryClient({
 }: Props) {
   const hasSearch = searchQuery.trim().length > 0;
   const [createOpen, setCreateOpen] = useState(false);
-  const [searchExpanded, setSearchExpanded] = useState(hasSearch);
-  const [qInput, setQInput] = useState(searchQuery);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
   const confirm = useAdminConfirm();
   const toast = useToast();
@@ -192,44 +190,10 @@ export function TelcosDirectoryClient({
     </th>
   );
 
-  /** Sync local input when URL `q` changes (e.g. via pagination links). */
-  useEffect(() => {
-    setQInput(searchQuery);
-    if (searchQuery.trim()) setSearchExpanded(true);
-  }, [searchQuery]);
-
-  /** Focus the input after the expand transition starts. */
-  useEffect(() => {
-    if (searchExpanded) {
-      const t = setTimeout(() => searchInputRef.current?.focus(), 180);
-      return () => clearTimeout(t);
-    }
-    return undefined;
-  }, [searchExpanded]);
-
-  /** Debounced server-side filter: push `q` into the URL ~280ms after typing stops. */
-  useEffect(() => {
-    const next = qInput.trim();
-    if (next === searchQuery.trim()) return;
-    const t = setTimeout(() => {
-      navigate(buildTelcosListHref(1, pageSize, defaultPageSize, next, sortBy, sortDir));
-    }, 280);
-    return () => clearTimeout(t);
-  }, [qInput, searchQuery, navigate, pageSize, defaultPageSize, sortBy, sortDir]);
-
-  function toggleSearchPanel() {
-    setSearchExpanded((open) => !open);
-  }
-
-  function collapseSearch(clearQuery: boolean) {
-    if (clearQuery) {
-      setQInput("");
-      if (hasSearch) {
-        navigate(buildTelcosListHref(1, pageSize, defaultPageSize, "", sortBy, sortDir));
-      }
-    }
-    setSearchExpanded(false);
-  }
+  const buildSearchHref = useCallback(
+    (query: string) => buildTelcosListHref(1, pageSize, defaultPageSize, query, sortBy, sortDir),
+    [pageSize, defaultPageSize, sortBy, sortDir],
+  );
 
   const inputClass =
     adminLegacyInput;
@@ -258,76 +222,12 @@ export function TelcosDirectoryClient({
           </div>
 
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="flex items-center">
-              <button
-                type="button"
-                onClick={toggleSearchPanel}
-                aria-label={searchExpanded ? "Collapse search" : "Expand search"}
-                aria-expanded={searchExpanded}
-                className={`inline-flex size-9 shrink-0 items-center justify-center rounded-lg border transition duration-300 ${
-                  searchExpanded || hasSearch
-                    ? "border-black/20 bg-keyra-bg text-keyra-primary ring-1 ring-black/10"
-                    : "border-keyra-border bg-keyra-bg text-keyra-text-2 hover:border-black/20 hover:text-keyra-primary"
-                }`}
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  aria-hidden
-                >
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="M20 20 16.65 16.65" />
-                </svg>
-              </button>
-              <div
-                className={`grid transition-[grid-template-columns] duration-300 ease-out ${
-                  searchExpanded ? "grid-cols-[1fr] ml-2" : "grid-cols-[0fr] ml-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="relative">
-                    <input
-                      ref={searchInputRef}
-                      type="text"
-                      value={qInput}
-                      onChange={(e) => setQInput(e.target.value)}
-                      placeholder="Name, slug, subdomain, country…"
-                      autoComplete="off"
-                      aria-label="Search telcos"
-                      className={`ds-text-input is-sm h-9 py-0 pl-3 transition-opacity duration-300 ${
-                        searchExpanded ? "w-44 pr-8 opacity-100 sm:w-64" : "w-44 pointer-events-none opacity-0 sm:w-64"
-                      }`}
-                    />
-                    {searchExpanded ? (
-                      <button
-                        type="button"
-                        className="absolute right-1.5 top-1/2 inline-flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-keyra-text-2 transition hover:bg-keyra-surface hover:text-keyra-primary"
-                        onClick={() => collapseSearch(true)}
-                        aria-label="Clear search and collapse"
-                      >
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2.2"
-                          strokeLinecap="round"
-                          aria-hidden
-                        >
-                          <path d="M18 6 6 18M6 6l12 12" />
-                        </svg>
-                      </button>
-                    ) : null}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <CollapsibleSearchBar
+              searchQuery={searchQuery}
+              buildHref={buildSearchHref}
+              placeholder="Name, slug, subdomain, country…"
+              ariaLabel="Search telcos"
+            />
             <Link
               href="/api/admin/deployments/telcos/csv"
               prefetch={false}
