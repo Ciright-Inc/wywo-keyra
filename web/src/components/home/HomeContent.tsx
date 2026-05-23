@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 import { motion, useReducedMotion } from "framer-motion";
 import { ActiveAuthenticationCountriesWidget } from "@/components/home/ActiveAuthenticationCountriesWidget";
 import { ActiveSatProtocolsWidget } from "@/components/home/ActiveSatProtocolsWidget";
@@ -196,7 +197,7 @@ export function HomeContent() {
               >
                 {heroCtaItems.map((item) => (
                   <motion.div key={item.t} variants={staggerItem}>
-                    <Link href={item.h} className="group block h-full">
+                    <Link href={item.h} {...NEW_TAB_LINK} className="group block h-full">
                       <div className={`h-full ${homeHeroPanel} p-6`}>
                         <h3 className="text-[15px] font-semibold leading-snug text-slate-900">{item.t}</h3>
                         <p className="mt-2 text-[13px] leading-[1.6] text-slate-500">{item.d}</p>

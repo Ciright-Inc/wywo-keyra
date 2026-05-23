@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FadeIn } from "@/components/motion/FadeIn";
-import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 
 export const metadata: Metadata = {
   title: "FAQ",
@@ -48,7 +49,7 @@ export default function FaqPage() {
             <span className="text-keyra-primary">Be Protected Online.</span>{" "}
             Quick answers in plain language. If you need more detail, we are
             happy to help — see{" "}
-            <Link href="/contact" className="font-medium text-keyra-text underline-offset-4 hover:underline">
+            <Link href="/contact" {...NEW_TAB_LINK} className="font-medium text-keyra-text underline-offset-4 hover:underline">
               Contact us
             </Link>
             .
@@ -68,9 +69,9 @@ export default function FaqPage() {
 
         <FadeIn className="mt-12 text-center">
           <p className="font-medium text-keyra-text">Still have a question?</p>
-          <Link href="/contact" className="mt-4 inline-flex">
-            <Button>Contact us</Button>
-          </Link>
+          <ButtonLink href="/contact" className="mt-4">
+            Contact us
+          </ButtonLink>
         </FadeIn>
       </div>
     </div>

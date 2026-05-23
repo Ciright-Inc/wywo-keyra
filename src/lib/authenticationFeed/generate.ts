@@ -1,14 +1,10 @@
-import { randomBytes } from "node:crypto";
 import type { FeedCountryInput, FeedProtocolInput, LatestAuthRecord } from "@/lib/authenticationFeed/types";
 import { nextMaskedReference } from "@/lib/authenticationFeed/mask";
+import { makeFeedRng, shuffleInPlace } from "@/lib/authenticationFeed/random";
 import { normalizeActiveWeights, weightedPickById } from "@/lib/authenticationFeed/weights";
 
 function pickUniform<T>(items: T[], random: () => number): T {
   return items[Math.floor(random() * items.length)]!;
-}
-
-function makeRng(): () => number {
-  return () => randomBytes(4).readUInt32BE(0) / 0xffff_ffff;
 }
 
 function balanceHomeRoaming(protocol: FeedProtocolInput, random: () => number): "H" | "R" {
@@ -29,15 +25,21 @@ export function generateLatestAuthBatch(params: {
   maskingEnabled: boolean;
   pairsUsed: Set<string>;
 }): { records: LatestAuthRecord[]; pairKeysAdded: string[]; poolResetCount: number } {
-  const random = makeRng();
-  const activeCountries = params.countries.filter(
-    (c) =>
-      c.active &&
-      /* Mapper passes explicit false when AUTH is off; undefined treats as eligible for backwards compat */
-      (c.authenticationEnabled === undefined || c.authenticationEnabled),
+  const random = makeFeedRng();
+  const activeCountries = shuffleInPlace(
+    params.countries.filter(
+      (c) =>
+        c.active &&
+        /* Mapper passes explicit false when AUTH is off; undefined treats as eligible for backwards compat */
+        (c.authenticationEnabled === undefined || c.authenticationEnabled),
+    ),
+    random,
   );
   // Protocols: only `active` rows; session/batch should use `toFeedProtocolInputs`.
-  const activeProtocols = params.protocols.filter((p) => p.active);
+  const activeProtocols = shuffleInPlace(
+    params.protocols.filter((p) => p.active),
+    random,
+  );
   if (!activeCountries.length || !activeProtocols.length) {
     return { records: [], pairKeysAdded: [], poolResetCount: 0 };
   }

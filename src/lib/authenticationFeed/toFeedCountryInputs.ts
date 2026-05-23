@@ -1,9 +1,10 @@
 import type { AuthenticationCountry } from "@prisma/client";
 import type { FeedCountryInput } from "@/lib/authenticationFeed/types";
+import { shuffledCopy } from "@/lib/authenticationFeed/random";
 
 /** Map DB rows to feed inputs: homepage panel only uses rows that are **live** (`active`) and **AUTH** (`authenticationEnabled`). `region` uses sub-region when present. */
 export function toFeedCountryInputs(countries: AuthenticationCountry[]): FeedCountryInput[] {
-  return countries
+  const eligible = countries
     .filter((c) => c.active && c.authenticationEnabled)
     .map((c) => ({
       id: c.id,
@@ -14,4 +15,5 @@ export function toFeedCountryInputs(countries: AuthenticationCountry[]): FeedCou
       authenticationEnabled: true,
       percentageWeight: c.percentageWeight,
     }));
+  return shuffledCopy(eligible);
 }

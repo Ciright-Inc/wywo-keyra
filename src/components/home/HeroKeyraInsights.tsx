@@ -15,6 +15,7 @@ import {
 import { TrustJourneyHeroCards } from "@/components/home/trust/TrustJourneyHeroCards";
 import type { HeroVariant } from "@/components/home/heroTypes";
 import { keyraGovernmentsUrl } from "@/lib/keyraAppUrls";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 
 export type { HeroVariant } from "@/components/home/heroTypes";
 
@@ -259,6 +260,7 @@ export function HeroKeyraWidgets({
         <GlobalVerificationSignalsLive variant={feedVariant} />
         <a
           href={globalSignalsRegionHref}
+          {...NEW_TAB_LINK}
           className={
             variant === "bento"
               ? "keyra-bento-chip keyra-bento-chip--link mt-3"

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FadeIn } from "@/components/motion/FadeIn";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 import { PageIntentRibbon } from "@/components/trust/PageIntentRibbon";
 
 export const metadata: Metadata = {
@@ -105,6 +106,7 @@ export default function TrustPage() {
               </div>
               <Link
                 href="/contact"
+                {...NEW_TAB_LINK}
                 className="inline-flex shrink-0 rounded-full border border-keyra-border/20 bg-keyra-bg px-5 py-2.5 text-[14px] font-semibold text-keyra-primary transition hover:border-keyra-primary/30"
               >
                 Contact Keyra
@@ -161,6 +163,7 @@ export default function TrustPage() {
               </div>
               <Link
                 href="/contact"
+                {...NEW_TAB_LINK}
                 className="inline-flex rounded-full border border-keyra-border/20 bg-[rgba(255,255,255,0.03)] px-6 py-3 text-[16px] font-semibold text-keyra-primary transition hover:border-keyra-primary/30"
               >
                 Partner with Keyra

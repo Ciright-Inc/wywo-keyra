@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
+import { cn } from "@/components/ui/cn";
 import { trackPlausible } from "@/lib/analytics";
 import { useGetStartedAccessHref } from "@/lib/useGetStartedAccessHref";
 import type { TrustJourneyAnchor } from "@/lib/trustJourney";
@@ -20,14 +20,16 @@ export function AccessKeyraButton({
   const href = useGetStartedAccessHref(section);
 
   return (
-    <Link
+    <ButtonLink
       href={href}
-      className="inline-flex focus-visible:outline-none focus-visible:keyra-focus rounded-[var(--keyra-radius-pill)]"
+      variant={variant}
+      className={cn(
+        "focus-visible:outline-none focus-visible:keyra-focus rounded-[var(--keyra-radius-pill)]",
+        className,
+      )}
       onClick={() => trackPlausible("access_keyra_click", { section })}
     >
-      <Button variant={variant} className={className}>
-        Access Keyra
-      </Button>
-    </Link>
+      Access Keyra
+    </ButtonLink>
   );
 }

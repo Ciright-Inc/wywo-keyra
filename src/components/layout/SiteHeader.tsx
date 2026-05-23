@@ -10,6 +10,7 @@ import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
 import { useGetStartedAccessHref } from "@/lib/useGetStartedAccessHref";
 import { useMemo, useEffect, useState } from "react";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 import { KEYRA_HEADER_ACTION_ACCESS } from "./headerActionClasses";
 
 type NavItem = { href: string; label: string; external?: boolean };
@@ -143,6 +144,7 @@ export function SiteHeader() {
               {!user ? (
                 <a
                   href={accessHref}
+                  {...NEW_TAB_LINK}
                   className={`${KEYRA_HEADER_ACTION_ACCESS} hidden no-underline lg:inline-flex`}
                 >
                   Access

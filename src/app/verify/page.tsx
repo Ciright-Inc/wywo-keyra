@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { IconShieldCheck } from "@/components/ui/Icons";
 import { useToast } from "@/components/ui/Toast";
@@ -91,11 +91,9 @@ export default function VerifyNowPage() {
               ))}
             </ul>
             <div className="mt-8">
-              <Link href="/" className="inline-flex w-full sm:w-auto">
-                <Button variant="secondary" className="w-full sm:w-auto">
-                  Back to home
-                </Button>
-              </Link>
+              <ButtonLink href="/" variant="secondary" className="w-full sm:w-auto">
+                Back to home
+              </ButtonLink>
             </div>
           </Card>
         </FadeIn>

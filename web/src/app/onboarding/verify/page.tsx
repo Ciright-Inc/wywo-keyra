@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { IconShieldCheck } from "@/components/ui/Icons";
 import { useToast } from "@/components/ui/Toast";
@@ -67,9 +67,9 @@ export default function VerifyPage() {
               <li>Clear, simple protection you can trust</li>
               <li>Confidence for you and your family</li>
             </ul>
-            <Link href="/onboarding/complete" className="mt-6 inline-flex">
-              <Button variant="secondary">Continue</Button>
-            </Link>
+            <ButtonLink href="/onboarding/complete" variant="secondary" className="mt-6">
+              Continue
+            </ButtonLink>
           </Card>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 import { PageIntentRibbon } from "@/components/trust/PageIntentRibbon";
 
 export const metadata: Metadata = {
@@ -37,7 +38,7 @@ export default function GovernmentsPage() {
       </div>
       <p className="mt-8 text-sm text-keyra-text-2">
         Learn more about our{" "}
-        <Link href="/global-deployment" className="font-medium text-keyra-accent underline-offset-2 hover:underline">
+        <Link href="/global-deployment" {...NEW_TAB_LINK} className="font-medium text-keyra-accent underline-offset-2 hover:underline">
           global deployment infrastructure
         </Link>
         .

@@ -3,6 +3,7 @@
 import type { LatestAuthRecord } from "@/lib/authenticationFeed/types";
 import { protocolOpenAction } from "@/lib/authenticationFeed/protocolOpenBehavior";
 import { resolvePublicFeedJson } from "@/lib/authenticationFeed/feedClientResolve";
+import { makeFeedRng, pickRandom } from "@/lib/authenticationFeed/random";
 import { FeedTurnstileGate } from "@/components/home/FeedTurnstileGate";
 import { useGlobeAuthFeedContext } from "@/contexts/GlobeAuthFeedContext";
 import { cn } from "@/components/ui/cn";
@@ -115,10 +116,11 @@ async function fetchCatalogAuthRows(limit = 8): Promise<LatestAuthRecord[]> {
 
     const now = Date.now();
     const count = Math.min(limit, countries.length, protocols.length);
+    const random = makeFeedRng();
     const rows: LatestAuthRecord[] = [];
     for (let i = 0; i < count; i++) {
-      const country = countries[i % countries.length]!;
-      const protocol = protocols[i % protocols.length]!;
+      const country = pickRandom(countries, random)!;
+      const protocol = pickRandom(protocols, random)!;
       rows.push({
         t: new Date(now - (i + 1) * 15_000).toISOString(),
         c: country.countryName,
@@ -126,7 +128,7 @@ async function fetchCatalogAuthRows(limit = 8): Promise<LatestAuthRecord[]> {
         p: protocol.protocolName,
         pl: protocol.protocolCode,
         m: protocol.protocolCode,
-        hr: i % 3 === 0 ? "R" : "H",
+        hr: random() < 0.33 ? "R" : "H",
         x: `REF-${protocol.protocolCode}`,
         st: "S.A.T.",
       });
@@ -462,8 +464,9 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
     const pool = catalogPoolRef.current;
     if (!pool.length) return undefined;
 
+    const tickRandom = makeFeedRng();
     const id = window.setInterval(() => {
-      const source = pool[catalogIndexRef.current % pool.length]!;
+      const source = pickRandom(pool, tickRandom)!;
       catalogIndexRef.current += 1;
       const row: LatestAuthRecord = {
         ...source,
