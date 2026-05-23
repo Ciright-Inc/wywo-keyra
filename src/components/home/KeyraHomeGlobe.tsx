@@ -2,6 +2,7 @@
 
 import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
+import { useGlobeAuthFeedPulses } from "@/hooks/useGlobeAuthFeedPulses";
 import { useGlobePulseBatch } from "@/hooks/useGlobePulseBatch";
 import { useGlobePulseEvents } from "@/hooks/useGlobePulseEvents";
 import type { KeyraRealisticGlobeSceneProps } from "@/components/home/globe/KeyraRealisticGlobeScene";
@@ -21,8 +22,12 @@ export function KeyraHomeGlobe({
   "aria-label": ariaLabel,
   opaque = false,
 }: KeyraHomeGlobeProps) {
-  const events = useGlobePulseEvents();
-  const { activePulses, activeLinks } = useGlobePulseBatch(events);
+  const authFeedPulses = useGlobeAuthFeedPulses();
+  const randomEvents = useGlobePulseEvents();
+  const randomPulses = useGlobePulseBatch(randomEvents);
+  const { activePulses, activeLinks } = authFeedPulses.synced
+    ? authFeedPulses
+    : randomPulses;
   const [Scene, setScene] = useState<ComponentType<KeyraRealisticGlobeSceneProps> | null>(null);
 
   useEffect(() => {

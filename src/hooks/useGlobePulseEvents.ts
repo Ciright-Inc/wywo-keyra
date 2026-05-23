@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { coordsForCountry } from "@/lib/globe/countryCoords";
 import type { GlobePulseEvent } from "@/lib/globe/types";
 
 const FALLBACK_CITIES: { country: string; city: string; lat: number; lon: number }[] = [
@@ -17,31 +18,6 @@ const FALLBACK_CITIES: { country: string; city: string; lat: number; lon: number
   { country: "Singapore", city: "Singapore", lat: 1.3521, lon: 103.8198 },
   { country: "Canada", city: "Toronto", lat: 43.6532, lon: -79.3832 },
 ];
-
-const countryCoordsCache = new Map<string, { lat: number; lon: number }>();
-
-for (const entry of FALLBACK_CITIES) {
-  countryCoordsCache.set(entry.country.trim().toLowerCase(), { lat: entry.lat, lon: entry.lon });
-}
-
-async function coordsForCountry(countryName: string): Promise<{ lat: number; lon: number } | null> {
-  const key = countryName.trim().toLowerCase();
-  if (countryCoordsCache.has(key)) return countryCoordsCache.get(key)!;
-
-  const { default: countries } = await import("world-countries");
-  const match = countries.find(
-    (c) =>
-      c.name.common.toLowerCase() === key ||
-      c.name.official.toLowerCase() === key ||
-      c.altSpellings.some((s) => s.toLowerCase() === key),
-  );
-  if (match?.latlng?.length === 2) {
-    const coords = { lat: match.latlng[0]!, lon: match.latlng[1]! };
-    countryCoordsCache.set(key, coords);
-    return coords;
-  }
-  return null;
-}
 
 function buildFallbackEvents(): GlobePulseEvent[] {
   const protocols = ["SAT-ID", "SAT-IAM", "SAT-MFA", "SAT-SIG"];

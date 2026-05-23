@@ -4,6 +4,7 @@ import type { LatestAuthRecord } from "@/lib/authenticationFeed/types";
 import { protocolOpenAction } from "@/lib/authenticationFeed/protocolOpenBehavior";
 import { resolvePublicFeedJson } from "@/lib/authenticationFeed/feedClientResolve";
 import { FeedTurnstileGate } from "@/components/home/FeedTurnstileGate";
+import { useGlobeAuthFeedContext } from "@/contexts/GlobeAuthFeedContext";
 import { cn } from "@/components/ui/cn";
 import { IconSatSignal } from "@/components/ui/Icons";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -176,6 +177,7 @@ function readBatchPayload(json: Record<string, unknown>): {
 }
 
 export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: FeedVariant }) {
+  const globeAuthFeed = useGlobeAuthFeedContext();
   const ui = feedUi(variant);
   const isCompact = variant === "hero" || variant === "bento";
   const needsTurnstile = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim());
@@ -193,7 +195,6 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
   const [animationSpeedMs, setAnimationSpeedMs] = useState(400);
   const [isCatalogFallback, setIsCatalogFallback] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const bootRef = useRef(false);
   const nextCursorRef = useRef(0);
   const feedEnabledRef = useRef(true);
   const doneRef = useRef(false);
@@ -304,14 +305,16 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
 
   useEffect(() => {
     if (captchaToken === null) return;
-    if (bootRef.current) return;
-    bootRef.current = true;
+    let cancelled = false;
     const token = captchaToken === "ready" ? undefined : captchaToken;
     // Yield until App Router finishes hydration (avoids Next.js 16 action-queue races).
     const id = window.setTimeout(() => {
-      void startSession(token);
+      if (!cancelled) void startSession(token);
     }, 0);
-    return () => window.clearTimeout(id);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(id);
+    };
   }, [captchaToken, startSession]);
 
   const fetchBatch = useCallback(
@@ -367,6 +370,11 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
 
       const incoming = data.records ?? [];
       if (incoming.length) {
+        if (mode === "prepend") {
+          for (let i = incoming.length - 1; i >= 0; i -= 1) {
+            globeAuthFeed?.notifyNewAuth(incoming[i]!);
+          }
+        }
         setRecords((prev) => {
           if (mode === "prepend") {
             return [...incoming, ...prev].slice(0, maxVisibleRows(variant));
@@ -382,7 +390,7 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
 
       return true;
     },
-    [variant],
+    [variant, globeAuthFeed],
   );
 
   const fetchNext = useCallback(async () => {
@@ -440,11 +448,12 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
         t: new Date().toISOString(),
         x: `REF-${source.pl}-${catalogIndexRef.current}`,
       };
+      globeAuthFeed?.notifyNewAuth(row);
       setRecords((prev) => [row, ...prev].slice(0, maxVisibleRows(variant)));
     }, animationSpeedMs);
 
     return () => window.clearInterval(id);
-  }, [loading, isCatalogFallback, animationSpeedMs, variant]);
+  }, [loading, isCatalogFallback, animationSpeedMs, variant, globeAuthFeed]);
 
   useEffect(() => {
     if (loading || loadingMore || done || !feedEnabled) return;
@@ -555,9 +564,12 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
 
   if (!feedEnabled || records.length === 0) {
     return (
-      <div className={ui.empty}>
-        {hint ??
-          "Authentication feed will appear here when the database is configured and countries/protocols are seeded."}
+      <div className={ui.empty} role="status">
+        <p>{hint ?? "Authentication feed will appear here when the database is configured and countries/protocols are seeded."}</p>
+        <p className={cn("mt-2 opacity-80", ui.muted)}>
+          Local: run <code className="text-[0.95em]">npm run db:seed:local-latest-auth</code>, restart{" "}
+          <code className="text-[0.95em]">npm run dev</code>, then hard-refresh.
+        </p>
       </div>
     );
   }

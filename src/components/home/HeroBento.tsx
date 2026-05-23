@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { GlobeAuthFeedProvider } from "@/contexts/GlobeAuthFeedContext";
 import { KeyraHomeGlobe } from "@/components/home/KeyraHomeGlobe";
 import {
   HeroKeyraCtaGrid,
@@ -16,6 +17,7 @@ type HeroBentoProps = {
 
 export function HeroBento({ clientReady }: HeroBentoProps) {
   return (
+    <GlobeAuthFeedProvider>
     <section className="keyra-hero-bento relative overflow-hidden">
       <div className="keyra-hero-bento__bg pointer-events-none absolute inset-0" aria-hidden />
       <div
@@ -75,5 +77,6 @@ export function HeroBento({ clientReady }: HeroBentoProps) {
         </div>
       </div>
     </section>
+    </GlobeAuthFeedProvider>
   );
 }

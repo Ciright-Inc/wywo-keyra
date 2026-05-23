@@ -24,6 +24,8 @@
     "db:sync:simsecure": "node scripts/apply-keyra-migrations-simsecure.mjs",
     "db:seed": "prisma db seed",
     "db:seed:auth-feed": "tsx prisma/seedAuthenticationFeed.ts",
+    "db:seed:local-latest-auth": "tsx prisma/seedLocalLatestAuth.ts",
+    "db:check:feed": "tsx prisma/checkFeedDb.ts",
     "db:seed:deploy-catalog": "tsx prisma/seedDeployCatalog.ts",
     "db:seed:regions-countries": "tsx prisma/seedRegionsCountries.ts",
     "db:seed:admin-users": "tsx prisma/seedAdminUsers.ts",
