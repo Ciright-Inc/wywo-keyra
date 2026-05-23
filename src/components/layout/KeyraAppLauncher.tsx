@@ -165,7 +165,7 @@ export function KeyraAppLauncher() {
           </p>
           <div className="keyra-app-launcher-scroll-wrap min-h-0 flex-1 overflow-hidden">
             <ul
-              className="keyra-app-launcher-scroll grid h-full min-h-0 max-h-[min(28rem,calc(100dvh-9rem))] grid-cols-2 gap-2 overflow-y-auto overscroll-y-contain py-0.5 pl-1 pr-1.5 sm:grid-cols-3"
+              className="keyra-app-launcher-scroll grid h-full min-h-0 max-h-[min(28rem,calc(100dvh-9rem))] grid-cols-3 gap-2 overflow-y-auto overscroll-y-contain py-0.5 pl-1 pr-1.5"
               aria-busy={showSkeleton}
             >
             {showSkeleton ? (

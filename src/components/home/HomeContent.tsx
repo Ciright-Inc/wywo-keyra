@@ -18,7 +18,7 @@ import {
 import { keyraDeveloperPortalUrl, keyraGovernmentsUrl } from "@/lib/keyraAppUrls";
 
 const homeCard = "keyra-home-card keyra-home-card--lift px-6 py-5";
-const homeCardOnDark = "keyra-home-card keyra-surface-light px-6 py-5";
+const homeCardOnDark = "keyra-home-card keyra-home-card--lift px-6 py-5";
 const homeAudienceCard = "keyra-card keyra-home-card keyra-home-card--lift p-7 sm:p-8";
 
 export function HomeContent() {

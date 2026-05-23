@@ -428,18 +428,23 @@ body {
 }
 
 /* Light panels on dark bands — reset typography tokens so white cards stay readable */
-.keyra-band--dark .keyra-surface-light {
+.keyra-band--dark .keyra-surface-light,
+.keyra-band--dark .ds-feature-card.keyra-home-card {
   --keyra-primary: var(--color-ink);
   --keyra-text: var(--color-ink);
   --keyra-text-2: var(--color-body);
   --keyra-text-secondary: var(--color-body);
   --keyra-border: var(--color-hairline-strong);
+  --color-keyra-primary: var(--color-ink);
+  --color-keyra-text: var(--color-ink);
+  --color-keyra-text-2: var(--color-body);
   background: var(--color-canvas);
   color: var(--color-ink);
   border-color: var(--color-hairline-strong);
 }
 
-.keyra-band--dark .keyra-surface-light ::selection {
+.keyra-band--dark .keyra-surface-light ::selection,
+.keyra-band--dark .ds-feature-card.keyra-home-card ::selection {
   background: rgba(59, 130, 246, 0.28);
   color: var(--color-ink);
 }
@@ -684,17 +689,59 @@ body {
 }
 
 .keyra-site-footer__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   margin: 2rem 0 0;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 12px;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.42);
+}
+
+.keyra-site-footer__copyright {
+  margin: 0;
   text-align: center;
 }
 
+.keyra-site-footer__social {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.72);
+  transition:
+    color var(--keyra-motion-fast) var(--keyra-ease-out),
+    background-color var(--keyra-motion-fast) var(--keyra-ease-out),
+    border-color var(--keyra-motion-fast) var(--keyra-ease-out);
+}
+
+.keyra-site-footer__social:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.keyra-site-footer__social:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.keyra-site-footer__social-icon {
+  width: 1.375rem;
+  height: 1.375rem;
+  fill: currentColor;
+}
+
 @media (min-width: 640px) {
-  .keyra-site-footer__meta {
+  .keyra-site-footer__copyright {
     text-align: left;
   }
 }
