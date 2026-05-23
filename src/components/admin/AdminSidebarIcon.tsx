@@ -1,6 +1,7 @@
 type IconName =
   | "public"
   | "category"
+  | "footer"
   | "grid_view"
   | "layers"
   | "language"
@@ -40,6 +41,14 @@ function renderIcon(name: IconName) {
       return (
         <>
           <path d="M4 7h7v7H4zM13 7h7v4h-7zM13 13h7v7h-7zM4 16h7v4H4z" />
+        </>
+      );
+    case "footer":
+      return (
+        <>
+          <rect x="4" y="4" width="16" height="16" rx="1.5" />
+          <path d="M4 14h16" />
+          <path d="M7 17h3M14 17h3" />
         </>
       );
     case "grid_view":

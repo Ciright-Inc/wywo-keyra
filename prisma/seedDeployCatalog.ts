@@ -14,6 +14,8 @@
  * Skip world countries only (faster cold start): SKIP_WORLD_COUNTRIES_SEED=1
  * Skip deployment map (regions / countries / telcos): SKIP_DEPLOYMENT_GRAPH_SEED=1
  * Skip telco catalog import (541 operators from keyra-telcos-catalog.json): SKIP_TELCO_CATALOG_SEED=1
+ * Skip site footer seed: SKIP_SITE_FOOTER_SEED=1
+ * Force footer re-seed from JSON: FORCE_SITE_FOOTER_SEED=1
  */
 import { PrismaClient } from "@prisma/client";
 import { seedAdminUsers } from "./seedAdminUsers";
@@ -21,6 +23,7 @@ import { seedAuthenticationFeed } from "./seedAuthenticationFeed";
 import { seedDeploymentGraph } from "./seedDeploymentGraph";
 import { importKeyraTelcosFromCatalog } from "./importKeyraTelcos";
 import { seedWorldAuthenticationCountries } from "./seedWorldAuthenticationCountries";
+import { seedSiteFooter } from "./seedSiteFooter";
 
 async function isDeployCatalogPresent(prisma: PrismaClient): Promise<boolean> {
   const regionCount = await prisma.region.count();
@@ -80,6 +83,15 @@ async function main() {
     } else {
       const adminStats = await seedAdminUsers(prisma, { skipIfAnyExist: !force });
       console.info("[seedDeployCatalog] Admin users:", adminStats);
+    }
+
+    if (process.env.SKIP_SITE_FOOTER_SEED === "1") {
+      console.info("[seedDeployCatalog] SKIP_SITE_FOOTER_SEED=1 — site footer seed skipped.");
+    } else {
+      const footerStats = await seedSiteFooter(prisma, {
+        force: force || process.env.FORCE_SITE_FOOTER_SEED === "1",
+      });
+      console.info("[seedDeployCatalog] Site footer:", footerStats);
     }
   } finally {
     await prisma.$disconnect();

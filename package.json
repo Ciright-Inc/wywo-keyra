@@ -23,6 +23,7 @@
     "db:seed:deploy-catalog": "tsx prisma/seedDeployCatalog.ts",
     "db:seed:regions-countries": "tsx prisma/seedRegionsCountries.ts",
     "db:seed:admin-users": "tsx prisma/seedAdminUsers.ts",
+    "db:seed:site-footer": "tsx prisma/seedSiteFooter.ts",
     "db:seed:deployment-graph": "tsx prisma/seedDeploymentGraph.ts",
     "db:import:telcos": "tsx prisma/importKeyraTelcosFromXlsx.ts",
     "db:export:telcos-catalog": "tsx prisma/exportKeyraTelcosCatalog.ts",

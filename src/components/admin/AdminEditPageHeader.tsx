@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminNavGlyph } from "@/components/admin/AdminNavGlyph";
 import { adminBody, adminEditBackLink, adminPageTitle } from "@/lib/admin/adminUiClasses";
 
 type Props = {
@@ -16,9 +17,7 @@ export function AdminEditPageHeader({ title, subtitle, backHref, backLabel = "Ba
         {subtitle ? <p className={`${adminBody} mt-2 text-[var(--ds-body)]`}>{subtitle}</p> : null}
       </div>
       <Link href={backHref} className={adminEditBackLink}>
-        <span className="material-symbols-outlined text-[14px] leading-none no-underline" aria-hidden>
-          arrow_back
-        </span>
+        <AdminNavGlyph name="arrow_back" className="shrink-0" />
         {backLabel}
       </Link>
     </div>

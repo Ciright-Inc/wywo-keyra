@@ -7,12 +7,11 @@ export default async function NewDeploymentAppPage() {
   const categories = await listDeploymentAppCategoryViews();
 
   return (
-    <div className="max-w-3xl">
+    <div>
       <AdminEditPageHeader
         title="Create new app"
         subtitle="App directory"
         backHref="/admin/deployments/apps"
-        backLabel="Back to apps"
       />
 
       <div className={`${adminPanel} mt-6`}>

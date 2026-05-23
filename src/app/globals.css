@@ -745,6 +745,12 @@ body {
   text-align: center;
 }
 
+.keyra-site-footer__social-list {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .keyra-site-footer__social {
   display: inline-flex;
   flex-shrink: 0;
