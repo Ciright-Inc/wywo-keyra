@@ -9,6 +9,8 @@ type KeyraLogoProps = {
   variant?: "header" | "footer" | "inline";
   showWordmark?: boolean;
   wordmarkClassName?: string;
+  /** Override default logo asset (e.g. CMS footer settings). */
+  logoSrc?: string;
 };
 
 const variantHeights: Record<NonNullable<KeyraLogoProps["variant"]>, string> = {
@@ -22,8 +24,8 @@ export function KeyraLogo({
   variant = "header",
   showWordmark = true,
   wordmarkClassName = "",
+  logoSrc = KEYRA_LOGO_SRC,
 }: KeyraLogoProps) {
-  const logoSrc = KEYRA_LOGO_SRC;
   const wordmarkSize = variant === "footer" ? "text-sm" : "text-lg";
 
   return (

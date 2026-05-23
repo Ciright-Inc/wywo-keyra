@@ -90,12 +90,22 @@ export function keyraPartnersUrl(): string {
   return trimSlash(process.env.NEXT_PUBLIC_PARTNERS_URL?.trim() || "https://partners.keyra.ie");
 }
 
+/** Canonical marketing origin for public CMS APIs (footer, etc.). */
+export function keyraMarketingPublicOrigin(): string {
+  return trimSlash(
+    process.env.NEXT_PUBLIC_KEYRA_MARKETING_ORIGIN?.trim() ||
+      process.env.NEXT_PUBLIC_KEYRA_SITE_URL?.trim() ||
+      process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+      "https://keyra.ie",
+  );
+}
+
 /** This marketing site (e.g. https://keyra.ie or http://localhost:3030). */
 export function keyraMarketingOrigin(): string {
   return trimSlash(
     process.env.NEXT_PUBLIC_KEYRA_SITE_URL?.trim() ||
       process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-      "https://keyra.ie",
+      keyraMarketingPublicOrigin(),
   );
 }
 

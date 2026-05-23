@@ -12,27 +12,27 @@ const CTA_ITEMS: {
 }[] = [
   {
     key: "individual",
-    title: "Protect Your Identity",
+    title: "Protect Your Account",
     description:
-      "Secure your personal identity, mobile device, and digital presence with Keyra.",
+      "Consent-driven identity verification with minimal exposure across your digital life.",
   },
   {
     key: "family",
     title: "Protect Your Family",
     description:
-      "Create a protected family identity registry for every family member.",
+      "Shared protection and trusted recovery for the people closest to you.",
   },
   {
     key: "organization",
-    title: "Secure Your Organization",
+    title: "Guard Your Enterprise",
     description:
-      "Protect your company domains, employees, mobile numbers, and trusted access.",
+      "Infrastructure-grade trust for teams, systems, and organizational continuity.",
   },
   {
     key: "partner",
-    title: "Partner With Keyra",
+    title: "Join Us And Build The Future Of Trust",
     description:
-      "Join Keyra as a telecom, government, enterprise, channel, or strategic partner.",
+      "Privacy-first infrastructure for a more responsible digital future.",
   },
 ];
 

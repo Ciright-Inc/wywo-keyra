@@ -39,16 +39,17 @@ export default function SignupPage() {
               <Link href="/onboarding/verify" className="block">
                 <Button className="w-full">Continue</Button>
               </Link>
-              <p className="mt-3 text-center text-[14px] text-keyra-text-2">
-                By continuing, you agree to our{" "}
-                <Link href="/terms" className="text-keyra-primary underline">
-                  Terms
+              <p className="mt-3 text-center text-[13px] leading-relaxed text-keyra-text-2">
+                By continuing, you agree to the{" "}
+                <Link href="/terms" className="text-keyra-text-2 underline underline-offset-2 hover:text-keyra-primary">
+                  Keyra Terms
                 </Link>{" "}
                 and{" "}
-                <Link href="/privacy" className="text-keyra-primary underline">
-                  Privacy
+                <Link href="/privacy" className="text-keyra-text-2 underline underline-offset-2 hover:text-keyra-primary">
+                  Privacy Principles
                 </Link>
-                .
+                , and acknowledge that trusted digital systems require informed participation
+                and shared responsibility.
               </p>
             </div>
           </form>

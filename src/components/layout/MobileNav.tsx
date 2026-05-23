@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { KEYRA_HEADER_ACTION_MENU_ICON } from "./headerActionClasses";
-import { buildGetStartedAccessUrl, keyraDeveloperPortalUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
-import { usePathname, useRouter } from "next/navigation";
+import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
+import { useGetStartedAccessHref } from "@/lib/useGetStartedAccessHref";
+import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { useClientReady } from "@/lib/useClientReady";
 
@@ -46,17 +47,7 @@ export function MobileNav() {
   const { user, logout } = useKeyraSession();
   const router = useRouter();
   const clientReady = useClientReady();
-  const pathname = usePathname();
-  const accessHref = useMemo(() => {
-    if (typeof window !== "undefined") {
-      return buildGetStartedAccessUrl(
-        `${window.location.origin}${pathname}${window.location.search || ""}`,
-      );
-    }
-    const base = keyraMarketingOrigin();
-    const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
-    return buildGetStartedAccessUrl(`${base}${path}`);
-  }, [pathname]);
+  const accessHref = useGetStartedAccessHref();
   const links = useMemo(() => buildLinks(), []);
 
   useEffect(() => {

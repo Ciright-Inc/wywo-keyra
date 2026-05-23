@@ -1,11 +1,34 @@
 "use client";
 
-import type { ComponentType } from "react";
-import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useGlobeAuthFeedPulses } from "@/hooks/useGlobeAuthFeedPulses";
 import { useGlobePulseBatch } from "@/hooks/useGlobePulseBatch";
 import { useGlobePulseEvents } from "@/hooks/useGlobePulseEvents";
-import type { KeyraRealisticGlobeSceneProps } from "@/components/home/globe/KeyraRealisticGlobeScene";
+
+function isChunkLoadError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  return err.name === "ChunkLoadError" || /loading chunk/i.test(err.message);
+}
+
+/** Retry dynamic import once after dev HMR / dev:clean invalidates old chunk URLs. */
+function importGlobeScene() {
+  const load = () =>
+    import("@/components/home/globe/KeyraRealisticGlobeScene").then((m) => m.default);
+
+  return load().catch((err) => {
+    if (!isChunkLoadError(err)) throw err;
+    return new Promise<Awaited<ReturnType<typeof load>>>((resolve, reject) => {
+      window.setTimeout(() => {
+        load().then(resolve).catch(reject);
+      }, 400);
+    });
+  });
+}
+
+const KeyraRealisticGlobeScene = dynamic(() => importGlobeScene(), {
+  ssr: false,
+  loading: () => <div className="h-full w-full min-h-[160px] bg-[#fafafa]" aria-hidden />,
+});
 
 type KeyraHomeGlobeProps = {
   className?: string;
@@ -28,17 +51,6 @@ export function KeyraHomeGlobe({
   const { activePulses, activeLinks } = authFeedPulses.synced
     ? authFeedPulses
     : randomPulses;
-  const [Scene, setScene] = useState<ComponentType<KeyraRealisticGlobeSceneProps> | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    void import("@/components/home/globe/KeyraRealisticGlobeScene").then((mod) => {
-      if (!cancelled) setScene(() => mod.default);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   return (
     <div
@@ -47,11 +59,11 @@ export function KeyraHomeGlobe({
       aria-label={ariaLabel ?? "Photorealistic Earth globe with live verification signals"}
       suppressHydrationWarning
     >
-      {Scene ? (
-        <Scene opaque={opaque} activePulses={activePulses} activeLinks={activeLinks} />
-      ) : (
-        <div className="h-full w-full min-h-[160px] bg-[#fafafa]" aria-hidden />
-      )}
+      <KeyraRealisticGlobeScene
+        opaque={opaque}
+        activePulses={activePulses}
+        activeLinks={activeLinks}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
-import { fetchSiteFooter, type SiteFooterLink, type SiteFooterSocialLink } from "@/lib/siteFooter";
+import type { SiteFooterLink, SiteFooterPayload, SiteFooterSocialLink } from "@/lib/siteFooter";
 
 function linkTitle(link: SiteFooterLink): string | undefined {
   return link.description ? `${link.label} — ${link.description}` : undefined;
@@ -92,8 +92,8 @@ function FooterSocialLinkItem({ link }: { link: SiteFooterSocialLink }) {
   );
 }
 
-export async function SiteFooter() {
-  const { settings, onThisSiteLinks, keyraAppLinks, socialLinks } = await fetchSiteFooter();
+export function SiteFooterContent({ data }: { data: SiteFooterPayload }) {
+  const { settings, onThisSiteLinks, keyraAppLinks, socialLinks } = data;
   const year = new Date().getFullYear();
 
   return (

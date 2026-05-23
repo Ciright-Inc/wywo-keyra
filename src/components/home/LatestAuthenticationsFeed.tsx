@@ -85,6 +85,9 @@ const ROW_EST = 40;
 const SESSION_FETCH_MS = 12_000;
 const LIVE_BATCH_LIMIT = 1;
 const CATALOG_TICK_MS = 1_800;
+/** Floor for live poll interval — avoids hammering batch API / rate limits. */
+const LIVE_POLL_MIN_MS = 1_200;
+const RATE_LIMIT_BACKOFF_MS = 30_000;
 
 function maxVisibleRows(variant: FeedVariant) {
   if (variant === "bento") return 10;
@@ -199,6 +202,7 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
   const feedEnabledRef = useRef(true);
   const doneRef = useRef(false);
   const livePollRef = useRef(false);
+  const rateLimitUntilRef = useRef(0);
   const catalogPoolRef = useRef<LatestAuthRecord[]>([]);
   const catalogIndexRef = useRef(0);
 
@@ -334,65 +338,76 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
       const params = new URLSearchParams({ cursor: String(cursor) });
       if (limit != null && limit >= 1) params.set("limit", String(limit));
 
-      const res = await fetch(`/api/keyra/latest-authentications/batch?${params}`, {
-        credentials: "include",
-        cache: "no-store",
-      });
-      const rawUnknown: unknown = await res.json();
-
-      if (res.status === 401) return false;
-
-      if (!res.ok) {
-        const err =
-          typeof rawUnknown === "object" &&
-          rawUnknown !== null &&
-          "error" in rawUnknown &&
-          typeof (rawUnknown as { error?: string }).error === "string"
-            ? (rawUnknown as { error: string }).error
-            : "Batch failed.";
-        setHint(err);
-        setDone(true);
-        doneRef.current = true;
-        return false;
-      }
-
-      const resolved = await resolvePublicFeedJson(rawUnknown, "batch");
-      if (!resolved.ok) {
-        setHint(resolved.error);
-        setDone(true);
-        doneRef.current = true;
-        return false;
-      }
-
-      const data = readBatchPayload(resolved.json);
-      if (!data) {
-        setHint("Invalid batch payload.");
-        setDone(true);
-        doneRef.current = true;
-        return false;
-      }
-
-      if (data.done) {
-        setDone(true);
-        doneRef.current = true;
-      }
-
-      const incoming = data.records ?? [];
-      if (incoming.length) {
-        setRecords((prev) => {
-          if (mode === "prepend") {
-            return [...incoming, ...prev].slice(0, maxVisibleRows(variant));
-          }
-          return [...prev, ...incoming];
+      try {
+        const res = await fetch(`/api/keyra/latest-authentications/batch?${params}`, {
+          credentials: "include",
+          cache: "no-store",
         });
-      }
+        const rawUnknown: unknown = await res.json();
 
-      if (typeof data.nextCursor === "number") {
-        setNextCursor(data.nextCursor);
-        nextCursorRef.current = data.nextCursor;
-      }
+        if (res.status === 401) return false;
 
-      return true;
+        if (res.status === 429) {
+          rateLimitUntilRef.current = Date.now() + RATE_LIMIT_BACKOFF_MS;
+          setHint("Feed paused briefly (too many requests). Resuming shortly.");
+          return false;
+        }
+
+        if (!res.ok) {
+          const err =
+            typeof rawUnknown === "object" &&
+            rawUnknown !== null &&
+            "error" in rawUnknown &&
+            typeof (rawUnknown as { error?: string }).error === "string"
+              ? (rawUnknown as { error: string }).error
+              : "Batch failed.";
+          setHint(err);
+          setDone(true);
+          doneRef.current = true;
+          return false;
+        }
+
+        const resolved = await resolvePublicFeedJson(rawUnknown, "batch");
+        if (!resolved.ok) {
+          setHint(resolved.error);
+          setDone(true);
+          doneRef.current = true;
+          return false;
+        }
+
+        const data = readBatchPayload(resolved.json);
+        if (!data) {
+          setHint("Invalid batch payload.");
+          setDone(true);
+          doneRef.current = true;
+          return false;
+        }
+
+        if (data.done) {
+          setDone(true);
+          doneRef.current = true;
+        }
+
+        const incoming = data.records ?? [];
+        if (incoming.length) {
+          setRecords((prev) => {
+            if (mode === "prepend") {
+              return [...incoming, ...prev].slice(0, maxVisibleRows(variant));
+            }
+            return [...prev, ...incoming];
+          });
+        }
+
+        if (typeof data.nextCursor === "number") {
+          setNextCursor(data.nextCursor);
+          nextCursorRef.current = data.nextCursor;
+        }
+
+        return true;
+      } catch {
+        setHint("Network error loading authentication feed.");
+        return false;
+      }
     },
     [variant],
   );
@@ -409,6 +424,7 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
 
   const fetchLiveTick = useCallback(async () => {
     if (livePollRef.current || loading || !feedEnabledRef.current || doneRef.current) return;
+    if (Date.now() < rateLimitUntilRef.current) return;
     const cursor = nextCursorRef.current;
     if (cursor < 1) return;
 
@@ -430,7 +446,9 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
     const reducedMotion =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const intervalMs = reducedMotion ? Math.max(animationSpeedMs * 4, 2000) : animationSpeedMs;
+    const intervalMs = reducedMotion
+      ? Math.max(animationSpeedMs * 4, 2000)
+      : Math.max(animationSpeedMs, LIVE_POLL_MIN_MS);
 
     const id = window.setInterval(() => {
       void fetchLiveTick();

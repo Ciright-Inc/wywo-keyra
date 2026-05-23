@@ -21,7 +21,9 @@ export async function GET(req: Request) {
   const blocked = feedBrowserGuard(req);
   if (blocked) return blocked;
 
-  const limited = rateLimitResponse(req, "keyra-latest-auth-batch");
+  // Live ticker polls ~every animationSpeedMs (often 400ms); default 24/15m was far too low.
+  const batchLimit = process.env.NODE_ENV === "development" ? 5000 : 2500;
+  const limited = rateLimitResponse(req, "keyra-latest-auth-batch", batchLimit);
   if (limited) return limited;
 
   if (!isPostgresDatabaseUrlConfigured()) {

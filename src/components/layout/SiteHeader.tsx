@@ -7,7 +7,8 @@ import { KeyraAppLauncher } from "./KeyraAppLauncher";
 import { MobileNav } from "./MobileNav";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
-import { buildGetStartedAccessUrl, keyraDeveloperPortalUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
+import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
+import { useGetStartedAccessHref } from "@/lib/useGetStartedAccessHref";
 import { useMemo, useEffect, useState } from "react";
 import { KEYRA_HEADER_ACTION_ACCESS } from "./headerActionClasses";
 
@@ -37,16 +38,7 @@ export function SiteHeader() {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-  const accessHref = useMemo(() => {
-    if (typeof window !== "undefined") {
-      return buildGetStartedAccessUrl(
-        `${window.location.origin}${pathname}${window.location.search || ""}`,
-      );
-    }
-    const base = keyraMarketingOrigin();
-    const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
-    return buildGetStartedAccessUrl(`${base}${path}`);
-  }, [pathname]);
+  const accessHref = useGetStartedAccessHref();
   const isAdminRoute = pathname.startsWith("/admin");
   const isAdminLoginRoute = pathname.startsWith("/admin/login");
   const isProtectedAdminRoute = isAdminRoute && !isAdminLoginRoute;

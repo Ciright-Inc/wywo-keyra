@@ -3,7 +3,8 @@ import { Inter, Montserrat } from "next/font/google";
 import { cookies, headers } from "next/headers";
 import "./globals.css";
 import { KeyraAppChrome } from "@/components/layout/KeyraAppChrome";
-import { SiteFooter } from "@/components/layout/SiteFooter";
+import { SiteFooterLive } from "@/components/layout/SiteFooterLive";
+import { fetchSiteFooter } from "@/lib/siteFooter";
 import { KeyraSessionProvider } from "@/contexts/KeyraSessionContext";
 import {
   KEYRA_SESSION_COOKIE,
@@ -72,6 +73,7 @@ export default async function RootLayout({
 
   const hdrs = await headers();
   const designLane = parseKeyraDesignLaneHeader(hdrs.get(LANE_HEADER));
+  const footerData = await fetchSiteFooter();
 
   return (
     <html
@@ -108,7 +110,8 @@ export default async function RootLayout({
       >
         <ToastProvider>
           <KeyraSessionProvider initialUser={initialUser}>
-            <KeyraAppChrome footer={<SiteFooter />}>{children}</KeyraAppChrome>
+            <KeyraAppChrome>{children}</KeyraAppChrome>
+            <SiteFooterLive initialData={footerData} />
           </KeyraSessionProvider>
         </ToastProvider>
       </body>

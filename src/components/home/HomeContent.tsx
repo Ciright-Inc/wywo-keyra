@@ -1,8 +1,8 @@
 "use client";
 
 import { HeroBento } from "@/components/home/HeroBento";
-import { FadeIn } from "@/components/motion/FadeIn";
-import { HoverLift } from "@/components/motion/HoverLift";
+import { TrustJourneySections } from "@/components/home/trust/TrustJourneySections";
+import { TrustTransparency } from "@/components/home/trust/TrustTransparency";
 import { useClientReady } from "@/lib/useClientReady";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -28,6 +28,9 @@ export function HomeContent() {
     <>
       {/* SECTION 1 — HERO (premium bento grid) */}
       <HeroBento clientReady={clientReady} />
+
+      {/* TRUST JOURNEY — interactive cards expand into anchored deep-dives */}
+      <TrustJourneySections />
 
       {/* SECTION 2 — THE COLLAPSE */}
       <NarrativeSection
@@ -213,29 +216,8 @@ export function HomeContent() {
         </a>
       </NarrativeSection>
 
-      {/* SECTION 11 — FINAL STATEMENT */}
-      <section
-        id="get-protected"
-        className="keyra-section relative scroll-mt-[var(--keyra-header-offset)]"
-        style={{ background: "linear-gradient(to bottom, #f0f2f5, #e8eaf0)" }}
-        aria-labelledby="finale-heading"
-      >
-        <div className="mx-auto max-w-4xl relative">
-          <FadeIn>
-            <HoverLift>
-              <div className="keyra-finale-card overflow-hidden rounded-[32px] border-[rgba(255,255,255,0.9)] bg-white px-5 py-10 text-center shadow-[0_32px_80px_rgba(0,0,0,0.12),0_16px_40px_rgba(0,0,0,0.08)] sm:px-12 sm:py-14 md:px-16">
-                <p className="keyra-eyebrow">Final statement</p>
-                <h2 id="finale-heading" className="keyra-display-finale mx-auto mt-4 max-w-[18ch] text-balance">
-                  Be Protected Online.
-                </h2>
-                <p className="mx-auto mt-6 max-w-xl text-pretty text-[16px] leading-[1.65] text-keyra-text-2 sm:text-[17px]">
-                  Civilization-grade trust — rendered as calm infrastructure. Keyra is how the internet keeps its promises.
-                </p>
-              </div>
-            </HoverLift>
-          </FadeIn>
-        </div>
-      </section>
+      {/* TRUST TRANSPARENCY — calm responsibility positioning */}
+      <TrustTransparency />
     </>
   );
 }
