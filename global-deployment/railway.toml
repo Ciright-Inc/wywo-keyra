@@ -1,9 +1,0 @@
-# Railway — deploy as a separate service in the same project as Keyra Postgres.
-
-[build]
-builder = "nixpacks"
-
-[deploy]
-startCommand = "npm run start"
-healthcheckPath = "/"
-healthcheckTimeout = 120
