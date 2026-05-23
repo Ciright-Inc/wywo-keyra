@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { FadeIn } from "@/components/motion/FadeIn";
-import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 
 export const metadata: Metadata = {
   title: "How It Works",
@@ -63,9 +62,9 @@ export default function HowItWorksPage() {
 
         <FadeIn className="mt-12 text-center">
           <p className="font-medium text-keyra-primary">Be Protected Online.</p>
-          <Link href="/#get-protected" className="mt-4 inline-flex">
-            <Button>Protect Your Identity</Button>
-          </Link>
+          <ButtonLink href="/#get-protected" className="mt-4">
+            Protect Your Identity
+          </ButtonLink>
         </FadeIn>
       </div>
     </div>

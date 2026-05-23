@@ -15,7 +15,7 @@ export async function GET(req: Request) {
   }
 
   const countries = await prisma.authenticationCountry.findMany({
-    where: { active: true },
+    where: { active: true, authenticationEnabled: true },
     orderBy: [{ displayPriority: "desc" }, { countryName: "asc" }],
     select: {
       iso2: true,

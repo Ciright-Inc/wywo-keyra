@@ -9,6 +9,7 @@ import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
 import { useGetStartedAccessHref } from "@/lib/useGetStartedAccessHref";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 import { useClientReady } from "@/lib/useClientReady";
 
 type NavLink = { href: string; label: string; external?: boolean };
@@ -123,6 +124,7 @@ export function MobileNav() {
                   <li>
                     <a
                       href={accessHref}
+                      {...NEW_TAB_LINK}
                       onClick={() => setOpen(false)}
                       className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-accent transition-colors duration-150 active:bg-keyra-surface hover:bg-keyra-surface"
                     >

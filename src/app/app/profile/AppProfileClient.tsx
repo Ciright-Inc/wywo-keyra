@@ -7,9 +7,9 @@ import {
   regLabel,
 } from "@/components/registration/registrationPrimitives";
 import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { formatPhoneDisplay } from "@/lib/keyraSessionDisplay";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -197,11 +197,9 @@ export function AppProfileClient({ countryOnly }: AppProfileClientProps) {
             <Button type="submit" disabled={pending || !canSave}>
               {pending ? "Saving…" : countryOnly ? "Save country" : "Save profile"}
             </Button>
-            <Link href={countryOnly ? "/" : "/app"} className="inline-flex">
-              <Button type="button" variant="secondary">
-                {countryOnly ? "Back to home" : "Back to overview"}
-              </Button>
-            </Link>
+            <ButtonLink href={countryOnly ? "/" : "/app"} variant="secondary">
+              {countryOnly ? "Back to home" : "Back to overview"}
+            </ButtonLink>
           </div>
 
           {saved ? (

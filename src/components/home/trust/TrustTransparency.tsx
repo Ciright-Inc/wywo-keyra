@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FadeIn } from "@/components/motion/FadeIn";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 import { TRUST_PRINCIPLES } from "@/lib/trustJourney";
 import { AccessKeyraButton } from "./AccessKeyraButton";
 
@@ -14,7 +15,7 @@ export function TrustTransparency() {
     >
       <div className="mx-auto w-full min-w-0 max-w-5xl px-0 sm:px-2">
         <FadeIn>
-          <article className="keyra-home-panel keyra-trust-transparency-panel mx-auto w-full">
+          <article className="keyra-home-panel keyra-trust-transparency-panel keyra-trust-panel--soft mx-auto w-full">
             <div className="keyra-trust-transparency-panel__body">
               <header className="keyra-trust-transparency-panel__header">
                 <p className="keyra-trust-transparency-panel__eyebrow">Trust &amp; responsibility</p>
@@ -57,11 +58,11 @@ export function TrustTransparency() {
             <footer className="keyra-trust-transparency-panel__footer">
               <p className="keyra-trust-transparency__terms text-pretty">
                 By continuing, you agree to the{" "}
-                <Link href="/terms" className="keyra-trust-transparency__link">
+                <Link href="/terms" {...NEW_TAB_LINK} className="keyra-trust-transparency__link">
                   Keyra Terms
                 </Link>{" "}
                 and{" "}
-                <Link href="/privacy" className="keyra-trust-transparency__link">
+                <Link href="/privacy" {...NEW_TAB_LINK} className="keyra-trust-transparency__link">
                   Privacy Principles
                 </Link>
                 , and acknowledge that trusted digital systems require informed participation and

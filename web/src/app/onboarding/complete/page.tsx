@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { IconShieldCheck } from "@/components/ui/Icons";
 
@@ -22,12 +21,10 @@ export default function OnboardingCompletePage() {
             icon={<IconShieldCheck className="h-5 w-5" />}
           />
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/app" className="inline-flex">
-              <Button>Go to dashboard</Button>
-            </Link>
-            <Link href="/app/family" className="inline-flex">
-              <Button variant="secondary">Add your family</Button>
-            </Link>
+            <ButtonLink href="/app">Go to dashboard</ButtonLink>
+            <ButtonLink href="/app/family" variant="secondary">
+              Add your family
+            </ButtonLink>
           </div>
         </Card>
       </div>

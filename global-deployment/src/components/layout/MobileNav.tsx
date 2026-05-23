@@ -109,6 +109,8 @@ export function MobileNav() {
                   <li>
                     <a
                       href={accessHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onClick={() => setOpen(false)}
                       className="block rounded-lg px-3 py-2.5 text-sm font-medium text-keyra-accent hover:bg-keyra-surface"
                     >

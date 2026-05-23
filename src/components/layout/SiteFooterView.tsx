@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { KEYRA_LOGO_SRC } from "@/lib/keyraBrandAssets";
 import { SocialPlatformIcon } from "@/lib/siteFooter/socialIcons";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 import type { SiteFooterConfig, SiteFooterLinkView } from "@/lib/siteFooter/types";
 
 function FooterLinkItem({ link }: { link: SiteFooterLinkView }) {
@@ -12,6 +13,7 @@ function FooterLinkItem({ link }: { link: SiteFooterLinkView }) {
       {useInternal ? (
         <Link
           href={link.internalPath!}
+          {...NEW_TAB_LINK}
           className="keyra-site-footer__link"
           title={link.description ? `${link.label} — ${link.description}` : link.label}
         >
@@ -31,6 +33,7 @@ function FooterLinkItem({ link }: { link: SiteFooterLinkView }) {
       ) : (
         <Link
           href={link.href}
+          {...NEW_TAB_LINK}
           className="keyra-site-footer__link"
           title={link.description ? `${link.label} — ${link.description}` : link.label}
         >

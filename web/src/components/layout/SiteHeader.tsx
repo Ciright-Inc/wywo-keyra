@@ -7,6 +7,7 @@ import { MobileNav } from "./MobileNav";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 import { useMemo } from "react";
 
 type NavItem = { href: string; label: string; external?: boolean };
@@ -81,6 +82,7 @@ export function SiteHeader() {
               <>
                 <Link
                   href="/login"
+                  {...NEW_TAB_LINK}
                   className="flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-xs font-medium leading-none text-keyra-accent transition-colors duration-150 ease-out active:bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-3 sm:text-sm"
                 >
                   Sign in
@@ -88,7 +90,7 @@ export function SiteHeader() {
                 <div className="my-1.5 w-px shrink-0 self-stretch bg-keyra-border" aria-hidden />
               </>
             ) : null}
-            <Link href="/#get-protected" className="inline-flex min-w-0 shrink-0">
+            <Link href="/#get-protected" {...NEW_TAB_LINK} className="inline-flex min-w-0 shrink-0">
               <span className="flex items-center whitespace-nowrap rounded-[var(--keyra-radius-pill)] bg-[var(--keyra-action)] px-2 py-2 text-xs font-medium leading-none text-keyra-primary ring-1 ring-[var(--keyra-action-border)] transition-colors duration-150 ease-out active:bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.05)] sm:px-3 sm:text-sm">
                 <span className="sm:hidden">Get protected</span>
                 <span className="hidden sm:inline">Be Protected Online</span>

@@ -73,6 +73,8 @@ export function SiteHeader() {
           >
             <a
               href={accessHref}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-xs font-medium leading-none text-keyra-accent transition duration-300 ease-out hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-3 sm:text-sm"
             >
               Access
@@ -80,6 +82,7 @@ export function SiteHeader() {
             <div className="my-1.5 w-px shrink-0 self-stretch bg-keyra-border" aria-hidden />
             <a
               href={`${marketing}/#get-protected`}
+              target="_blank"
               className="inline-flex min-w-0 shrink-0"
               rel="noopener noreferrer"
             >

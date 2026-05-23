@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
@@ -57,9 +57,9 @@ export default function SettingsPage() {
             <p>Family protection: On</p>
           </div>
           <div className="mt-6">
-            <Link href="/app" className="inline-flex">
-              <Button variant="secondary">View protection</Button>
-            </Link>
+            <ButtonLink href="/app" variant="secondary">
+              View protection
+            </ButtonLink>
           </div>
         </Card>
       </div>

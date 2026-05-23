@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { IconDevices, IconShieldCheck } from "@/components/ui/Icons";
 
@@ -19,9 +18,7 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link href="/verify" className="inline-flex">
-            <Button>Verify now</Button>
-          </Link>
+          <ButtonLink href="/verify">Verify now</ButtonLink>
         </div>
       </div>
 
@@ -63,9 +60,9 @@ export default function DashboardPage() {
             </li>
           </ul>
           <div className="mt-6">
-            <Link href="/app/settings" className="inline-flex">
-              <Button variant="secondary">Manage devices</Button>
-            </Link>
+            <ButtonLink href="/app/settings" variant="secondary">
+              Manage devices
+            </ButtonLink>
           </div>
         </Card>
       </div>
@@ -81,9 +78,9 @@ export default function DashboardPage() {
             simple.
           </p>
           <div className="mt-6">
-            <Link href="/app/family" className="inline-flex">
-              <Button variant="secondary">Open family view</Button>
-            </Link>
+            <ButtonLink href="/app/family" variant="secondary">
+              Open family view
+            </ButtonLink>
           </div>
         </Card>
 
