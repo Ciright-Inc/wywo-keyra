@@ -95,7 +95,7 @@ export function KeyraAppLauncher() {
     })
       .then((res) => (res.ok ? res.json() : null))
       .then((data: { apps?: LauncherApp[] } | null) => {
-        if (Array.isArray(data?.apps) && data.apps.length > 0) {
+        if (Array.isArray(data?.apps)) {
           setApps(data.apps);
           return;
         }

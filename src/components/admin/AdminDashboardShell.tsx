@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { AdminConfirmProvider } from "@/components/admin/AdminConfirmProvider";
 import { AdminRouteToast } from "@/components/admin/AdminRouteToast";
 import { AdminShellMainContent } from "@/components/admin/AdminShellMainContent";
+import { AdminSignOutButton } from "@/components/admin/AdminSignOutButton";
 import { AdminSidebarIcon } from "@/components/admin/AdminSidebarIcon";
 import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
 import { useAdminShellNavigation } from "@/lib/admin/useAdminShellNavigation";
@@ -139,7 +140,10 @@ export function AdminDashboardShell({ children }: { children: ReactNode }) {
 
         <div className="admin-dashboard__main">
           <header className="ds-topbar">
-            <p className="ds-topbar__title">{topbarTitle}</p>
+            <div className="ds-topbar__meta">
+              <p className="ds-topbar__eyebrow">Keyra admin</p>
+              <p className="ds-topbar__title">{topbarTitle}</p>
+            </div>
             <div className="ds-topbar__actions">
               <AdminTransitionLink
                 href="/global-deployment"
@@ -149,6 +153,7 @@ export function AdminDashboardShell({ children }: { children: ReactNode }) {
               >
                 Public explorer
               </AdminTransitionLink>
+              <AdminSignOutButton />
             </div>
           </header>
 

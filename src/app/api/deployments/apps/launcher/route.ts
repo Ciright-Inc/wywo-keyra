@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listDeploymentApps, toDeploymentAppView } from "@/lib/deploymentApps";
+import { listDeploymentLauncherApps, toDeploymentAppView } from "@/lib/deploymentApps";
 import { getKeyraAdminAppLinks } from "@/lib/keyraAppUrls";
 import { isPostgresDatabaseUrlConfigured } from "@/lib/postgresEnv";
 
@@ -34,13 +34,13 @@ function launcherAppsFromStaticLinks() {
   }));
 }
 
-/** Public read-only app list for the 9-dot launcher (non-private apps only). */
+/** Public read-only app list for the 9-dot launcher (active + non-private apps only). */
 export async function GET(req: Request) {
   let apps = launcherAppsFromStaticLinks();
 
   if (isPostgresDatabaseUrlConfigured()) {
     try {
-      apps = (await listDeploymentApps({ includePrivate: false })).map((app) => {
+      apps = (await listDeploymentLauncherApps()).map((app) => {
         const view = toDeploymentAppView(app);
         return {
           id: view.id,

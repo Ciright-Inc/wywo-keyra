@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import type { FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { AdminFormField } from "@/components/admin/AdminFormField";
@@ -24,6 +24,7 @@ import {
   adminSectionTitle,
 } from "@/lib/admin/adminUiClasses";
 import { cn } from "@/components/ui/cn";
+import { saveDeploymentAppAction } from "./actions";
 
 type Props = {
   mode: "create" | "edit";
@@ -38,6 +39,15 @@ function sortCategories(categories: DeploymentAppCategoryView[]): DeploymentAppC
   );
 }
 
+function defaultCategorySection(
+  app: DeploymentAppView | undefined,
+  categories: DeploymentAppCategoryView[],
+): string {
+  if (app?.section) return app.section;
+  const sorted = sortCategories(categories);
+  return sorted[0]?.name ?? "";
+}
+
 export function AppForm({ mode, app, categories, headerAside }: Props) {
   const router = useRouter();
   const toast = useToast();
@@ -46,10 +56,11 @@ export function AppForm({ mode, app, categories, headerAside }: Props) {
   const [href, setHref] = useState(app?.href ?? "");
   const [gensparkUrl, setGensparkUrl] = useState(app?.gensparkUrl ?? "");
   const [temporaryUrl, setTemporaryUrl] = useState(app?.temporaryUrl ?? "");
-  const [section, setSection] = useState(app?.section ?? "");
+  const [section, setSection] = useState(() => defaultCategorySection(app, categories));
   const [categoryList, setCategoryList] = useState(() => sortCategories(categories));
   const [manageCategoriesOpen, setManageCategoriesOpen] = useState(false);
   const [isPrivate, setIsPrivate] = useState(app?.isPrivate ?? false);
+  const [isActive, setIsActive] = useState(app?.isActive ?? true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -63,6 +74,12 @@ export function AppForm({ mode, app, categories, headerAside }: Props) {
     }
     return sortCategories(Array.from(byName.values()));
   }, [categoryList, app?.section]);
+
+  useEffect(() => {
+    if (mode !== "edit" || !app) return;
+    setIsActive(app.isActive);
+    setIsPrivate(app.isPrivate);
+  }, [app?.id, app?.isActive, app?.isPrivate, mode]);
 
   function handleCategoriesChange(nextCategories: DeploymentAppCategoryView[], nextSelected?: string) {
     setCategoryList(sortCategories(nextCategories));
@@ -82,30 +99,23 @@ export function AppForm({ mode, app, categories, headerAside }: Props) {
       return;
     }
 
-    const endpoint =
-      mode === "edit" && app
-        ? `/api/admin/deployments/apps/${encodeURIComponent(app.id)}`
-        : "/api/admin/deployments/apps";
-    const res = await fetch(endpoint, {
-      method: mode === "edit" ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        label,
-        description,
-        href,
-        gensparkUrl: gensparkUrl.trim() || null,
-        temporaryUrl: temporaryUrl.trim() || null,
-        section: resolvedSection,
-        isPrivate,
-      }),
+    const result = await saveDeploymentAppAction({
+      mode,
+      appId: app?.id,
+      label,
+      description,
+      href,
+      gensparkUrl: gensparkUrl.trim() || null,
+      temporaryUrl: temporaryUrl.trim() || null,
+      section: resolvedSection,
+      isPrivate,
+      isActive,
+      ...(mode === "edit" && app ? { sortOrder: app.sortOrder } : {}),
     });
-
-    const data = (await res.json().catch(() => null)) as { error?: string } | null;
     setSaving(false);
 
-    if (!res.ok) {
-      setError(data?.error ?? "Unable to save app.");
+    if ("error" in result) {
+      setError(result.error);
       return;
     }
 
@@ -238,13 +248,28 @@ export function AppForm({ mode, app, categories, headerAside }: Props) {
           <input
             type="checkbox"
             className={`${adminCheckbox} mt-0.5`}
+            checked={isActive}
+            onChange={(event) => setIsActive(event.target.checked)}
+          />
+          <span>
+            <span className="block font-medium text-[var(--ds-ink)]">Active</span>
+            <span className={`${adminBody} mt-1 block text-[var(--ds-body)]`}>
+              Show in the 9-dot launcher and public apps list. Uncheck to hide from both without deleting.
+            </span>
+          </span>
+        </label>
+
+        <label className={cn(adminFormCheckboxLabel, "items-start")}>
+          <input
+            type="checkbox"
+            className={`${adminCheckbox} mt-0.5`}
             checked={isPrivate}
             onChange={(event) => setIsPrivate(event.target.checked)}
           />
           <span>
             <span className="block font-medium text-[var(--ds-ink)]">Private app</span>
             <span className={`${adminBody} mt-1 block text-[var(--ds-body)]`}>
-              Hide this app from the 9-dot app launcher. It will still appear here in admin.
+              Hide from the 9-dot launcher only. The app stays in admin; it must also be active to appear in the launcher.
             </span>
           </span>
         </label>

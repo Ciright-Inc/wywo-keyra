@@ -20,6 +20,7 @@ export type DeploymentAppView = {
   section: string;
   sortOrder: number;
   isPrivate: boolean;
+  isActive: boolean;
   createdAt: string;
 };
 

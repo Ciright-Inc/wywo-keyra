@@ -43,6 +43,7 @@ export type DeploymentAppInput = {
   temporaryUrl?: string | null;
   section: string;
   isPrivate: boolean;
+  isActive?: boolean;
   sortOrder?: number;
 };
 
@@ -82,6 +83,7 @@ export function validateDeploymentAppInput(input: Partial<DeploymentAppInput>): 
   const temporaryUrlResult = parseOptionalHttpUrl(input.temporaryUrl, "Temporary URL");
   const section = normalizeDeploymentAppCategory(input.section ?? "");
   const isPrivate = input.isPrivate === true;
+  const isActive = typeof input.isActive === "boolean" ? input.isActive : true;
   const sortOrder = Number.isFinite(input.sortOrder) ? Number(input.sortOrder) : 0;
 
   if (!label) return { error: "App name is required." };
@@ -112,6 +114,7 @@ export function validateDeploymentAppInput(input: Partial<DeploymentAppInput>): 
     temporaryUrl: temporaryUrlResult,
     section,
     isPrivate,
+    isActive,
     sortOrder,
   };
 }
@@ -355,15 +358,23 @@ export async function deleteDeploymentAppCategory(
 }
 
 export async function listDeploymentApps(
-  options: { includePrivate?: boolean; newestFirst?: boolean } = {},
+  options: { includePrivate?: boolean; newestFirst?: boolean; includeInactive?: boolean } = {},
 ): Promise<DeploymentApp[]> {
   await ensureDeploymentAppsSeeded();
   return prisma.deploymentApp.findMany({
-    where: { isActive: true, ...(options.includePrivate === false ? { isPrivate: false } : {}) },
+    where: {
+      ...(options.includeInactive ? {} : { isActive: true }),
+      ...(options.includePrivate === false ? { isPrivate: false } : {}),
+    },
     orderBy: options.newestFirst
       ? [{ createdAt: "desc" }, { label: "asc" }]
       : [{ section: "asc" }, { sortOrder: "asc" }, { label: "asc" }],
   });
+}
+
+/** 9-dot launcher — active, non-private apps only (same rules as `includePrivate: false`). */
+export async function listDeploymentLauncherApps(): Promise<DeploymentApp[]> {
+  return listDeploymentApps({ includePrivate: false });
 }
 
 export type DeploymentAppEditNeighbor = {
@@ -377,7 +388,7 @@ export async function getDeploymentAppEditNeighbors(appId: string): Promise<{
   prev: DeploymentAppEditNeighbor | null;
   next: DeploymentAppEditNeighbor | null;
 }> {
-  const apps = await listDeploymentApps({ newestFirst: true });
+  const apps = await listDeploymentApps({ newestFirst: true, includeInactive: true });
   const index = apps.findIndex((app) => app.id === appId);
   const pick = (app: DeploymentApp): DeploymentAppEditNeighbor => ({ id: app.id, label: app.label });
 
@@ -400,6 +411,7 @@ export function toDeploymentAppView(app: DeploymentApp): DeploymentAppView {
     section: app.section,
     sortOrder: app.sortOrder,
     isPrivate: app.isPrivate,
+    isActive: app.isActive,
     createdAt: app.createdAt.toISOString(),
   };
 }

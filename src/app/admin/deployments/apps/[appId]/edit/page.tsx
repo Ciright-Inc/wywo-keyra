@@ -16,9 +16,9 @@ export default async function EditDeploymentAppPage({ params }: { params: Promis
   const { appId } = await params;
   await ensureDeploymentAppsSeeded();
   const [app, categories, siblingApps] = await Promise.all([
-    prisma.deploymentApp.findFirst({ where: { id: appId, isActive: true } }),
+    prisma.deploymentApp.findUnique({ where: { id: appId } }),
     listDeploymentAppCategoryViews(),
-    listDeploymentApps({ newestFirst: true }),
+    listDeploymentApps({ newestFirst: true, includeInactive: true }),
   ]);
   if (!app) notFound();
 

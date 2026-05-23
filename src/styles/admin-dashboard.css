@@ -35,15 +35,17 @@
   min-width: 0;
   flex: 1;
   flex-direction: column;
+  min-height: 0;
 }
 
 .admin-dashboard__content {
   flex: 1;
   min-width: 0;
+  min-height: 0;
   padding: var(--admin-content-padding);
 }
 
-/* Desktop: lock shell to viewport — sidebar stays put, main column scrolls */
+/* Desktop: lock shell to viewport — sidebar + top bar stay put, content scrolls */
 @media (min-width: 1024px) {
   [data-surface="dashboard"].admin-dashboard {
     height: 100dvh;
@@ -53,7 +55,10 @@
   }
 
   .admin-dashboard__main {
-    min-height: 0;
+    overflow: hidden;
+  }
+
+  .admin-dashboard__content {
     overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -64,6 +69,36 @@
     height: 100dvh;
     max-height: 100dvh;
     min-height: 0;
+    overflow: hidden;
+  }
+
+  [data-surface="dashboard"] .ds-sidebar-brand {
+    flex-shrink: 0;
+    height: var(--admin-topbar-height);
+    min-height: var(--admin-topbar-height);
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  [data-surface="dashboard"] .ds-sidebar-brand__eyebrow {
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  [data-surface="dashboard"] .ds-sidebar-brand__title {
+    margin-top: 0;
+    font-size: 14px;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  [data-surface="dashboard"] .ds-sidebar-brand__desc {
+    display: none;
   }
 
   body:has([data-surface="dashboard"]) {
@@ -75,19 +110,30 @@
   }
 }
 
-/* Mobile: sidebar becomes overlay drawer */
+/* Mobile: sidebar stacks above main; content scrolls inside main */
 @media (max-width: 1023px) {
   .admin-dashboard {
     flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  .admin-dashboard__main {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .admin-dashboard__content {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 20px 16px 32px;
   }
 
   .ds-sidebar {
     width: 100%;
     min-height: auto;
-  }
-
-  .admin-dashboard__content {
-    padding: 20px 16px 32px;
+    flex-shrink: 0;
   }
 }
 
@@ -200,12 +246,14 @@
 
 /* ----- Top bar (design.md §2.7) ------------------------------------------- */
 [data-surface="dashboard"] .ds-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
+  position: relative;
+  top: auto;
+  z-index: 40;
+  flex-shrink: 0;
   height: var(--admin-topbar-height);
   background: var(--ds-surface-card);
   border-bottom: 1px solid var(--ds-hairline-strong);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -213,9 +261,27 @@
   padding: 0 var(--admin-content-padding);
 }
 
+[data-surface="dashboard"] .ds-topbar__meta {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+}
+
+[data-surface="dashboard"] .ds-topbar__eyebrow {
+  font: 600 10px/1.2 var(--ds-font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ds-body);
+}
+
 [data-surface="dashboard"] .ds-topbar__title {
-  font: 600 14px/1.4 var(--ds-font-sans);
+  font: 600 15px/1.3 var(--ds-font-sans);
   color: var(--ds-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 [data-surface="dashboard"] .ds-topbar__actions {
@@ -585,6 +651,16 @@
   text-align: center;
   font: 400 14px/1.5 var(--ds-font-sans);
   color: var(--ds-body);
+}
+
+/* Apps grid cards — tighter vertical rhythm (overrides is-dashboard 20px padding) */
+[data-surface="dashboard"] .ds-app-grid-card.ds-feature-card.is-dashboard {
+  padding: 6px 10px;
+}
+
+[data-surface="dashboard"] .ds-app-grid-card__footer {
+  margin-top: 4px;
+  padding-top: 4px;
 }
 
 [data-surface="dashboard"] .ds-admin-modal-panel {
