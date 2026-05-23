@@ -1,10 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useInView, useReducedMotion } from "framer-motion";
 import { cn } from "@/components/ui/cn";
+import { useCountUp } from "@/components/motion/useCountUp";
 
 const formatNumber = (value: number) =>
   value.toLocaleString("en", { maximumFractionDigits: 0 });
+
+/** Hero widget display target — count-up animates to this on first viewport entry. */
+export const GLOBAL_VERIFICATION_SIGNALS_BASE = 3_400_000;
+export const GLOBAL_VERIFICATION_SIGNALS_TARGET = 3_527_375;
 
 type GlobalVerificationSignalsLiveProps = {
   /** `hero` matches the home page widget; `globe` matches globe overlay panels. */
@@ -16,11 +22,29 @@ export function GlobalVerificationSignalsLive({
   variant = "hero",
   className = "",
 }: GlobalVerificationSignalsLiveProps) {
-  const [total, setTotal] = useState(2_801_077);
+  const isHero = variant === "hero";
+  const reduceMotion = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const [countUpDone, setCountUpDone] = useState(!isHero || !!reduceMotion);
+
+  const [total, setTotal] = useState(GLOBAL_VERIFICATION_SIGNALS_TARGET);
   const [perSecond, setPerSecond] = useState(4_822);
   const [perMinute, setPerMinute] = useState(289_320);
 
+  const animatedTotal = useCountUp({
+    from: GLOBAL_VERIFICATION_SIGNALS_BASE,
+    to: GLOBAL_VERIFICATION_SIGNALS_TARGET,
+    duration: 2,
+    enabled: inView && isHero && !reduceMotion,
+    onComplete: () => setCountUpDone(true),
+  });
+
+  const displayTotal = countUpDone ? total : animatedTotal;
+
   useEffect(() => {
+    if (!countUpDone) return;
+
     const interval = window.setInterval(() => {
       setPerSecond((prev) => {
         const jitter = Math.round((Math.random() - 0.5) * 90);
@@ -32,13 +56,13 @@ export function GlobalVerificationSignalsLive({
     }, 5000);
 
     return () => window.clearInterval(interval);
-  }, []);
+  }, [countUpDone]);
 
   if (variant === "globe") {
     return (
-      <div className={className}>
+      <div ref={ref} className={className}>
         <div className="mt-0.5 text-[clamp(0.95rem,0.85vw+0.65rem,1.12rem)] font-semibold leading-none tracking-[var(--keyra-tracking-head)] text-keyra-primary">
-          {formatNumber(total)}
+          {formatNumber(displayTotal)}
         </div>
         <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-1.5 lg:gap-x-2 lg:gap-y-1.5">
           <div>
@@ -63,9 +87,9 @@ export function GlobalVerificationSignalsLive({
   }
 
   return (
-    <div className={cn(className)}>
+    <div ref={ref} className={cn(className)}>
       <p className="mt-3 font-mono text-[1.65rem] font-semibold leading-none tracking-tight tabular-nums text-slate-900">
-        {formatNumber(total)}
+        {formatNumber(displayTotal)}
       </p>
       <div className="mt-3 flex gap-5">
         <div>

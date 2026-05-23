@@ -1,4 +1,7 @@
-import { Card } from "@/components/ui/Card";
+"use client";
+
+import { HoverLiftCard } from "@/components/motion/HoverLiftCard";
+import { cn } from "@/components/ui/cn";
 import {
   narrativeCardGridClass,
   narrativeEqualCard,
@@ -31,9 +34,12 @@ export function NarrativeLineCardGrid({
   return (
     <div className={narrativeCardGridClass(columns, className)}>
       {lines.map((line) => (
-        <Card key={line} className={narrativeEqualCard(cardClassName)}>
+        <HoverLiftCard
+          key={line}
+          className={cn("ds-feature-card", narrativeEqualCard(cardClassName))}
+        >
           <p className={textClass}>{line}</p>
-        </Card>
+        </HoverLiftCard>
       ))}
     </div>
   );
