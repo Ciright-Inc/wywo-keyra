@@ -63,6 +63,18 @@ export type PublicCountry = Pick<
   telcos: PublicTelco[];
 };
 
+export type PublicRegionListItem = Pick<
+  Region,
+  "id" | "continentCode" | "subregionCode" | "name" | "slug" | "mapKey" | "sortOrder"
+>;
+
+export type PublicCountryListItem = Omit<PublicCountry, "telcos"> & {
+  regionId: string;
+  regionName: string;
+  regionSlug: string;
+  mapKey: string;
+};
+
 export type PublicRegion = Pick<
   Region,
   "id" | "continentCode" | "subregionCode" | "name" | "slug" | "mapKey" | "sortOrder"
@@ -204,3 +216,27 @@ export function findCountryInTree(
   }
   return null;
 }
+
+export async function getPublicRegionsList(): Promise<PublicRegionListItem[]> {
+  const tree = await getPublicDeploymentTree();
+  return tree.regions.map(({ countries: _countries, ...region }) => region);
+}
+
+export async function getPublicCountriesList(): Promise<PublicCountryListItem[]> {
+  const tree = await getPublicDeploymentTree();
+  return tree.regions.flatMap((region) =>
+    region.countries.map(({ telcos: _telcos, ...country }) => ({
+      ...country,
+      regionId: region.id,
+      regionName: region.name,
+      regionSlug: region.slug,
+      mapKey: region.mapKey,
+    })),
+  );
+}
+
+const PUBLIC_LIST_CACHE_HEADERS = {
+  "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+} as const;
+
+export { PUBLIC_LIST_CACHE_HEADERS };

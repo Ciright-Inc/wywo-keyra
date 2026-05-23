@@ -17,7 +17,7 @@ function adminAnalyticsForced(): boolean {
 
 /**
  * Nexa People analytics for admin — admin.keyra.ie and keyra.ie/admin (www too).
- * Same dashboard domain (`admin.keyra.ie`) for both entry points.
+ * Must load before RailwayPlausibleScripts: script.js uses a single global tracker.
  */
 export async function AdminAnalyticsScripts() {
   const hdrs = await headers();
@@ -35,17 +35,13 @@ export async function AdminAnalyticsScripts() {
   const analyticsDomain = getAdminAnalyticsDomain();
 
   return (
-    <>
-      <Script
-        src={ADMIN_ANALYTICS_SCRIPT_SRC}
-        data-domain={analyticsDomain}
-        data-api={ADMIN_ANALYTICS_API}
-        defer
-        strategy="afterInteractive"
-      />
-      <Script id="admin-plausible-init" strategy="afterInteractive">
-        {`window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`}
-      </Script>
-    </>
+    <Script
+      id="nexa-admin-analytics"
+      src={ADMIN_ANALYTICS_SCRIPT_SRC}
+      data-domain={analyticsDomain}
+      data-api={ADMIN_ANALYTICS_API}
+      defer
+      strategy="beforeInteractive"
+    />
   );
 }
