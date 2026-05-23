@@ -14,7 +14,7 @@ export function TrustTransparency() {
     >
       <div className="mx-auto w-full min-w-0 max-w-5xl px-0 sm:px-2">
         <FadeIn>
-          <article className="keyra-home-panel keyra-trust-transparency-panel mx-auto w-full">
+          <article className="keyra-home-panel keyra-trust-transparency-panel keyra-trust-panel--soft mx-auto w-full">
             <div className="keyra-trust-transparency-panel__body">
               <header className="keyra-trust-transparency-panel__header">
                 <p className="keyra-trust-transparency-panel__eyebrow">Trust &amp; responsibility</p>

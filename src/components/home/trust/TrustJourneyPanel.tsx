@@ -27,7 +27,7 @@ export function TrustJourneyPanel({ section, band, revealDelay = 0 }: TrustJourn
         className={cn(
           "keyra-home-panel keyra-trust-journey-panel h-full scroll-mt-[var(--keyra-header-offset)]",
           band === "dark" && "keyra-surface-light",
-          band === "light" && "keyra-trust-panel--ink",
+          band === "light" && "keyra-trust-panel--soft",
         )}
         aria-labelledby={`${section.anchor}-headline`}
       >
@@ -73,7 +73,7 @@ export function TrustJourneyPanel({ section, band, revealDelay = 0 }: TrustJourn
         <footer className="keyra-trust-journey-panel__footer">
           <AccessKeyraButton
             section={section.anchor}
-            variant={band === "light" ? "secondary" : "primary"}
+            variant="primary"
           />
         </footer>
       </article>

@@ -2146,14 +2146,76 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   opacity: 0.35;
 }
 
+/* Soft gray trust panels — #e8eaf0 (journey enterprise/future + Built With Care) */
+.keyra-home-panel.keyra-trust-panel--soft {
+  --keyra-primary: var(--color-ink);
+  --keyra-text: var(--color-ink);
+  --keyra-text-secondary: var(--color-body);
+  --keyra-border: var(--color-hairline-strong);
+  --keyra-surface: #f7f8fa;
+  background: #e8eaf0 !important;
+  border-color: var(--color-hairline-strong) !important;
+  color: var(--color-ink);
+}
+
+.keyra-trust-panel--soft:hover {
+  border-color: rgba(0, 0, 0, 0.18) !important;
+}
+
+.keyra-trust-panel--soft .keyra-trust-journey-panel__icon,
+.keyra-trust-panel--soft .keyra-trust-journey-panel__tag {
+  border-color: var(--color-hairline);
+  background: #ffffff;
+  color: var(--color-ink);
+}
+
+.keyra-trust-panel--soft .keyra-trust-journey-panel__title,
+.keyra-trust-panel--soft .keyra-trust-journey-panel__lead {
+  color: var(--color-ink);
+}
+
+.keyra-trust-panel--soft .keyra-trust-journey-panel__body-text,
+.keyra-trust-panel--soft .keyra-trust-journey-panel__note,
+.keyra-trust-panel--soft .keyra-trust-journey-panel__features-label,
+.keyra-trust-panel--soft .keyra-trust-journey-panel__bullets li {
+  color: var(--color-body);
+}
+
+.keyra-trust-panel--soft .keyra-trust-journey-panel__note {
+  border-left-color: var(--color-hairline-strong);
+}
+
+.keyra-trust-panel--soft .keyra-trust-journey-panel__divider {
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-hairline-strong) 12%,
+    var(--color-hairline-strong) 88%,
+    transparent
+  );
+}
+
+.keyra-trust-panel--soft .keyra-trust-journey-panel__features {
+  background: #ffffff;
+  border-color: var(--color-hairline);
+}
+
+.keyra-trust-panel--soft .keyra-trust-journey-panel__bullet-mark {
+  background: var(--color-ink);
+  opacity: 0.28;
+}
+
+.keyra-trust-panel--soft .keyra-trust-journey-panel__footer {
+  background: #f0f2f5;
+  border-top-color: var(--color-hairline-strong);
+}
+
 /* Trust transparency — soft gray home panel */
 .keyra-trust-transparency-panel {
   display: flex;
   flex-direction: column;
   padding: 0;
   overflow: hidden;
-  background: #e8eaf0 !important;
-  border-color: var(--color-hairline-strong) !important;
 }
 
 .keyra-trust-transparency-panel__eyebrow {
