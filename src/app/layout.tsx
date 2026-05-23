@@ -4,7 +4,7 @@ import { cookies, headers } from "next/headers";
 import "./globals.css";
 import { KeyraAppChrome } from "@/components/layout/KeyraAppChrome";
 import { SiteFooterLive } from "@/components/layout/SiteFooterLive";
-import { fetchSiteFooter } from "@/lib/siteFooter";
+import { getPublicSiteFooterConfig } from "@/lib/siteFooter/queries";
 import { KeyraSessionProvider } from "@/contexts/KeyraSessionContext";
 import {
   KEYRA_SESSION_COOKIE,
@@ -73,7 +73,7 @@ export default async function RootLayout({
 
   const hdrs = await headers();
   const designLane = parseKeyraDesignLaneHeader(hdrs.get(LANE_HEADER));
-  const footerData = await fetchSiteFooter();
+  const footerData = await getPublicSiteFooterConfig();
 
   return (
     <html

@@ -32,6 +32,7 @@ function normalizeApp(raw: DeploymentAppView): DeploymentAppView {
     description: raw.description,
     href: raw.href,
     gensparkUrl: raw.gensparkUrl ?? null,
+    temporaryUrl: raw.temporaryUrl ?? null,
     section: raw.section,
     sortOrder: raw.sortOrder ?? 0,
     isPrivate: raw.isPrivate ?? false,
@@ -83,26 +84,29 @@ export function AppEditClient({ initialApp, categories, siblingApps }: Props) {
   }, [nav.prev, nav.next, prefetchApp]);
 
   return (
-    <div className="max-w-3xl">
+    <div>
       <AdminEditPageHeader
         title="Edit app"
         subtitle={app.label}
         backHref="/admin/deployments/apps"
-        backLabel="Back to apps"
       />
 
       <div className={`${adminPanel} mt-6`}>
-        <div className="flex flex-wrap items-start justify-end gap-4">
-          <AppEditSiblingNav
-            prevApp={nav.prev}
-            nextApp={nav.next}
-            index={nav.index}
-            total={nav.total}
-            onNavigate={navigateTo}
-          />
-        </div>
-
-        <AppForm key={app.id} mode="edit" app={app} categories={categories} />
+        <AppForm
+          key={app.id}
+          mode="edit"
+          app={app}
+          categories={categories}
+          headerAside={
+            <AppEditSiblingNav
+              prevApp={nav.prev}
+              nextApp={nav.next}
+              index={nav.index}
+              total={nav.total}
+              onNavigate={navigateTo}
+            />
+          }
+        />
       </div>
     </div>
   );

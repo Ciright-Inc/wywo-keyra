@@ -745,6 +745,7 @@ body {
   text-align: center;
 }
 
+.keyra-site-footer__social-list,
 .keyra-site-footer__socials {
   display: inline-flex;
   align-items: center;

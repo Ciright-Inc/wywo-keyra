@@ -1,7 +1,7 @@
-import { SiteFooterContent } from "@/components/layout/SiteFooterContent";
-import { fetchSiteFooter, type SiteFooterPayload } from "@/lib/siteFooter";
+import { getPublicSiteFooterConfig } from "@/lib/siteFooter/queries";
+import { SiteFooterView } from "./SiteFooterView";
 
-export async function SiteFooter({ data }: { data?: SiteFooterPayload }) {
-  const payload = data ?? (await fetchSiteFooter());
-  return <SiteFooterContent data={payload} />;
+export async function SiteFooter() {
+  const config = await getPublicSiteFooterConfig();
+  return <SiteFooterView config={config} />;
 }

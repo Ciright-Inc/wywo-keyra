@@ -4,7 +4,19 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-const CONTENT_ANCHOR_ID = "admin-deployments-main";
+const CONTENT_ANCHOR_IDS = ["admin-main-content", "admin-deployments-main"] as const;
+
+function resolveAnchorRect(): DOMRect | null {
+  for (const id of CONTENT_ANCHOR_IDS) {
+    const el = document.getElementById(id);
+    if (el) return el.getBoundingClientRect();
+  }
+
+  const content = document.querySelector(".admin-dashboard__content");
+  if (content instanceof HTMLElement) return content.getBoundingClientRect();
+
+  return null;
+}
 
 type Props = {
   open: boolean;
@@ -23,17 +35,21 @@ export function GensparkSlidePanel({ open, url, label, onClose }: Props) {
   }, []);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setAnchorRect(null);
+      return;
+    }
 
     function updateRect() {
-      const el = document.getElementById(CONTENT_ANCHOR_ID);
-      setAnchorRect(el?.getBoundingClientRect() ?? null);
+      setAnchorRect(resolveAnchorRect());
     }
 
     updateRect();
+    const raf = window.requestAnimationFrame(updateRect);
     window.addEventListener("resize", updateRect);
     window.addEventListener("scroll", updateRect, true);
     return () => {
+      window.cancelAnimationFrame(raf);
       window.removeEventListener("resize", updateRect);
       window.removeEventListener("scroll", updateRect, true);
     };

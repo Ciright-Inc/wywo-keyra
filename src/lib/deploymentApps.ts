@@ -40,6 +40,7 @@ export type DeploymentAppInput = {
   description: string;
   href: string;
   gensparkUrl?: string | null;
+  temporaryUrl?: string | null;
   section: string;
   isPrivate: boolean;
   sortOrder?: number;
@@ -78,6 +79,7 @@ export function validateDeploymentAppInput(input: Partial<DeploymentAppInput>): 
   const description = input.description?.trim() ?? "";
   const href = input.href?.trim() ?? "";
   const gensparkUrlResult = parseOptionalHttpUrl(input.gensparkUrl, "Genspark URL");
+  const temporaryUrlResult = parseOptionalHttpUrl(input.temporaryUrl, "Temporary URL");
   const section = normalizeDeploymentAppCategory(input.section ?? "");
   const isPrivate = input.isPrivate === true;
   const sortOrder = Number.isFinite(input.sortOrder) ? Number(input.sortOrder) : 0;
@@ -92,6 +94,9 @@ export function validateDeploymentAppInput(input: Partial<DeploymentAppInput>): 
   if (gensparkUrlResult && typeof gensparkUrlResult === "object") {
     return gensparkUrlResult;
   }
+  if (temporaryUrlResult && typeof temporaryUrlResult === "object") {
+    return temporaryUrlResult;
+  }
   try {
     const parsed = new URL(href);
     if (!["http:", "https:"].includes(parsed.protocol)) throw new Error("Invalid protocol");
@@ -99,7 +104,16 @@ export function validateDeploymentAppInput(input: Partial<DeploymentAppInput>): 
     return { error: "Redirect URL must be a valid http(s) URL." };
   }
 
-  return { label, description, href, gensparkUrl: gensparkUrlResult, section, isPrivate, sortOrder };
+  return {
+    label,
+    description,
+    href,
+    gensparkUrl: gensparkUrlResult,
+    temporaryUrl: temporaryUrlResult,
+    section,
+    isPrivate,
+    sortOrder,
+  };
 }
 
 export async function ensureDeploymentAppsSeeded(): Promise<void> {
@@ -382,6 +396,7 @@ export function toDeploymentAppView(app: DeploymentApp): DeploymentAppView {
     description: app.description,
     href: app.href,
     gensparkUrl: app.gensparkUrl,
+    temporaryUrl: app.temporaryUrl,
     section: app.section,
     sortOrder: app.sortOrder,
     isPrivate: app.isPrivate,

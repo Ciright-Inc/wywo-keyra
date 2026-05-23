@@ -23,6 +23,10 @@ const AUTH_NAV: NavItem[] = [
   { href: "/admin/authentication/protocols", label: "SAT protocols", icon: "category" },
 ];
 
+const SITE_NAV: NavItem[] = [
+  { href: "/admin/site/footer", label: "Footer", icon: "footer" },
+];
+
 const DEPLOYMENTS_NAV: NavItem[] = [
   { href: "/admin/deployments", label: "Overview", icon: "grid_view", exact: true },
   { href: "/admin/deployments/regions", label: "Regions", icon: "layers" },
@@ -76,14 +80,26 @@ export function AdminDashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? "";
   const { navigate, prefetch, isNavActive, pendingHref } = useAdminShellNavigation();
   const inAuthentication = pathname.startsWith("/admin/authentication");
+  const inSite = pathname.startsWith("/admin/site");
 
   useEffect(() => {
-    for (const item of [...AUTH_NAV, ...DEPLOYMENTS_NAV]) {
+    for (const item of [...AUTH_NAV, ...SITE_NAV, ...DEPLOYMENTS_NAV]) {
       prefetch(item.href);
     }
   }, [prefetch]);
 
-  const topbarTitle = inAuthentication ? "Authentication admin" : "Deployments admin";
+  const topbarTitle = inAuthentication
+    ? "Authentication admin"
+    : inSite
+      ? "Site manage"
+      : "Deployments admin";
+
+  const sidebarTitle = inAuthentication ? "Authentication" : inSite ? "Site manage" : "Deployments";
+  const sidebarDesc = inAuthentication
+    ? "Feed controls, country weights, and SAT protocol catalog."
+    : inSite
+      ? "Footer, header, and shared marketing chrome for connected Keyra sites."
+      : "Registry controls and access workflows.";
 
   return (
     <AdminConfirmProvider>
@@ -92,14 +108,8 @@ export function AdminDashboardShell({ children }: { children: ReactNode }) {
         <aside className="ds-sidebar" aria-label="Admin navigation">
           <div className="ds-sidebar-brand">
             <p className="ds-sidebar-brand__eyebrow">Keyra admin</p>
-            <p className="ds-sidebar-brand__title">
-              {inAuthentication ? "Authentication" : "Deployments"}
-            </p>
-            <p className="ds-sidebar-brand__desc">
-              {inAuthentication
-                ? "Feed controls, country weights, and SAT protocol catalog."
-                : "Registry controls and access workflows."}
-            </p>
+            <p className="ds-sidebar-brand__title">{sidebarTitle}</p>
+            <p className="ds-sidebar-brand__desc">{sidebarDesc}</p>
           </div>
 
           <nav className="ds-sidebar-nav">
@@ -113,6 +123,13 @@ export function AdminDashboardShell({ children }: { children: ReactNode }) {
             <SidebarNavGroup
               heading="Deployments"
               items={DEPLOYMENTS_NAV}
+              isNavActive={isNavActive}
+              navigate={navigate}
+              prefetch={prefetch}
+            />
+            <SidebarNavGroup
+              heading="Site manage"
+              items={SITE_NAV}
               isNavActive={isNavActive}
               navigate={navigate}
               prefetch={prefetch}

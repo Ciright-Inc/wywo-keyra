@@ -31,7 +31,7 @@ export function AdminCatalogHero({ title, description, stats, srOnly }: Props) {
           <p className={`${adminBody} mt-1.5 text-[var(--ds-body)]`}>{description}</p>
           {srOnly ? <p className="sr-only">{srOnly}</p> : null}
         </div>
-        <div className={adminCatalogStatGrid}>
+        <div className={adminCatalogStatGrid} data-stat-count={stats.length}>
           {stats.map((stat) => (
             <div key={stat.label} className={adminCatalogStatBox}>
               <p className={adminCatalogStatLabel}>{stat.label}</p>

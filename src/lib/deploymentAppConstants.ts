@@ -16,6 +16,7 @@ export type DeploymentAppView = {
   description: string;
   href: string;
   gensparkUrl: string | null;
+  temporaryUrl: string | null;
   section: string;
   sortOrder: number;
   isPrivate: boolean;

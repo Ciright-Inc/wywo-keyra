@@ -24,6 +24,9 @@ export const adminEyebrow = "ds-caption-uppercase";
 /** Primary content panel */
 export const adminPanel = "ds-feature-card is-dashboard";
 
+/** Full-bleed section below a divider inside a dashboard panel */
+export const adminPanelSectionDivider = "ds-panel-section-divider";
+
 /** Standalone panel without hover shadow */
 export const adminPanelStatic = "ds-admin-panel";
 
@@ -36,6 +39,7 @@ export const adminError = "ds-field-error";
 
 /** Tables */
 export const adminTableWrap = "ds-table-wrap";
+export const adminTableWrapInset = "ds-table-wrap is-inset";
 export const adminTable = "ds-table";
 export const adminTableScroll = "ds-table-scroll";
 

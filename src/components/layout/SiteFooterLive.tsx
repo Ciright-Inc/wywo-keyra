@@ -2,22 +2,30 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { SiteFooterContent } from "@/components/layout/SiteFooterContent";
+import { SiteFooterView } from "@/components/layout/SiteFooterView";
 import { isMinimalMarketingChrome } from "@/lib/marketingChrome";
-import {
-  isSiteFooterPayload,
-  normalizeSiteFooterPayload,
-  siteFooterClientApiPath,
-  type SiteFooterPayload,
-} from "@/lib/siteFooter";
+import type { SiteFooterConfig } from "@/lib/siteFooter/types";
+
+export const siteFooterClientApiPath = "/api/public/site-footer";
+
+function isSiteFooterConfig(value: unknown): value is SiteFooterConfig {
+  if (!value || typeof value !== "object") return false;
+  const payload = value as SiteFooterConfig;
+  return (
+    Boolean(payload.settings) &&
+    Array.isArray(payload.onThisSiteLinks) &&
+    Array.isArray(payload.keyraAppLinks) &&
+    Array.isArray(payload.socialLinks)
+  );
+}
 
 /**
  * Footer with SSR data. In development, also fetches `/api/public/site-footer` in the
  * browser so the request appears in DevTools → Network (server-only fetch does not).
  */
-export function SiteFooterLive({ initialData }: { initialData: SiteFooterPayload }) {
+export function SiteFooterLive({ initialData }: { initialData: SiteFooterConfig }) {
   const pathname = usePathname() ?? "";
-  const [data, setData] = useState(initialData);
+  const [config, setConfig] = useState(initialData);
 
   useEffect(() => {
     if (process.env.NODE_ENV !== "development") return;
@@ -26,13 +34,13 @@ export function SiteFooterLive({ initialData }: { initialData: SiteFooterPayload
 
     (async () => {
       try {
-        const res = await fetch(siteFooterClientApiPath(), { cache: "no-store" });
+        const res = await fetch(siteFooterClientApiPath, { cache: "no-store" });
         if (!res.ok || cancelled) return;
 
         const raw: unknown = await res.json();
-        if (!isSiteFooterPayload(raw) || cancelled) return;
+        if (!isSiteFooterConfig(raw) || cancelled) return;
 
-        setData(normalizeSiteFooterPayload(raw));
+        setConfig(raw);
       } catch {
         /* keep SSR initialData */
       }
@@ -45,5 +53,5 @@ export function SiteFooterLive({ initialData }: { initialData: SiteFooterPayload
 
   if (isMinimalMarketingChrome(pathname)) return null;
 
-  return <SiteFooterContent data={data} />;
+  return <SiteFooterView config={config} />;
 }

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ALL_APP_CATEGORIES_FILTER,
   type DeploymentAppView,
@@ -13,6 +13,7 @@ import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import { useToast } from "@/components/ui/Toast";
+import { cn } from "@/components/ui/cn";
 import { deleteDeploymentAppMessage } from "@/lib/admin/adminDeleteMessages";
 import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import { GensparkSlidePanel } from "./GensparkSlidePanel";
@@ -33,6 +34,161 @@ import {
   adminTableScroll,
   adminTableWrap,
 } from "@/lib/admin/adminUiClasses";
+
+type AppsViewMode = "grid" | "list";
+
+const APPS_VIEW_STORAGE_KEY = "keyra-admin-apps-view";
+
+function AdminAppsGlyph({
+  name,
+  className = "block size-[18px]",
+}: {
+  name: "grid_view" | "view_list" | "add";
+  className?: string;
+}) {
+  const common = {
+    className,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
+  };
+
+  if (name === "grid_view") {
+    return (
+      <svg {...common}>
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+      </svg>
+    );
+  }
+
+  if (name === "view_list") {
+    return (
+      <svg {...common}>
+        <path d="M8 6h13" />
+        <path d="M8 12h13" />
+        <path d="M8 18h13" />
+        <circle cx="4" cy="6" r="1" fill="currentColor" stroke="none" />
+        <circle cx="4" cy="12" r="1" fill="currentColor" stroke="none" />
+        <circle cx="4" cy="18" r="1" fill="currentColor" stroke="none" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...common}>
+      <path d="M12 5v14" />
+      <path d="M5 12h14" />
+    </svg>
+  );
+}
+
+function AppsViewToggle({
+  value,
+  onChange,
+}: {
+  value: AppsViewMode;
+  onChange: (mode: AppsViewMode) => void;
+}) {
+  return (
+    <div className="inline-flex items-center gap-1" role="group" aria-label="Apps view">
+      <button
+        type="button"
+        className={cn(
+          "inline-flex size-8 items-center justify-center rounded-[var(--ds-radius-md)] transition",
+          value === "grid"
+            ? "bg-[var(--ds-canvas-soft)] text-[var(--ds-ink)]"
+            : "text-[var(--ds-body)] hover:bg-[var(--ds-canvas-soft)] hover:text-[var(--ds-ink)]",
+        )}
+        aria-label="Grid view"
+        aria-pressed={value === "grid"}
+        onClick={() => onChange("grid")}
+      >
+        <AdminAppsGlyph name="grid_view" />
+      </button>
+      <button
+        type="button"
+        className={cn(
+          "inline-flex size-8 items-center justify-center rounded-[var(--ds-radius-md)] transition",
+          value === "list"
+            ? "bg-[var(--ds-canvas-soft)] text-[var(--ds-ink)]"
+            : "text-[var(--ds-body)] hover:bg-[var(--ds-canvas-soft)] hover:text-[var(--ds-ink)]",
+        )}
+        aria-label="List view"
+        aria-pressed={value === "list"}
+        onClick={() => onChange("list")}
+      >
+        <AdminAppsGlyph name="view_list" />
+      </button>
+    </div>
+  );
+}
+
+function OpenAppLinkButton({ app }: { app: DeploymentAppView }) {
+  return (
+    <a
+      href={app.href}
+      className="ds-btn-icon"
+      style={{ width: 32, height: 32 }}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Open ${app.label}`}
+    >
+      <svg
+        className="block size-3"
+        viewBox="0 0 16 16"
+        fill="none"
+        aria-hidden
+      >
+        <path
+          d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </a>
+  );
+}
+
+function AppRowActions({
+  app,
+  isDeleting,
+  onDelete,
+  onOpenSlide,
+}: {
+  app: DeploymentAppView;
+  isDeleting: boolean;
+  onDelete: () => void;
+  onOpenSlide: (payload: { url: string; label: string }) => void;
+}) {
+  return (
+    <div className="inline-flex items-center gap-1.5">
+      <OpenAppLinkButton app={app} />
+      {app.temporaryUrl ? (
+        <TemporaryUrlIconButton label={app.label} url={app.temporaryUrl} />
+      ) : null}
+      {app.gensparkUrl ? (
+        <GensparkIconButton label={app.label} url={app.gensparkUrl} onOpen={onOpenSlide} />
+      ) : null}
+      <RowActions
+        editHref={`/admin/deployments/apps/${app.id}/edit`}
+        editAriaLabel={`Edit ${app.label}`}
+        canDelete
+        deleteAriaLabel={`Delete ${app.label}`}
+        onDelete={onDelete}
+        isDeleting={isDeleting}
+      />
+    </div>
+  );
+}
 
 function AppListIcon({ label }: { label: string }) {
   return (
@@ -63,17 +219,23 @@ function CategoryChip({ label }: { label: string }) {
 
 function GensparkIconButton({
   label,
-  onClick,
+  url,
+  onOpen,
 }: {
   label: string;
-  onClick: () => void;
+  url: string;
+  onOpen: (payload: { url: string; label: string }) => void;
 }) {
   return (
     <button
       type="button"
       title="Open slides"
       aria-label={`Open slides for ${label}`}
-      onClick={onClick}
+      onClick={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        onOpen({ url, label });
+      }}
       className="ds-btn-icon" style={{ width: 32, height: 32 }}
     >
       <svg
@@ -94,6 +256,37 @@ function GensparkIconButton({
   );
 }
 
+function TemporaryUrlIconButton({ label, url }: { label: string; url: string }) {
+  return (
+    <a
+      href={url}
+      className="ds-btn-icon"
+      style={{ width: 32, height: 32 }}
+      target="_blank"
+      rel="noopener noreferrer"
+      title="Open temporary URL"
+      aria-label={`Open temporary URL for ${label}`}
+      onClick={(event) => event.stopPropagation()}
+    >
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        <path d="M12 2 2 7l10 5 10-5-10-5Z" />
+        <path d="m2 17 10 5 10-5" />
+        <path d="m2 12 10 5 10-5" />
+      </svg>
+    </a>
+  );
+}
+
 type Props = {
   initialApps: DeploymentAppView[];
   categories: string[];
@@ -107,6 +300,17 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
   const [query, setQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState(ALL_APP_CATEGORIES_FILTER);
   const [gensparkPanel, setGensparkPanel] = useState<{ url: string; label: string } | null>(null);
+  const [viewMode, setViewMode] = useState<AppsViewMode>("grid");
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem(APPS_VIEW_STORAGE_KEY);
+    if (stored === "grid" || stored === "list") setViewMode(stored);
+  }, []);
+
+  function handleViewModeChange(mode: AppsViewMode) {
+    setViewMode(mode);
+    window.localStorage.setItem(APPS_VIEW_STORAGE_KEY, mode);
+  }
 
   const visibleApps = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -115,7 +319,7 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
         return false;
       }
       if (!q) return true;
-      return [app.label, app.description, app.href, app.section, app.gensparkUrl].some((value) =>
+      return [app.label, app.description, app.href, app.section, app.gensparkUrl, app.temporaryUrl].some((value) =>
         (value ?? "").toLowerCase().includes(q),
       );
     });
@@ -124,6 +328,10 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
   const hasSearch = query.trim().length > 0;
   const hasCategoryFilter = categoryFilter !== ALL_APP_CATEGORIES_FILTER;
   const totalVisible = visibleApps.length;
+
+  function openUrlSlidePanel(payload: { url: string; label: string }) {
+    setGensparkPanel(payload);
+  }
 
   async function deleteApp(app: DeploymentAppView) {
     if (!(await confirm(deleteDeploymentAppMessage(app.label)))) return;
@@ -165,9 +373,7 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
               ariaLabel="Search apps"
             />
             <Link href="/admin/deployments/apps/new" className="ds-btn-primary is-sm">
-              <span className="material-symbols-outlined text-[18px]" aria-hidden>
-                add
-              </span>
+              <AdminAppsGlyph name="add" />
               Create new app
             </Link>
           </div>
@@ -193,6 +399,9 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
             />
           </label>
         </div>
+        <div className="sm:ml-auto">
+          <AppsViewToggle value={viewMode} onChange={handleViewModeChange} />
+        </div>
       </div>
 
       {totalVisible === 0 ? (
@@ -202,7 +411,7 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
           hasFilter={hasCategoryFilter}
           entityName="apps"
         />
-      ) : (
+      ) : viewMode === "grid" ? (
         <div className={`${adminTableWrap} mt-6 p-3 sm:p-4`}>
           <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {visibleApps.map((app) => {
@@ -257,12 +466,14 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
                     </svg>
                   </a>
                   <div className="inline-flex items-center gap-1.5">
+                    {app.temporaryUrl ? (
+                      <TemporaryUrlIconButton label={app.label} url={app.temporaryUrl} />
+                    ) : null}
                     {app.gensparkUrl ? (
                       <GensparkIconButton
                         label={app.label}
-                        onClick={() =>
-                          setGensparkPanel({ url: app.gensparkUrl!, label: app.label })
-                        }
+                        url={app.gensparkUrl}
+                        onOpen={openUrlSlidePanel}
                       />
                     ) : null}
                     <RowActions
@@ -280,6 +491,64 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
             );
           })}
           </ul>
+        </div>
+      ) : (
+        <div className={`${adminTableWrap} mt-6`}>
+          <div className={adminTableScroll}>
+            <table className={adminTable}>
+              <thead>
+                <tr>
+                  <th>App</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th>Link</th>
+                  <th className="is-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visibleApps.map((app) => {
+                  const isDeleting = busyId === app.id;
+                  return (
+                    <tr key={app.id} className={isDeleting ? "opacity-60" : undefined}>
+                      <td>
+                        <a
+                          href={app.href}
+                          className="flex min-w-0 items-center gap-3 no-underline hover:no-underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <AppListIcon label={app.label} />
+                          <span className="min-w-0">
+                            <span className="block truncate font-medium text-[var(--ds-ink)]">{app.label}</span>
+                            {app.isPrivate ? (
+                              <span className="ds-status-pill mt-1 inline-flex text-[10px]">Private</span>
+                            ) : null}
+                          </span>
+                        </a>
+                      </td>
+                      <td>
+                        <CategoryChip label={app.section} />
+                      </td>
+                      <td className="max-w-xs text-[var(--ds-body)]">
+                        <span className="line-clamp-2">{app.description}</span>
+                      </td>
+                      <td className="font-mono text-xs text-[var(--ds-body)]">
+                        <span className="line-clamp-1 break-all">{app.href}</span>
+                      </td>
+                      <td className="is-actions">
+                        <AppRowActions
+                          app={app}
+                          isDeleting={isDeleting}
+                          onDelete={() => void deleteApp(app)}
+                          onOpenSlide={openUrlSlidePanel}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
