@@ -10,34 +10,35 @@ import {
 } from "react";
 import type { LatestAuthRecord } from "@/lib/authenticationFeed/types";
 
-type AuthFeedListener = (record: LatestAuthRecord) => void;
+type RecordsSyncListener = (records: LatestAuthRecord[]) => void;
 
 type GlobeAuthFeedContextValue = {
-  notifyNewAuth: (record: LatestAuthRecord) => void;
-  subscribe: (listener: AuthFeedListener) => () => void;
+  /** Mirror every row currently shown in Latest authentications onto the globe. */
+  syncRecords: (records: LatestAuthRecord[]) => void;
+  subscribeRecordsSync: (listener: RecordsSyncListener) => () => void;
 };
 
 const GlobeAuthFeedContext = createContext<GlobeAuthFeedContextValue | null>(null);
 
 export function GlobeAuthFeedProvider({ children }: { children: ReactNode }) {
-  const listenersRef = useRef(new Set<AuthFeedListener>());
+  const listenersRef = useRef(new Set<RecordsSyncListener>());
 
-  const subscribe = useCallback((listener: AuthFeedListener) => {
+  const subscribeRecordsSync = useCallback((listener: RecordsSyncListener) => {
     listenersRef.current.add(listener);
     return () => {
       listenersRef.current.delete(listener);
     };
   }, []);
 
-  const notifyNewAuth = useCallback((record: LatestAuthRecord) => {
+  const syncRecords = useCallback((records: LatestAuthRecord[]) => {
     for (const listener of listenersRef.current) {
-      listener(record);
+      listener(records);
     }
   }, []);
 
   const value = useMemo(
-    () => ({ notifyNewAuth, subscribe }),
-    [notifyNewAuth, subscribe],
+    () => ({ syncRecords, subscribeRecordsSync }),
+    [syncRecords, subscribeRecordsSync],
   );
 
   return (

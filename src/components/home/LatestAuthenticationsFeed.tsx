@@ -202,6 +202,15 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
   const catalogPoolRef = useRef<LatestAuthRecord[]>([]);
   const catalogIndexRef = useRef(0);
 
+  useEffect(() => {
+    if (!globeAuthFeed) return;
+    if (!feedEnabled || records.length === 0) {
+      globeAuthFeed.syncRecords([]);
+      return;
+    }
+    globeAuthFeed.syncRecords(records);
+  }, [records, feedEnabled, globeAuthFeed]);
+
   const applyCatalogFallback = useCallback(async (): Promise<boolean> => {
     const rows = await fetchCatalogAuthRows(8);
     if (!rows.length) return false;
@@ -370,11 +379,6 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
 
       const incoming = data.records ?? [];
       if (incoming.length) {
-        if (mode === "prepend") {
-          for (let i = incoming.length - 1; i >= 0; i -= 1) {
-            globeAuthFeed?.notifyNewAuth(incoming[i]!);
-          }
-        }
         setRecords((prev) => {
           if (mode === "prepend") {
             return [...incoming, ...prev].slice(0, maxVisibleRows(variant));
@@ -390,7 +394,7 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
 
       return true;
     },
-    [variant, globeAuthFeed],
+    [variant],
   );
 
   const fetchNext = useCallback(async () => {
@@ -448,12 +452,11 @@ export function LatestAuthenticationsFeed({ variant = "default" }: { variant?: F
         t: new Date().toISOString(),
         x: `REF-${source.pl}-${catalogIndexRef.current}`,
       };
-      globeAuthFeed?.notifyNewAuth(row);
       setRecords((prev) => [row, ...prev].slice(0, maxVisibleRows(variant)));
     }, animationSpeedMs);
 
     return () => window.clearInterval(id);
-  }, [loading, isCatalogFallback, animationSpeedMs, variant, globeAuthFeed]);
+  }, [loading, isCatalogFallback, animationSpeedMs, variant]);
 
   useEffect(() => {
     if (loading || loadingMore || done || !feedEnabled) return;
