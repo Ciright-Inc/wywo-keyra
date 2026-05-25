@@ -22,16 +22,24 @@ const defaultUser: KeyraSessionUser = {
 
 type AuthSessionPayload = {
   authenticated: boolean;
-  user?: { phone?: string; username?: string | null; fullName?: string | null } | null;
+  user?: {
+    phone?: string;
+    username?: string | null;
+    fullName?: string | null;
+    displayName?: string | null;
+    email?: string | null;
+  } | null;
 };
 
 function authSessionDisplayName(
   user: NonNullable<AuthSessionPayload["user"]>,
 ): string | undefined {
-  const username = typeof user.username === "string" ? user.username.trim() : "";
-  if (username) return username;
+  const displayName = typeof user.displayName === "string" ? user.displayName.trim() : "";
+  if (displayName) return displayName;
   const fullName = typeof user.fullName === "string" ? user.fullName.trim() : "";
   if (fullName) return fullName;
+  const username = typeof user.username === "string" ? user.username.trim() : "";
+  if (username) return username;
   return undefined;
 }
 
@@ -145,9 +153,12 @@ async function fetchAuthSessionPayload(signal?: AbortSignal): Promise<AuthSessio
 function userFromAuthPayload(payload: AuthSessionPayload): KeyraSessionUser | null {
   if (!payload?.authenticated || !payload?.user?.phone) return null;
   const phone = payload.user.phone.startsWith("+") ? payload.user.phone : `+${payload.user.phone}`;
+  const email =
+    typeof payload.user.email === "string" ? payload.user.email.trim() : undefined;
   return {
     phoneE164: phone,
     displayName: authSessionDisplayName(payload.user),
+    email: email || undefined,
   };
 }
 
@@ -156,15 +167,18 @@ function mergeKeyraSessionUsers(
   authUser: KeyraSessionUser | null,
 ): KeyraSessionUser | null {
   if (!cookieUser && !authUser) return null;
+  if (cookieUser && authUser && cookieUser.phoneE164 !== authUser.phoneE164) {
+    return authUser;
+  }
   const phoneE164 = authUser?.phoneE164 ?? cookieUser?.phoneE164 ?? "";
   if (!phoneE164) return null;
   return {
     phoneE164,
     displayName:
-      cookieUser?.displayName?.trim() ||
       authUser?.displayName?.trim() ||
+      cookieUser?.displayName?.trim() ||
       undefined,
-    email: cookieUser?.email ?? authUser?.email,
+    email: authUser?.email?.trim() || cookieUser?.email,
     country: cookieUser?.country ?? authUser?.country,
   };
 }
@@ -179,8 +193,20 @@ async function fetchSessionUser(signal?: AbortSignal): Promise<KeyraSessionUser 
     fetchAuthSessionPayload(signal),
   ]);
 
+  if (payload?.authenticated === false) {
+    if (cookieUser) {
+      void clearKeyraCookieSession();
+    }
+    return null;
+  }
+
   const authUser =
     payload?.authenticated && payload?.user?.phone ? userFromAuthPayload(payload) : null;
+
+  if (cookieUser && authUser && cookieUser.phoneE164 !== authUser.phoneE164) {
+    const synced = await syncKeyraSessionFromAuth(signal);
+    return synced ?? authUser;
+  }
 
   if (!cookieUser && authUser) {
     const synced = await syncKeyraSessionFromAuth(signal);
@@ -189,7 +215,11 @@ async function fetchSessionUser(signal?: AbortSignal): Promise<KeyraSessionUser 
 
   if (cookieUser && authUser) {
     const merged = mergeKeyraSessionUsers(cookieUser, authUser);
-    if (merged && !cookieUser.displayName?.trim() && authUser.displayName?.trim()) {
+    if (
+      merged &&
+      authUser.displayName?.trim() &&
+      merged.displayName !== cookieUser.displayName?.trim()
+    ) {
       void syncKeyraSessionFromAuth(signal).catch(() => {
         // Best-effort: persist auth name into keyra_session cookie.
       });
@@ -197,7 +227,11 @@ async function fetchSessionUser(signal?: AbortSignal): Promise<KeyraSessionUser 
     return merged;
   }
 
-  return cookieUser ?? authUser ?? null;
+  if (cookieUser && !payload) {
+    return cookieUser;
+  }
+
+  return authUser ?? null;
 }
 
 type KeyraSessionContextValue = {

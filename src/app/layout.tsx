@@ -1,16 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import "./globals.css";
 import { KeyraAppChrome } from "@/components/layout/KeyraAppChrome";
 import { SiteFooterLive } from "@/components/layout/SiteFooterLive";
 import { getPublicSiteFooterConfig } from "@/lib/siteFooter/queries";
 import { KeyraSessionProvider } from "@/contexts/KeyraSessionContext";
-import {
-  KEYRA_SESSION_COOKIE,
-  parseSession,
-  type KeyraSessionUser,
-} from "@/lib/keyraSessionCookie";
+import type { KeyraSessionUser } from "@/lib/keyraSessionCookie";
+import { resolveKeyraSessionFromCookies } from "@/lib/keyraSessionServer";
 import { KEYRA_FAVICON_SRC } from "@/lib/keyraBrandAssets";
 import { LANE_HEADER, parseKeyraDesignLaneHeader } from "@/lib/keyraDesignLane";
 import { ToastProvider } from "@/components/ui/Toast";
@@ -67,9 +64,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const jar = await cookies();
-  const raw = jar.get(KEYRA_SESSION_COOKIE)?.value;
-  const initialUser: KeyraSessionUser | null = raw ? parseSession(raw) : null;
+  const initialUser: KeyraSessionUser | null = await resolveKeyraSessionFromCookies();
 
   const hdrs = await headers();
   const designLane = parseKeyraDesignLaneHeader(hdrs.get(LANE_HEADER));

@@ -15,12 +15,12 @@ type AuthProfileHint = {
 };
 
 function displayNameFromAuthHint(auth?: AuthProfileHint): string | undefined {
-  const username = String(auth?.username ?? "").trim();
-  if (username) return username;
-  const fullName = String(auth?.fullName ?? "").trim();
-  if (fullName) return fullName;
   const displayName = String(auth?.displayName ?? "").trim();
   if (displayName) return displayName;
+  const fullName = String(auth?.fullName ?? "").trim();
+  if (fullName) return fullName;
+  const username = String(auth?.username ?? "").trim();
+  if (username) return username;
   return undefined;
 }
 
@@ -30,10 +30,11 @@ export async function buildKeyraSessionUser(
 ): Promise<KeyraSessionUser> {
   const saved = await loadSavedProfileFields(phoneE164);
   const fromAuth = displayNameFromAuthHint(authHint);
+  const fromAuthEmail = authHint?.email ? String(authHint.email).trim() : undefined;
   return {
     phoneE164,
-    displayName: saved.displayName ?? fromAuth,
-    email: saved.email ?? (authHint?.email ? String(authHint.email).trim() : undefined),
+    displayName: fromAuth ?? saved.displayName,
+    email: fromAuthEmail || saved.email,
     country: saved.country,
   };
 }
