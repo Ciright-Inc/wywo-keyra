@@ -20,16 +20,18 @@ function isSiteFooterConfig(value: unknown): value is SiteFooterConfig {
 }
 
 /**
- * Footer with SSR data. In development, also fetches `/api/public/site-footer` in the
- * browser so the request appears in DevTools → Network (server-only fetch does not).
+ * Footer with SSR data for first paint, then a client fetch from `/api/public/site-footer`
+ * so updates appear without multiple full-page refreshes (RSC / CDN caches can lag the API).
  */
 export function SiteFooterLive({ initialData }: { initialData: SiteFooterConfig }) {
   const pathname = usePathname() ?? "";
   const [config, setConfig] = useState(initialData);
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== "development") return;
+    setConfig(initialData);
+  }, [initialData]);
 
+  useEffect(() => {
     let cancelled = false;
 
     (async () => {

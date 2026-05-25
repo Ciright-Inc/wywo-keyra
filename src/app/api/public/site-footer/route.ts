@@ -6,7 +6,7 @@ import type { SiteFooterConfig } from "@/lib/siteFooter/types";
 export const dynamic = "force-dynamic";
 
 const CACHE_HEADERS = {
-  "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+  "Cache-Control": "public, max-age=0, s-maxage=60, must-revalidate",
 } as const;
 
 const DEV_CACHE_HEADERS = {
@@ -36,7 +36,7 @@ export async function GET() {
 
   if (isDev || siteOrigin !== cmsOrigin) {
     try {
-      const res = await fetch(`${cmsOrigin}/api/public/site-footer`, isDev ? { cache: "no-store" } : { next: { revalidate: 60 } });
+      const res = await fetch(`${cmsOrigin}/api/public/site-footer`, { cache: "no-store" });
       if (res.ok) {
         const data: unknown = await res.json();
         if (isSiteFooterConfig(data)) {
