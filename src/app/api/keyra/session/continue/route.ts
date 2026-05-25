@@ -1,3 +1,4 @@
+import { resolveKeyraRedirectOrigin } from "@/lib/adminHost";
 import {
   devSessionPhoneFallback,
   pickPhoneFromSearchParams,
@@ -16,8 +17,8 @@ export const dynamic = "force-dynamic";
  */
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const origin = url.origin;
   const nextPath = safeSessionContinueNext(url.searchParams.get("next"));
+  const origin = resolveKeyraRedirectOrigin(req, nextPath);
 
   const fromAuth = await resolveKeyraSessionUserFromAuth(req);
   if (fromAuth) {
