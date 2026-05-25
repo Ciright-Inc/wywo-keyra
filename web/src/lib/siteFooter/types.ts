@@ -11,6 +11,7 @@ export type SiteSocialPlatform =
 export type SiteFooterLinkView = {
   id: string;
   section: SiteFooterLinkSection;
+  siteAppId: string | null;
   label: string;
   href: string;
   description: string | null;

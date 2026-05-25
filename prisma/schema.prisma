@@ -467,6 +467,8 @@ model SiteFooterSettings {
 model SiteFooterLink {
   id           String                @id @default(cuid())
   section      SiteFooterLinkSection
+  /** Deployment app id for ON_THIS_SITE links; null on KEYRA_APPS rows. */
+  siteAppId    String?
   label        String
   href         String                @db.Text
   description  String?               @db.Text
@@ -477,7 +479,7 @@ model SiteFooterLink {
   createdAt    DateTime              @default(now())
   updatedAt    DateTime              @updatedAt
 
-  @@index([section, sortOrder])
+  @@index([section, siteAppId, sortOrder])
 }
 
 model SiteFooterSocialLink {

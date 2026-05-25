@@ -185,16 +185,18 @@ export async function deleteDeploymentAppAction(appId: string): Promise<{ ok: tr
   if (isReadOnlyRole(auth) || isComplianceReviewer(auth)) return forbiddenError();
   await ensureDeploymentAppsSeeded();
 
-  const exists = await prisma.deploymentApp.findFirst({
-    where: { id: appId, isActive: true },
+  const exists = await prisma.deploymentApp.findUnique({
+    where: { id: appId },
     select: { id: true, label: true },
   });
   if (!exists) return { error: "App not found." };
 
-  await prisma.deploymentApp.update({
-    where: { id: appId },
-    data: { isActive: false },
-  });
+  try {
+    await prisma.deploymentApp.delete({ where: { id: appId } });
+  } catch (err) {
+    console.error("[deleteDeploymentAppAction]", err);
+    return { error: "Unable to delete app. Please try again." };
+  }
 
   await writeAudit({
     entityType: "DeploymentApp",

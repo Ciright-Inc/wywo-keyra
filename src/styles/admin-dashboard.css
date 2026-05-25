@@ -865,6 +865,7 @@
 .ds-listbox-option__label.is-full-text {
   overflow: visible;
   min-width: auto;
+  flex: 0 1 auto;
 }
 
 .ds-filter-select__value.is-full-text > span:last-child,
@@ -907,6 +908,46 @@
   width: 100%;
   min-width: 100%;
   max-width: 100%;
+}
+
+.ds-filter-select-menu.is-fit-content {
+  width: max-content;
+  min-width: 100%;
+  max-width: min(92vw, 28rem);
+}
+
+/* Footer app site picker — fixed trigger + menu width (no resize per label length). */
+.ds-footer-app-site-select {
+  display: block;
+  width: 18rem;
+  max-width: 100%;
+}
+
+.ds-footer-app-site-select > .relative {
+  display: block;
+  width: 100%;
+}
+
+.ds-footer-app-site-select .ds-filter-select {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+.ds-footer-app-site-select .ds-filter-select-menu {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ds-footer-app-site-select .ds-filter-select__value,
+.ds-footer-app-site-select .ds-listbox-option__label {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Custom listbox menus (AdminSelectMenu, flag/phone combos) — not scoped to dashboard

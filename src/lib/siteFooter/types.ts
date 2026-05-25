@@ -11,6 +11,8 @@ export type SiteSocialPlatform =
 export type SiteFooterLinkView = {
   id: string;
   section: SiteFooterLinkSection;
+  /** Deployment app id for ON_THIS_SITE links; null for KEYRA_APPS. */
+  siteAppId: string | null;
   label: string;
   href: string;
   description: string | null;

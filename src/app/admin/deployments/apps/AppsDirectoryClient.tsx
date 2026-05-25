@@ -164,6 +164,19 @@ function AppActiveToggle({
   );
 }
 
+function AppStatusPills({ app, inline = false }: { app: DeploymentAppView; inline?: boolean }) {
+  const pillClass = inline
+    ? "ds-status-pill shrink-0 text-[10px]"
+    : "ds-status-pill mt-1 inline-flex text-[10px]";
+
+  return (
+    <>
+      {!app.isActive ? <span className={pillClass}>Inactive</span> : null}
+      {app.isPrivate ? <span className={pillClass}>Private</span> : null}
+    </>
+  );
+}
+
 function AppListRowActions({
   app,
   isDeleting,
@@ -362,9 +375,7 @@ function AppGridCard({
           <div className="flex min-w-0 items-center gap-1.5">
             <h2 className="truncate text-sm font-semibold text-[var(--ds-ink)]">{app.label}</h2>
             <CategoryChip label={app.section} />
-            {app.isPrivate ? (
-              <span className="ds-status-pill shrink-0 text-[10px]">Private</span>
-            ) : null}
+            <AppStatusPills app={app} inline />
           </div>
           <p className="mt-0.5 line-clamp-1 text-xs text-[var(--ds-body)]">{app.description}</p>
         </div>
@@ -440,7 +451,7 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
     if (!nextActive) {
       if (
         !(await confirm({
-          message: `Deactivate "${app.label}"? It will be hidden from the apps directory and launcher.`,
+          message: `Deactivate "${app.label}"? It will be hidden from the 9-dot launcher until reactivated.`,
           confirmLabel: "Deactivate",
         }))
       ) {
@@ -601,9 +612,9 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
                           <AppListIcon label={app.label} />
                           <span className="min-w-0">
                             <span className="block truncate font-medium text-[var(--ds-ink)]">{app.label}</span>
-                            {app.isPrivate ? (
-                              <span className="ds-status-pill mt-1 inline-flex text-[10px]">Private</span>
-                            ) : null}
+                            <span className="mt-1 flex flex-wrap gap-1">
+                              <AppStatusPills app={app} />
+                            </span>
                           </span>
                         </a>
                       </td>

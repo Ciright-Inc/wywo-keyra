@@ -22,6 +22,8 @@ type Props = {
   fullWidth?: boolean;
   /** Match the open list width to the trigger (not a stretched outer wrapper). */
   matchMenuWidth?: boolean;
+  /** Expand the open list to fit option labels (at least trigger width). */
+  fitMenuToContent?: boolean;
   /** Show option labels in full — no ellipsis. */
   truncateLabels?: boolean;
   "aria-label"?: string;
@@ -69,6 +71,7 @@ export function AdminSelectMenu({
   wide = false,
   fullWidth = false,
   matchMenuWidth = false,
+  fitMenuToContent = false,
   truncateLabels = true,
   "aria-label": ariaLabel,
   id: idProp,
@@ -140,7 +143,11 @@ export function AdminSelectMenu({
           <ul
             role="listbox"
             aria-labelledby={id}
-            className={cn(adminListboxMenu, matchMenuWidth && "is-match-trigger")}
+            className={cn(
+              adminListboxMenu,
+              matchMenuWidth && "is-match-trigger",
+              fitMenuToContent && "is-fit-content",
+            )}
           >
             {options.map((option) => {
               const active = option.value === value;

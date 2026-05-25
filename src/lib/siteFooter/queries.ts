@@ -6,6 +6,13 @@ import prisma from "@/lib/prisma";
 import { SITE_FOOTER_CACHE_TAG } from "./cacheTags";
 import { loadSiteFooterSeed } from "../../../prisma/siteFooterSeedData";
 import { getDefaultSiteFooterConfig, SITE_FOOTER_SETTINGS_ID } from "./defaults";
+import {
+  buildFooterSiteAppOptions,
+  matchesFooterSiteApp,
+  normalizeFooterSiteAppId,
+  SITE_FOOTER_MARKETING_APP_ID,
+} from "./siteAppScope";
+import { ensureOnThisSiteLinksForAllApps } from "./ensureOnThisSiteLinksForAllApps";
 import type {
   SiteFooterConfig,
   SiteFooterLinkSection,
@@ -28,6 +35,7 @@ function mapLink(row: SiteFooterLink): SiteFooterLinkView {
   return {
     id: row.id,
     section: row.section as SiteFooterLinkSection,
+    siteAppId: row.siteAppId,
     label: row.label,
     href: row.href,
     description: row.description,
@@ -49,9 +57,18 @@ function mapSocial(row: SiteFooterSocialLink): SiteFooterSocialLinkView {
   };
 }
 
-function splitLinks(links: SiteFooterLinkView[]): Pick<SiteFooterConfig, "onThisSiteLinks" | "keyraAppLinks"> {
+function splitLinks(
+  links: SiteFooterLinkView[],
+  options?: { siteAppId?: string | null },
+): Pick<SiteFooterConfig, "onThisSiteLinks" | "keyraAppLinks"> {
+  const filterBySite = options?.siteAppId !== undefined;
+  const resolvedSiteAppId = normalizeFooterSiteAppId(options?.siteAppId);
   const onThisSiteLinks = links
-    .filter((link) => link.section === "ON_THIS_SITE")
+    .filter((link) => {
+      if (link.section !== "ON_THIS_SITE") return false;
+      if (!filterBySite) return true;
+      return matchesFooterSiteApp(link.siteAppId, resolvedSiteAppId);
+    })
     .sort((a, b) => a.sortOrder - b.sortOrder || a.label.localeCompare(b.label));
   const keyraAppLinks = links
     .filter((link) => link.section === "KEYRA_APPS")
@@ -76,7 +93,14 @@ export async function ensureSiteFooterDefaults(): Promise<boolean> {
     prisma.siteFooterSocialLink.count(),
   ]);
 
-  if (settingsCount > 0 && linkCount > 0 && socialCount > 0) return true;
+  if (settingsCount > 0 && linkCount > 0 && socialCount > 0) {
+    try {
+      await ensureOnThisSiteLinksForAllApps();
+    } catch {
+      /* non-fatal */
+    }
+    return true;
+  }
 
   const seed = loadSiteFooterSeed();
 
@@ -94,7 +118,13 @@ export async function ensureSiteFooterDefaults(): Promise<boolean> {
 
   if (linkCount === 0) {
     await prisma.siteFooterLink.createMany({
-      data: seed.links,
+      data: seed.links.map((link) => ({
+        ...link,
+        siteAppId:
+          link.section === "ON_THIS_SITE"
+            ? link.siteAppId ?? SITE_FOOTER_MARKETING_APP_ID
+            : null,
+      })),
       skipDuplicates: true,
     });
   }
@@ -106,10 +136,19 @@ export async function ensureSiteFooterDefaults(): Promise<boolean> {
     });
   }
 
+  try {
+    await ensureOnThisSiteLinksForAllApps();
+  } catch {
+    /* non-fatal — footer still loads with defaults */
+  }
+
   return true;
 }
 
-async function loadSiteFooterConfig(publishedOnly: boolean): Promise<SiteFooterConfig> {
+async function loadSiteFooterConfig(
+  publishedOnly: boolean,
+  siteAppId?: string | null,
+): Promise<SiteFooterConfig> {
   let ready = false;
   try {
     ready = await ensureSiteFooterDefaults();
@@ -134,7 +173,10 @@ async function loadSiteFooterConfig(publishedOnly: boolean): Promise<SiteFooterC
   if (!settings) return getDefaultSiteFooterConfig();
 
   const mappedLinks = links.map(mapLink);
-  const { onThisSiteLinks, keyraAppLinks } = splitLinks(mappedLinks);
+  const { onThisSiteLinks, keyraAppLinks } = splitLinks(
+    mappedLinks,
+    siteAppId !== undefined ? { siteAppId } : undefined,
+  );
 
   return {
     settings: mapSettings(settings),
@@ -145,15 +187,18 @@ async function loadSiteFooterConfig(publishedOnly: boolean): Promise<SiteFooterC
 }
 
 const getCachedPublicSiteFooter = unstable_cache(
-  async () => loadSiteFooterConfig(true),
-  ["site-footer-public-v1"],
+  async (siteAppId: string) => loadSiteFooterConfig(true, siteAppId),
+  ["site-footer-public-v2"],
   { tags: [SITE_FOOTER_CACHE_TAG], revalidate: 60 },
 );
 
-export async function getPublicSiteFooterConfig(): Promise<SiteFooterConfig> {
-  return getCachedPublicSiteFooter();
+export async function getPublicSiteFooterConfig(siteAppId?: string | null): Promise<SiteFooterConfig> {
+  const resolvedSiteAppId = normalizeFooterSiteAppId(siteAppId);
+  return getCachedPublicSiteFooter(resolvedSiteAppId);
 }
 
 export async function getAdminSiteFooterConfig(): Promise<SiteFooterConfig> {
   return loadSiteFooterConfig(false);
 }
+
+export { buildFooterSiteAppOptions, SITE_FOOTER_MARKETING_APP_ID };
