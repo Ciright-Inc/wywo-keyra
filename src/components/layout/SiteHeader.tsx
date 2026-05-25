@@ -21,6 +21,7 @@ function buildNav(): NavItem[] {
     { href: "/#missing-layer", label: "The shift" },
     { href: "/#for", label: "Who it's for" },
     { href: "/#global", label: "Global" },
+    { href: "/consultation", label: "Consultation" },
     { href: keyraDeveloperPortalUrl(), label: "Developers", external: true },
   ];
 }

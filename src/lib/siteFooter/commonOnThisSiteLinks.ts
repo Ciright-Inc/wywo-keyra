@@ -54,6 +54,15 @@ export function getCommonOnThisSiteLinkTemplates(): CommonOnThisSiteLinkTemplate
       isPublished: true,
     },
     {
+      label: "Strategic consultation",
+      href: "/consultation",
+      description: null,
+      isExternal: false,
+      internalPath: null,
+      sortOrder: 55,
+      isPublished: true,
+    },
+    {
       label: "Contact us",
       href: "/contact",
       description: null,
