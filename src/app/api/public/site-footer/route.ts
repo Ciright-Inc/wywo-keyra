@@ -13,6 +13,22 @@ const DEV_CACHE_HEADERS = {
   "Cache-Control": "no-store, no-cache, must-revalidate",
 } as const;
 
+/** Same allowlist as `/api/deployments/apps/launcher` — Keyra ecosystem + local dev. */
+function corsHeaders(origin: string | null): HeadersInit {
+  if (!origin) return {};
+  const allowed =
+    origin.endsWith(".keyra.ie") ||
+    origin === "https://keyra.ie" ||
+    origin.startsWith("http://localhost:") ||
+    origin.startsWith("http://127.0.0.1:");
+  if (!allowed) return {};
+  return {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Max-Age": "86400",
+  };
+}
+
 function trimSlash(s: string): string {
   return s.replace(/\/+$/, "");
 }
@@ -28,11 +44,22 @@ function isSiteFooterConfig(value: unknown): value is SiteFooterConfig {
   );
 }
 
+export async function OPTIONS(req: Request) {
+  return new NextResponse(null, {
+    status: 204,
+    headers: corsHeaders(req.headers.get("origin")),
+  });
+}
+
 /** Published site footer — DB on production; proxies live keyra.ie CMS in local dev. */
-export async function GET() {
+export async function GET(req: Request) {
   const isDev = process.env.NODE_ENV === "development";
   const siteOrigin = trimSlash(keyraMarketingOrigin());
   const cmsOrigin = trimSlash(keyraMarketingPublicOrigin());
+  const responseHeaders = {
+    ...corsHeaders(req.headers.get("origin")),
+    ...(isDev ? DEV_CACHE_HEADERS : CACHE_HEADERS),
+  };
 
   if (isDev || siteOrigin !== cmsOrigin) {
     try {
@@ -40,7 +67,7 @@ export async function GET() {
       if (res.ok) {
         const data: unknown = await res.json();
         if (isSiteFooterConfig(data)) {
-          return NextResponse.json(data, { headers: isDev ? DEV_CACHE_HEADERS : CACHE_HEADERS });
+          return NextResponse.json(data, { headers: responseHeaders });
         }
       }
     } catch {
@@ -49,5 +76,5 @@ export async function GET() {
   }
 
   const footer = await getPublicSiteFooterConfig();
-  return NextResponse.json(footer, { headers: isDev ? DEV_CACHE_HEADERS : CACHE_HEADERS });
+  return NextResponse.json(footer, { headers: responseHeaders });
 }
