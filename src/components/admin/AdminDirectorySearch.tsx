@@ -1,6 +1,7 @@
 "use client";
 
 import type { RefObject } from "react";
+import { cn } from "@/components/ui/cn";
 
 type Props = {
   expanded: boolean;
@@ -14,7 +15,7 @@ type Props = {
   onClear: () => void;
 };
 
-/** Telcos-tab search UI — shared across deployment directory pages. */
+/** Admin directory collapsible search — icon on title row; expands to a unified input group. */
 export function AdminDirectorySearch({
   expanded,
   hasSearch,
@@ -26,40 +27,34 @@ export function AdminDirectorySearch({
   onChange,
   onClear,
 }: Props) {
+  const isActive = expanded || hasSearch;
+
   return (
-    <div className="flex items-center">
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-label={expanded ? "Collapse search" : "Expand search"}
-        aria-expanded={expanded}
-        className={`inline-flex size-9 shrink-0 items-center justify-center rounded-lg border transition duration-300 ${
-          expanded || hasSearch
-            ? "border-black/20 bg-keyra-bg text-keyra-primary ring-1 ring-black/10"
-            : "border-keyra-border bg-keyra-bg text-keyra-text-2 hover:border-black/20 hover:text-keyra-primary"
-        }`}
-      >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          aria-hidden
+    <div className={cn("ds-directory-search", isActive && "is-active", expanded && "is-expanded")}>
+      <div className="ds-directory-search__control">
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label={expanded ? "Collapse search" : "Expand search"}
+          aria-expanded={expanded}
+          className={cn("ds-directory-search__toggle", isActive && "is-active")}
         >
-          <circle cx="11" cy="11" r="7" />
-          <path d="M20 20 16.65 16.65" />
-        </svg>
-      </button>
-      <div
-        className={`grid transition-[grid-template-columns] duration-300 ease-out ${
-          expanded ? "grid-cols-[1fr] ml-2" : "grid-cols-[0fr] ml-0"
-        }`}
-      >
-        <div className="overflow-hidden">
-          <div className="relative">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            aria-hidden
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20 16.65 16.65" />
+          </svg>
+        </button>
+        <div className={cn("ds-directory-search__field", expanded && "is-open")}>
+          <div className="ds-directory-search__input-wrap">
             <input
               ref={inputRef}
               type="text"
@@ -68,14 +63,13 @@ export function AdminDirectorySearch({
               placeholder={placeholder}
               autoComplete="off"
               aria-label={ariaLabel}
-              className={`ds-text-input is-sm h-9 py-0 pl-3 transition-opacity duration-300 ${
-                expanded ? "w-44 pr-8 opacity-100 sm:w-64" : "w-44 pointer-events-none opacity-0 sm:w-64"
-              }`}
+              className="ds-directory-search__input"
+              tabIndex={expanded ? 0 : -1}
             />
             {expanded ? (
               <button
                 type="button"
-                className="absolute right-1.5 top-1/2 inline-flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-keyra-text-2 transition hover:bg-keyra-surface hover:text-keyra-primary"
+                className="ds-directory-search__clear"
                 onClick={onClear}
                 aria-label="Clear search and collapse"
               >

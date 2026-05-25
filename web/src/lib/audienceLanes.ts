@@ -1,6 +1,8 @@
 /** Deep-link targets for the global audience switcher (routes must stay stable). */
+import { keyraGlobalDeploymentUrl } from "@/lib/keyraAppUrls";
+
 export const AUDIENCE_LANE_HREFS = {
-  enterprise: "/global-deployment",
+  enterprise: keyraGlobalDeploymentUrl(),
   ecosystem: "/partners",
 } as const;
 

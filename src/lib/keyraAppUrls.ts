@@ -50,6 +50,18 @@ export function buildGetStartedAccessUrl(returnToAbsoluteUrl: string): string {
   return `${gs}/?return=${encodeURIComponent(u)}`;
 }
 
+/** After Get Started / hosted login — sync auth into keyra_session, then open `nextPath`. */
+export function buildKeyraSessionContinueUrl(nextPath: string): string {
+  const base = keyraMarketingOrigin();
+  const path = nextPath.startsWith("/") ? nextPath : `/${nextPath}`;
+  return `${trimSlash(base)}/api/keyra/session/continue?next=${encodeURIComponent(path)}`;
+}
+
+/** Admin "Login on Keyra" — return via session bridge so cookies sync on same origin. */
+export function buildAdminGetStartedAccessUrl(nextPath: string): string {
+  return buildGetStartedAccessUrl(buildKeyraSessionContinueUrl(nextPath));
+}
+
 /** Main Keyra platform app — app.keyra.ie (`NEXT_PUBLIC_SIMSECURE_URL` in SimSecure). */
 export function keyraPlatformAppUrl(): string {
   return trimSlash(process.env.NEXT_PUBLIC_SIMSECURE_URL?.trim() || "https://app.keyra.ie");
@@ -115,11 +127,15 @@ export function keyraMarketingPath(path: string): string {
   return `${base}${p}`;
 }
 
-/** Standalone global deployment site (e.g. global.keyra.ie or http://localhost:3050). */
+/** Global deployment map — governments.keyra.ie (live deployment explorer). */
 export function keyraGlobalDeploymentUrl(): string {
+  return keyraGovernmentsUrl();
+}
+
+/** SOIP — Sovereign Operational Intelligence Platform (soip.keyra.ie). */
+export function keyraSoipUrl(): string {
   return trimSlash(
-    process.env.NEXT_PUBLIC_GLOBAL_DEPLOYMENT_URL?.trim() ||
-      keyraMarketingPath("/global-deployment"),
+    process.env.NEXT_PUBLIC_SOIP_URL?.trim() || "https://soip.keyra.ie",
   );
 }
 
@@ -225,6 +241,7 @@ export function getKeyraAdminAppLinks(): KeyraEcosystemAppLink[] {
     { id: "esim", label: "ESim", description: "eSIM app", href: "https://esim.keyra.ie" },
     { id: "analytics", label: "Analytics", description: "Analytics workspace", href: "https://analytics.keyra.ie" },
     { id: "drive", label: "Drive", description: "Drive workspace", href: "https://drive.keyra.ie" },
+    { id: "soip", label: "SOIP", description: "Sovereign operational intelligence", href: keyraSoipUrl() },
   ];
 }
 

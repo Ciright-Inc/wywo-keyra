@@ -28,6 +28,28 @@ export function deleteDeploymentAppMessage(label: string): string {
   return `Delete app "${label}"?`;
 }
 
+export function deleteAdminMaterialMessage(title: string): string {
+  return `Delete material "${title}"?`;
+}
+
+export function deleteAdminDataRoomMessage(title: string): string {
+  return `Delete document "${title}"?`;
+}
+
+/** Confirm closing the inline upload form while a file is still uploading. */
+export function closeUploadFormWhileUploadingMessage(): string {
+  return "Close upload form while uploading?";
+}
+
+/** Confirm leaving the edit page (back or cancel) while a file is still uploading. */
+export function leaveMaterialsWhileUploadingMessage(): string {
+  return "Leave materials while uploading?";
+}
+
+export function leaveDataRoomsWhileUploadingMessage(): string {
+  return "Leave data rooms while uploading?";
+}
+
 export function deleteAppCategoryMessage(name: string): string {
   return `Delete category "${name}"?`;
 }

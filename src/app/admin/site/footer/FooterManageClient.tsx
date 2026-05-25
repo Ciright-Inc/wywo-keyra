@@ -97,7 +97,7 @@ function FooterContentTabs({
   ];
 
   return (
-    <div className="mt-3">
+    <div className="mt-3 ds-footer-section-nav-wrap">
       <div className="ds-footer-section-nav" role="tablist" aria-label="Footer sections">
         {tabs.map((tab) => {
           const selected = activeTab === tab.id;
@@ -109,6 +109,7 @@ function FooterContentTabs({
               aria-selected={selected}
               aria-controls={`footer-section-${tab.id}`}
               id={`footer-tab-${tab.id}`}
+              title={tab.label}
               className={cn("ds-footer-section-nav__tab", selected && "is-active")}
               onClick={() => onChange(tab.id)}
             >
@@ -711,7 +712,7 @@ function FooterSocialSection({
                               <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-[var(--ds-hairline-strong)] bg-[var(--ds-canvas-soft)] text-[var(--ds-ink)]">
                                 <SocialPlatformIcon platform={row.platform} className="h-3.5 w-3.5 fill-current" />
                               </span>
-                              <span className="truncate text-[var(--ds-ink)]">{row.platform}</span>
+                              <span className="text-[var(--ds-ink)]">{row.platform}</span>
                             </span>
                           </td>
                           <td className="font-medium text-[var(--ds-ink)]">{row.label}</td>
@@ -818,6 +819,7 @@ export function FooterManageClient({ initialConfig, readOnly, footerSiteApps }: 
         title="Footer"
         description="Manage the Keyra footer on keyra.ie and connected marketing sites — brand copy, navigation links, app links, and social icons."
         stats={stats}
+        statGridClassName="ds-catalog-stat-grid--footer-stats"
       />
 
       <FooterContentTabs

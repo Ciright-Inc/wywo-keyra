@@ -8,6 +8,13 @@ import {
 } from "@/lib/deployments/adminContext";
 import type { DeploymentAuth } from "@/lib/deployments/adminAuthz";
 
+function authContinueHref(nextPath: string): string {
+  const sp = new URLSearchParams();
+  if (nextPath.startsWith("/admin")) sp.set("next", nextPath);
+  const q = sp.toString();
+  return `/api/keyra/session/continue${q ? `?${q}` : ""}`;
+}
+
 function adminLoginHref(nextPath: string, reason?: "sign_in" | "no_access"): string {
   const sp = new URLSearchParams();
   if (nextPath.startsWith("/admin")) sp.set("next", nextPath);
@@ -27,7 +34,7 @@ export async function assertAdminServer(nextPath = "/admin/deployments"): Promis
 
   const access = await resolveAdminAccessState();
   if (access.status === "unsigned") {
-    redirect(adminLoginHref(nextPath, "sign_in"));
+    redirect(authContinueHref(nextPath));
   }
   redirect(adminLoginHref(nextPath, "no_access"));
 }

@@ -11,6 +11,7 @@ import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import { deleteAdminUserMessage } from "@/lib/admin/adminDeleteMessages";
 import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminDirectoryPageHeader } from "@/components/admin/AdminDirectoryPageHeader";
 import { TablePagination } from "@/components/admin/TablePagination";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { Button } from "@/components/ui/Button";
@@ -31,7 +32,6 @@ import {
   adminEyebrow,
   adminLabel,
   adminLegacyInput,
-  adminPageTitle,
   adminPanel,
   adminSectionTitle,
   adminTable,
@@ -215,27 +215,20 @@ export function AdminUsersDirectoryClient({
   return (
     <div>
       <div className={adminPanel}>
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className={adminPageTitle}>Admin users</h1>
-              <span className={adminCountBadge}>
-                {totalCount.toLocaleString()} total
-              </span>
-            </div>
-            <p className={`${adminBody} mt-1.5 max-w-xl text-[var(--ds-body)]`}>
-              Manage deployment admin accounts — search by name, email, or mobile number.
-            </p>
-          </div>
-
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+        <AdminDirectoryPageHeader
+          title="Admin users"
+          badge={<span className={adminCountBadge}>{totalCount.toLocaleString()} total</span>}
+          description="Manage deployment admin accounts — search by name, email, or mobile number."
+          search={
             <CollapsibleSearchBar
               searchQuery={searchQuery}
               buildHref={buildSearchHref}
               placeholder="Name, email, mobile…"
               ariaLabel="Search admin users"
             />
-            {showCreate ? (
+          }
+          actions={
+            showCreate ? (
               <button
                 type="button"
                 className={createOpen ? "ds-btn-secondary is-sm" : "ds-btn-primary is-sm"}
@@ -243,9 +236,9 @@ export function AdminUsersDirectoryClient({
               >
                 {createOpen ? "Close create form" : "Add user"}
               </button>
-            ) : null}
-          </div>
-        </div>
+            ) : null
+          }
+        />
 
         {showCreate && createOpen ? (
           <div className="mt-5 border-t border-[var(--ds-hairline)] pt-5">

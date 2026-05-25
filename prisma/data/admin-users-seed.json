@@ -28,6 +28,13 @@
       "phoneE164": "+16013899551",
       "role": "GLOBAL_ADMIN",
       "isActive": true
+    },
+    {
+      "email": "devarsh.s@ciright.com",
+      "displayName": "Devarsh",
+      "phoneE164": "+918866777485",
+      "role": "GLOBAL_ADMIN",
+      "isActive": true
     }
   ]
 }

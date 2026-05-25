@@ -10,6 +10,7 @@ import {
 import { deleteDeploymentAppAction, setDeploymentAppActiveAction } from "./actions";
 import { AdminSelectMenu } from "@/components/admin/AdminSelectMenu";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminDirectoryPageHeader } from "@/components/admin/AdminDirectoryPageHeader";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
@@ -25,7 +26,6 @@ import {
   adminEyebrow,
   adminFilterLabel,
   adminFilterToolbar,
-  adminPageTitle,
   adminPanel,
   adminSectionTitle,
   adminTable,
@@ -505,20 +505,15 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
   return (
     <div>
       <div className={adminPanel}>
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className={adminPageTitle}>Apps</h1>
-              <span className={adminCountBadge}>
-                {hasSearch || hasCategoryFilter ? `${totalVisible} of ${apps.length}` : apps.length}
-              </span>
-            </div>
-            <p className={`${adminBody} mt-1.5 max-w-xl text-[var(--ds-body)]`}>
-              Select an app to open its configured destination. Newly created apps appear first.
-            </p>
-          </div>
-
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+        <AdminDirectoryPageHeader
+          title="Apps"
+          badge={
+            <span className={adminCountBadge}>
+              {hasSearch || hasCategoryFilter ? `${totalVisible} of ${apps.length}` : apps.length}
+            </span>
+          }
+          description="Select an app to open its configured destination. Newly created apps appear first."
+          search={
             <CollapsibleSearchBar
               mode="client"
               searchQuery={query}
@@ -526,21 +521,24 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
               placeholder="Label, description, link, category…"
               ariaLabel="Search apps"
             />
+          }
+          actions={
             <Link href="/admin/deployments/apps/new" className="ds-btn-primary is-sm">
               <AdminAppsGlyph name="add" />
               Create new app
             </Link>
-          </div>
-        </div>
+          }
+        />
 
-        <div className="mt-5 flex flex-col gap-3 border-t border-[var(--ds-hairline)] pt-5 sm:flex-row sm:items-center">
-          <div className={adminFilterToolbar}>
-            <label className={adminFilterLabel}>
+        <div className="mt-5 flex items-center gap-3 border-t border-[var(--ds-hairline)] pt-5">
+          <div className={cn(adminFilterToolbar, "min-w-0 flex-1 flex-nowrap")}>
+            <label className={cn(adminFilterLabel, "min-w-0 flex-1 shrink")}>
               Category
               <AdminSelectMenu
                 value={categoryFilter}
                 onChange={setCategoryFilter}
                 wide
+                fullWidth
                 aria-label="Filter apps by category"
                 options={[
                   { value: ALL_APP_CATEGORIES_FILTER, label: "All apps" },
@@ -549,7 +547,7 @@ export function AppsDirectoryClient({ initialApps, categories }: Props) {
               />
             </label>
           </div>
-          <div className="sm:ml-auto">
+          <div className="shrink-0">
             <AppsViewToggle value={viewMode} onChange={handleViewModeChange} />
           </div>
         </div>

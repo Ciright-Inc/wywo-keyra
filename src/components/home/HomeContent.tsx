@@ -17,9 +17,10 @@ import {
 } from "@/components/home/narrative/narrativeGrid";
 import { keyraDeveloperPortalUrl, keyraGovernmentsUrl } from "@/lib/keyraAppUrls";
 
-const homeCard = "keyra-home-card keyra-home-card--lift px-6 py-5";
-const homeCardOnDark = "keyra-home-card keyra-home-card--lift px-6 py-5";
-const homeAudienceCard = "keyra-card keyra-home-card keyra-home-card--lift p-7 sm:p-8";
+const homeCard = "keyra-home-card keyra-home-card--lift px-4 py-4 sm:px-6 sm:py-5";
+const homeCardOnDark = "keyra-home-card keyra-home-card--lift px-4 py-4 sm:px-6 sm:py-5";
+const homeAudienceCard =
+  "keyra-card keyra-home-card keyra-home-card--lift p-5 sm:p-7 md:p-8";
 
 export function HomeContent() {
   const clientReady = useClientReady();

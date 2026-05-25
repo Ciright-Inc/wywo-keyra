@@ -40,7 +40,7 @@ export function HomeRegistrationCTAs() {
   const { openModal } = useKeyraRegistrationModal();
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+    <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 sm:gap-4">
       {CTA_ITEMS.map((item) => (
         <button
           key={item.key}

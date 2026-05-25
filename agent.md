@@ -1,303 +1,288 @@
 # Design System — `designd.md`
 
-A single, consistent visual language for two surfaces:
-
-- **Part 1 — Public Website** (Home / Landing / Hero / detail pages) — generous, editorial, breathing room.
-- **Part 2 — Dashboard** (signed-in admin / data UI) — denser, tighter, smaller type, but **same fonts, same buttons, same hover behavior, same colors**.
-
-**Design goal:** look intentional and modern. Not "blank-page minimal", not "decorated/fancy". A clean editorial system with strong typography, calm surfaces, and one accent for action. **No gradient colors.** Solid fills only.
+> **How to use this file**
+> This is a **reference document** — read it and apply it manually.
+> Do NOT paste CSS blocks directly into `globals.css` or any stylesheet unless you are setting up tokens for the first time on a blank project.
+> If your project already has styles, only add what is **missing** — never replace existing layout rules.
 
 ---
 
-## Theme rules — the non-negotiables
+## ⚠️ Before you apply anything — read this
 
-These rules outrank everything below. If a component is in conflict, the component is wrong.
+**Common mistakes that break layouts:**
 
-### TR-1 — One color per button
-
-Every button uses **exactly one solid color** for its background and **exactly one solid color** for its text. No gradient. No two-tone. No color-on-color border (the border, if present, is the system hairline `#dcdee0`, never a tint of the button color).
-
-| Button | Background | Text | Border | Hover changes only |
-|--------|-----------|------|--------|--------------------|
-| Primary | `#000000` | `#ffffff` | none | background → `#1a1a1a` |
-| Secondary | `#ffffff` | `#171717` | `1px #dcdee0` | background → `#fafafa` |
-| Tertiary (link-like) | transparent | `#0d74ce` | none | text → `#476cff` |
-| Destructive (rare) | `#ffffff` | `#dc2626` | `1px #dcdee0` | background → `#fafafa` |
-| Icon button | transparent | `#171717` | none | background → `#fafafa` |
-
-Rules that follow from this:
-- A button is **never** filled with the link blue `#0d74ce`. Blue is for inline text links and tertiary buttons only.
-- A button is **never** filled with a semantic color (`success`, `error`, `warning`). Semantics appear as inline text, icon color, or a left border on banners — not as a button fill.
-- Hover **only** swaps the single fill color (or text color for tertiary). It never changes the border, the radius, the size, or adds a shadow/glow.
-- No "ghost" buttons with a colored border (e.g. blue border + blue text). If it isn't filled with `#000` or surrounded by `#dcdee0`, it isn't a button — it's a tertiary text-button.
-
-### TR-2 — Border-radius per element type (fixed)
-
-Each element type has **one** radius. Never improvise per-component.
-
-| Element | Radius | Token |
-|---------|--------|-------|
-| Primary / Secondary button (default 40px) | **8px** | `--ds-radius-md` |
-| Small button (`is-sm`, 32px tall) | **6px** | `--ds-radius-sm` |
-| Icon button (square 40×40) | **8px** | `--ds-radius-md` |
-| Text input / select / textarea | **8px** | `--ds-radius-md` |
-| Checkbox | **4px** | `--ds-radius-xs` |
-| Radio | **9999px** (circle) | `--ds-radius-pill` |
-| Switch track | **9999px** (pill) | `--ds-radius-pill` |
-| Card (`.ds-feature-card`, `.ds-panel`) | **12px** | `--ds-radius-lg` |
-| Modal / dialog | **12px** | `--ds-radius-lg` |
-| Dropdown / menu / popover | **8px** | `--ds-radius-md` |
-| Tooltip | **6px** | `--ds-radius-sm` |
-| Toast | **12px** | `--ds-radius-lg` |
-| Hero / media thumbnail (large) | **16px** | `--ds-radius-xl` |
-| Card thumbnail (inside card) | **8px** | `--ds-radius-md` |
-| Avatar | **9999px** (circle) | `--ds-radius-pill` |
-| Badge / chip / tag | **9999px** (pill) | `--ds-radius-pill` |
-| Table / table cells | **0px** (no rounding on cells) | — |
-| Outer table container | **12px** | `--ds-radius-lg` |
-| Skeleton block | matches the element it stands in for | — |
-| Tag-like code/inline-code | **4px** | `--ds-radius-xs` |
-| Progress bar | **9999px** | `--ds-radius-pill` |
-| Range slider thumb | **50%** (circle) | — |
-
-Nothing in the system uses a radius larger than **16px**. Nothing uses a radius between the table values (no `10px`, no `14px`).
-
-### TR-3 — Borders are one color, one weight
-
-- Every border in the system is `1px solid #dcdee0` (`--ds-hairline-strong`).
-- The only exceptions: input focus ring (`2px solid #171717`), error field (`1px solid #dc2626`), sidebar active row left bar (`2px solid #ffffff`).
-- Borders are **never** colored to match the element (no blue border on a blue chip, no green border on a success card).
-- Dividers inside content (between table rows, between list items, between toolbar groups) use the lighter hairline `1px solid #f0f0f3` so cards still pop against rows.
-
-### TR-4 — Surfaces are one of four greys
-
-- `#ffffff` (canvas, cards, dropdowns, modals)
-- `#fafafa` (dashboard background, row hover, table header)
-- `#f0f0f3` (chips, muted pills, sorted/selected backgrounds)
-- `#171717` (dark sidebar, dark accent card)
-
-If a designer asks for a fifth grey, the answer is **no**.
-
-### TR-5 — No gradients, no glassmorphism, no glow
-
-- No `linear-gradient`, `radial-gradient`, or `conic-gradient` on backgrounds, buttons, cards, headers, banners, or text.
-- No `backdrop-filter: blur()` UI surfaces (no frosted glass nav, no frosted modal).
-- No `text-shadow`, no neon, no animated background.
-- The single permitted scrim is **on top of media** (a dark-to-transparent overlay on a thumbnail so white text reads). That is image treatment, not brand color.
-
-### TR-6 — One shadow, one transition
-
-- Shadow: `0 4px 12px rgba(0,0,0,0.04)` — used **only** on card hover and on dropdown/popover/modal/toast/tooltip surfaces.
-- Buttons never carry a shadow at rest or on hover.
-- Transition: `150–220ms ease` on `background-color`, `border-color`, `color`, `box-shadow`, and `transform: translateY(1px)` for the press state. No spring, no bounce, no scale, no rotate.
-
-### TR-7 — Color does one job at a time
-
-| Color | Job — and *only* this job |
-|-------|---------------------------|
-| `#000000` | Primary button fill |
-| `#171717` (ink) | Body text, primary heading, dark surface |
-| `#60646c` (body) | Secondary text, muted captions |
-| `#999999` (muted) | Tertiary meta, placeholder, disabled icon |
-| `#0d74ce` (link) | Inline text links, tertiary button text |
-| `#dc2626` (error) | Inline error text, error icon, error field border |
-| `#16a34a` (success) | Success icon, success delta caption (the +/- glyph) |
-| `#ab6400` (warning) | Warning icon, warning text |
-| `#dcdee0` (border) | Borders |
-| `#f0f0f3` (chip bg) | Chip background, hover-chip, sorted column bg |
-| `#fafafa` (canvas soft) | Dashboard canvas, row hover |
-
-A color does not change role across surfaces. Link blue is never a button fill in the dashboard. Error red is never a button background on the website. Etc.
-
-### TR-8 — Hover changes one property
-
-Hover on any interactive element changes exactly **one** visual property:
-- Buttons → background (or text color, for tertiary) only.
-- Cards → box-shadow only.
-- Rows → background only.
-- Links → text color only.
-- Icon buttons → background only.
-
-No hover ever changes the radius, the size, the position, the border, or the typography weight.
-
-### TR-9 — Density does not change identity
-
-Between website (Part 1) and dashboard (Part 2), the things that can change are: **padding, gap, font size, max-width, density toggle**. The things that **cannot** change are: font family, button colors, button radius (8px), card radius (12px), border color, hover behavior, shadow, motion timings.
-
-A button placed on the dashboard must be visually identical to a button placed on the marketing site at the same `min-height`.
-
-### TR-10 — Iconography is one set
-
-- All icons are **Material Symbols Outlined** at `wght: 400`, `FILL: 0`, `GRAD: 0`, `opsz: 24`.
-- Icon size: **20px** inside buttons/inputs, **24px** in section headers, **16px** in dense table cells.
-- Icons inherit `currentColor`. Never hard-code icon color.
-- Mixing icon families (e.g. Lucide + Material) is forbidden.
+1. **Do not replace your existing `:root` block** — only *add* missing tokens to it.
+2. **Do not wrap your page in a scoped class** (like `.ds-site`) unless the entire page is a design-system surface. These class-scoped styles cascade downward and will override everything inside.
+3. **Icons showing as text?** You are missing the font `<link>` in `<head>`. See [Section 0.1 — Icons](#01-fonts--icons).
+4. **Sidebar color changed unexpectedly?** The sidebar is intentionally `#171717` (near-black). If your project had a different sidebar color before, that is a conflict — do not apply §2.6 Sidebar to a project that already has its own sidebar.
+5. **Layout jumbled?** The CSS blocks in this file are **component-level only**. They do not set page layout, grid, or flex containers. If your layout broke, you accidentally replaced a layout rule.
 
 ---
 
-## 0. Shared foundations (apply to BOTH surfaces)
+## What this file covers
 
-Everything in Part 1 and Part 2 inherits from this section. Only spacing, font sizes, and density change between the two parts.
+| Part | Surface | When to apply |
+|------|---------|---------------|
+| **Foundations (§0)** | Both | Always — tokens, fonts, base components |
+| **Part 1 (§1)** | Public website / landing pages | Only for public-facing pages |
+| **Part 2 (§2)** | Dashboard / admin UI | Only for signed-in / admin views |
+| **§3–§4** | Cross-surface rules | Reference only — no CSS to paste |
 
-### 0.1 Fonts
+---
 
-| Role | Font | Source |
-|------|------|--------|
-| UI + Display | **Inter** | `next/font/google`, exposed as `--font-inter` |
-| Accent / numerics / IDs / timestamps | **Montserrat** | `next/font/google`, exposed as `--font-montserrat` |
-| Icons | **Material Symbols Outlined** | `<link>` in `<head>`, used as `<span class="material-symbols-outlined">name</span>` |
+## 0. Foundations — apply to both surfaces
 
-**Inter** is the default for body, nav, and most UI. **Montserrat** is a geometric sans used where numbers, IDs, or short code-like strings need clear emphasis (dashboard tables, KPIs, tooltips) — not a monospace face; true `<pre>` / dev tools can still use `globals.css` `--font-mono` (system stack).
+### 0.1 Fonts & Icons
 
-```css
---font-sans: var(--font-inter), Inter, -apple-system, system-ui, sans-serif;
---font-accent: var(--font-montserrat), Montserrat, sans-serif;
+#### Step 1 — Add to `<head>` (once per project, in `layout.tsx` or `_document.tsx`)
+
+```html
+<!-- Material Symbols — required for all icons -->
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+/>
 ```
 
-**Weights used:** Inter 400 / 500 / 600; Montserrat 400 / 500 / 600 (loaded in `layout.tsx`). No 700+ for display. No italic display.
+#### Step 2 — Load Inter + Montserrat via `next/font` (in `layout.tsx`)
 
-**Letter-spacing:** display sizes use a slight negative tracking (`-0.03em` / `-1.92px` at the largest) for a modern editorial feel. Body is `0`. Eyebrows / caps labels use `+0.08em`.
+```ts
+import { Inter, Montserrat } from 'next/font/google';
 
-### 0.2 Color tokens (solid only — no gradients)
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
-```css
-/* Surfaces */
---ds-canvas:           #ffffff;   /* page background */
---ds-canvas-soft:      #fafafa;   /* alt zebra / hover bg */
---ds-surface-card:     #ffffff;   /* card body */
---ds-surface-strong:   #f0f0f3;   /* chip / muted pill */
---ds-surface-dark:     #171717;   /* inverted card / dashboard sidebar */
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-montserrat',
+  display: 'swap',
+});
 
-/* Borders */
---ds-hairline:         #f0f0f3;   /* whisper divider */
---ds-hairline-soft:    #f5f5f7;
---ds-hairline-strong:  #dcdee0;   /* default border */
-
-/* Text */
---ds-ink:              #171717;   /* primary text */
---ds-body:             #60646c;   /* secondary text */
---ds-muted:            #999999;   /* meta / caption */
---ds-muted-soft:       #cccccc;   /* placeholders */
---ds-on-primary:       #ffffff;   /* text on black button */
---ds-on-dark:          #ffffff;   /* text on dark surface */
-
-/* Action / link */
---ds-primary:          #000000;   /* primary CTA fill */
---ds-primary-active:   #1a1a1a;   /* primary CTA hover */
---ds-text-link:        #0d74ce;   /* inline links */
---ds-text-link-2:      #476cff;   /* link hover */
-
-/* Semantic */
---ds-success:          #16a34a;
---ds-error:            #dc2626;
---ds-warning:          #ab6400;
+// Apply both variables to <body>:
+// <body className={`${inter.variable} ${montserrat.variable}`}>
 ```
 
-**Hard rules:**
-- The only fully black thing on the page is the **primary button**. Body text is `#171717` ink, never pure black.
-- Links are `#0d74ce` (inline, in copy). Buttons never use link blue.
-- **No `linear-gradient()` on buttons, cards, headers, or hero backgrounds.** Solid fills only. The only allowed "wash" is a faint white-over-image scrim on media (e.g. text-on-thumbnail), which is not a brand gradient.
-- Borders are always `#dcdee0`. Never colored.
-
-### 0.3 Radii
+#### Step 3 — Set font variables in CSS (add to `:root` if not already there)
 
 ```css
---ds-radius-xs: 4px;    /* tags, inline tokens */
---ds-radius-sm: 6px;    /* small inputs */
---ds-radius-md: 8px;    /* buttons, default inputs */
---ds-radius-lg: 12px;   /* cards, panels */
---ds-radius-xl: 16px;   /* hero media */
---ds-radius-pill: 9999px; /* chips, badges */
+:root {
+  --font-sans:   var(--font-inter), Inter, -apple-system, system-ui, sans-serif;
+  --font-accent: var(--font-montserrat), Montserrat, sans-serif;
+}
 ```
 
-Buttons = `md` (8px). Cards = `lg` (12px). Chips = `pill`. Nothing larger than `xl`.
+#### How to use icons correctly
 
-### 0.4 Elevation (one shadow only)
+Icons use **Material Symbols Outlined**. The `<span>` contains the icon **name as text** — this is intentional and correct. The font converts it to a glyph automatically.
+
+```html
+<!-- ✅ Correct — the font renders "play_arrow" as the play icon -->
+<span class="material-symbols-outlined">play_arrow</span>
+
+<!-- ✅ Correct — with sizing -->
+<span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+```
+
+**If the icon name is showing as literal text** (e.g. you see the word "play_arrow" on screen), the font `<link>` is missing from `<head>`. Add it as shown in Step 1 above.
+
+Icon sizes by context:
+
+| Context | Size |
+|---------|------|
+| Inside buttons or inputs | `20px` |
+| Section headers | `24px` |
+| Dense table cells | `16px` |
+
+Icons inherit `currentColor` — never set a hard-coded color on a `<span class="material-symbols-outlined">`.
+
+**Icon family rule:** Use only Material Symbols Outlined. Do not mix with Lucide, Heroicons, Font Awesome, or any other set.
+
+---
+
+### 0.2 Color tokens
+
+Add these to your `:root` in `globals.css`. **Only add what is missing — do not delete existing tokens.**
 
 ```css
---ds-shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.04);
+:root {
+  /* Surfaces */
+  --ds-canvas:          #ffffff;   /* page background */
+  --ds-canvas-soft:     #fafafa;   /* dashboard bg / row hover */
+  --ds-surface-card:    #ffffff;   /* card / dropdown / modal */
+  --ds-surface-strong:  #f0f0f3;   /* chip / muted pill bg */
+  --ds-surface-dark:    #171717;   /* sidebar / dark accent (near-black) */
+
+  /* Borders */
+  --ds-hairline:        #f0f0f3;   /* whisper row divider */
+  --ds-hairline-soft:   #f5f5f7;
+  --ds-hairline-strong: #dcdee0;   /* default border — used everywhere */
+
+  /* Text */
+  --ds-ink:             #171717;   /* primary text */
+  --ds-body:            #60646c;   /* secondary / muted text */
+  --ds-muted:           #999999;   /* caption / placeholder / disabled icon */
+  --ds-muted-soft:      #cccccc;   /* placeholder text */
+  --ds-on-primary:      #ffffff;   /* text on primary (black) button */
+  --ds-on-dark:         #ffffff;   /* text on dark surface */
+
+  /* Actions */
+  --ds-primary:         #000000;   /* primary button fill (black) */
+  --ds-primary-active:  #1a1a1a;   /* primary button hover */
+  --ds-text-link:       #0d74ce;   /* inline text links */
+  --ds-text-link-hover: #476cff;   /* inline text link hover */
+
+  /* Semantic (icons + inline text only — never button backgrounds) */
+  --ds-success:         #16a34a;
+  --ds-error:           #dc2626;
+  --ds-warning:         #ab6400;
+
+  /* Radius */
+  --ds-radius-xs:   4px;
+  --ds-radius-sm:   6px;
+  --ds-radius-md:   8px;
+  --ds-radius-lg:   12px;
+  --ds-radius-xl:   16px;
+  --ds-radius-pill: 9999px;
+
+  /* Shadow — only one in the system */
+  --ds-shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
 ```
 
-That is the **only** shadow in the system. Used on hover for cards. Nav, buttons, and panels do not carry a shadow at rest.
+---
 
-### 0.5 Motion
+### 0.3 Color rules (read before using any color)
 
-| Use | Value |
-|------|-------|
-| Button bg / border color | `transition: background-color 0.2s ease, border-color 0.2s ease` |
-| Button press | `transition: transform 0.15s ease` then `:active { transform: translateY(1px); }` |
-| Card hover | `transition: box-shadow 0.2s ease` |
-| Link color | `transition: color 0.2s ease` |
-| Input focus | `transition: border-color 0.2s ease` |
+| Token | Allowed use | Never use for |
+|-------|-------------|---------------|
+| `--ds-primary` `#000000` | Primary button background | Body text, borders, chips |
+| `--ds-ink` `#171717` | Headings, body text, dark surface | Button fills, borders |
+| `--ds-text-link` `#0d74ce` | Inline links, tertiary button text | Primary button fill, heading text |
+| `--ds-error` `#dc2626` | Error text, error icon, error input border | Button background |
+| `--ds-success` `#16a34a` | Success icon, delta captions | Button background, heading text |
+| `--ds-hairline-strong` `#dcdee0` | All borders everywhere | Text, button fills |
 
-No bounce, no spring, no slow fades. 150–220ms `ease`. Respect `prefers-reduced-motion`.
+**Note:** `--ds-ink` (`#171717`) and `--ds-surface-dark` (`#171717`) share the same hex value but serve different roles — one is for text, the other is the dark surface background. Always reference the correct variable name so the intent is clear in code.
 
-### 0.6 Buttons (one component, one behavior, both surfaces)
+**No gradients.** Every background, button, card, and surface is a solid fill. `linear-gradient`, `radial-gradient`, and `backdrop-filter: blur()` are not used anywhere in this system.
 
-The button looks identical on the website and the dashboard. Only padding differs slightly (Part 2 has a `sm` size variant).
+---
 
-#### Primary — black, white text
+### 0.4 Buttons
+
+These classes are safe to add. They are component-scoped and will not affect page layout.
+
+#### Primary button
 
 ```css
 .ds-btn-primary {
-  display: inline-flex; align-items: center; justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
   min-height: 40px;
   padding: 10px 18px;
-  background: var(--ds-primary);    /* #000 */
-  color:      var(--ds-on-primary); /* #fff */
+  background: var(--ds-primary);       /* #000000 */
+  color: var(--ds-on-primary);         /* #ffffff */
   font: 500 14px/1 var(--font-sans);
   border: none;
-  border-radius: var(--ds-radius-md); /* 8px */
+  border-radius: var(--ds-radius-md);  /* 8px */
   cursor: pointer;
-  transition: background-color .2s ease, transform .15s ease;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.15s ease;
 }
-.ds-btn-primary:hover   { background: var(--ds-primary-active); } /* #1a1a1a */
-.ds-btn-primary:active  { transform: translateY(1px); }
-.ds-btn-primary:disabled{ opacity: .55; cursor: not-allowed; }
+.ds-btn-primary:hover    { background: var(--ds-primary-active); } /* #1a1a1a */
+.ds-btn-primary:active   { transform: translateY(1px); }
+.ds-btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
 ```
 
-#### Secondary — white surface, black text, hairline border
+#### Secondary button
 
 ```css
 .ds-btn-secondary {
-  display: inline-flex; align-items: center; justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
   min-height: 40px;
   padding: 10px 18px;
-  background: var(--ds-surface-card);  /* #fff */
-  color:      var(--ds-ink);           /* #171717 */
+  background: var(--ds-surface-card);          /* #ffffff */
+  color: var(--ds-ink);                        /* #171717 */
   font: 500 14px/1 var(--font-sans);
   border: 1px solid var(--ds-hairline-strong); /* #dcdee0 */
   border-radius: var(--ds-radius-md);
   cursor: pointer;
-  transition: background-color .2s ease, border-color .2s ease;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
 }
-.ds-btn-secondary:hover { background: var(--ds-canvas-soft); } /* #fafafa */
+.ds-btn-secondary:hover    { background: var(--ds-canvas-soft); } /* #fafafa */
+.ds-btn-secondary:disabled { opacity: 0.55; cursor: not-allowed; }
 ```
 
-#### Tertiary / link-button — no chrome, color shifts on hover
+#### Tertiary / link-style button
 
 ```css
 .ds-btn-tertiary {
-  background: transparent; border: none; padding: 8px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  padding: 8px 0;
   color: var(--ds-text-link);          /* #0d74ce */
   font: 500 14px/1 var(--font-sans);
   cursor: pointer;
-  transition: color .2s ease;
+  transition: color 0.2s ease;
 }
-.ds-btn-tertiary:hover { color: var(--ds-text-link-2); } /* #476cff */
+.ds-btn-tertiary:hover { color: var(--ds-text-link-hover); } /* #476cff */
 ```
 
-#### Icon button (square)
+#### Small button variant (dashboard only)
 
-40×40px, transparent bg, `border-radius: 8px`. On hover: `background: var(--ds-canvas-soft)`. Used for play/pause, close, more-actions, drawer toggle.
+Add `.is-sm` alongside `.ds-btn-primary` or `.ds-btn-secondary`:
 
-#### Disabled state (all variants)
+```css
+.ds-btn-primary.is-sm,
+.ds-btn-secondary.is-sm {
+  min-height: 32px;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: var(--ds-radius-sm); /* 6px */
+}
+```
 
-`opacity: .55; cursor: not-allowed;` — never grey out borders or change colors.
+#### Icon button (square, 40×40)
 
-### 0.7 Inputs
+```css
+.ds-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-ink);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.ds-btn-icon:hover { background: var(--ds-canvas-soft); }
+```
+
+**Button rules:**
+- Never fill a button with `--ds-text-link` (blue `#0d74ce`) — that is for inline text links only.
+- Never fill a button with a semantic color (`--ds-success`, `--ds-error`, `--ds-warning`).
+- Hover changes only the background (or text color for tertiary). Never changes border, radius, or size.
+
+---
+
+### 0.5 Text inputs
 
 ```css
 .ds-text-input {
@@ -306,25 +291,37 @@ The button looks identical on the website and the dashboard. Only padding differ
   padding: 12px 16px;
   background: var(--ds-surface-card);
   color: var(--ds-ink);
-  font-size: 16px;                 /* 16px prevents iOS zoom */
+  font: 400 16px/1.5 var(--font-sans); /* 16px prevents iOS zoom */
   border: 1px solid var(--ds-hairline-strong);
   border-radius: var(--ds-radius-md);
   outline: none;
-  transition: border-color .2s ease, box-shadow .2s ease;
+  transition: border-color 0.2s ease;
 }
 .ds-text-input:focus {
   border-width: 2px;
   border-color: var(--ds-ink);
-  padding: 11px 15px;              /* compensate for thicker border */
+  padding: 11px 15px; /* compensate for thicker border so content doesn't shift */
+}
+.ds-text-input.is-error {
+  border-color: var(--ds-error);
+}
+.ds-text-input::placeholder {
+  color: var(--ds-muted-soft);
 }
 ```
 
-Global focus ring fallback for any focusable element:
+Global focus ring (add once to `globals.css`):
+
 ```css
-:focus-visible { outline: 2px solid var(--ds-ink); outline-offset: 3px; }
+:focus-visible {
+  outline: 2px solid var(--ds-ink);
+  outline-offset: 3px;
+}
 ```
 
-### 0.8 Cards & panels
+---
+
+### 0.6 Cards & panels
 
 ```css
 .ds-feature-card {
@@ -332,299 +329,486 @@ Global focus ring fallback for any focusable element:
   border: 1px solid var(--ds-hairline-strong);
   border-radius: var(--ds-radius-lg); /* 12px */
   padding: 24px;
-  transition: box-shadow .2s ease;
+  transition: box-shadow 0.2s ease;
 }
-.ds-feature-card:hover { box-shadow: var(--ds-shadow-soft); }
+.ds-feature-card:hover {
+  box-shadow: var(--ds-shadow-soft);
+}
+
+/* Dark/accent card variant — use sparingly for CTA strips */
+.ds-feature-card-dark {
+  background: var(--ds-surface-dark); /* #171717 */
+  color: var(--ds-on-dark);
+  border: none;
+}
 ```
 
-`.ds-panel` is the same with `padding: clamp(20px, 3vw, 28px)` for larger content blocks. Dark variant (`.ds-feature-card-dark`) uses `--ds-surface-dark` background and `--ds-on-dark` text — used sparingly for emphasis blocks (e.g. CTA strip).
+---
 
-### 0.9 Badges & chips
+### 0.7 Badges & chips
 
 ```css
 .ds-badge-pill {
-  display: inline-flex; align-items: center;
+  display: inline-flex;
+  align-items: center;
   padding: 4px 10px;
   background: var(--ds-surface-strong); /* #f0f0f3 */
   color: var(--ds-ink);
   font: 600 11px/1.4 var(--font-sans);
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  border-radius: 9999px;
+  border-radius: var(--ds-radius-pill);
+  white-space: nowrap;
 }
 ```
 
-### 0.10 Links inside copy
+---
+
+### 0.8 Links in copy
 
 ```css
-.ds-text-link { color: #0d74ce; text-decoration: underline; text-underline-offset: 2px; }
-.ds-text-link:hover { color: #476cff; }
+.ds-text-link {
+  color: var(--ds-text-link);          /* #0d74ce */
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+.ds-text-link:hover {
+  color: var(--ds-text-link-hover);    /* #476cff */
+}
 ```
-
-### 0.11 Scrollbar
-
-Thin (6px), track `#fafafa`, thumb `#dcdee0`. Same on both surfaces.
-
-### 0.12 Hover effect rules (apply everywhere)
-
-| Element | Rest | Hover |
-|---------|------|-------|
-| Primary button | `#000` bg | `#1a1a1a` bg |
-| Secondary button | `#fff` bg, `#dcdee0` border | `#fafafa` bg (border stays) |
-| Tertiary / link-button | `#0d74ce` text | `#476cff` text |
-| Icon button | transparent | `#fafafa` bg |
-| Card | no shadow | `0 4px 12px rgba(0,0,0,.04)` |
-| Inline link | `#0d74ce` underline | `#476cff` underline |
-| Nav link | `#60646c` | `#171717` |
-| Row in a list / table | `#ffffff` | `#fafafa` |
-| Chip / tag | `#f0f0f3` bg | `#dcdee0` bg |
-
-No scale, no lift, no glow. Hovers are color/background only, plus the single soft shadow on cards.
 
 ---
 
-## Part 1 — Public Website (home, landing, hero, detail)
+### 0.9 Scrollbar (optional — only add if your project doesn't already style scrollbars)
 
-The marketing-facing surface. Reads like a magazine. **More whitespace, larger type, fewer items per row.**
+```css
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--ds-canvas-soft); }
+::-webkit-scrollbar-thumb { background: var(--ds-hairline-strong); border-radius: 3px; }
+```
+
+---
+
+### 0.10 Reduced motion (add once to `globals.css`)
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}
+```
+
+---
+
+## 1. Public website (home / landing / hero)
+
+> Apply only to public-facing pages. Scope under a root body class if your project hosts both surfaces (e.g. `body.ds-site`).
 
 ### 1.1 Page shell
 
-- Background: `#ffffff`.
-- Max content width: **1200px**, centered.
-- Horizontal page padding: `clamp(20px, 4vw, 48px)`.
-- Vertical section rhythm: **`96px`** between top-level sections.
-- Sticky top nav: **64px** tall, `#ffffff` bg, no border at rest. After scrolling > 8px, add a `1px` bottom border (`#dcdee0`). Never a shadow.
+| Property | Value |
+|----------|-------|
+| Background | `#ffffff` |
+| Max content width | `1200px`, centered |
+| Horizontal padding | `clamp(20px, 4vw, 48px)` |
+| Section spacing (top + bottom) | `96px` desktop, `64px` ≤768px |
+| Top nav height | `64px`, white, no border at rest |
+| Nav border on scroll | `1px solid #dcdee0` (add via JS after 8px scroll) |
 
-### 1.2 Typography scale (website)
+### 1.2 Typography — website
 
-| Class | Use | Size (responsive) | Weight | Line-height | Tracking |
-|-------|-----|-------------------|--------|-------------|----------|
-| `.ds-display-mega` | Hero H1 | `clamp(2rem, 5vw, 4rem)` (32 → 64px) | 600 | 1.05 | −0.03em |
-| `.ds-display-xl`   | Section hero / page H1 | `clamp(1.75rem, 4vw, 3rem)` (28 → 48px) | 600 | 1.10 | −0.03em |
-| `.ds-display-lg`   | Sub-hero / section title | `clamp(1.5rem, 3vw, 2.25rem)` (24 → 36px) | 600 | 1.15 | −0.03em |
-| `.ds-display-md`   | Card group title | `1.75rem` (28px) | 600 | 1.20 | −0.03em |
-| `.ds-title-md`     | Card title | `1.125rem` (18px) | 600 | 1.40 | 0 |
-| `.ds-body-md`      | Lead paragraph / body | `1rem` (16px) | 400 | 1.50 | 0 |
-| `.ds-body-sm`      | Card body | `0.875rem` (14px) | 400 | 1.50 | 0 |
-| `.ds-caption-uppercase` | Eyebrows / labels | `0.6875rem` (11px) | 600 | 1.40 | +0.08em, UPPERCASE |
-
-**Hero block:**
-- Eyebrow (`.ds-caption-uppercase`, muted) → tight 8px gap →
-- H1 (`.ds-display-mega`) → 16px gap →
-- Lead (`.ds-body-md`, max 60ch) → 32px gap →
-- Two buttons in a row (primary + secondary), 12px gap between them.
-
-### 1.3 Spacing scale (website)
-
-```
-xxs  4px     xs   8px     sm  12px
-base 16px    md  20px     lg  24px
-xl  32px     xxl 48px     section 96px
-```
-
-- Element-to-element inside a card: **16–24px**.
-- Card padding: **24px**.
-- Section padding (top + bottom): **96px** desktop, **64px** ≤768px.
-- Hero column gap: **48px** desktop, **32px** stacked.
-
-### 1.4 Hero section (landing)
-
-- Two-column grid on desktop: `1fr 1fr`, gap `48px`. Stacks ≤960px.
-- Left column: eyebrow, H1, lead, button row, optional topic chip row, optional 3-up stat cards row.
-- Right column: a single hero media card (16:9 thumbnail, `border-radius: 16px`, optional play overlay). Card uses `.ds-feature-card` but with no border (image fills) and one allowed dark scrim from the image bottom up — *image content only, not a brand color gradient*.
-- Background of the hero band: solid `#ffffff` (no gradient).
-
-### 1.5 Buttons in the hero
-
-- Primary: "Start Listening" / "Get Started" — `.ds-btn-primary`, 40px tall.
-- Secondary: "Play Featured" / "Browse" — `.ds-btn-secondary`, 40px tall.
-- Both buttons share `border-radius: 8px`, the same hover behavior defined in §0.6.
-
-### 1.6 Cards (podcast / feature)
-
-- `.ds-feature-card` — 24px padding, 12px radius, 1px hairline border, white surface.
-- Inside: thumbnail (radius 8px) → 16px gap → category chip → 8px → title (`.ds-title-md`) → 8px → 2-line description (`.ds-body-sm`) → 16px → meta row (duration / views).
-- Grid: `repeat(auto-fill, minmax(280px, 1fr))`, gap **24px**.
-- Hover: soft shadow only (no lift, no scale).
-
-### 1.7 Section header pattern
-
-```
-[ICON 24px]  Section title (.ds-display-md)
-             Subtitle (.ds-body-md, muted)               [optional count badge]
-```
-
-24px between icon and text. 64px gap between section header and the grid below it. 96px between sections.
-
-### 1.8 Footer
-
-- Top hairline `1px #dcdee0`.
-- Vertical padding `48px`.
-- Type: `.ds-body-sm` muted.
-- Single row on desktop, stacked on mobile.
-
----
-
-## Part 2 — Dashboard
-
-The signed-in / admin surface. Information-dense. **Smaller type, tighter spacing, more rows per screen** — but every button, color, font, hover effect, radius, and border matches Part 1.
-
-### 2.1 Page shell
-
-- Background: `#fafafa` (canvas-soft) for the main area so cards/panels (`#ffffff`) read as elevated.
-- Layout: **fixed left sidebar 240px** (collapsed: 64px), content fills remaining width.
-- Sidebar background: `#171717` (`--ds-surface-dark`), text `#ffffff`, hover row `rgba(255,255,255,0.08)`, active row `rgba(255,255,255,0.12)` with a 2px left accent bar in `#ffffff`. Sidebar uses **same Inter font** at 14px / weight 500.
-- Top bar inside the content column: **56px** tall (vs 64px on the website), white, `1px` bottom border `#dcdee0`, no shadow.
-- Content max-width: **none** (fluid), but inner page padding is `24px` (≤1280px) → `32px` (>1280px). No 1200px clamp.
-
-### 2.2 Typography scale (dashboard)
-
-Same families, same weights, **one step smaller** across the board:
-
-| Role | Class equivalent | Size | Weight | Line-height |
-|------|-----------------|------|--------|-------------|
-| Page title (H1) | dashboard `display-sm` | **22px** | 600 | 1.25 |
-| Section / card title | `title-md` | **16px** | 600 | 1.40 |
-| Sub-section label | `title-sm` | **14px** | 600 | 1.40 |
-| Body | `body-sm` | **14px** | 400 | 1.50 |
-| Meta / helper | `caption` | **13px** | 400 | 1.40 |
-| Table / data row | `body-sm` | **14px** | 400 | 1.40 |
-| Numeric values (KPI big number) | display | **28px** | 600 | 1.20 |
-| Numeric in tables | Montserrat | **13px** | 400 | 1.40 |
-| Caps eyebrow | uppercase | **11px** | 600 | 1.40, +.08em |
-
-No 48px / 64px display sizes anywhere in the dashboard. The biggest type on screen is a KPI number at **28px**.
-
-### 2.3 Spacing scale (dashboard)
-
-Tighter than the website. Reuses the same tokens, but defaults to one step smaller.
-
-```
-Element gap inside a card:  12px (vs 16–24px on site)
-Card padding:               16–20px (vs 24px)
-Card-to-card gap in grid:   16px (vs 24px)
-Section top/bottom padding: 24–32px (vs 96px)
-Form field vertical gap:    16px
-Table row height:           44px (comfortable) / 36px (compact toggle)
-```
-
-### 2.4 Buttons (dashboard) — same look, new `sm` size
-
-Default buttons are identical to Part 1 (40px tall, 10×18 padding, 14px text). A `sm` variant is added for inline / toolbar use:
+| Class | Use | Size | Weight | Line-height | Tracking |
+|-------|-----|------|--------|-------------|----------|
+| `.ds-display-mega` | Hero H1 | `clamp(2rem, 5vw, 4rem)` | 600 | 1.05 | −0.03em |
+| `.ds-display-xl` | Page H1 | `clamp(1.75rem, 4vw, 3rem)` | 600 | 1.10 | −0.03em |
+| `.ds-display-lg` | Section title | `clamp(1.5rem, 3vw, 2.25rem)` | 600 | 1.15 | −0.03em |
+| `.ds-display-md` | Card group title | `1.75rem` (28px) | 600 | 1.20 | −0.03em |
+| `.ds-title-md` | Card title | `1.125rem` (18px) | 600 | 1.40 | 0 |
+| `.ds-body-md` | Lead paragraph / body | `1rem` (16px) | 400 | 1.50 | 0 |
+| `.ds-body-sm` | Card body text | `0.875rem` (14px) | 400 | 1.50 | 0 |
+| `.ds-caption-uppercase` | Eyebrow labels | `0.6875rem` (11px) | 600 | 1.40 | +0.08em + UPPERCASE |
 
 ```css
-.ds-btn-primary.is-sm,
-.ds-btn-secondary.is-sm {
-  min-height: 32px;
-  padding: 6px 12px;
-  font-size: 13px;
-  border-radius: 6px;          /* radius-sm */
+.ds-display-mega    { font: 600 clamp(2rem, 5vw, 4rem)/1.05 var(--font-sans); letter-spacing: -0.03em; }
+.ds-display-xl      { font: 600 clamp(1.75rem, 4vw, 3rem)/1.10 var(--font-sans); letter-spacing: -0.03em; }
+.ds-display-lg      { font: 600 clamp(1.5rem, 3vw, 2.25rem)/1.15 var(--font-sans); letter-spacing: -0.03em; }
+.ds-display-md      { font: 600 1.75rem/1.20 var(--font-sans); letter-spacing: -0.03em; }
+.ds-title-md        { font: 600 1.125rem/1.40 var(--font-sans); }
+.ds-body-md         { font: 400 1rem/1.50 var(--font-sans); }
+.ds-body-sm         { font: 400 0.875rem/1.50 var(--font-sans); }
+.ds-caption-uppercase {
+  font: 600 0.6875rem/1.40 var(--font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ds-muted);
 }
 ```
 
-Hover, active, disabled behavior is unchanged. **Never** introduce a new color, a gradient, or a different radius for dashboard buttons.
-
-### 2.5 Cards / panels (dashboard)
-
-- Same `.ds-feature-card` recipe: white, 1px `#dcdee0` border, `12px` radius, soft-shadow hover.
-- Padding **20px** (instead of 24px).
-- KPI card: eyebrow caption (uppercase muted) → 8px → big number (28px / 600 ink) → 4px → delta caption (14px, color `--ds-body`, optional success/error semantic color only on the +/- glyph, not the whole text).
-
-### 2.6 Tables
+### 1.3 Hero block structure
 
 ```
-border:        none on table itself
-row divider:   1px solid #f0f0f3 (hairline, not hairline-strong)
-header row:    #fafafa background, 11px uppercase 600 letter-spacing .08em, color #60646c
-cell padding:  12px 16px (comfortable) / 8px 12px (compact)
-row hover:     background #fafafa
-selected row:  background #f5f5f7
-numeric cells: text-align right, Montserrat 13px
+[eyebrow (.ds-caption-uppercase, muted)]
+  ↓ 8px gap
+[H1 (.ds-display-mega)]
+  ↓ 16px gap
+[lead paragraph (.ds-body-md, max-width: 60ch)]
+  ↓ 32px gap
+[.ds-btn-primary]  [.ds-btn-secondary]   ← row, 12px gap between buttons
 ```
 
-Sort caret = a 16px Material Symbol next to the header label, color `#999999` at rest, `#171717` when active. No colored backgrounds on sorted columns.
+Two-column desktop layout: `grid-template-columns: 1fr 1fr`, gap `48px`. Stacks at ≤960px.
 
-### 2.7 Forms (dashboard)
+### 1.4 Feature cards
 
-- Inputs: same `.ds-text-input` recipe, but `min-height: 36px` and `padding: 8px 12px` for dense forms. Font stays 14px (still ≥14, so still acceptable on mobile; the 16px iOS-zoom rule applies only to fields a touch user actually edits — keep website forms at 16px).
-- Label above field, 13px 600 ink, 6px gap.
-- Helper text below field, 12px 400 `#60646c`.
-- Inline error: 12px 600 `#dc2626`, 4px gap below field. **Border** of the field turns `#dc2626` only when in error.
-- Checkboxes / radios: 16px, 2px border `#dcdee0`, checked fill `#171717` with white glyph. Same hover (background `#fafafa`).
-- Switch: 32×18, track `#dcdee0` off / `#171717` on, thumb `#fff`. Transition 200ms ease.
+Structure inside `.ds-feature-card`:
 
-### 2.8 Sidebar nav
+```
+[thumbnail — border-radius: 8px]
+  ↓ 16px
+[category chip (.ds-badge-pill)]
+  ↓ 8px
+[title (.ds-title-md)]
+  ↓ 8px
+[description, 2 lines max (.ds-body-sm)]
+  ↓ 16px
+[meta row — duration / views (.ds-body-sm muted)]
+```
 
-- 240px wide, dark `#171717` surface, **same Inter 14/500** for links.
-- Row height **40px**, padding `8px 16px`, icon 20px + 12px gap + label.
-- Section heading (above a group): 11px uppercase 600, color `#b0b4ba`, padding `16px 16px 8px`.
-- Hover row: `rgba(255,255,255,0.08)`.
-- Active row: `rgba(255,255,255,0.12)` + a `2px` left bar in `#ffffff` flush to the left edge.
-- Collapsed (64px): icon only, label on `:hover` as a 12px tooltip pill (`#171717` bg, `#fff` text, `#dcdee0` border at 12% white).
+Card grid: `grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))`, gap `24px`.
 
-### 2.9 Top bar (dashboard)
+### 1.5 Section header pattern
 
-- 56px tall, `#ffffff`, `1px` bottom border `#dcdee0`.
-- Left: page title (`22/600`) + optional breadcrumb above it (11px uppercase, `#999`).
-- Right: search input (`.ds-text-input.is-sm`, 240px), notifications icon button, user avatar (32px circle, initials, `#171717` bg / `#fff` text).
-- No shadow.
+```
+[icon 24px]  [section title (.ds-display-md)]
+             [subtitle (.ds-body-md, color: --ds-body)]     [optional count badge]
+```
 
-### 2.10 Charts
+- 24px gap between icon and text block.
+- 64px gap between section header and the card grid below it.
+- 96px between top-level sections.
 
-- Line / bar fill: `#171717` primary series, `#60646c` secondary, `#dcdee0` tertiary.
-- Grid lines: `#f0f0f3` at 1px, dashed `4 4`.
-- Axis labels: 11px `#999999`.
-- Tooltip: white card, `1px #dcdee0` border, `12px` radius, soft shadow, 12px / 600 label + 13px Montserrat value.
-- **No fills under lines, no gradient under-area shading.** If an area chart is needed, use a flat `#f0f0f3` fill.
+### 1.6 Footer
 
-### 2.11 Density toggle (optional but recommended)
-
-A single toolbar control that switches `data-density="comfortable"` ↔ `data-density="compact"` on the dashboard root. Compact = row height 36px, card padding 16px, table cell padding `8/12`. Comfortable = the defaults above.
+- Top border: `1px solid var(--ds-hairline-strong)`
+- Vertical padding: `48px`
+- Text: `.ds-body-sm`, color `var(--ds-body)`
 
 ---
 
-## 3. What stays identical across both surfaces
+## 2. Dashboard (signed-in / admin)
+
+> Apply only to admin/dashboard views. Scope under a root class (e.g. `body[data-surface="dashboard"]`) so these rules don't leak into public pages.
+
+### 2.1 Page shell
+
+| Property | Value |
+|----------|-------|
+| Background | `#fafafa` (so white cards read as elevated) |
+| Layout | Fixed left sidebar 240px + fluid content area |
+| Sidebar background | `#171717` (near-black, `--ds-surface-dark`) |
+| Top bar height | `56px`, white, `1px` bottom border `#dcdee0` |
+| Content padding | `24px` (≤1280px) → `32px` (>1280px) |
+
+**Important:** The sidebar being `#171717` is intentional and correct. If your project already has a sidebar with a different color, do not apply §2.6 — keep your existing sidebar structure and only adopt the typography and spacing rules from §2.2 onwards.
+
+### 2.2 Typography — dashboard
+
+Same families and weights as the website, one step smaller:
+
+| Role | Size | Weight | Line-height |
+|------|------|--------|-------------|
+| Page title (H1) | 22px | 600 | 1.25 |
+| Section / card title | 16px | 600 | 1.40 |
+| Sub-section label | 14px | 600 | 1.40 |
+| Body | 14px | 400 | 1.50 |
+| Meta / helper | 13px | 400 | 1.40 |
+| Table rows | 14px | 400 | 1.40 |
+| KPI big number | 28px | 600 | 1.20 |
+| Numbers in tables | Montserrat 13px | 400 | 1.40 |
+| Eyebrow caps | 11px + UPPERCASE | 600 | 1.40, +0.08em |
+
+No 48px or 64px display sizes in the dashboard. The largest text on screen is the KPI number at 28px.
+
+### 2.3 Spacing — dashboard
+
+```
+Element gap inside a card:     12px
+Card padding:                   20px
+Card-to-card gap in grid:       16px
+Section padding (top + bottom): 24–32px
+Form field vertical gap:        16px
+Table row height:               44px (comfortable) / 36px (compact)
+```
+
+### 2.4 Tables
+
+```css
+/* Apply to your table container */
+.ds-table-wrap {
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-lg);
+  overflow: hidden;
+}
+
+/* Table itself — no outer border */
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Header row */
+.ds-table thead tr {
+  background: var(--ds-canvas-soft);
+}
+.ds-table thead th {
+  padding: 12px 16px;
+  font: 600 11px/1.4 var(--font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ds-body);
+  text-align: left;
+}
+
+/* Body rows */
+.ds-table tbody td {
+  padding: 12px 16px;
+  font: 400 14px/1.4 var(--font-sans);
+  color: var(--ds-ink);
+  border-top: 1px solid var(--ds-hairline); /* #f0f0f3 — lighter than default border */
+}
+.ds-table tbody tr:hover td {
+  background: var(--ds-canvas-soft);
+}
+
+/* Numeric cells — right-aligned, Montserrat */
+.ds-table td.is-numeric {
+  text-align: right;
+  font: 400 13px/1.4 var(--font-accent);
+}
+```
+
+### 2.5 Forms — dashboard
+
+```css
+/* Dense input variant for dashboard forms */
+.ds-text-input.is-dense {
+  min-height: 36px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+/* Form field label */
+.ds-field-label {
+  display: block;
+  font: 600 13px/1 var(--font-sans);
+  color: var(--ds-ink);
+  margin-bottom: 6px;
+}
+
+/* Helper text below field */
+.ds-field-helper {
+  font: 400 12px/1.4 var(--font-sans);
+  color: var(--ds-body);
+  margin-top: 4px;
+}
+
+/* Inline error text below field */
+.ds-field-error {
+  font: 600 12px/1.4 var(--font-sans);
+  color: var(--ds-error);
+  margin-top: 4px;
+}
+```
+
+### 2.6 Sidebar nav
+
+> **Only apply this if you are building a new sidebar from scratch.** Do not apply to an existing sidebar.
+
+```css
+.ds-sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: var(--ds-surface-dark); /* #171717 */
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* Section heading inside sidebar (above a group of links) */
+.ds-sidebar-heading {
+  padding: 16px 16px 8px;
+  font: 600 11px/1.4 var(--font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b0b4ba;
+}
+
+/* Nav row */
+.ds-sidebar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 8px 16px;
+  color: rgba(255, 255, 255, 0.88);
+  font: 500 14px/1 var(--font-sans);
+  text-decoration: none;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background-color 0.15s ease;
+}
+.ds-sidebar-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.ds-sidebar-row.is-active {
+  background: rgba(255, 255, 255, 0.12);
+  border-left-color: #ffffff;
+}
+```
+
+### 2.7 Top bar — dashboard
+
+```css
+.ds-topbar {
+  height: 56px;
+  background: var(--ds-surface-card);
+  border-bottom: 1px solid var(--ds-hairline-strong);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+```
+
+### 2.8 KPI card
+
+Structure inside `.ds-feature-card` (with `padding: 20px`):
+
+```
+[eyebrow (.ds-caption-uppercase, --ds-muted)]
+  ↓ 8px
+[big number — 28px / 600 / var(--ds-ink)]
+  ↓ 4px
+[delta caption — 14px / var(--ds-body)]
+  (only the +/– glyph gets --ds-success or --ds-error color, not the whole line)
+```
+
+### 2.9 Charts
+
+| Element | Value |
+|---------|-------|
+| Primary series | `#171717` |
+| Secondary series | `#60646c` |
+| Tertiary series | `#dcdee0` |
+| Grid lines | `1px dashed #f0f0f3` |
+| Axis labels | `11px #999999` |
+| Tooltip | White card, `1px #dcdee0` border, `12px` radius, soft shadow |
+
+No gradient fills under line charts. Use flat `#f0f0f3` if an area fill is needed.
+
+### 2.10 Density toggle (optional)
+
+Add `data-density="comfortable"` or `data-density="compact"` to the dashboard root element:
+
+```css
+[data-density="compact"] .ds-feature-card   { padding: 16px; }
+[data-density="compact"] .ds-table tbody td { padding: 8px 12px; }
+[data-density="compact"] .ds-table tbody tr { height: 36px; }
+[data-density="compact"] .ds-text-input     { min-height: 36px; padding: 8px 12px; }
+```
+
+---
+
+## 3. What stays the same across both surfaces
 
 | Item | Value |
 |------|-------|
-| Font family (UI) | Inter |
-| Font family (accent / numerics) | Montserrat |
-| Icon family | Material Symbols Outlined |
-| Primary button | `#000` → `#1a1a1a` hover, 8px radius, 14/500 |
+| Font (UI) | Inter |
+| Font (numerics / accent) | Montserrat |
+| Icons | Material Symbols Outlined only |
+| Primary button | `#000000` fill → `#1a1a1a` hover, `8px` radius |
 | Secondary button | white, `#dcdee0` border, `#fafafa` hover |
-| Border color | `#dcdee0` (everywhere) |
-| Card radius | 12px |
-| Button radius | 8px (sm: 6px) |
-| Shadow | `0 4px 12px rgba(0,0,0,.04)` (the only one) |
-| Focus ring | `2px solid #171717`, offset 3px |
+| Border color | `#dcdee0` everywhere |
+| Card radius | `12px` |
+| Button radius | `8px` (small variant: `6px`) |
+| Shadow | `0 4px 12px rgba(0,0,0,0.04)` — the only shadow |
+| Focus ring | `2px solid #171717`, offset `3px` |
 | Link color | `#0d74ce` → `#476cff` hover |
-| Disabled | `opacity: .55` |
-| Transition | 150–220ms ease |
+| Disabled state | `opacity: 0.55` |
+| Transition speed | `150–220ms ease` |
 | Gradients | **None.** Solid fills only. |
-
-## 4. What changes between Website and Dashboard
-
-| Dimension | Website | Dashboard |
-|-----------|---------|-----------|
-| Background | `#ffffff` | `#fafafa` (so white cards stand out) |
-| Layout | Centered, 1200px max | Fluid, sidebar + content |
-| Sidebar | None (top nav) | `#171717` dark, 240px |
-| Nav height | 64px | 56px |
-| Largest type on screen | **64px** (hero H1) | **28px** (KPI big number) |
-| Body text | 16px | 14px |
-| Section padding | 96px | 24–32px |
-| Card padding | 24px | 20px |
-| Card grid gap | 24px | 16px |
-| Default button | 40px tall | 40px tall (with `sm` 32px variant) |
-| Density | Editorial / generous | Information-dense |
-| Montserrat usage | Rare | Numbers in tables / IDs / timestamps |
 
 ---
 
-## 5. Implementation notes
+## 4. What differs between website and dashboard
 
-- All site-specific styles scope under `body.podcast-site`. Dashboard styles scope under `body.podcast-site[data-surface="dashboard"]` (or an equivalent root class) so the same tokens are picked up but density rules override.
-- Tokens live in `app/globals.css` under `:root` and in `lib/design-tokens.ts`. **Always reference the variable, not the hex.**
-- Use existing utility classes (`.ds-display-mega`, `.ds-title-md`, `.ds-btn-primary`, …) before reaching for ad-hoc Tailwind classes.
-- Icons: `<span className="material-symbols-outlined">play_arrow</span>` — never an inline SVG when a Material Symbol exists.
-- Respect `prefers-reduced-motion`: all transitions defined above must drop to `none` under it (already wired in `globals.css`).
+| Dimension | Website | Dashboard |
+|-----------|---------|-----------|
+| Page background | `#ffffff` | `#fafafa` |
+| Layout | Centered, 1200px max | Fluid, sidebar + content |
+| Sidebar | None (top nav) | `#171717` dark, 240px |
+| Nav / top-bar height | 64px | 56px |
+| Largest type on screen | 64px (hero H1) | 28px (KPI number) |
+| Body text size | 16px | 14px |
+| Section padding | 96px | 24–32px |
+| Card padding | 24px | 20px |
+| Card grid gap | 24px | 16px |
+| Default button | 40px tall | 40px tall + `sm` 32px variant |
+
+---
+
+## 5. Radius reference
+
+| Element | Radius |
+|---------|--------|
+| Buttons (default) | `8px` |
+| Buttons (small variant) | `6px` |
+| Text inputs / selects | `8px` |
+| Cards / panels / modals / toasts | `12px` |
+| Hero / large media thumbnail | `16px` |
+| Card thumbnail (inside card) | `8px` |
+| Checkbox | `4px` |
+| Radio / switch track / avatar / badge / chip / progress bar | `9999px` (pill / circle) |
+| Table cells | `0px` (no rounding) |
+| Outer table container | `12px` |
+| Tooltip | `6px` |
+| Inline code / tag | `4px` |
+
+Nothing uses a radius larger than `16px`. Do not use `10px`, `14px`, or any value not in this table.
+
+---
+
+## 6. Hover behavior — quick reference
+
+| Element | Hover changes |
+|---------|--------------|
+| Primary button | background only: `#000000` → `#1a1a1a` |
+| Secondary button | background only: `#fff` → `#fafafa` |
+| Tertiary button | text color only: `#0d74ce` → `#476cff` |
+| Icon button | background only: transparent → `#fafafa` |
+| Card | box-shadow only: none → `0 4px 12px rgba(0,0,0,0.04)` |
+| Inline link | color only: `#0d74ce` → `#476cff` |
+| Nav link (public) | color only: `#60646c` → `#171717` |
+| Table / list row | background only: white → `#fafafa` |
+| Chip / tag | background only: `#f0f0f3` → `#dcdee0` |
+
+Hover never changes: radius, size, border width, border color, font weight, or position.
+
+---
+
+## 7. Implementation checklist
+
+Before shipping any new page or component, verify:
+
+- [ ] Fonts loaded: Inter + Montserrat via `next/font`, Material Symbols `<link>` in `<head>`
+- [ ] Icons render as glyphs, not text (if text shows, the `<link>` is missing)
+- [ ] Color tokens in `:root` — referencing variables, not hardcoded hex
+- [ ] No `linear-gradient` on any button, card, nav, hero, or header
+- [ ] No colored borders (all borders are `#dcdee0`)
+- [ ] No shadows on buttons at rest or hover
+- [ ] Sidebar is `#171717` if dashboard; public site has top nav only
+- [ ] `prefers-reduced-motion` removes all transitions
+- [ ] Dashboard styles scoped to dashboard root class — not leaking into public pages

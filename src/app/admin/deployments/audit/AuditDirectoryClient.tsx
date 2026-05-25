@@ -3,14 +3,13 @@
 import { useCallback } from "react";
 import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminDirectoryPageHeader, AdminDirectorySectionTitleRow } from "@/components/admin/AdminDirectoryPageHeader";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { TablePagination, type TablePaginationMeta } from "@/components/admin/TablePagination";
 import { formatAdminDateTime } from "@/lib/admin/formatAdminDateTime";
 import { useAdminRouteTransition } from "@/lib/admin/useAdminRouteTransition";
 import {
-  adminBody,
   adminCountBadge,
-  adminPageTitle,
   adminPanel,
   adminSectionTitle,
   adminTable,
@@ -224,27 +223,19 @@ export function AuditDirectoryClient({
   return (
     <div>
       <div className={adminPanel}>
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="min-w-0 max-w-3xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className={adminPageTitle}>Audit</h1>
-              <span className={adminCountBadge}>{eventsPagination.totalCount.toLocaleString()} events</span>
-            </div>
-            <p className={`${adminBody} mt-1.5 text-[var(--ds-body)]`}>
-              Review who changed what across the deployment registry. Click any column header to sort. Search, sort, and
-              pagination are independent for each table below.
-            </p>
-          </div>
-
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+        <AdminDirectoryPageHeader
+          title="Audit"
+          badge={<span className={adminCountBadge}>{eventsPagination.totalCount.toLocaleString()} events</span>}
+          description="Review who changed what across the deployment registry. Click any column header to sort. Search, sort, and pagination are independent for each table below."
+          search={
             <CollapsibleSearchBar
               searchQuery={state.events.q}
               buildHref={buildEventsSearchHref}
               placeholder="Action, entity, actor…"
               ariaLabel="Search audit events"
             />
-          </div>
-        </div>
+          }
+        />
       </div>
 
       {/* Audit events */}
@@ -311,22 +302,23 @@ export function AuditDirectoryClient({
 
       {/* Status history */}
       <div className="mt-8">
-        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="mb-2">
+          <AdminDirectorySectionTitleRow
+            search={
+              <CollapsibleSearchBar
+                searchQuery={state.history.q}
+                buildHref={buildHistorySearchHref}
+                placeholder="Target id, changed by, reason…"
+                ariaLabel="Search status history"
+              />
+            }
+          >
             <h2 className={adminSectionTitle}>Status history</h2>
             <span className={adminCountBadge}>{historyPagination.totalCount.toLocaleString()} total</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className={adminToolbarMeta}>
-              {sortSummary(state.history.sort, state.history.dir, HISTORY_SORT_LABELS, "when")}
-            </span>
-            <CollapsibleSearchBar
-              searchQuery={state.history.q}
-              buildHref={buildHistorySearchHref}
-              placeholder="Target id, changed by, reason…"
-              ariaLabel="Search status history"
-            />
-          </div>
+          </AdminDirectorySectionTitleRow>
+          <span className={`${adminToolbarMeta} mt-2 inline-flex`}>
+            {sortSummary(state.history.sort, state.history.dir, HISTORY_SORT_LABELS, "when")}
+          </span>
         </div>
         <div className={`${adminTableWrap} transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
           <div className={adminTableScroll}>

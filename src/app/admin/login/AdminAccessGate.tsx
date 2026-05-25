@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { formatPhoneDisplay } from "@/lib/keyraSessionDisplay";
-import { buildGetStartedAccessUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
+import { buildAdminGetStartedAccessUrl } from "@/lib/keyraAppUrls";
 
 type Props = {
   reason: "sign_in" | "no_access";
@@ -13,7 +13,7 @@ type Props = {
 
 export function AdminAccessGate({ reason, phoneE164, nextPath }: Props) {
   const loginHref = useMemo(
-    () => buildGetStartedAccessUrl(`${keyraMarketingOrigin()}${nextPath}`),
+    () => buildAdminGetStartedAccessUrl(nextPath),
     [nextPath],
   );
 

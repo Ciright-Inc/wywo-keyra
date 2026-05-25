@@ -27,6 +27,8 @@
     "db:seed:local-latest-auth": "tsx prisma/seedLocalLatestAuth.ts",
     "db:check:feed": "tsx prisma/checkFeedDb.ts",
     "db:seed:deploy-catalog": "tsx prisma/seedDeployCatalog.ts",
+    "db:seed:agent-world": "tsx prisma/seedAgentWorldOnly.ts",
+    "db:seed:deployment-apps": "tsx prisma/seedDeploymentApps.ts",
     "db:seed:regions-countries": "tsx prisma/seedRegionsCountries.ts",
     "db:seed:admin-users": "tsx prisma/seedAdminUsers.ts",
     "db:seed:site-footer": "tsx prisma/seedSiteFooter.ts",
@@ -45,6 +47,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1053.0",
     "@prisma/client": "^6.19.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",

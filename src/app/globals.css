@@ -239,7 +239,7 @@
   right: 0;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   :root {
     --keyra-header-offset: 3.5rem;
   }
@@ -674,14 +674,29 @@ body {
 @media (max-width: 1023px) {
   .keyra-site-footer__link-grid {
     max-width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.375rem 0.75rem;
   }
 
   .keyra-site-footer__link-grid .keyra-site-footer__link {
-    font-size: 11px;
-    line-height: 1.25;
-    text-align: center;
-    padding-block: 0.125rem;
+    font-size: 12px;
+    line-height: 1.35;
+    text-align: left;
+    padding-block: 0.2rem;
     word-break: break-word;
+  }
+
+  .keyra-site-footer__meta {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 479px) {
+  .keyra-site-footer__link-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1381,16 +1396,19 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   }
 }
 
-@media (min-width: 640px) {
+@media (min-width: 640px) and (max-width: 1023px) {
   .keyra-bento-globe-card__orb {
-    width: min(48%, 300px);
-    right: 8%;
-    bottom: 10%;
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: min(56vw, 300px);
+    margin: 0 auto;
   }
 }
 
 @media (min-width: 1024px) {
   .keyra-bento-globe-card__orb {
+    position: absolute;
     width: min(46%, 320px);
     right: 10%;
     bottom: 12%;
@@ -3075,5 +3093,61 @@ html[data-keyra-lane="developer"] .keyra-code-block {
   );
   background-size: 200% 100%;
   animation: keyra-skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive safeguards — marketing surfaces (no layout redesign)             */
+/* -------------------------------------------------------------------------- */
+.keyra-section,
+.keyra-band,
+.keyra-hero-bento,
+.keyra-site-footer {
+  min-width: 0;
+}
+
+.keyra-section img,
+.keyra-section video,
+.keyra-section svg,
+.keyra-hero-bento img,
+.keyra-hero-bento video {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 1023px) {
+  .keyra-section {
+    padding-left: max(var(--keyra-space-section-x, 1rem), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--keyra-space-section-x, 1rem), env(safe-area-inset-right, 0px));
+  }
+
+  .keyra-table-scroll,
+  .adminTableScroll {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 639px) {
+  :root {
+    --keyra-space-section: 2rem;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    max-width: 100%;
+  }
+
+  .keyra-display-hero {
+    overflow-wrap: anywhere;
+  }
+
+  .keyra-trust-journey-panel__body {
+    padding-inline: 1.125rem;
+  }
+
+  .keyra-trust-journey-panel__footer {
+    padding-inline: 1.125rem;
+  }
 }
 

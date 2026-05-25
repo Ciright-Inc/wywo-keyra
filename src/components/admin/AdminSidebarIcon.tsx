@@ -7,11 +7,19 @@ type IconName =
   | "language"
   | "cell_tower"
   | "apps"
+  | "perm_media"
+  | "folder"
   | "dns"
   | "shield"
   | "inbox"
   | "group"
-  | "history";
+  | "history"
+  | "hub"
+  | "account_tree"
+  | "swap_horiz"
+  | "library_books"
+  | "device_hub"
+  | "share";
 
 type Props = {
   name: string;
@@ -92,6 +100,21 @@ function renderIcon(name: IconName) {
           <rect x="14" y="14" width="6" height="6" rx="1.5" />
         </>
       );
+    case "perm_media":
+      return (
+        <>
+          <rect x="4" y="5" width="16" height="14" rx="2" />
+          <circle cx="9" cy="10" r="1.5" fill="currentColor" stroke="none" />
+          <path d="m4 17 5-5 4 4 3-3 4 4" />
+        </>
+      );
+    case "folder":
+      return (
+        <>
+          <path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z" />
+          <path d="M8 12h8M8 15h6" />
+        </>
+      );
     case "dns":
       return (
         <>
@@ -127,6 +150,52 @@ function renderIcon(name: IconName) {
           <path d="M12 8v4l3 2" />
           <path d="M3.5 12A8.5 8.5 0 1 0 12 3.5V6" />
           <path d="M3 3v3h3" />
+        </>
+      );
+    case "hub":
+      return (
+        <>
+          <circle cx="12" cy="12" r="2.5" />
+          <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8" />
+        </>
+      );
+    case "account_tree":
+      return (
+        <>
+          <path d="M12 4v4M8 8h8" />
+          <path d="M6 12v4M18 12v4" />
+          <circle cx="6" cy="18" r="2" />
+          <circle cx="18" cy="18" r="2" />
+          <circle cx="12" cy="4" r="2" />
+        </>
+      );
+    case "swap_horiz":
+      return (
+        <>
+          <path d="M7 7h11l-3-3M17 17H6l3 3" />
+        </>
+      );
+    case "library_books":
+      return (
+        <>
+          <path d="M5 5h5v14H5zM14 5h5v14h-5z" />
+          <path d="M10 5h4v14h-4" />
+        </>
+      );
+    case "device_hub":
+      return (
+        <>
+          <circle cx="12" cy="12" r="2.5" />
+          <path d="M12 4v3M12 17v3M4 12h3M17 12h3M6.3 6.3l2.1 2.1M15.6 15.6l2.1 2.1M17.7 6.3l-2.1 2.1M8.4 15.6l-2.1 2.1" />
+        </>
+      );
+    case "share":
+      return (
+        <>
+          <circle cx="18" cy="5" r="2" />
+          <circle cx="6" cy="12" r="2" />
+          <circle cx="18" cy="19" r="2" />
+          <path d="M8 11.5 16 6.5M8 12.5l8 5" />
         </>
       );
     default:

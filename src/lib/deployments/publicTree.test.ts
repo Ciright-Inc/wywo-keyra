@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { PublicDeploymentTree } from "@/lib/deployments/publicTree";
-import { filterPublicTree } from "@/lib/deployments/publicTree";
+import type { PublicDeploymentTree } from "@/lib/deployments/publicTreeShared";
+import { filterPublicTree } from "@/lib/deployments/publicTreeShared";
 
 describe("filterPublicTree", () => {
   it("filters by mapKey without mutating original tree object fields deeply", () => {

@@ -9,6 +9,14 @@ function trimSlash(s: string): string {
   return String(s || "").replace(/\/+$/, "");
 }
 
+function governmentsUrl(): string {
+  return trimSlash(
+    process.env.NEXT_PUBLIC_GOVERNMENTS_URL?.trim() ||
+      process.env.NEXT_PUBLIC_GLOBAL_DEPLOYMENT_URL?.trim() ||
+      "https://governments.keyra.ie",
+  );
+}
+
 function marketingOrigin(): string {
   return trimSlash(
     process.env.NEXT_PUBLIC_KEYRA_SITE_URL?.trim() ||
@@ -56,7 +64,7 @@ function ecosystemAppLinks(): { id: string; label: string; href: string }[] {
       href: trimSlash(process.env.NEXT_PUBLIC_PRESS_URL || "https://press.keyra.ie"),
     },
     { id: "trust", label: "Trust", href: `${m}/trust` },
-    { id: "global", label: "Global deployment", href: trimSlash(process.env.NEXT_PUBLIC_GLOBAL_DEPLOYMENT_URL || `${m}/global-deployment`) },
+    { id: "global", label: "Global deployment", href: governmentsUrl() },
   ];
 }
 
@@ -116,7 +124,7 @@ export function KeyraEcosystemFooterPublic() {
             <a href={`${m}/`} className={pillClass} rel="noopener noreferrer">
               Consumers
             </a>
-            <a href={trimSlash(process.env.NEXT_PUBLIC_GLOBAL_DEPLOYMENT_URL || `${m}/global-deployment`)} className={pillClass} rel="noopener noreferrer">
+            <a href={governmentsUrl()} className={pillClass} rel="noopener noreferrer">
               Governments &amp; carriers
             </a>
             <a href={trimSlash(process.env.NEXT_PUBLIC_DEVELOPER_URL || "https://developer.keyra.ie")} className={pillClass} rel="noopener noreferrer" target="_blank">

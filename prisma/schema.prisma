@@ -276,6 +276,62 @@ model DeploymentAppCategory {
   createdAt DateTime @default(now())
 }
 
+enum MaterialMediaKind {
+  IMAGE
+  VIDEO
+  GIF
+  OTHER
+}
+
+/** Admin-managed media assets (images, videos, GIFs) stored in S3. */
+model AdminMaterial {
+  id            String            @id @default(cuid())
+  title         String
+  description   String?           @db.Text
+  url           String            @db.Text
+  s3Key         String            @db.Text
+  mimeType      String
+  mediaKind     MaterialMediaKind
+  fileName      String
+  fileSizeBytes Int
+  sortOrder     Int               @default(0)
+  isActive      Boolean           @default(true)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([isActive, sortOrder])
+  @@index([mediaKind])
+}
+
+enum DataRoomDocumentKind {
+  PDF
+  TEXT
+  WORD
+  SPREADSHEET
+  PRESENTATION
+  OTHER
+}
+
+/** Admin data room documents (PDF, text, Office, etc.) stored in S3. */
+model AdminDataRoom {
+  id            String              @id @default(cuid())
+  title         String
+  description   String?             @db.Text
+  url           String              @db.Text
+  s3Key         String              @db.Text
+  mimeType      String
+  documentKind  DataRoomDocumentKind
+  fileName      String
+  fileSizeBytes Int
+  sortOrder     Int                 @default(0)
+  isActive      Boolean             @default(true)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@index([isActive, sortOrder])
+  @@index([documentKind])
+}
+
 /** Optional display profile for Keyra marketing / app session (keyed by phone from login). */
 model KeyraSiteUserProfile {
   id          String   @id @default(cuid())
@@ -493,4 +549,343 @@ model SiteFooterSocialLink {
   updatedAt   DateTime           @updatedAt
 
   @@index([sortOrder])
+}
+
+// ─── Global Agent World Architecture ─────────────────────────────────────────
+
+/** Domain layer: Ciright parent → Keyra bridge → Marketplace sovereign portal. */
+enum AgentDomainLayer {
+  CIRIGHT_PARENT
+  KEYRA_BRIDGE
+  MARKETPLACE
+}
+
+enum AgentWorldType {
+  TELCO
+  GOVERNMENT
+  UNIVERSITY
+  BANKING
+  ENTERPRISE
+  HEALTHCARE
+}
+
+enum AgentOperationalStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  MARKETPLACE_READY
+  SUBSCRIBED
+  DEPLOYING
+  ACTIVE
+  SUSPENDED
+  REVOKED
+}
+
+enum AgentIndustryVertical {
+  TELECOM
+  GOVERNMENT
+  BANKING
+  UNIVERSITY
+  HEALTHCARE
+  ENTERPRISE
+  INFRASTRUCTURE
+  REGULATORY
+}
+
+/** Civilization-scale operational graph entity kinds (intrinsic index). */
+enum IntrinsicIndexEntityKind {
+  PERSON
+  IDENTITY
+  DEVICE
+  SIM
+  SUBSCRIBER
+  AGENT
+  TASK
+  ORGANIZATION
+  TENANT_WORLD
+  COUNTRY
+  REGULATORY_BOUNDARY
+  KNOWLEDGE_PACK
+  INTEGRATION
+  PARENT_AGENT
+  KEYRA_AGENT
+  TENANT_AGENT
+}
+
+enum OperationalGraphRelation {
+  INHERITS_FROM
+  DEPLOYED_TO
+  ATTACHED_TO
+  CONNECTED_TO
+  GOVERNS
+  EXECUTES
+  AUDITS
+  CONTAINS
+  BELONGS_TO
+  REGULATED_BY
+}
+
+/** Parent agent design — agents.ciright.com (no tenant transactional data). */
+model CirightParentAgent {
+  id                      String                @id @default(cuid())
+  parentAgentId           String                @unique
+  name                    String
+  slug                    String                @unique
+  description             String                @db.Text
+  operationalCategory     String
+  industryVertical        AgentIndustryVertical
+  workflowDefinitionJson  Json?
+  orchestrationLogicJson  Json?
+  policyEngineJson        Json?
+  permissionStructureJson Json?
+  executionTemplateJson   Json?
+  deploymentStandardJson  Json?
+  isPublished             Boolean               @default(false)
+  sortOrder               Int                   @default(0)
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+
+  keyraAgents KeyraDeploymentAgent[]
+
+  @@index([industryVertical])
+  @@index([operationalCategory])
+}
+
+/** Keyra deployment bridge — ciright.agents.keyra.ie (no tenant operational data). */
+model KeyraDeploymentAgent {
+  id                       String                 @id @default(cuid())
+  keyraAgentId             String                 @unique
+  parentAgentId            String
+  parentAgent              CirightParentAgent     @relation(fields: [parentAgentId], references: [id], onDelete: Restrict)
+  name                     String
+  slug                     String                 @unique
+  description              String                 @db.Text
+  domainLayer              AgentDomainLayer       @default(KEYRA_BRIDGE)
+  industryVertical         AgentIndustryVertical
+  deploymentClassification String?
+  subscriptionPackage      String?
+  /** ISO-3166 alpha-2 codes where this deployment agent applies. */
+  countryIso2s             String[]               @default([])
+  deploymentReadiness      AgentOperationalStatus @default(DRAFT)
+  isMarketplaceApproved    Boolean                @default(false)
+  sortOrder                Int                    @default(0)
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+
+  tenantInstances    TenantAgentInstance[]
+  knowledgePackLinks KeyraAgentKnowledgePack[]
+
+  @@index([parentAgentId])
+  @@index([industryVertical])
+  @@index([deploymentReadiness])
+}
+
+/** Sovereign operational environment — agents.keyra.ie tenant world. */
+model AgentWorld {
+  id                      String                 @id @default(cuid())
+  worldId                 String                 @unique
+  name                    String
+  slug                    String                 @unique
+  description             String                 @db.Text
+  worldType               AgentWorldType
+  industryVertical        AgentIndustryVertical
+  countryIso2             String?
+  organizationName        String?
+  sovereignRegion         String?
+  dataResidencyRule       String?
+  complianceControlsJson  Json?
+  governanceStructureJson Json?
+  operationalRulesJson    Json?
+  regionalBoundariesJson  Json?
+  status                  AgentOperationalStatus @default(DRAFT)
+  isActive                Boolean                @default(false)
+  countryDeploymentId     String?
+  telcoDeploymentId       String?
+  sortOrder               Int                    @default(0)
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
+
+  tenantInstances    TenantAgentInstance[]
+  knowledgePackLinks AgentWorldKnowledgePack[]
+  integrations       AgentWorldIntegration[]
+  graphEdges         OperationalGraphEdge[]
+
+  @@index([worldType])
+  @@index([industryVertical])
+  @@index([countryIso2])
+  @@index([status])
+}
+
+/** Customer operational agent instance (lineage visible upstream; data stays in world). */
+model TenantAgentInstance {
+  id              String                 @id @default(cuid())
+  instanceId      String                 @unique
+  keyraAgentId    String
+  keyraAgent      KeyraDeploymentAgent   @relation(fields: [keyraAgentId], references: [id], onDelete: Restrict)
+  agentWorldId    String
+  agentWorld      AgentWorld             @relation(fields: [agentWorldId], references: [id], onDelete: Cascade)
+  displayName     String
+  description     String?                @db.Text
+  status          AgentOperationalStatus @default(DEPLOYING)
+  permissionsJson Json?
+  /** Inheritance metadata only — no tenant operational payloads. */
+  lineageJson     Json?
+  deployedAt      DateTime?
+  activatedAt     DateTime?
+  sortOrder       Int                    @default(0)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  tasks AgentOperationalTask[]
+
+  @@index([keyraAgentId])
+  @@index([agentWorldId])
+  @@index([status])
+}
+
+/** Modular intelligence pack attachable to worlds and deployment agents. */
+model KnowledgePack {
+  id                      String                 @id @default(cuid())
+  packId                  String                 @unique
+  name                    String
+  slug                    String                 @unique
+  description             String                 @db.Text
+  packCategory            String
+  industryVertical        AgentIndustryVertical?
+  countryIso2             String?
+  approvedKnowledgeJson   Json?
+  workflowStructuresJson  Json?
+  promptStructuresJson    Json?
+  operationalRulesJson    Json?
+  integrationMappingsJson Json?
+  complianceGuidanceJson  Json?
+  isPublished             Boolean                @default(false)
+  sortOrder               Int                    @default(0)
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
+
+  worldLinks      AgentWorldKnowledgePack[]
+  keyraAgentLinks KeyraAgentKnowledgePack[]
+
+  @@index([packCategory])
+  @@index([industryVertical])
+}
+
+model AgentWorldKnowledgePack {
+  id              String   @id @default(cuid())
+  agentWorldId    String
+  knowledgePackId String
+  attachedAt      DateTime @default(now())
+  attachedBy      String?
+
+  agentWorld    AgentWorld    @relation(fields: [agentWorldId], references: [id], onDelete: Cascade)
+  knowledgePack KnowledgePack @relation(fields: [knowledgePackId], references: [id], onDelete: Cascade)
+
+  @@unique([agentWorldId, knowledgePackId])
+}
+
+model KeyraAgentKnowledgePack {
+  id              String   @id @default(cuid())
+  keyraAgentId    String
+  knowledgePackId String
+  attachedAt      DateTime @default(now())
+
+  keyraAgent    KeyraDeploymentAgent @relation(fields: [keyraAgentId], references: [id], onDelete: Cascade)
+  knowledgePack KnowledgePack        @relation(fields: [knowledgePackId], references: [id], onDelete: Cascade)
+
+  @@unique([keyraAgentId, knowledgePackId])
+}
+
+model AgentWorldIntegration {
+  id              String                 @id @default(cuid())
+  integrationId   String                 @unique
+  agentWorldId    String
+  name            String
+  integrationType String
+  endpointUrl     String?                @db.Text
+  status          AgentOperationalStatus @default(DRAFT)
+  configJson      Json?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  agentWorld AgentWorld @relation(fields: [agentWorldId], references: [id], onDelete: Cascade)
+
+  @@index([agentWorldId])
+}
+
+/** Operational execution task reference (metadata only — no tenant payloads upstream). */
+model AgentOperationalTask {
+  id                    String    @id @default(cuid())
+  taskId                String    @unique
+  tenantAgentInstanceId String
+  taskType              String
+  status                String    @default("pending")
+  lineageRef            String?
+  scheduledAt           DateTime?
+  completedAt           DateTime?
+  createdAt             DateTime  @default(now())
+
+  tenantAgentInstance TenantAgentInstance @relation(fields: [tenantAgentInstanceId], references: [id], onDelete: Cascade)
+
+  @@index([tenantAgentInstanceId])
+  @@index([status])
+}
+
+/** Intrinsic index — every governed object is indexed for lineage and orchestration. */
+model IntrinsicIndexEntry {
+  id           String                   @id @default(cuid())
+  entityKind   IntrinsicIndexEntityKind
+  entityRef    String
+  displayLabel String
+  domainLayer  AgentDomainLayer?
+  /** When true, only lineage/orchestration metadata may leave the tenant world. */
+  lineageOnly  Boolean                  @default(true)
+  agentWorldId String?
+  metadataJson Json?
+  indexedAt    DateTime                 @default(now())
+
+  @@unique([entityKind, entityRef])
+  @@index([entityKind])
+  @@index([domainLayer])
+  @@index([agentWorldId])
+}
+
+/** Civilization-scale operational relationship graph. */
+model OperationalGraphEdge {
+  id           String                   @id @default(cuid())
+  relation     OperationalGraphRelation
+  fromKind     IntrinsicIndexEntityKind
+  fromRef      String
+  toKind       IntrinsicIndexEntityKind
+  toRef        String
+  agentWorldId String?
+  lineageOnly  Boolean                  @default(true)
+  metadataJson Json?
+  createdAt    DateTime                 @default(now())
+
+  agentWorld AgentWorld? @relation(fields: [agentWorldId], references: [id], onDelete: SetNull)
+
+  @@index([fromKind, fromRef])
+  @@index([toKind, toRef])
+  @@index([agentWorldId])
+  @@index([relation])
+}
+
+/** Deployment and governance events across agent domain layers. */
+model AgentDeploymentEvent {
+  id           String                  @id @default(cuid())
+  eventType    String
+  domainLayer  AgentDomainLayer
+  entityKind   String
+  entityId     String
+  agentWorldId String?
+  status       AgentOperationalStatus?
+  payloadJson  Json?
+  actorId      String?
+  createdAt    DateTime                @default(now())
+
+  @@index([eventType])
+  @@index([agentWorldId])
+  @@index([domainLayer])
+  @@index([createdAt])
 }

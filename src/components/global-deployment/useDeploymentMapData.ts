@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { PublicDeploymentTree } from "@/lib/deployments/publicTree";
-import { filterPublicTree } from "@/lib/deployments/publicTree";
+import type { PublicDeploymentTree } from "@/lib/deployments/publicTreeShared";
+import { filterPublicTree } from "@/lib/deployments/publicTreeShared";
 import {
   clusterNodes,
   flattenPublishedCountries,

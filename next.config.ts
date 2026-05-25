@@ -18,6 +18,8 @@ const allowedDevOrigins = parseAllowedDevOrigins();
  * use `npm run dev:turbo` when you want Turbopack.
  */
 const nextConfig: NextConfig = {
+  /** Load Prisma from node_modules at runtime (avoids stale bundled clients after `prisma generate`). */
+  serverExternalPackages: ["@prisma/client", "@prisma/engines"],
   images: {
     remotePatterns: [
       {
