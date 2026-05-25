@@ -9,7 +9,7 @@ async function loadPublicSiteFooterConfig(): Promise<SiteFooterConfig> {
   );
 
   try {
-    const res = await fetch(`${base}/api/public/site-footer`, { next: { revalidate: 60 } });
+    const res = await fetch(`${base}/api/public/site-footer`, { cache: "no-store" });
     if (res.ok) return (await res.json()) as SiteFooterConfig;
   } catch {
     /* use defaults */

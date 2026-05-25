@@ -147,7 +147,7 @@ async function loadSiteFooterConfig(publishedOnly: boolean): Promise<SiteFooterC
 const getCachedPublicSiteFooter = unstable_cache(
   async () => loadSiteFooterConfig(true),
   ["site-footer-public-v1"],
-  { tags: [SITE_FOOTER_CACHE_TAG] },
+  { tags: [SITE_FOOTER_CACHE_TAG], revalidate: 60 },
 );
 
 export async function getPublicSiteFooterConfig(): Promise<SiteFooterConfig> {
