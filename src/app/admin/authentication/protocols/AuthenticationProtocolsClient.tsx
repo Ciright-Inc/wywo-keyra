@@ -30,6 +30,7 @@ import {
   adminBody,
   adminCheckbox,
   adminFilterLabel,
+  adminFilterLabelWide,
   adminFilterToolbar,
   adminInlineFormBody,
   adminPageTitle,
@@ -615,7 +616,7 @@ export function AuthenticationProtocolsClient({
 
       <div className={adminToolbarStrip}>
         <div className={adminFilterToolbar}>
-          <label className={adminFilterLabel}>
+          <label className={adminFilterLabelWide}>
             Category
             <AdminSelectMenu
               value={category}
