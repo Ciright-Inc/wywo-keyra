@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { keyraGlobalDeploymentUrl } from "@/lib/keyraAppUrls";
 
-/** Global deployment lives on its own site — redirect legacy path on keyra.ie. */
-export default function GlobalDeploymentRedirectPage() {
+export const metadata: Metadata = {
+  title: "Global deployment",
+  description:
+    "Explore Keyra’s published regional, country, and operator deployment posture — calm, structured, and institutionally grounded.",
+};
+
+/** Legacy path — map lives on governments.keyra.ie. */
+export default function GlobalDeploymentPage() {
   redirect(keyraGlobalDeploymentUrl());
 }

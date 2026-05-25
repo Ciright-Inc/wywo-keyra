@@ -13,7 +13,13 @@ type IconName =
   | "shield"
   | "inbox"
   | "group"
-  | "history";
+  | "history"
+  | "hub"
+  | "account_tree"
+  | "swap_horiz"
+  | "library_books"
+  | "device_hub"
+  | "share";
 
 type Props = {
   name: string;
@@ -144,6 +150,52 @@ function renderIcon(name: IconName) {
           <path d="M12 8v4l3 2" />
           <path d="M3.5 12A8.5 8.5 0 1 0 12 3.5V6" />
           <path d="M3 3v3h3" />
+        </>
+      );
+    case "hub":
+      return (
+        <>
+          <circle cx="12" cy="12" r="2.5" />
+          <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8" />
+        </>
+      );
+    case "account_tree":
+      return (
+        <>
+          <path d="M12 4v4M8 8h8" />
+          <path d="M6 12v4M18 12v4" />
+          <circle cx="6" cy="18" r="2" />
+          <circle cx="18" cy="18" r="2" />
+          <circle cx="12" cy="4" r="2" />
+        </>
+      );
+    case "swap_horiz":
+      return (
+        <>
+          <path d="M7 7h11l-3-3M17 17H6l3 3" />
+        </>
+      );
+    case "library_books":
+      return (
+        <>
+          <path d="M5 5h5v14H5zM14 5h5v14h-5z" />
+          <path d="M10 5h4v14h-4" />
+        </>
+      );
+    case "device_hub":
+      return (
+        <>
+          <circle cx="12" cy="12" r="2.5" />
+          <path d="M12 4v3M12 17v3M4 12h3M17 12h3M6.3 6.3l2.1 2.1M15.6 15.6l2.1 2.1M17.7 6.3l-2.1 2.1M8.4 15.6l-2.1 2.1" />
+        </>
+      );
+    case "share":
+      return (
+        <>
+          <circle cx="18" cy="5" r="2" />
+          <circle cx="6" cy="12" r="2" />
+          <circle cx="18" cy="19" r="2" />
+          <path d="M8 11.5 16 6.5M8 12.5l8 5" />
         </>
       );
     default:

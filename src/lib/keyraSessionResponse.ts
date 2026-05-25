@@ -46,6 +46,11 @@ export function jsonWithKeyraSession(
   const token = serializeSession(user);
   if (!token) return null;
   const res = NextResponse.json({ ...body, user });
+  attachKeyraSessionCookie(res, token);
+  return res;
+}
+
+function attachKeyraSessionCookie(res: NextResponse, token: string): void {
   res.cookies.set({
     name: KEYRA_SESSION_COOKIE,
     value: token,
@@ -55,5 +60,17 @@ export function jsonWithKeyraSession(
     path: "/",
     maxAge: KEYRA_SESSION_MAX_AGE,
   });
+}
+
+export function redirectWithKeyraSession(
+  user: KeyraSessionUser,
+  nextPath: string,
+  origin: string,
+): NextResponse | null {
+  const token = serializeSession(user);
+  if (!token) return null;
+  const safeNext = nextPath.startsWith("/") ? nextPath : "/";
+  const res = NextResponse.redirect(new URL(safeNext, origin));
+  attachKeyraSessionCookie(res, token);
   return res;
 }

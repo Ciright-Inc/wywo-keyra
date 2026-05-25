@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { GlobalVerificationSignalsLive } from "@/components/home/GlobalVerificationSignalsLive";
 import { NEW_TAB_LINK } from "@/lib/newTabLink";
+import { keyraGlobalDeploymentUrl } from "@/lib/keyraAppUrls";
 import { LatestAuthenticationsFeed } from "@/components/home/LatestAuthenticationsFeed";
 import { cn } from "@/components/ui/cn";
 
@@ -27,7 +28,7 @@ export function KeyraGlobeLiveStatPanel({ className = "" }: PanelProps) {
       <p className={cn("mb-1", labelEyebrow)}>Global verification signals</p>
       <GlobalVerificationSignalsLive variant="globe" />
       <Link
-        href="/global-deployment"
+        href={keyraGlobalDeploymentUrl()}
         {...NEW_TAB_LINK}
         className={cn(
           "mt-3 flex w-full items-center justify-center rounded-[var(--keyra-radius-pill)] border border-[var(--keyra-action-border)] bg-[var(--keyra-action)] px-3 py-2 text-center text-[clamp(0.62rem,0.28vw+0.5rem,0.72rem)] font-medium leading-snug tracking-wide text-keyra-primary no-underline transition duration-300 ease-out hover:border-[var(--keyra-border)] hover:bg-[rgba(255,255,255,0.04)] focus-visible:outline-none focus-visible:keyra-focus lg:mt-2",

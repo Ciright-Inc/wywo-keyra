@@ -78,12 +78,9 @@ export function keyraMarketingPath(path: string): string {
   return `${base}${p}`;
 }
 
-/** Standalone global deployment site (e.g. global.keyra.ie or http://localhost:3050). */
+/** Global deployment map — governments.keyra.ie (live deployment explorer). */
 export function keyraGlobalDeploymentUrl(): string {
-  return trimSlash(
-    process.env.NEXT_PUBLIC_GLOBAL_DEPLOYMENT_URL?.trim() ||
-      keyraMarketingPath("/global-deployment"),
-  );
+  return keyraGovernmentsUrl();
 }
 
 /** Shared list for 9-dot launcher + footer (SimSecure-style subdomain URLs). */

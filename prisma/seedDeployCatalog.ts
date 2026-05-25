@@ -24,6 +24,8 @@ import { seedDeploymentGraph } from "./seedDeploymentGraph";
 import { importKeyraTelcosFromCatalog } from "./importKeyraTelcos";
 import { seedWorldAuthenticationCountries } from "./seedWorldAuthenticationCountries";
 import { seedSiteFooter } from "./seedSiteFooter";
+import { seedAgentWorld } from "./seedAgentWorld";
+import { seedDeploymentApps } from "./seedDeploymentApps";
 
 async function isDeployCatalogPresent(prisma: PrismaClient): Promise<boolean> {
   const regionCount = await prisma.region.count();
@@ -93,6 +95,15 @@ async function main() {
       });
       console.info("[seedDeployCatalog] Site footer:", footerStats);
     }
+
+    if (process.env.SKIP_AGENT_WORLD_SEED === "1") {
+      console.info("[seedDeployCatalog] SKIP_AGENT_WORLD_SEED=1 — agent world seed skipped.");
+    } else {
+      await seedAgentWorld(prisma);
+    }
+
+    const deploymentApps = await seedDeploymentApps(prisma);
+    console.info("[seedDeployCatalog] Deployment apps (launcher / admin):", deploymentApps);
   } finally {
     await prisma.$disconnect();
   }

@@ -1,0 +1,47 @@
+import {
+  devSessionPhoneFallback,
+  pickPhoneFromSearchParams,
+  resolveKeyraSessionUserFromAuth,
+  resolveKeyraSessionUserFromPhone,
+  safeSessionContinueNext,
+} from "@/lib/keyraSessionEstablish";
+import { redirectWithKeyraSession } from "@/lib/keyraSessionResponse";
+import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
+
+/**
+ * Establishes keyra_session from auth cookies, return URL phone params, or dev fallback,
+ * then redirects to `next`. Route handlers may set cookies; Server Components cannot.
+ */
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const origin = url.origin;
+  const nextPath = safeSessionContinueNext(url.searchParams.get("next"));
+
+  const fromAuth = await resolveKeyraSessionUserFromAuth(req);
+  if (fromAuth) {
+    const res = redirectWithKeyraSession(fromAuth, nextPath, origin);
+    if (res) return res;
+  }
+
+  const phone = pickPhoneFromSearchParams(url.searchParams) ?? devSessionPhoneFallback();
+  if (phone) {
+    const fromPhone = await resolveKeyraSessionUserFromPhone(phone);
+    if (fromPhone) {
+      const res = redirectWithKeyraSession(fromPhone, nextPath, origin);
+      if (res) return res;
+    }
+  }
+
+  if (nextPath.startsWith("/admin")) {
+    const login = new URL("/admin/login", origin);
+    login.searchParams.set("next", nextPath);
+    login.searchParams.set("reason", "sign_in");
+    return NextResponse.redirect(login);
+  }
+
+  const login = new URL("/login", origin);
+  login.searchParams.set("next", nextPath);
+  return NextResponse.redirect(login);
+}

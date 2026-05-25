@@ -1,5 +1,7 @@
 import Link from "next/link";
 import prisma from "@/lib/prisma";
+import { keyraGlobalDeploymentUrl } from "@/lib/keyraAppUrls";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 
 export default async function AdminDeploymentsHome() {
   const [regions, countries, telcos, pendingRequests] = await Promise.all([
@@ -83,9 +85,9 @@ export default async function AdminDeploymentsHome() {
           <p className="ds-body-sm mt-2 text-[var(--ds-body)]">
             Changes made here refresh the cached public deployment tree used by the global explorer.
           </p>
-          <Link href="/global-deployment" className="ds-btn-secondary is-sm mt-5 inline-flex">
+          <a href={keyraGlobalDeploymentUrl()} className="ds-btn-secondary is-sm mt-5 inline-flex" {...NEW_TAB_LINK}>
             View public map
-          </Link>
+          </a>
         </div>
       </section>
     </div>

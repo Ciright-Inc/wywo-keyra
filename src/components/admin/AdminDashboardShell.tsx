@@ -44,6 +44,16 @@ const DEPLOYMENTS_NAV: NavItem[] = [
   { href: "/admin/deployments/audit", label: "Audit", icon: "history" },
 ];
 
+const AGENTS_NAV: NavItem[] = [
+  { href: "/admin/agents", label: "Control center", icon: "hub", exact: true },
+  { href: "/admin/agents/parent-agents", label: "Parent agents", icon: "account_tree" },
+  { href: "/admin/agents/deployment-bridge", label: "Deployment bridge", icon: "swap_horiz" },
+  { href: "/admin/agents/worlds", label: "Agent worlds", icon: "public" },
+  { href: "/admin/agents/knowledge-packs", label: "Knowledge packs", icon: "library_books" },
+  { href: "/admin/agents/inheritance", label: "Inheritance", icon: "device_hub" },
+  { href: "/admin/agents/operational-graph", label: "Operational graph", icon: "share" },
+];
+
 function SidebarNavGroup({
   heading,
   items,
@@ -105,6 +115,7 @@ export function AdminDashboardShell({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const inAuthentication = pathname.startsWith("/admin/authentication");
   const inSite = pathname.startsWith("/admin/site");
+  const inAgents = pathname.startsWith("/admin/agents");
 
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
   const toggleSidebar = useCallback(() => setSidebarOpen((open) => !open), []);
@@ -118,7 +129,7 @@ export function AdminDashboardShell({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    for (const item of [...AUTH_NAV, ...SITE_NAV, ...DEPLOYMENTS_NAV]) {
+    for (const item of [...AUTH_NAV, ...SITE_NAV, ...DEPLOYMENTS_NAV, ...AGENTS_NAV]) {
       prefetch(item.href);
     }
   }, [prefetch]);
@@ -157,14 +168,9 @@ export function AdminDashboardShell({ children }: { children: ReactNode }) {
     ? "Authentication admin"
     : inSite
       ? "Site manage"
-      : "Deployments admin";
-
-  const sidebarTitle = inAuthentication ? "Authentication" : inSite ? "Site manage" : "Deployments";
-  const sidebarDesc = inAuthentication
-    ? "Feed controls, country weights, and SAT protocol catalog."
-    : inSite
-      ? "Footer, header, and shared marketing chrome for connected Keyra sites."
-      : "Registry controls and access workflows.";
+      : inAgents
+        ? "Agent world admin"
+        : "Deployments admin";
 
   return (
     <AdminConfirmProvider>
@@ -183,8 +189,8 @@ export function AdminDashboardShell({ children }: { children: ReactNode }) {
         <aside id="admin-sidebar" className="ds-sidebar" aria-label="Admin navigation">
           <div className="ds-sidebar-brand">
             <p className="ds-sidebar-brand__eyebrow">Keyra admin</p>
-            <p className="ds-sidebar-brand__title">{sidebarTitle}</p>
-            <p className="ds-sidebar-brand__desc">{sidebarDesc}</p>
+            <p className="ds-sidebar-brand__title">Console</p>
+            <p className="ds-sidebar-brand__desc">Deployments, agent worlds, authentication, and site controls.</p>
           </div>
 
           <nav className="ds-sidebar-nav">
@@ -198,6 +204,13 @@ export function AdminDashboardShell({ children }: { children: ReactNode }) {
             <SidebarNavGroup
               heading="Deployments"
               items={DEPLOYMENTS_NAV}
+              isNavActive={isNavActive}
+              navigate={handleNavigate}
+              prefetch={prefetch}
+            />
+            <SidebarNavGroup
+              heading="Agent worlds"
+              items={AGENTS_NAV}
               isNavActive={isNavActive}
               navigate={handleNavigate}
               prefetch={prefetch}
