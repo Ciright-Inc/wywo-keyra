@@ -1,5 +1,5 @@
-import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
+import { AdminTabRouteLoading } from "@/components/admin/AdminTabRouteLoading";
 
 export default function AdminAgentsLoading() {
-  return <AdminDirectorySkeleton rows={6} />;
+  return <AdminTabRouteLoading tab="agents-directory" />;
 }

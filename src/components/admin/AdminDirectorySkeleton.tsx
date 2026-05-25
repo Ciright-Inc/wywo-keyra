@@ -17,7 +17,8 @@ export type AdminSkeletonTab =
   | "deployments-admin-users"
   | "deployments-audit"
   | "auth-countries"
-  | "auth-protocols";
+  | "auth-protocols"
+  | "agents-directory";
 
 type Props = {
   tab: AdminSkeletonTab;
@@ -670,6 +671,21 @@ function renderTabSkeleton(tab: AdminSkeletonTab, rows: number, tableOnly: boole
           ) : null}
           <AuthProtocolsTable rows={rows} />
         </div>
+      );
+
+    case "agents-directory":
+      return (
+        <DeploymentsTable
+          columns={[
+            { label: "ID" },
+            { label: "Name" },
+            { label: "Layer" },
+            { label: "Classification" },
+            { label: "Status" },
+            { label: "Count", alignRight: true },
+          ]}
+          rows={rows}
+        />
       );
   }
 }

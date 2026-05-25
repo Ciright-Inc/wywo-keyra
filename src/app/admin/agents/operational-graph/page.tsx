@@ -93,8 +93,9 @@ export default async function OperationalGraphPage() {
 
       {graph.edges.length === 0 ? (
         <AdminListEmptyState
-          title="No graph edges"
-          description={
+          variant="panel"
+          entityName="graph edges"
+          emptyMessage={
             graph.indexCount > 0
               ? `${graph.indexCount} entities are indexed. Operational edges appear as relationships are governed across sovereign boundaries.`
               : "Index governed entities and operational relationships as agent worlds deploy."

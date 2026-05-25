@@ -167,6 +167,13 @@ function renderStaticHeader(tab: AdminSkeletonTab) {
       return <AuthCountriesStaticHeader />;
     case "auth-protocols":
       return <AuthProtocolsStaticHeader />;
+    case "agents-directory":
+      return (
+        <DeploymentsPanelStaticHeader
+          title="Agent directory"
+          description="Governed agent worlds, parent designs, deployment bridge, and operational lineage."
+        />
+      );
   }
 }
 
