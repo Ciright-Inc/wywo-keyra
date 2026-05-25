@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 import { PageIntentRibbon } from "@/components/trust/PageIntentRibbon";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
@@ -53,7 +54,7 @@ export default function PartnersPage() {
             developer platform
           </a>
           {" "}and{" "}
-          <Link href="/contact" className="font-medium text-keyra-accent underline-offset-2 hover:underline">
+          <Link href="/contact" {...NEW_TAB_LINK} className="font-medium text-keyra-accent underline-offset-2 hover:underline">
             contact us
           </Link>
           {" "}to discuss partnership opportunities.

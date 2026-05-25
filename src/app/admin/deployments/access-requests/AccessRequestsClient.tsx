@@ -6,16 +6,15 @@ import { useToast } from "@/components/ui/Toast";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import { showAdminActionToast } from "@/lib/admin/adminToastMessages";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminDirectoryPageHeader } from "@/components/admin/AdminDirectoryPageHeader";
 import { AdminDirectorySkeleton } from "@/components/admin/AdminDirectorySkeleton";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import {
-  adminBody,
   adminCheckbox,
   adminCountBadge,
   adminEyebrow,
   adminLabel,
   adminLegacyInput,
-  adminPageTitle,
   adminPanel,
   adminSectionTitle,
   adminTable,
@@ -91,19 +90,17 @@ export function AccessRequestsClient({ initialRequests }: { initialRequests?: Ro
 
   return (
     <div>
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className={adminPageTitle}>
-            Access requests
-            {rows ? (
-              <span className={`ml-2 align-middle ${adminCountBadge}`}>
-                {hasSearch ? `${visibleCount} of ${totalCount}` : totalCount}
-              </span>
-            ) : null}
-          </h1>
-          <p className={`${adminBody} mt-2 text-[var(--ds-body)]`}>Approve or reject after email verification.</p>
-        </div>
-        <div className="flex items-center gap-2">
+      <AdminDirectoryPageHeader
+        title="Access requests"
+        badge={
+          rows ? (
+            <span className={adminCountBadge}>
+              {hasSearch ? `${visibleCount} of ${totalCount}` : totalCount}
+            </span>
+          ) : null
+        }
+        description="Approve or reject after email verification."
+        search={
           <CollapsibleSearchBar
             mode="client"
             searchQuery={query}
@@ -111,11 +108,13 @@ export function AccessRequestsClient({ initialRequests }: { initialRequests?: Ro
             placeholder="Email, target id, status…"
             ariaLabel="Search access requests"
           />
+        }
+        actions={
           <Button type="button" variant="secondary" disabled={loading} onClick={() => void load()}>
             Refresh
           </Button>
-        </div>
-      </div>
+        }
+      />
 
       {error ? <p className="ds-admin-error-banner mt-4">{error}</p> : null}
 

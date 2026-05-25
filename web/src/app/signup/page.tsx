@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 
@@ -36,16 +37,16 @@ export default function SignupPage() {
             />
 
             <div className="pt-2">
-              <Link href="/onboarding/verify" className="block">
-                <Button className="w-full">Continue</Button>
-              </Link>
+              <ButtonLink href="/onboarding/verify" className="block w-full">
+                Continue
+              </ButtonLink>
               <p className="mt-3 text-center text-[14px] text-keyra-text-2">
                 By continuing, you agree to our{" "}
-                <Link href="/terms" className="text-keyra-primary underline">
+                <Link href="/terms" {...NEW_TAB_LINK} className="text-keyra-primary underline">
                   Terms
                 </Link>{" "}
                 and{" "}
-                <Link href="/privacy" className="text-keyra-primary underline">
+                <Link href="/privacy" {...NEW_TAB_LINK} className="text-keyra-primary underline">
                   Privacy
                 </Link>
                 .

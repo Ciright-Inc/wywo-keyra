@@ -1,0 +1,228 @@
+{
+  "version": 1,
+  "settings": {
+    "id": "default",
+    "logoSrc": "https://s3.us-east-1.amazonaws.com/hrm.keyra.ie/kerya-black-removebg-preview.png",
+    "description": "Choose the experience that matches your context — consumer protection, enterprise deployment, or partner tooling.",
+    "onThisSiteLabel": "On this site",
+    "keyraAppsLabel": "Keyra apps"
+  },
+  "links": [
+    {
+      "id": "seed-site-why-identity",
+      "section": "ON_THIS_SITE",
+      "siteAppId": "keyra-ie",
+      "label": "Why identity",
+      "href": "/#problem",
+      "description": null,
+      "isExternal": false,
+      "internalPath": null,
+      "sortOrder": 10,
+      "isPublished": true
+    },
+    {
+      "id": "seed-site-the-shift",
+      "section": "ON_THIS_SITE",
+      "siteAppId": "keyra-ie",
+      "label": "The shift",
+      "href": "/#missing-layer",
+      "description": null,
+      "isExternal": false,
+      "internalPath": null,
+      "sortOrder": 20,
+      "isPublished": true
+    },
+    {
+      "id": "seed-site-who-its-for",
+      "section": "ON_THIS_SITE",
+      "siteAppId": "keyra-ie",
+      "label": "Who it's for",
+      "href": "/#for",
+      "description": null,
+      "isExternal": false,
+      "internalPath": null,
+      "sortOrder": 30,
+      "isPublished": true
+    },
+    {
+      "id": "seed-site-global",
+      "section": "ON_THIS_SITE",
+      "siteAppId": "keyra-ie",
+      "label": "Global",
+      "href": "/#global",
+      "description": null,
+      "isExternal": false,
+      "internalPath": null,
+      "sortOrder": 40,
+      "isPublished": true
+    },
+    {
+      "id": "seed-site-faq",
+      "section": "ON_THIS_SITE",
+      "siteAppId": "keyra-ie",
+      "label": "FAQ",
+      "href": "/faq",
+      "description": null,
+      "isExternal": false,
+      "internalPath": null,
+      "sortOrder": 50,
+      "isPublished": true
+    },
+    {
+      "id": "seed-site-contact",
+      "section": "ON_THIS_SITE",
+      "siteAppId": "keyra-ie",
+      "label": "Contact us",
+      "href": "/contact",
+      "description": null,
+      "isExternal": false,
+      "internalPath": null,
+      "sortOrder": 60,
+      "isPublished": true
+    },
+    {
+      "id": "seed-site-privacy",
+      "section": "ON_THIS_SITE",
+      "siteAppId": "keyra-ie",
+      "label": "Privacy",
+      "href": "/privacy",
+      "description": null,
+      "isExternal": false,
+      "internalPath": null,
+      "sortOrder": 70,
+      "isPublished": true
+    },
+    {
+      "id": "seed-site-terms",
+      "section": "ON_THIS_SITE",
+      "siteAppId": "keyra-ie",
+      "label": "Terms",
+      "href": "/terms",
+      "description": null,
+      "isExternal": false,
+      "internalPath": null,
+      "sortOrder": 80,
+      "isPublished": true
+    },
+    {
+      "id": "seed-app-get-started",
+      "section": "KEYRA_APPS",
+      "label": "Get Started",
+      "href": "https://get-started.keyra.ie",
+      "description": "Enrollment & verification",
+      "isExternal": true,
+      "internalPath": null,
+      "sortOrder": 10,
+      "isPublished": true
+    },
+    {
+      "id": "seed-app-platform",
+      "section": "KEYRA_APPS",
+      "label": "Keyra",
+      "href": "https://app.keyra.ie",
+      "description": "Platform & product hub",
+      "isExternal": true,
+      "internalPath": null,
+      "sortOrder": 20,
+      "isPublished": true
+    },
+    {
+      "id": "seed-app-developer",
+      "section": "KEYRA_APPS",
+      "label": "Developer",
+      "href": "https://developer.keyra.ie",
+      "description": "APIs & documentation",
+      "isExternal": true,
+      "internalPath": null,
+      "sortOrder": 30,
+      "isPublished": true
+    },
+    {
+      "id": "seed-app-my-account",
+      "section": "KEYRA_APPS",
+      "label": "My Account",
+      "href": "https://myaccount.keyra.ie",
+      "description": "Account portal",
+      "isExternal": true,
+      "internalPath": null,
+      "sortOrder": 40,
+      "isPublished": true
+    },
+    {
+      "id": "seed-app-settings",
+      "section": "KEYRA_APPS",
+      "label": "Settings",
+      "href": "https://setting.keyra.ie",
+      "description": "Settings app",
+      "isExternal": true,
+      "internalPath": null,
+      "sortOrder": 50,
+      "isPublished": true
+    },
+    {
+      "id": "seed-app-affiliates",
+      "section": "KEYRA_APPS",
+      "label": "Affiliates",
+      "href": "https://affiliate.keyra.ie",
+      "description": "Affiliate program",
+      "isExternal": true,
+      "internalPath": null,
+      "sortOrder": 60,
+      "isPublished": true
+    },
+    {
+      "id": "seed-app-press",
+      "section": "KEYRA_APPS",
+      "label": "Press",
+      "href": "https://press.keyra.ie",
+      "description": "Press room",
+      "isExternal": true,
+      "internalPath": null,
+      "sortOrder": 70,
+      "isPublished": true
+    },
+    {
+      "id": "seed-app-trust",
+      "section": "KEYRA_APPS",
+      "label": "Trust",
+      "href": "https://keyra.ie/trust",
+      "description": "Trust & assurance",
+      "isExternal": false,
+      "internalPath": "/trust",
+      "sortOrder": 80,
+      "isPublished": true
+    },
+    {
+      "id": "seed-app-governments",
+      "section": "KEYRA_APPS",
+      "label": "Governments",
+      "href": "https://governments.keyra.ie",
+      "description": "Government programs",
+      "isExternal": true,
+      "internalPath": null,
+      "sortOrder": 90,
+      "isPublished": true
+    },
+    {
+      "id": "seed-app-partners",
+      "section": "KEYRA_APPS",
+      "label": "Partners",
+      "href": "https://partners.keyra.ie",
+      "description": "Partner programs",
+      "isExternal": true,
+      "internalPath": null,
+      "sortOrder": 100,
+      "isPublished": true
+    }
+  ],
+  "socialLinks": [
+    {
+      "id": "seed-social-linkedin",
+      "platform": "LINKEDIN",
+      "label": "Keyra on LinkedIn",
+      "url": "https://www.linkedin.com/company/keyra-global/",
+      "sortOrder": 10,
+      "isPublished": true
+    }
+  ]
+}

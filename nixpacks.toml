@@ -1,0 +1,14 @@
+# Railway / Nixpacks — pin Node and use lockfile installs so CI matches local `npm ci`.
+# Primary app: `src/` (exclude mirrored `web/` from root tsconfig — see tsconfig.json).
+
+[variables]
+NIXPACKS_NODE_VERSION = "22"
+
+[phases.setup]
+nixPkgs = ["...", "openssl"]
+
+[phases.install]
+cmds = ["npm ci --include=dev"]
+
+[phases.build]
+cmds = ["npm run build"]

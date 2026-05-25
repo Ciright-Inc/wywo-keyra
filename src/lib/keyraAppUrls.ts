@@ -90,12 +90,22 @@ export function keyraPartnersUrl(): string {
   return trimSlash(process.env.NEXT_PUBLIC_PARTNERS_URL?.trim() || "https://partners.keyra.ie");
 }
 
+/** Canonical marketing origin for public CMS APIs (footer, etc.). */
+export function keyraMarketingPublicOrigin(): string {
+  return trimSlash(
+    process.env.NEXT_PUBLIC_KEYRA_MARKETING_ORIGIN?.trim() ||
+      process.env.NEXT_PUBLIC_KEYRA_SITE_URL?.trim() ||
+      process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+      "https://keyra.ie",
+  );
+}
+
 /** This marketing site (e.g. https://keyra.ie or http://localhost:3030). */
 export function keyraMarketingOrigin(): string {
   return trimSlash(
     process.env.NEXT_PUBLIC_KEYRA_SITE_URL?.trim() ||
       process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-      "https://keyra.ie",
+      keyraMarketingPublicOrigin(),
   );
 }
 
@@ -110,6 +120,13 @@ export function keyraGlobalDeploymentUrl(): string {
   return trimSlash(
     process.env.NEXT_PUBLIC_GLOBAL_DEPLOYMENT_URL?.trim() ||
       keyraMarketingPath("/global-deployment"),
+  );
+}
+
+/** SOIP — Sovereign Operational Intelligence Platform (soip.keyra.ie). */
+export function keyraSoipUrl(): string {
+  return trimSlash(
+    process.env.NEXT_PUBLIC_SOIP_URL?.trim() || "https://soip.keyra.ie",
   );
 }
 
@@ -215,6 +232,7 @@ export function getKeyraAdminAppLinks(): KeyraEcosystemAppLink[] {
     { id: "esim", label: "ESim", description: "eSIM app", href: "https://esim.keyra.ie" },
     { id: "analytics", label: "Analytics", description: "Analytics workspace", href: "https://analytics.keyra.ie" },
     { id: "drive", label: "Drive", description: "Drive workspace", href: "https://drive.keyra.ie" },
+    { id: "soip", label: "SOIP", description: "Sovereign operational intelligence", href: keyraSoipUrl() },
   ];
 }
 

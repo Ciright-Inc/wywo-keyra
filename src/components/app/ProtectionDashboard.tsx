@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { cn } from "@/components/ui/cn";
 import { IconDevices, IconShieldCheck } from "@/components/ui/Icons";
@@ -433,6 +434,8 @@ function SecurityScorePanel({
               <li key={row.id}>
                 <Link
                   href={row.href!}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex min-h-[3.25rem] items-center justify-between gap-3 rounded-[var(--keyra-radius-card)] bg-keyra-bg px-4 py-3 text-[14px] transition-colors hover:bg-[var(--color-surface-strong)]"
                 >
                   <span className="min-w-0 font-medium text-keyra-primary">{row.label}</span>
@@ -446,9 +449,9 @@ function SecurityScorePanel({
         </ProtectionPanelList>
       }
       footer={
-        <Link href="/verify" className="inline-flex">
-          <Button variant="secondary">Improve score</Button>
-        </Link>
+        <ButtonLink href="/verify" variant="secondary">
+          Improve score
+        </ButtonLink>
       }
     />
   );

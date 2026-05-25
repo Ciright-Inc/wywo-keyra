@@ -21,10 +21,15 @@ export function honeypotTripped(body: Record<string, unknown>): boolean {
   return typeof hp === "string" && hp.trim().length > 0;
 }
 
-export function rateLimitResponse(req: Request, routeKey: string): Response | null {
+export function rateLimitResponse(
+  req: Request,
+  routeKey: string,
+  limit: number = LIMIT,
+  windowMs: number = WINDOW_MS,
+): Response | null {
   const ip = rateLimitKeyFromRequest(req);
   const key = `${ip}:${routeKey}`;
-  if (!allowRateLimit(key, LIMIT, WINDOW_MS)) {
+  if (!allowRateLimit(key, limit, windowMs)) {
     return Response.json({ error: "Too many requests. Try again later." }, { status: 429 });
   }
   return null;

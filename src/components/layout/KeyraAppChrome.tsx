@@ -4,32 +4,12 @@ import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { HeaderNoSSR } from "./HeaderNoSSR";
 import { ElevenLabsHomeAgent } from "@/components/home/ElevenLabsHomeAgent";
+import { isMinimalMarketingChrome } from "@/lib/marketingChrome";
 
-const MINIMAL_PATH_PREFIXES = ["/verify-device", "/hosted-login", "/callback"];
-
-function isMinimalChrome(pathname: string): boolean {
-  if (
-    pathname.startsWith("/admin") &&
-    pathname !== "/admin/login" &&
-    !pathname.startsWith("/admin/login/")
-  ) {
-    return true;
-  }
-  return MINIMAL_PATH_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
-  );
-}
-
-/** Hides marketing header/footer on focused auth flows (device verify, hosted login, OAuth callback). */
-export function KeyraAppChrome({
-  children,
-  footer,
-}: {
-  children: ReactNode;
-  footer: ReactNode;
-}) {
+/** Hides marketing header on focused auth flows (device verify, hosted login, OAuth callback). */
+export function KeyraAppChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? "";
-  const minimal = isMinimalChrome(pathname);
+  const minimal = isMinimalMarketingChrome(pathname);
 
   if (minimal) {
     return <main className="min-w-0 flex-1">{children}</main>;
@@ -45,7 +25,6 @@ export function KeyraAppChrome({
       />
       <main className="min-w-0 flex-1">{children}</main>
       <ElevenLabsHomeAgent />
-      {footer}
     </>
   );
 }

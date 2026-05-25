@@ -1,16 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import "./globals.css";
 import { KeyraAppChrome } from "@/components/layout/KeyraAppChrome";
-import { SiteFooter } from "@/components/layout/SiteFooter";
+import { SiteFooterLive } from "@/components/layout/SiteFooterLive";
+import { getPublicSiteFooterConfig } from "@/lib/siteFooter/queries";
 import { KeyraSessionProvider } from "@/contexts/KeyraSessionContext";
-import {
-  KEYRA_SESSION_COOKIE,
-  parseSession,
-  type KeyraSessionUser,
-} from "@/lib/keyraSessionCookie";
-import { KEYRA_LOGO_SRC } from "@/lib/keyraBrandAssets";
+import type { KeyraSessionUser } from "@/lib/keyraSessionCookie";
+import { resolveKeyraSessionFromCookies } from "@/lib/keyraSessionServer";
+import { KEYRA_FAVICON_SRC } from "@/lib/keyraBrandAssets";
 import { LANE_HEADER, parseKeyraDesignLaneHeader } from "@/lib/keyraDesignLane";
 import { ToastProvider } from "@/components/ui/Toast";
 import { PlausibleScripts } from "@/components/analytics/PlausibleScripts";
@@ -46,9 +44,9 @@ export const metadata: Metadata = {
     "Be Protected Online — calm, deterministic identity for people, businesses, and nations. Keyra restores trust infrastructure.",
   metadataBase: new URL("https://keyra.ie"),
   icons: {
-    icon: KEYRA_LOGO_SRC,
-    shortcut: KEYRA_LOGO_SRC,
-    apple: KEYRA_LOGO_SRC,
+    icon: KEYRA_FAVICON_SRC,
+    shortcut: KEYRA_FAVICON_SRC,
+    apple: KEYRA_FAVICON_SRC,
   },
   openGraph: {
     title: "Keyra — Be Protected Online",
@@ -66,12 +64,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const jar = await cookies();
-  const raw = jar.get(KEYRA_SESSION_COOKIE)?.value;
-  const initialUser: KeyraSessionUser | null = raw ? parseSession(raw) : null;
+  const initialUser: KeyraSessionUser | null = await resolveKeyraSessionFromCookies();
 
   const hdrs = await headers();
   const designLane = parseKeyraDesignLaneHeader(hdrs.get(LANE_HEADER));
+  const footerData = await getPublicSiteFooterConfig();
 
   return (
     <html
@@ -99,8 +96,8 @@ export default async function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=optional"
         />
         <PlausibleScripts />
-        <RailwayPlausibleScripts />
         <AdminAnalyticsScripts />
+        <RailwayPlausibleScripts />
       </head>
       <body
         className="flex min-h-full min-w-0 flex-col font-sans"
@@ -108,7 +105,8 @@ export default async function RootLayout({
       >
         <ToastProvider>
           <KeyraSessionProvider initialUser={initialUser}>
-            <KeyraAppChrome footer={<SiteFooter />}>{children}</KeyraAppChrome>
+            <KeyraAppChrome>{children}</KeyraAppChrome>
+            <SiteFooterLive initialData={footerData} />
           </KeyraSessionProvider>
         </ToastProvider>
       </body>

@@ -30,6 +30,7 @@ import {
   adminBody,
   adminCheckbox,
   adminFilterLabel,
+  adminFilterLabelWide,
   adminFilterToolbar,
   adminInlineFormBody,
   adminPageTitle,
@@ -611,11 +612,20 @@ export function AuthenticationProtocolsClient({
           { label: "Rows", value: loading ? "—" : String(dataRows.length) },
           { label: "Active", value: loading ? "—" : String(activeCount) },
         ]}
+        search={
+          <CollapsibleSearchBar
+            mode="client"
+            searchQuery={searchQ}
+            onChange={setSearchQ}
+            placeholder="Name, code, category…"
+            ariaLabel="Search protocols"
+          />
+        }
       />
 
       <div className={adminToolbarStrip}>
         <div className={adminFilterToolbar}>
-          <label className={adminFilterLabel}>
+          <label className={adminFilterLabelWide}>
             Category
             <AdminSelectMenu
               value={category}
@@ -673,13 +683,6 @@ export function AuthenticationProtocolsClient({
         </div>
 
         <div className={`${adminPageToolbar} w-full sm:ml-auto sm:w-auto`}>
-          <CollapsibleSearchBar
-            mode="client"
-            searchQuery={searchQ}
-            onChange={setSearchQ}
-            placeholder="Name, code, category…"
-            ariaLabel="Search protocols"
-          />
           {showEnableButton ? (
             <button
               type="button"

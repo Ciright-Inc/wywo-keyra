@@ -7,6 +7,7 @@ import { MobileNav } from "./MobileNav";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 import { useMemo } from "react";
 
 type NavItem = { href: string; label: string; external?: boolean };
@@ -27,17 +28,17 @@ export function SiteHeader() {
 
   return (
     <header className="keyra-site-header-shell z-[var(--keyra-z-header)]">
-      <div className="relative mx-auto flex min-h-12 w-full min-w-0 max-w-7xl items-center justify-between gap-2 px-3 pt-1.5 sm:px-6 lg:h-14 lg:grid lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-5 lg:pt-0">
+      <div className="relative mx-auto flex min-h-12 w-full min-w-0 max-w-7xl items-center justify-between gap-2 px-3 pt-1.5 sm:px-6 xl:h-14 xl:grid xl:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] xl:items-center xl:gap-x-5 xl:pt-0">
         <Link
           href="/"
-          className="relative z-0 flex min-w-0 shrink-0 items-center justify-start overflow-visible lg:col-start-1 lg:row-start-1 lg:h-14 lg:pr-3"
+          className="relative z-0 flex min-w-0 shrink-0 items-center justify-start overflow-visible xl:col-start-1 xl:row-start-1 xl:h-14 xl:pr-3"
           aria-label="Keyra home"
         >
           <KeyraLogo variant="header" showWordmark={false} />
         </Link>
 
         <nav
-          className="relative hidden min-h-0 min-w-0 lg:col-start-2 lg:row-start-1 lg:flex lg:items-center lg:justify-center lg:mr-4"
+          className="relative hidden min-h-0 min-w-0 xl:col-start-2 xl:row-start-1 xl:flex xl:items-center xl:justify-center xl:mr-4"
           aria-label="Primary"
           style={{ lineHeight: "1.5" }}
         >
@@ -49,7 +50,7 @@ export function SiteHeader() {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="relative flex min-w-fit shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-colors hover:bg-black/[0.05] hover:text-keyra-primary lg:px-4"
+                  className="relative flex min-w-fit shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-colors hover:bg-black/[0.05] hover:text-keyra-primary xl:px-4"
                 >
                   {item.label}
                 </a>
@@ -57,7 +58,7 @@ export function SiteHeader() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="relative flex min-w-fit shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-colors hover:bg-black/[0.05] hover:text-keyra-primary lg:px-4"
+                  className="relative flex min-w-fit shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium leading-relaxed text-keyra-primary/90 transition-colors hover:bg-black/[0.05] hover:text-keyra-primary xl:px-4"
                 >
                   {item.label}
                 </Link>
@@ -66,7 +67,7 @@ export function SiteHeader() {
           </div>
         </nav>
 
-        <div className="relative z-10 flex shrink-0 flex-nowrap items-center justify-end gap-2 lg:col-start-3 lg:row-start-1 lg:pl-3 xl:gap-3 xl:pl-5">
+        <div className="relative z-10 flex shrink-0 flex-nowrap items-center justify-end gap-2 xl:col-start-3 xl:row-start-1 xl:gap-3 xl:pl-5">
           <div className="flex shrink-0 items-center gap-2">
             <KeyraAppLauncher />
             <AccountMenu />
@@ -81,6 +82,7 @@ export function SiteHeader() {
               <>
                 <Link
                   href="/login"
+                  {...NEW_TAB_LINK}
                   className="flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-xs font-medium leading-none text-keyra-accent transition-colors duration-150 ease-out active:bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.04)] hover:text-keyra-primary sm:px-3 sm:text-sm"
                 >
                   Sign in
@@ -88,7 +90,7 @@ export function SiteHeader() {
                 <div className="my-1.5 w-px shrink-0 self-stretch bg-keyra-border" aria-hidden />
               </>
             ) : null}
-            <Link href="/#get-protected" className="inline-flex min-w-0 shrink-0">
+            <Link href="/#get-protected" {...NEW_TAB_LINK} className="inline-flex min-w-0 shrink-0">
               <span className="flex items-center whitespace-nowrap rounded-[var(--keyra-radius-pill)] bg-[var(--keyra-action)] px-2 py-2 text-xs font-medium leading-none text-keyra-primary ring-1 ring-[var(--keyra-action-border)] transition-colors duration-150 ease-out active:bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.05)] sm:px-3 sm:text-sm">
                 <span className="sm:hidden">Get protected</span>
                 <span className="hidden sm:inline">Be Protected Online</span>

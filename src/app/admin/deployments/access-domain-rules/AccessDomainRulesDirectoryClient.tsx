@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminDirectoryPageHeader } from "@/components/admin/AdminDirectoryPageHeader";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
@@ -20,7 +21,6 @@ import {
   adminEyebrow,
   adminLabel,
   adminLegacyInput,
-  adminPageTitle,
   adminPanel,
   adminSectionTitle,
   adminTable,
@@ -124,27 +124,20 @@ export function AccessDomainRulesDirectoryClient({
   return (
     <div>
       <div className={adminPanel}>
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className={adminPageTitle}>Access domain rules</h1>
-              <span className={adminCountBadge}>
-                {totalCount.toLocaleString()} total
-              </span>
-            </div>
-            <p className={`${adminBody} mt-1.5 max-w-xl text-[var(--ds-body)]`}>
-              Approved corporate email domains for governed access.
-            </p>
-          </div>
-
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+        <AdminDirectoryPageHeader
+          title="Access domain rules"
+          badge={<span className={adminCountBadge}>{totalCount.toLocaleString()} total</span>}
+          description="Approved corporate email domains for governed access."
+          search={
             <CollapsibleSearchBar
               searchQuery={searchQuery}
               buildHref={buildSearchHref}
               placeholder="Domain or target id…"
               ariaLabel="Search access domain rules"
             />
-            {canUseCreate ? (
+          }
+          actions={
+            canUseCreate ? (
               <button
                 type="button"
                 className={createOpen ? "ds-btn-secondary is-sm" : "ds-btn-primary is-sm"}
@@ -152,9 +145,9 @@ export function AccessDomainRulesDirectoryClient({
               >
                 {createOpen ? "Close create form" : "Create rule"}
               </button>
-            ) : null}
-          </div>
-        </div>
+            ) : null
+          }
+        />
 
         {canUseCreate && createOpen ? (
           <div className="mt-5 border-t border-[var(--ds-hairline)] pt-5">

@@ -1,10 +1,36 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-const CONTENT_ANCHOR_ID = "admin-deployments-main";
+const CONTENT_ANCHOR_IDS = ["admin-main-content", "admin-deployments-main"] as const;
+
+/** Genspark presentation listens for these postMessage types while Play Slides is active. */
+const GENSPARK_SLIDE_NEXT = "SLIDE_NEXT";
+const GENSPARK_SLIDE_PREV = "SLIDE_PREV";
+const GENSPARK_AUTO_ADVANCE_MS = 5000;
+
+function resolveAnchorRect(): DOMRect | null {
+  for (const id of CONTENT_ANCHOR_IDS) {
+    const el = document.getElementById(id);
+    if (el) return el.getBoundingClientRect();
+  }
+
+  const content = document.querySelector(".admin-dashboard__content");
+  if (content instanceof HTMLElement) return content.getBoundingClientRect();
+
+  return null;
+}
+
+function isIframePresentationFullscreen(iframe: HTMLIFrameElement | null): boolean {
+  if (!iframe) return false;
+  const fs =
+    document.fullscreenElement ??
+    (document as Document & { webkitFullscreenElement?: Element | null }).webkitFullscreenElement ??
+    null;
+  return fs === iframe || iframe.contains(fs) || fs?.contains(iframe) === true;
+}
 
 type Props = {
   open: boolean;
@@ -17,23 +43,28 @@ export function GensparkSlidePanel({ open, url, label, onClose }: Props) {
   const reduce = useReducedMotion();
   const [mounted, setMounted] = useState(false);
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setAnchorRect(null);
+      return;
+    }
 
     function updateRect() {
-      const el = document.getElementById(CONTENT_ANCHOR_ID);
-      setAnchorRect(el?.getBoundingClientRect() ?? null);
+      setAnchorRect(resolveAnchorRect());
     }
 
     updateRect();
+    const raf = window.requestAnimationFrame(updateRect);
     window.addEventListener("resize", updateRect);
     window.addEventListener("scroll", updateRect, true);
     return () => {
+      window.cancelAnimationFrame(raf);
       window.removeEventListener("resize", updateRect);
       window.removeEventListener("scroll", updateRect, true);
     };
@@ -50,12 +81,79 @@ export function GensparkSlidePanel({ open, url, label, onClose }: Props) {
 
   useEffect(() => {
     if (!open) return;
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
+
+    let autoAdvanceTimer: number | null = null;
+
+    function postToGenspark(type: typeof GENSPARK_SLIDE_NEXT | typeof GENSPARK_SLIDE_PREV) {
+      iframeRef.current?.contentWindow?.postMessage({ type }, "*");
     }
+
+    function stopAutoAdvance() {
+      if (autoAdvanceTimer !== null) {
+        window.clearInterval(autoAdvanceTimer);
+        autoAdvanceTimer = null;
+      }
+    }
+
+    function startAutoAdvance() {
+      if (reduce || autoAdvanceTimer !== null) return;
+      autoAdvanceTimer = window.setInterval(() => {
+        postToGenspark(GENSPARK_SLIDE_NEXT);
+      }, GENSPARK_AUTO_ADVANCE_MS);
+    }
+
+    function syncAutoAdvance() {
+      if (isIframePresentationFullscreen(iframeRef.current)) {
+        startAutoAdvance();
+      } else {
+        stopAutoAdvance();
+      }
+    }
+
+    function onFullscreenChange() {
+      syncAutoAdvance();
+    }
+
+    function isAnyFullscreen() {
+      return Boolean(
+        document.fullscreenElement ??
+          (document as Document & { webkitFullscreenElement?: Element | null }).webkitFullscreenElement,
+      );
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        if (isAnyFullscreen()) return;
+        onClose();
+        return;
+      }
+
+      if (!isIframePresentationFullscreen(iframeRef.current)) return;
+
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
+        event.preventDefault();
+        postToGenspark(GENSPARK_SLIDE_NEXT);
+      } else if (event.key === "ArrowLeft" || event.key === "PageUp") {
+        event.preventDefault();
+        postToGenspark(GENSPARK_SLIDE_PREV);
+      }
+    }
+
+    const pollId = window.setInterval(syncAutoAdvance, 1000);
+
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", onFullscreenChange);
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open, onClose]);
+    syncAutoAdvance();
+
+    return () => {
+      window.clearInterval(pollId);
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", onFullscreenChange);
+      window.removeEventListener("keydown", onKeyDown);
+      stopAutoAdvance();
+    };
+  }, [open, onClose, reduce]);
 
   if (!mounted || !open || !url || !anchorRect) return null;
 
@@ -102,6 +200,7 @@ export function GensparkSlidePanel({ open, url, label, onClose }: Props) {
                 <span className="text-[17px] leading-none">×</span>
               </button>
               <iframe
+                ref={iframeRef}
                 title={label}
                 src={url}
                 className="min-h-0 flex-1 w-full border-0 bg-white"

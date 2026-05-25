@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminDirectoryPageHeader } from "@/components/admin/AdminDirectoryPageHeader";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
@@ -22,7 +23,6 @@ import {
   adminEyebrow,
   adminLabel,
   adminLegacyInput,
-  adminPageTitle,
   adminPanel,
   adminSectionTitle,
   adminTable,
@@ -170,27 +170,20 @@ export function RegionsDirectoryClient({
     <div>
       {/* Hero */}
       <div className={adminPanel}>
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className={adminPageTitle}>Regions</h1>
-              <span className={adminCountBadge}>
-                {totalCount.toLocaleString()} total
-              </span>
-            </div>
-            <p className={`${adminBody} mt-1.5 max-w-xl text-[var(--ds-body)]`}>
-              Formal UN M49 macro + subregion codes, with UI map keys. Click any column header to sort.
-            </p>
-          </div>
-
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+        <AdminDirectoryPageHeader
+          title="Regions"
+          badge={<span className={adminCountBadge}>{totalCount.toLocaleString()} total</span>}
+          description="Formal UN M49 macro + subregion codes, with UI map keys. Click any column header to sort."
+          search={
             <CollapsibleSearchBar
               searchQuery={searchQuery}
               buildHref={buildSearchHref}
               placeholder="Name, slug, map key…"
               ariaLabel="Search regions"
             />
-            {showCreate ? (
+          }
+          actions={
+            showCreate ? (
               <button
                 type="button"
                 className={createOpen ? "ds-btn-secondary is-sm" : "ds-btn-primary is-sm"}
@@ -198,9 +191,9 @@ export function RegionsDirectoryClient({
               >
                 {createOpen ? "Close create form" : "Create region"}
               </button>
-            ) : null}
-          </div>
-        </div>
+            ) : null
+          }
+        />
 
         {showCreate && createOpen ? (
           <div className="mt-5 border-t border-[var(--ds-hairline)] pt-5">

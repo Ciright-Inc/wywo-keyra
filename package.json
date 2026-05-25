@@ -2,6 +2,10 @@
   "name": "keyra-web",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.9.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "dev": "next dev --webpack -p 3030",
     "dev:turbo": "next dev --turbopack -p 3030",
@@ -11,7 +15,7 @@
     "start": "prisma migrate deploy && npm run db:seed:deploy-catalog && next start -H 0.0.0.0 -p ${PORT:-3030}",
     "start:3000": "prisma migrate deploy && npm run db:seed:deploy-catalog && next start -H 0.0.0.0 -p 3000",
     "lint": "eslint",
-    "dev:clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && next dev --webpack -p 3030",
+    "dev:clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && NODE_OPTIONS=\"--max-old-space-size=8192\" next dev --webpack -p 3030",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
@@ -20,9 +24,12 @@
     "db:sync:simsecure": "node scripts/apply-keyra-migrations-simsecure.mjs",
     "db:seed": "prisma db seed",
     "db:seed:auth-feed": "tsx prisma/seedAuthenticationFeed.ts",
+    "db:seed:local-latest-auth": "tsx prisma/seedLocalLatestAuth.ts",
+    "db:check:feed": "tsx prisma/checkFeedDb.ts",
     "db:seed:deploy-catalog": "tsx prisma/seedDeployCatalog.ts",
     "db:seed:regions-countries": "tsx prisma/seedRegionsCountries.ts",
     "db:seed:admin-users": "tsx prisma/seedAdminUsers.ts",
+    "db:seed:site-footer": "tsx prisma/seedSiteFooter.ts",
     "db:seed:deployment-graph": "tsx prisma/seedDeploymentGraph.ts",
     "db:import:telcos": "tsx prisma/importKeyraTelcosFromXlsx.ts",
     "db:export:telcos-catalog": "tsx prisma/exportKeyraTelcosCatalog.ts",

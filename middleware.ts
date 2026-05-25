@@ -4,6 +4,7 @@ import {
   adminSplitHostEnabled,
   getAdminPublicOrigin,
   isRequestAdminHost,
+  KEYRA_PATHNAME_HEADER,
 } from "@/lib/adminHost";
 import { keyraDesignLaneFromPathname, LANE_HEADER } from "@/lib/keyraDesignLane";
 
@@ -19,6 +20,7 @@ function nextForAppShell(request: NextRequest): NextResponse {
   const lane = keyraDesignLaneFromPathname(request.nextUrl.pathname);
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(LANE_HEADER, lane);
+  requestHeaders.set(KEYRA_PATHNAME_HEADER, request.nextUrl.pathname);
   const res = NextResponse.next({
     request: { headers: requestHeaders },
   });

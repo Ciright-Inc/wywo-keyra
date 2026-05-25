@@ -46,14 +46,13 @@ function ChevronRight() {
 
 export function AppEditSiblingNav({ prevApp, nextApp, index, total, onNavigate }: Props) {
   return (
-    <div className="flex shrink-0 flex-col items-end gap-2">
+    <div className="flex flex-wrap items-center justify-end gap-2">
       {total > 0 ? (
         <span className="text-xs font-medium text-keyra-text-2">
           {index} of {total}
         </span>
       ) : null}
-      <div className="flex items-center gap-2">
-        {prevApp ? (
+      {prevApp ? (
           onNavigate ? (
             <button
               type="button"
@@ -111,7 +110,6 @@ export function AppEditSiblingNav({ prevApp, nextApp, index, total, onNavigate }
             <ChevronRight />
           </button>
         )}
-      </div>
     </div>
   );
 }

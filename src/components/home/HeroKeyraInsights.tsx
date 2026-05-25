@@ -7,24 +7,23 @@ import { LatestAuthenticationsFeed } from "@/components/home/LatestAuthenticatio
 import {
   IconAlertTriangle,
   IconArrowRight,
-  IconFamilyShield,
-  IconFingerprint,
   IconGlobeVerify,
-  IconInstitution,
   IconKeyraMark,
-  IconPartnerNetwork,
   IconSatSignal,
   IconUsers,
 } from "@/components/ui/Icons";
+import { TrustJourneyHeroCards } from "@/components/home/trust/TrustJourneyHeroCards";
+import type { HeroVariant } from "@/components/home/heroTypes";
 import { keyraGovernmentsUrl } from "@/lib/keyraAppUrls";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
+
+export type { HeroVariant } from "@/components/home/heroTypes";
 
 const easeTrust = [0.22, 0.61, 0.36, 1] as const;
 
 const globalSignalsRegionHref = keyraGovernmentsUrl();
 
 type HeroIcon = ComponentType<SVGProps<SVGSVGElement>>;
-type HeroVariant = "default" | "bento";
-
 function HeroLiveBadge({ variant }: { variant: HeroVariant }) {
   if (variant === "bento") {
     return (
@@ -162,38 +161,6 @@ const timelineSteps: {
   },
 ];
 
-const heroCtaItems: {
-  t: string;
-  d: string;
-  tag: string;
-  icon: HeroIcon;
-}[] = [
-  {
-    t: "Protect Your Identity",
-    d: "Secure your personal identity, mobile device, and digital presence with Keyra.",
-    tag: "Personal",
-    icon: IconFingerprint,
-  },
-  {
-    t: "Protect Your Family",
-    d: "Create a protected family identity registry for every family member.",
-    tag: "Family",
-    icon: IconFamilyShield,
-  },
-  {
-    t: "Secure Your Organization",
-    d: "Protect your company domains, data, and team identities.",
-    tag: "Enterprise",
-    icon: IconInstitution,
-  },
-  {
-    t: "Partner With Keyra",
-    d: "Join Keyra as a telecom, technology, or service partner.",
-    tag: "Partners",
-    icon: IconPartnerNetwork,
-  },
-];
-
 export function HeroKeyraTimeline({ variant = "default" }: { variant?: HeroVariant }) {
   if (variant === "bento") {
     return (
@@ -293,6 +260,7 @@ export function HeroKeyraWidgets({
         <GlobalVerificationSignalsLive variant={feedVariant} />
         <a
           href={globalSignalsRegionHref}
+          {...NEW_TAB_LINK}
           className={
             variant === "bento"
               ? "keyra-bento-chip keyra-bento-chip--link mt-3"
@@ -336,49 +304,5 @@ export function HeroKeyraWidgets({
 }
 
 export function HeroKeyraCtaGrid({ variant = "default" }: { variant?: HeroVariant }) {
-  if (variant === "bento") {
-    return (
-      <motion.div
-        className="keyra-bento-cta-row"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.48, ease: easeTrust }}
-      >
-        {heroCtaItems.map((item) => (
-          <div key={item.t} className="keyra-bento-glass keyra-bento-cta-card h-full">
-            <div className="flex items-start justify-between gap-3">
-              <HeroInsightIcon icon={item.icon} size="lg" variant="bento" />
-              <span className="keyra-bento-tag">{item.tag}</span>
-            </div>
-            <h3 className="keyra-bento-cta-card__title">{item.t}</h3>
-            <p className="keyra-bento-cta-card__desc">{item.d}</p>
-          </div>
-        ))}
-      </motion.div>
-    );
-  }
-
-  return (
-    <motion.div
-      className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.5, ease: easeTrust }}
-    >
-      {heroCtaItems.map((item) => (
-        <div key={item.t} className="keyra-hero-insight flex h-full flex-col p-6">
-          <div className="flex items-start justify-between gap-3">
-            <HeroInsightIcon icon={item.icon} size="lg" />
-            <span className="keyra-hero-tag">{item.tag}</span>
-          </div>
-          <h3 className="mt-4 text-[15px] font-semibold leading-snug tracking-tight text-[var(--color-ink)]">
-            {item.t}
-          </h3>
-          <p className="mt-2 flex-1 text-[13px] leading-[1.65] text-[var(--color-body)]">
-            {item.d}
-          </p>
-        </div>
-      ))}
-    </motion.div>
-  );
+  return <TrustJourneyHeroCards variant={variant} />;
 }

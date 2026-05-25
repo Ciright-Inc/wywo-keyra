@@ -1,34 +1,47 @@
 import Script from "next/script";
 import { headers } from "next/headers";
-import { hostnameFromHostHeader } from "@/lib/adminHost";
+import {
+  getAdminAnalyticsDomain,
+  KEYRA_PATHNAME_HEADER,
+  resolveRequestHostname,
+  shouldLoadAdminAnalytics,
+} from "@/lib/adminHost";
 
-/** Nexa People / Ciright analytics — admin dashboard host only. */
-const ADMIN_ANALYTICS_DOMAIN = "admin.keyra.ie";
 const ADMIN_ANALYTICS_SCRIPT_SRC = "https://analytics.ciright.com/js/script.js";
 const ADMIN_ANALYTICS_API = "https://analytics.ciright.com/api/event";
 
-function shouldLoadAdminAnalytics(hostHeader: string | null): boolean {
-  if (process.env.NODE_ENV !== "production") return false;
-  return hostnameFromHostHeader(hostHeader) === ADMIN_ANALYTICS_DOMAIN;
+function adminAnalyticsForced(): boolean {
+  const v = process.env.KEYRA_ADMIN_ANALYTICS_FORCE?.trim().toLowerCase();
+  return v === "1" || v === "true" || v === "yes";
 }
 
 /**
- * Nexa People analytics for the admin dashboard (admin.keyra.ie only).
- * Paste-equivalent of the Ciright hosted script; omitted on localhost and marketing host.
+ * Nexa People analytics for admin — admin.keyra.ie and keyra.ie/admin (www too).
+ * Must load before RailwayPlausibleScripts: script.js uses a single global tracker.
  */
 export async function AdminAnalyticsScripts() {
   const hdrs = await headers();
-  if (!shouldLoadAdminAnalytics(hdrs.get("host"))) {
+  const requestHost = resolveRequestHostname(
+    hdrs.get("host"),
+    hdrs.get("x-forwarded-host"),
+  );
+  const pathname = hdrs.get(KEYRA_PATHNAME_HEADER) ?? "/";
+  const force = adminAnalyticsForced();
+
+  if (!shouldLoadAdminAnalytics(requestHost, pathname, { force })) {
     return null;
   }
 
+  const analyticsDomain = getAdminAnalyticsDomain();
+
   return (
     <Script
+      id="nexa-admin-analytics"
       src={ADMIN_ANALYTICS_SCRIPT_SRC}
-      data-domain={ADMIN_ANALYTICS_DOMAIN}
+      data-domain={analyticsDomain}
       data-api={ADMIN_ANALYTICS_API}
       defer
-      strategy="afterInteractive"
+      strategy="beforeInteractive"
     />
   );
 }

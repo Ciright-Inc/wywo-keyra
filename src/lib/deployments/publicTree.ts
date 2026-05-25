@@ -63,6 +63,26 @@ export type PublicCountry = Pick<
   telcos: PublicTelco[];
 };
 
+export type PublicRegionListItem = Pick<
+  Region,
+  | "id"
+  | "continentCode"
+  | "subregionCode"
+  | "name"
+  | "slug"
+  | "mapKey"
+  | "sortOrder"
+  | "isPublished"
+>;
+
+export type PublicCountryListItem = Omit<PublicCountry, "telcos"> & {
+  regionId: string;
+  regionName: string;
+  regionSlug: string;
+  mapKey: string;
+  isPublished: boolean;
+};
+
 export type PublicRegion = Pick<
   Region,
   "id" | "continentCode" | "subregionCode" | "name" | "slug" | "mapKey" | "sortOrder"
@@ -79,6 +99,47 @@ function publicSlugFromSubdomain(countrySubdomain: string): string {
   const lower = countrySubdomain.toLowerCase();
   const idx = lower.indexOf(".");
   return idx === -1 ? lower : lower.slice(0, idx);
+}
+
+function countryToPublicBase(c: CountryDeployment): Omit<PublicCountry, "telcos"> {
+  return {
+    id: c.id,
+    name: c.name,
+    iso2: c.iso2,
+    iso3: c.iso3,
+    flagAssetKey: c.flagAssetKey,
+    population: c.population,
+    populationDisplay: c.populationDisplay,
+    countrySubdomain: c.countrySubdomain,
+    officialReferenceDomain: c.officialReferenceDomain,
+    status: c.status,
+    statusNote: c.statusNote,
+    sourceLabel: c.sourceLabel,
+    sourceUrl: c.sourceUrl,
+    sourceVerifiedAt: c.sourceVerifiedAt,
+    sortOrder: c.sortOrder,
+    latitude: c.latitude,
+    longitude: c.longitude,
+    visualOffsetX: c.visualOffsetX,
+    visualOffsetY: c.visualOffsetY,
+    deploymentStage: c.deploymentStage,
+    infrastructureHealth: c.infrastructureHealth,
+    uptimePercentage: c.uptimePercentage,
+    nodeHealth: c.nodeHealth,
+    authVolume: c.authVolume,
+    clusterRegion: c.clusterRegion,
+    lastSyncAt: c.lastSyncAt,
+    aiAgentEnabled: c.aiAgentEnabled,
+    deploymentScore: c.deploymentScore,
+    satProtocolCoverage: c.satProtocolCoverage,
+    simEsimStatus: c.simEsimStatus,
+    govIntegrationStatus: c.govIntegrationStatus,
+    apiStatus: c.apiStatus,
+    regulatoryReadiness: c.regulatoryReadiness,
+    riskStatus: c.riskStatus,
+    connectedAppsCount: c.connectedAppsCount,
+    publicSlug: publicSlugFromSubdomain(c.countrySubdomain),
+  };
 }
 
 async function loadTree(): Promise<PublicDeploymentTree> {
@@ -108,42 +169,7 @@ async function loadTree(): Promise<PublicDeploymentTree> {
     mapKey: r.mapKey,
     sortOrder: r.sortOrder,
     countries: r.countries.map((c) => ({
-      id: c.id,
-      name: c.name,
-      iso2: c.iso2,
-      iso3: c.iso3,
-      flagAssetKey: c.flagAssetKey,
-      population: c.population,
-      populationDisplay: c.populationDisplay,
-      countrySubdomain: c.countrySubdomain,
-      officialReferenceDomain: c.officialReferenceDomain,
-      status: c.status,
-      statusNote: c.statusNote,
-      sourceLabel: c.sourceLabel,
-      sourceUrl: c.sourceUrl,
-      sourceVerifiedAt: c.sourceVerifiedAt,
-      sortOrder: c.sortOrder,
-      latitude: c.latitude,
-      longitude: c.longitude,
-      visualOffsetX: c.visualOffsetX,
-      visualOffsetY: c.visualOffsetY,
-      deploymentStage: c.deploymentStage,
-      infrastructureHealth: c.infrastructureHealth,
-      uptimePercentage: c.uptimePercentage,
-      nodeHealth: c.nodeHealth,
-      authVolume: c.authVolume,
-      clusterRegion: c.clusterRegion,
-      lastSyncAt: c.lastSyncAt,
-      aiAgentEnabled: c.aiAgentEnabled,
-      deploymentScore: c.deploymentScore,
-      satProtocolCoverage: c.satProtocolCoverage,
-      simEsimStatus: c.simEsimStatus,
-      govIntegrationStatus: c.govIntegrationStatus,
-      apiStatus: c.apiStatus,
-      regulatoryReadiness: c.regulatoryReadiness,
-      riskStatus: c.riskStatus,
-      connectedAppsCount: c.connectedAppsCount,
-      publicSlug: publicSlugFromSubdomain(c.countrySubdomain),
+      ...countryToPublicBase(c),
       telcos: c.telcos.map((t) => ({
         id: t.id,
         name: t.name,
@@ -204,3 +230,67 @@ export function findCountryInTree(
   }
   return null;
 }
+
+async function loadCatalogRegionsList(): Promise<PublicRegionListItem[]> {
+  return prisma.region.findMany({
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    select: {
+      id: true,
+      continentCode: true,
+      subregionCode: true,
+      name: true,
+      slug: true,
+      mapKey: true,
+      sortOrder: true,
+      isPublished: true,
+    },
+  });
+}
+
+async function loadCatalogCountriesList(): Promise<PublicCountryListItem[]> {
+  const countries = await prisma.countryDeployment.findMany({
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    include: {
+      region: {
+        select: { id: true, name: true, slug: true, mapKey: true },
+      },
+    },
+  });
+
+  return countries.map((c) => ({
+    ...countryToPublicBase(c),
+    regionId: c.region.id,
+    regionName: c.region.name,
+    regionSlug: c.region.slug,
+    mapKey: c.region.mapKey,
+    isPublished: c.isPublished,
+  }));
+}
+
+const getCachedCatalogRegionsList = unstable_cache(
+  async () => loadCatalogRegionsList(),
+  ["deployment-catalog-regions-v1"],
+  { tags: [PUBLIC_DEPLOYMENTS_CACHE_TAG] },
+);
+
+const getCachedCatalogCountriesList = unstable_cache(
+  async () => loadCatalogCountriesList(),
+  ["deployment-catalog-countries-v1"],
+  { tags: [PUBLIC_DEPLOYMENTS_CACHE_TAG] },
+);
+
+/** Full deployment catalog — all regions (published and draft). */
+export async function getPublicRegionsList(): Promise<PublicRegionListItem[]> {
+  return getCachedCatalogRegionsList();
+}
+
+/** Full deployment catalog — all countries (published and draft). */
+export async function getPublicCountriesList(): Promise<PublicCountryListItem[]> {
+  return getCachedCatalogCountriesList();
+}
+
+const PUBLIC_LIST_CACHE_HEADERS = {
+  "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+} as const;
+
+export { PUBLIC_LIST_CACHE_HEADERS };

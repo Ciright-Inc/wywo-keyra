@@ -7,8 +7,10 @@ import { KeyraAppLauncher } from "./KeyraAppLauncher";
 import { MobileNav } from "./MobileNav";
 import { KeyraLogo } from "@/components/brand/KeyraLogo";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
-import { buildGetStartedAccessUrl, keyraDeveloperPortalUrl, keyraMarketingOrigin } from "@/lib/keyraAppUrls";
+import { keyraDeveloperPortalUrl } from "@/lib/keyraAppUrls";
+import { useGetStartedAccessHref } from "@/lib/useGetStartedAccessHref";
 import { useMemo, useEffect, useState } from "react";
+import { NEW_TAB_LINK } from "@/lib/newTabLink";
 import { KEYRA_HEADER_ACTION_ACCESS } from "./headerActionClasses";
 
 type NavItem = { href: string; label: string; external?: boolean };
@@ -37,16 +39,7 @@ export function SiteHeader() {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-  const accessHref = useMemo(() => {
-    if (typeof window !== "undefined") {
-      return buildGetStartedAccessUrl(
-        `${window.location.origin}${pathname}${window.location.search || ""}`,
-      );
-    }
-    const base = keyraMarketingOrigin();
-    const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
-    return buildGetStartedAccessUrl(`${base}${path}`);
-  }, [pathname]);
+  const accessHref = useGetStartedAccessHref();
   const isAdminRoute = pathname.startsWith("/admin");
   const isAdminLoginRoute = pathname.startsWith("/admin/login");
   const isProtectedAdminRoute = isAdminRoute && !isAdminLoginRoute;
@@ -66,7 +59,7 @@ export function SiteHeader() {
         className={
           isAdminRoute
             ? "relative flex w-full min-w-0 items-center justify-between px-4 py-1 sm:px-6 lg:h-14 lg:px-8 lg:py-0 xl:px-10"
-            : "relative mx-auto flex min-h-12 w-full min-w-0 max-w-7xl items-center justify-between gap-2 px-3 pt-1.5 sm:px-6 lg:h-14 lg:grid lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-x-0 lg:pt-0"
+            : "relative mx-auto flex min-h-12 w-full min-w-0 max-w-7xl items-center justify-between gap-2 px-3 pt-1.5 sm:px-6 xl:h-14 xl:grid xl:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] xl:items-center xl:gap-x-0 xl:pt-0"
         }
       >
         <Link
@@ -75,7 +68,7 @@ export function SiteHeader() {
           className={
             isAdminRoute
               ? "relative z-0 flex min-w-0 items-center justify-start overflow-visible py-0 lg:h-14"
-              : "relative z-0 flex min-w-0 shrink-0 items-center justify-start overflow-visible lg:col-start-1 lg:row-start-1 lg:h-14 lg:pr-3"
+              : "relative z-0 flex min-w-0 shrink-0 items-center justify-start overflow-visible xl:col-start-1 xl:row-start-1 xl:h-14 xl:pr-3"
           }
           aria-label="Keyra home"
         >
@@ -84,7 +77,7 @@ export function SiteHeader() {
 
         {!isAdminRoute ? (
           <nav
-            className="relative hidden min-h-0 min-w-0 lg:col-start-2 lg:row-start-1 lg:flex lg:items-center lg:justify-end lg:mr-0"
+            className="relative hidden min-h-0 min-w-0 xl:col-start-2 xl:row-start-1 xl:flex xl:items-center xl:justify-end xl:mr-0"
             aria-label="Primary"
             style={{ lineHeight: "1.5" }}
           >
@@ -143,7 +136,7 @@ export function SiteHeader() {
           className={
             isAdminRoute
               ? "relative z-10 flex min-w-0 shrink-0 items-center justify-end gap-0 py-0.5 xl:gap-0"
-              : "relative z-10 flex shrink-0 flex-nowrap items-center justify-end gap-2 lg:col-start-3 lg:row-start-1 lg:gap-0 lg:pl-0 xl:pl-0"
+              : "relative z-10 flex shrink-0 flex-nowrap items-center justify-end gap-2 xl:col-start-3 xl:row-start-1 xl:gap-0 xl:pl-0"
           }
         >
           {!isAdminRoute ? (
@@ -151,7 +144,8 @@ export function SiteHeader() {
               {!user ? (
                 <a
                   href={accessHref}
-                  className={`${KEYRA_HEADER_ACTION_ACCESS} hidden no-underline lg:inline-flex`}
+                  {...NEW_TAB_LINK}
+                  className={`${KEYRA_HEADER_ACTION_ACCESS} hidden no-underline xl:inline-flex`}
                 >
                   Access
                 </a>

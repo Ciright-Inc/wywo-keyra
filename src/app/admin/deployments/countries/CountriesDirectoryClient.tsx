@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { AdminTransitionLink } from "@/components/admin/AdminTransitionLink";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminDirectoryPageHeader } from "@/components/admin/AdminDirectoryPageHeader";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
 import { RowActions } from "@/components/admin/RowActions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
@@ -23,7 +24,6 @@ import {
   adminEyebrow,
   adminLabel,
   adminLegacyInput,
-  adminPageTitle,
   adminPanel,
   adminSectionTitle,
   adminTable,
@@ -181,44 +181,39 @@ export function CountriesDirectoryClient({
   return (
     <div>
       <div className={adminPanel}>
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className={adminPageTitle}>Countries</h1>
-              <span className={adminCountBadge}>
-                {totalCount.toLocaleString()} total
-              </span>
-            </div>
-            <p className={`${adminBody} mt-1.5 max-w-xl text-[var(--ds-body)]`}>
-              Scoped to your admin role. Click any column header to sort.
-            </p>
-          </div>
-
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+        <AdminDirectoryPageHeader
+          title="Countries"
+          badge={<span className={adminCountBadge}>{totalCount.toLocaleString()} total</span>}
+          description="Scoped to your admin role. Click any column header to sort."
+          search={
             <CollapsibleSearchBar
               searchQuery={searchQuery}
               buildHref={buildSearchHref}
               placeholder="Name, ISO, region, subdomain, status…"
               ariaLabel="Search countries"
             />
-            <Link
-              href="/api/admin/deployments/countries/csv"
-              prefetch={false}
-              className="ds-btn-secondary is-sm"
-            >
-              Download CSV
-            </Link>
-            {canUseCreate ? (
-              <button
-                type="button"
-                className={createOpen ? "ds-btn-secondary is-sm" : "ds-btn-primary is-sm"}
-                onClick={() => setCreateOpen((open) => !open)}
+          }
+          actions={
+            <>
+              <Link
+                href="/api/admin/deployments/countries/csv"
+                prefetch={false}
+                className="ds-btn-secondary is-sm"
               >
-                {createOpen ? "Close create form" : "Create country"}
-              </button>
-            ) : null}
-          </div>
-        </div>
+                Download CSV
+              </Link>
+              {canUseCreate ? (
+                <button
+                  type="button"
+                  className={createOpen ? "ds-btn-secondary is-sm" : "ds-btn-primary is-sm"}
+                  onClick={() => setCreateOpen((open) => !open)}
+                >
+                  {createOpen ? "Close create form" : "Create country"}
+                </button>
+              ) : null}
+            </>
+          }
+        />
 
         {canUseCreate && createOpen ? (
           <div className="mt-5 border-t border-[var(--ds-hairline)] pt-5">

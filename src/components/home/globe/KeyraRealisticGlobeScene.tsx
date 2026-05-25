@@ -4,14 +4,15 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { GlobePulseLayer } from "@/components/home/globe/GlobePulseLayer";
 import { createFallbackMap } from "./createFallbackMap";
 import { EARTH_TEXTURE_URLS } from "./textureUrls";
-import { latLonToVec3 } from "./latLonToVec3";
 import { loadTextureSafe } from "./loadTextureSafe";
+import type { GlobePulse, GlobePulseLink } from "@/lib/globe/types";
 
 const EARTH_RADIUS = 1;
 const SEGMENTS = 96;
-/** rad/s — slow idle spin (similar to simsecure cinematic globe). */
+/** rad/s — slow idle spin (simsecure cinematic globe). */
 const SPIN = 0.034;
 const CLOUD_SPIN_EXTRA = 0.4;
 const TEXTURE_LOAD_MS = 12_000;
@@ -23,28 +24,6 @@ function raceTextureLoad(p: Promise<THREE.Texture | null>): Promise<THREE.Textur
   ]);
 }
 
-const MARKER_LAT_LON: [number, number][] = [
-  [-26.2041, 28.0473], // Johannesburg
-  [-22.5597, 17.0832], // Windhoek
-  [40.7128, -74.006], // New York
-  [51.5074, -0.1278], // London
-  [48.8566, 2.3522], // Paris
-  [52.52, 13.405], // Berlin
-  [30.0444, 31.2357], // Cairo
-  [6.5244, 3.3792], // Lagos
-  [-1.2921, 36.8219], // Nairobi
-  [25.2048, 55.2708], // Dubai
-  [28.6139, 77.209], // Delhi
-  [35.6762, 139.6503], // Tokyo
-  [-33.8688, 151.2093], // Sydney
-  [-23.5505, -46.6333], // São Paulo
-  [19.4326, -99.1332], // Mexico City
-  [55.7558, 37.6173], // Moscow
-  [39.9042, 116.4074], // Beijing
-  [1.3521, 103.8198], // Singapore
-  [59.3293, 18.0686], // Stockholm
-];
-
 type LoadedMaps = {
   day: THREE.Texture;
   clouds: THREE.Texture | null;
@@ -52,7 +31,12 @@ type LoadedMaps = {
   specular: THREE.Texture | null;
 };
 
-function PhotorealEarth() {
+type PhotorealEarthProps = {
+  activePulses: GlobePulse[];
+  activeLinks: GlobePulseLink[];
+};
+
+function PhotorealEarth({ activePulses, activeLinks }: PhotorealEarthProps) {
   const groupRef = useRef<THREE.Group>(null);
   const cloudsRef = useRef<THREE.Mesh>(null);
   const mapsRef = useRef<LoadedMaps | null>(null);
@@ -116,28 +100,6 @@ function PhotorealEarth() {
 
   const specularColor = useMemo(() => new THREE.Color(0x888888), []);
 
-  const markerNodes = useMemo(
-    () =>
-      MARKER_LAT_LON.map(([lat, lon], i) => {
-        const p = latLonToVec3(lat, lon, EARTH_RADIUS * 1.012);
-        return (
-          <mesh key={i} position={p}>
-            <sphereGeometry args={[0.01, 12, 12]} />
-            <meshStandardMaterial
-              color="#031208"
-              emissive="#22ff88"
-              emissiveIntensity={2.4}
-              roughness={0.35}
-              metalness={0}
-              transparent
-              opacity={0.5}
-            />
-          </mesh>
-        );
-      }),
-    [],
-  );
-
   if (!maps) {
     return (
       <mesh>
@@ -177,7 +139,7 @@ function PhotorealEarth() {
         </mesh>
       )}
 
-      {markerNodes}
+      <GlobePulseLayer pulses={activePulses} links={activeLinks} radius={EARTH_RADIUS} />
     </group>
   );
 }
@@ -185,21 +147,31 @@ function PhotorealEarth() {
 function SceneLights() {
   return (
     <>
-      {/* Strong fill: terminator is from fixed scene lights + spin, not live sun angle per region. */}
-      <ambientLight intensity={0.48} color="#f0f0f0" />
-      <hemisphereLight args={["#ffffff", "#d4d4d4", 0.5]} />
-      <directionalLight
-        castShadow={false}
-        position={[4.8, 0.6, 2.2]}
-        intensity={1.45}
-        color="#ffffff"
-      />
-      <directionalLight position={[-2.8, 0.35, -2.2]} intensity={0.4} color="#a3a3a3" />
+      <ambientLight intensity={0.45} />
+      <directionalLight position={[5, 3, 5]} intensity={1.35} />
+      <pointLight position={[0, 0, 2.5]} intensity={0.6} color="#b8d4ff" />
     </>
   );
 }
 
-export default function KeyraRealisticGlobeScene({ opaque = false }: { opaque?: boolean }) {
+export type KeyraRealisticGlobeSceneProps = {
+  opaque?: boolean;
+  activePulses?: GlobePulse[];
+  activeLinks?: GlobePulseLink[];
+};
+
+export default function KeyraRealisticGlobeScene({
+  opaque = false,
+  activePulses = [],
+  activeLinks = [],
+}: KeyraRealisticGlobeSceneProps) {
+  const [controlsEnabled, setControlsEnabled] = useState(false);
+
+  useEffect(() => {
+    const t = window.setTimeout(() => setControlsEnabled(true), 120);
+    return () => window.clearTimeout(t);
+  }, []);
+
   return (
     <Canvas
       camera={{ position: [0, 0.08, 2.42], fov: 42, near: 0.08, far: 32 }}
@@ -209,7 +181,12 @@ export default function KeyraRealisticGlobeScene({ opaque = false }: { opaque?: 
         alpha: !opaque,
         powerPreference: "high-performance",
       }}
-      style={{ width: "100%", height: "100%", display: "block", background: opaque ? "#ffffff" : undefined }}
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "block",
+        background: opaque ? "#ffffff" : undefined,
+      }}
       onCreated={({ gl }) => {
         gl.setClearColor(0xffffff, opaque ? 1 : 0);
         gl.outputColorSpace = THREE.SRGBColorSpace;
@@ -218,16 +195,18 @@ export default function KeyraRealisticGlobeScene({ opaque = false }: { opaque?: 
       }}
     >
       <SceneLights />
-      <PhotorealEarth />
-      <OrbitControls
-        enablePan={false}
-        enableZoom={false}
-        rotateSpeed={0.65}
-        dampingFactor={0.075}
-        enableDamping
-        minPolarAngle={0.72}
-        maxPolarAngle={Math.PI - 0.72}
-      />
+      <PhotorealEarth activePulses={activePulses} activeLinks={activeLinks} />
+      {controlsEnabled && (
+        <OrbitControls
+          enablePan={false}
+          enableZoom={false}
+          rotateSpeed={0.4}
+          dampingFactor={0.08}
+          enableDamping
+          minPolarAngle={0.72}
+          maxPolarAngle={Math.PI - 0.72}
+        />
+      )}
     </Canvas>
   );
 }

@@ -42,8 +42,8 @@ export function Modal({
 }) {
   const [mounted, setMounted] = useState(false);
   const ariaLabel = title ?? "Dialog";
-  const panelBase =
-    "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border border-[var(--ds-hairline-strong)] bg-[var(--ds-surface-card)] text-[var(--ds-ink)] shadow-[var(--ds-shadow-soft)] rounded-[var(--ds-radius-lg)]";
+  const panelShared =
+    "absolute left-1/2 top-1/2 max-h-[min(92dvh,calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px)-2rem))] -translate-x-1/2 -translate-y-1/2 border border-[var(--ds-hairline-strong)] bg-[var(--ds-surface-card)] text-[var(--ds-ink)] shadow-[var(--ds-shadow-soft)] rounded-[var(--ds-radius-lg)] max-sm:top-[max(1rem,env(safe-area-inset-top,0px))] max-sm:max-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px)-2rem)] max-sm:translate-y-0";
 
   useEffect(() => {
     setMounted(true);
@@ -83,10 +83,10 @@ export function Modal({
             aria-modal="true"
             aria-label={ariaLabel}
             className={cn(
-              panelBase,
+              panelShared,
               layout === "legacy"
-                ? "w-[min(92vw,520px)] p-6"
-                : "flex max-h-[min(92vh,880px)] w-[min(94vw,680px)] flex-col overflow-hidden",
+                ? "w-[min(92vw,520px)] overflow-y-auto overscroll-contain p-6"
+                : "flex w-[min(94vw,680px)] max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden",
               panelClassName,
             )}
             initial={{ opacity: 0, y: 10, scale: 0.98 }}

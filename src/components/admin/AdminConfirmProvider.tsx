@@ -58,6 +58,17 @@ function parseConfirmMessage(message: string): ParsedConfirm {
     };
   }
 
+  const deactivateMatch = message.match(/^Deactivate "([^"]+)"\?\s*(.*)$/);
+  if (deactivateMatch) {
+    const name = deactivateMatch[1];
+    const detail = deactivateMatch[2]?.trim();
+    return {
+      title: "Deactivate app?",
+      description:
+        detail || `"${name}" will be hidden from the apps directory and launcher.`,
+    };
+  }
+
   const typedMatch = message.match(/^Delete ([^"]+?) "([^"]+)"\?$/);
   if (typedMatch) {
     const subject = typedMatch[1].trim();

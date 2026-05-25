@@ -1,3 +1,4 @@
+import { AdminNavGlyph } from "@/components/admin/AdminNavGlyph";
 import { cn } from "@/components/ui/cn";
 import { adminEditBackLink } from "@/lib/admin/adminUiClasses";
 
@@ -30,9 +31,7 @@ export function AdminFormPanelCloseButton({
       aria-label={text}
       className={cn(adminEditBackLink, "disabled:cursor-not-allowed disabled:opacity-55", className)}
     >
-      <span className="material-symbols-outlined text-[14px] leading-none no-underline" aria-hidden>
-        {icon}
-      </span>
+      <AdminNavGlyph name={icon} className="shrink-0" />
       {text}
     </button>
   );

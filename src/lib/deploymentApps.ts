@@ -33,6 +33,7 @@ const SECTION_BY_ID: Record<string, (typeof DEPLOYMENT_APP_SECTIONS)[number]> = 
   esim: "Operations",
   analytics: "Operations",
   drive: "Operations",
+  soip: "Operations",
 };
 
 export type DeploymentAppInput = {
@@ -40,8 +41,10 @@ export type DeploymentAppInput = {
   description: string;
   href: string;
   gensparkUrl?: string | null;
+  temporaryUrl?: string | null;
   section: string;
   isPrivate: boolean;
+  isActive?: boolean;
   sortOrder?: number;
 };
 
@@ -78,8 +81,10 @@ export function validateDeploymentAppInput(input: Partial<DeploymentAppInput>): 
   const description = input.description?.trim() ?? "";
   const href = input.href?.trim() ?? "";
   const gensparkUrlResult = parseOptionalHttpUrl(input.gensparkUrl, "Genspark URL");
+  const temporaryUrlResult = parseOptionalHttpUrl(input.temporaryUrl, "Temporary URL");
   const section = normalizeDeploymentAppCategory(input.section ?? "");
   const isPrivate = input.isPrivate === true;
+  const isActive = typeof input.isActive === "boolean" ? input.isActive : true;
   const sortOrder = Number.isFinite(input.sortOrder) ? Number(input.sortOrder) : 0;
 
   if (!label) return { error: "App name is required." };
@@ -92,6 +97,9 @@ export function validateDeploymentAppInput(input: Partial<DeploymentAppInput>): 
   if (gensparkUrlResult && typeof gensparkUrlResult === "object") {
     return gensparkUrlResult;
   }
+  if (temporaryUrlResult && typeof temporaryUrlResult === "object") {
+    return temporaryUrlResult;
+  }
   try {
     const parsed = new URL(href);
     if (!["http:", "https:"].includes(parsed.protocol)) throw new Error("Invalid protocol");
@@ -99,7 +107,17 @@ export function validateDeploymentAppInput(input: Partial<DeploymentAppInput>): 
     return { error: "Redirect URL must be a valid http(s) URL." };
   }
 
-  return { label, description, href, gensparkUrl: gensparkUrlResult, section, isPrivate, sortOrder };
+  return {
+    label,
+    description,
+    href,
+    gensparkUrl: gensparkUrlResult,
+    temporaryUrl: temporaryUrlResult,
+    section,
+    isPrivate,
+    isActive,
+    sortOrder,
+  };
 }
 
 export async function ensureDeploymentAppsSeeded(): Promise<void> {
@@ -341,15 +359,23 @@ export async function deleteDeploymentAppCategory(
 }
 
 export async function listDeploymentApps(
-  options: { includePrivate?: boolean; newestFirst?: boolean } = {},
+  options: { includePrivate?: boolean; newestFirst?: boolean; includeInactive?: boolean } = {},
 ): Promise<DeploymentApp[]> {
   await ensureDeploymentAppsSeeded();
   return prisma.deploymentApp.findMany({
-    where: { isActive: true, ...(options.includePrivate === false ? { isPrivate: false } : {}) },
+    where: {
+      ...(options.includeInactive ? {} : { isActive: true }),
+      ...(options.includePrivate === false ? { isPrivate: false } : {}),
+    },
     orderBy: options.newestFirst
       ? [{ createdAt: "desc" }, { label: "asc" }]
       : [{ section: "asc" }, { sortOrder: "asc" }, { label: "asc" }],
   });
+}
+
+/** 9-dot launcher — active, non-private apps only (same rules as `includePrivate: false`). */
+export async function listDeploymentLauncherApps(): Promise<DeploymentApp[]> {
+  return listDeploymentApps({ includePrivate: false });
 }
 
 export type DeploymentAppEditNeighbor = {
@@ -363,7 +389,7 @@ export async function getDeploymentAppEditNeighbors(appId: string): Promise<{
   prev: DeploymentAppEditNeighbor | null;
   next: DeploymentAppEditNeighbor | null;
 }> {
-  const apps = await listDeploymentApps({ newestFirst: true });
+  const apps = await listDeploymentApps({ newestFirst: true, includeInactive: true });
   const index = apps.findIndex((app) => app.id === appId);
   const pick = (app: DeploymentApp): DeploymentAppEditNeighbor => ({ id: app.id, label: app.label });
 
@@ -382,9 +408,11 @@ export function toDeploymentAppView(app: DeploymentApp): DeploymentAppView {
     description: app.description,
     href: app.href,
     gensparkUrl: app.gensparkUrl,
+    temporaryUrl: app.temporaryUrl,
     section: app.section,
     sortOrder: app.sortOrder,
     isPrivate: app.isPrivate,
+    isActive: app.isActive,
     createdAt: app.createdAt.toISOString(),
   };
 }

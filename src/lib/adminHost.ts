@@ -10,7 +10,68 @@ export function getConfiguredAdminHost(): string | null {
 
 export function hostnameFromHostHeader(hostHeader: string | null): string {
   if (!hostHeader) return "";
-  return hostHeader.split(":")[0]!.toLowerCase();
+  return hostHeader.split(",")[0]!.split(":")[0]!.trim().toLowerCase();
+}
+
+/** Public hostname from proxy headers (Railway/Vercel) or Host. */
+export function resolveRequestHostname(
+  hostHeader: string | null,
+  forwardedHostHeader: string | null,
+): string {
+  return (
+    hostnameFromHostHeader(forwardedHostHeader) || hostnameFromHostHeader(hostHeader)
+  );
+}
+
+/** Request header set by middleware/proxy so SSR can read the pathname. */
+export const KEYRA_PATHNAME_HEADER = "x-keyra-pathname";
+
+/** Nexa / Ciright analytics domain — must match the dashboard site hostname. */
+export function getAdminAnalyticsDomain(): string {
+  return getConfiguredAdminHost() ?? "admin.keyra.ie";
+}
+
+/** Hostnames where `/admin/*` is served without the admin subdomain. */
+export function getKeyraMarketingHosts(): string[] {
+  const raw = process.env.KEYRA_MARKETING_HOSTS?.trim();
+  if (raw) {
+    return raw
+      .split(",")
+      .map((h) => h.trim().toLowerCase())
+      .filter(Boolean);
+  }
+  return ["keyra.ie", "www.keyra.ie"];
+}
+
+export function isAdminAnalyticsPath(pathname: string): boolean {
+  const normalized = pathname.replace(/\/+$/, "") || "/";
+  return normalized === "/admin" || normalized.startsWith("/admin/");
+}
+
+export function shouldLoadAdminAnalytics(
+  requestHost: string,
+  pathname: string,
+  options?: { force?: boolean },
+): boolean {
+  const force = options?.force ?? false;
+  if (process.env.NODE_ENV !== "production" && !force) {
+    return false;
+  }
+
+  const adminDomain = getAdminAnalyticsDomain();
+  if (requestHost === adminDomain) {
+    return true;
+  }
+
+  if (getKeyraMarketingHosts().includes(requestHost) && isAdminAnalyticsPath(pathname)) {
+    return true;
+  }
+
+  if (force && isAdminAnalyticsPath(pathname)) {
+    return true;
+  }
+
+  return false;
 }
 
 export function isRequestAdminHost(hostHeader: string | null): boolean {

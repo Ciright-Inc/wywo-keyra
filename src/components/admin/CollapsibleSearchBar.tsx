@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/components/ui/cn";
+import { AdminDirectorySearch } from "@/components/admin/AdminDirectorySearch";
 
 type UrlModeProps = {
   mode?: "url";
@@ -80,58 +80,16 @@ export function CollapsibleSearchBar(props: Props) {
   }
 
   return (
-    <div className="flex items-center">
-      <button
-        type="button"
-        onClick={() => setExpanded((open) => !open)}
-        aria-label={expanded ? "Collapse search" : "Expand search"}
-        aria-expanded={expanded}
-        className={cn(
-          "ds-btn-icon",
-          (expanded || hasSearch) && "bg-[var(--ds-canvas-soft)]",
-        )}
-        style={{ width: 36, height: 36 }}
-      >
-        <span className="material-symbols-outlined text-[20px]" aria-hidden>
-          search
-        </span>
-      </button>
-      <div
-        className={`grid transition-[grid-template-columns] duration-200 ease-out ${
-          expanded ? "grid-cols-[1fr] ml-2" : "grid-cols-[0fr] ml-0"
-        }`}
-      >
-        <div className="overflow-hidden">
-          <div className="relative">
-            <input
-              ref={inputRef}
-              type="text"
-              value={qInput}
-              onChange={(e) => handleInputChange(e.target.value)}
-              placeholder={placeholder}
-              autoComplete="off"
-              aria-label={ariaLabel}
-              className={cn(
-                "ds-text-input is-sm h-9 py-0 pl-3 transition-opacity duration-200",
-                expanded ? "w-44 pr-8 opacity-100 sm:w-64" : "w-44 pointer-events-none opacity-0 sm:w-64",
-              )}
-            />
-            {expanded ? (
-              <button
-                type="button"
-                className="ds-btn-icon absolute right-0 top-1/2 -translate-y-1/2"
-                style={{ width: 28, height: 28 }}
-                onClick={collapseAndClear}
-                aria-label="Clear search and collapse"
-              >
-                <span className="material-symbols-outlined text-[16px]" aria-hidden>
-                  close
-                </span>
-              </button>
-            ) : null}
-          </div>
-        </div>
-      </div>
-    </div>
+    <AdminDirectorySearch
+      expanded={expanded}
+      hasSearch={hasSearch}
+      value={qInput}
+      placeholder={placeholder}
+      ariaLabel={ariaLabel}
+      inputRef={inputRef}
+      onToggle={() => setExpanded((open) => !open)}
+      onChange={handleInputChange}
+      onClear={collapseAndClear}
+    />
   );
 }

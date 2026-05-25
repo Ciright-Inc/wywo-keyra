@@ -10,6 +10,7 @@ import { loadRegionsCountriesSeed } from "./regionsCountriesSeedData";
 import { seedAuthenticationFeed } from "./seedAuthenticationFeed";
 import { seedAdminUsers } from "./seedAdminUsers";
 import { seedDeploymentGraph } from "./seedDeploymentGraph";
+import { seedSiteFooter } from "./seedSiteFooter";
 
 const prisma = new PrismaClient();
 
@@ -165,6 +166,9 @@ async function main() {
   console.info("[seed] Extended deployment map with ISO-3166 catalog countries + placeholder telcos.");
 
   await seedAuthenticationFeed(prisma);
+
+  const footerStats = await seedSiteFooter(prisma);
+  console.info("[seed] Site footer:", footerStats);
 }
 
 main()

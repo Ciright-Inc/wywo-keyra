@@ -8,6 +8,7 @@ import {
   listDeploymentApps,
   normalizeDeploymentAppId,
   validateDeploymentAppInput,
+  toDeploymentAppView,
 } from "@/lib/deploymentApps";
 import { requireDeploymentAuth } from "@/lib/deployments/adminContext";
 import { denyIfComplianceOnlyWriter, denyIfReadOnly } from "@/lib/deployments/adminAuthz";
@@ -39,8 +40,10 @@ export async function POST(req: Request) {
     description: typeof body.description === "string" ? body.description : "",
     href: typeof body.href === "string" ? body.href : "",
     gensparkUrl: typeof body.gensparkUrl === "string" ? body.gensparkUrl : null,
+    temporaryUrl: typeof body.temporaryUrl === "string" ? body.temporaryUrl : null,
     section: typeof body.section === "string" ? body.section : "",
     isPrivate: body.isPrivate === true,
+    isActive: body.isActive !== false,
     sortOrder: typeof body.sortOrder === "number" ? body.sortOrder : undefined,
   });
   if ("error" in parsed) return NextResponse.json({ error: parsed.error }, { status: 400 });
@@ -65,10 +68,11 @@ export async function POST(req: Request) {
         description: parsed.description,
         href: parsed.href,
         gensparkUrl: parsed.gensparkUrl,
+        temporaryUrl: parsed.temporaryUrl,
         section: parsed.section,
         isPrivate: parsed.isPrivate,
         sortOrder: parsed.sortOrder ?? 0,
-        isActive: true,
+        isActive: parsed.isActive,
       },
     });
 
@@ -79,7 +83,7 @@ export async function POST(req: Request) {
       payload: { label: app.label, href: app.href, isPrivate: app.isPrivate },
     });
 
-    return NextResponse.json({ app }, { status: 201 });
+    return NextResponse.json({ app: toDeploymentAppView(app) }, { status: 201 });
   } catch (err) {
     console.error("[DeploymentApp POST]", err);
     return NextResponse.json(

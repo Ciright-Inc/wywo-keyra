@@ -256,6 +256,7 @@ model DeploymentApp {
   description String   @db.Text
   href        String   @db.Text
   gensparkUrl String?  @db.Text
+  temporaryUrl String? @db.Text
   section     String   @default("Operations")
   sortOrder   Int      @default(0)
   isPrivate   Boolean  @default(false)
@@ -492,4 +493,60 @@ model AuthenticationFeedSession {
   expiresAt             DateTime
 
   @@index([expiresAt])
+}
+
+enum SiteFooterLinkSection {
+  ON_THIS_SITE
+  KEYRA_APPS
+}
+
+enum SiteSocialPlatform {
+  LINKEDIN
+  TWITTER
+  INSTAGRAM
+  YOUTUBE
+  GITHUB
+  CUSTOM
+}
+
+/** Singleton footer brand copy and section labels (keyra.ie + connected sites). */
+model SiteFooterSettings {
+  id              String   @id @default("default")
+  logoSrc         String?
+  description     String   @db.Text
+  onThisSiteLabel String   @default("On this site")
+  keyraAppsLabel  String   @default("Keyra apps")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SiteFooterLink {
+  id           String                @id @default(cuid())
+  section      SiteFooterLinkSection
+  /** Deployment app id for ON_THIS_SITE links; null on KEYRA_APPS rows. */
+  siteAppId    String?
+  label        String
+  href         String                @db.Text
+  description  String?               @db.Text
+  isExternal   Boolean               @default(false)
+  internalPath String?
+  sortOrder    Int                   @default(0)
+  isPublished  Boolean               @default(true)
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  @@index([section, siteAppId, sortOrder])
+}
+
+model SiteFooterSocialLink {
+  id          String             @id @default(cuid())
+  platform    SiteSocialPlatform @default(CUSTOM)
+  label       String
+  url         String             @db.Text
+  sortOrder   Int                @default(0)
+  isPublished Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([sortOrder])
 }

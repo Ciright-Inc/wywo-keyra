@@ -6,6 +6,7 @@ import { adminPanel } from "@/lib/admin/adminUiClasses";
 import type { DeploymentAppCategoryView, DeploymentAppView } from "@/lib/deploymentAppConstants";
 import { AppEditSiblingNav } from "./AppEditSiblingNav";
 import { AppForm } from "./AppForm";
+import { getDeploymentAppAction } from "./actions";
 
 type SiblingApp = { id: string; label: string };
 
@@ -32,9 +33,11 @@ function normalizeApp(raw: DeploymentAppView): DeploymentAppView {
     description: raw.description,
     href: raw.href,
     gensparkUrl: raw.gensparkUrl ?? null,
+    temporaryUrl: raw.temporaryUrl ?? null,
     section: raw.section,
     sortOrder: raw.sortOrder ?? 0,
     isPrivate: raw.isPrivate ?? false,
+    isActive: raw.isActive ?? true,
     createdAt: typeof raw.createdAt === "string" ? raw.createdAt : new Date(raw.createdAt).toISOString(),
   };
 }
@@ -44,15 +47,18 @@ export function AppEditClient({ initialApp, categories, siblingApps }: Props) {
   const [app, setApp] = useState(initialApp);
   const nav = useMemo(() => neighborsFor(app.id, siblingApps), [app.id, siblingApps]);
 
+  useEffect(() => {
+    const normalized = normalizeApp(initialApp);
+    cacheRef.current.set(normalized.id, normalized);
+    setApp(normalized);
+  }, [initialApp]);
+
   const prefetchApp = useCallback(async (id: string) => {
     if (cacheRef.current.has(id)) return;
     try {
-      const res = await fetch(`/api/admin/deployments/apps/${encodeURIComponent(id)}`, {
-        credentials: "include",
-      });
-      if (!res.ok) return;
-      const data = (await res.json()) as { app?: DeploymentAppView };
-      if (data.app) cacheRef.current.set(id, normalizeApp(data.app));
+      const data = await getDeploymentAppAction(id);
+      if ("error" in data) return;
+      cacheRef.current.set(id, normalizeApp(data));
     } catch {
       /* ignore prefetch errors */
     }
@@ -65,13 +71,9 @@ export function AppEditClient({ initialApp, categories, siblingApps }: Props) {
       window.history.replaceState(null, "", `/admin/deployments/apps/${id}/edit`);
       return;
     }
-    const res = await fetch(`/api/admin/deployments/apps/${encodeURIComponent(id)}`, {
-      credentials: "include",
-    });
-    if (!res.ok) return;
-    const data = (await res.json()) as { app?: DeploymentAppView };
-    if (!data.app) return;
-    const nextApp = normalizeApp(data.app);
+    const data = await getDeploymentAppAction(id);
+    if ("error" in data) return;
+    const nextApp = normalizeApp(data);
     cacheRef.current.set(id, nextApp);
     setApp(nextApp);
     window.history.replaceState(null, "", `/admin/deployments/apps/${id}/edit`);
@@ -83,26 +85,29 @@ export function AppEditClient({ initialApp, categories, siblingApps }: Props) {
   }, [nav.prev, nav.next, prefetchApp]);
 
   return (
-    <div className="max-w-3xl">
+    <div>
       <AdminEditPageHeader
         title="Edit app"
         subtitle={app.label}
         backHref="/admin/deployments/apps"
-        backLabel="Back to apps"
       />
 
       <div className={`${adminPanel} mt-6`}>
-        <div className="flex flex-wrap items-start justify-end gap-4">
-          <AppEditSiblingNav
-            prevApp={nav.prev}
-            nextApp={nav.next}
-            index={nav.index}
-            total={nav.total}
-            onNavigate={navigateTo}
-          />
-        </div>
-
-        <AppForm key={app.id} mode="edit" app={app} categories={categories} />
+        <AppForm
+          key={app.id}
+          mode="edit"
+          app={app}
+          categories={categories}
+          headerAside={
+            <AppEditSiblingNav
+              prevApp={nav.prev}
+              nextApp={nav.next}
+              index={nav.index}
+              total={nav.total}
+              onNavigate={navigateTo}
+            />
+          }
+        />
       </div>
     </div>
   );

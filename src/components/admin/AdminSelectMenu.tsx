@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 import { cn } from "@/components/ui/cn";
 import { adminFilterSelect, adminListboxMenu, adminListboxOption } from "@/lib/admin/adminUiClasses";
@@ -7,6 +8,7 @@ import { adminFilterSelect, adminListboxMenu, adminListboxOption } from "@/lib/a
 export type AdminSelectOption = {
   value: string;
   label: string;
+  leading?: ReactNode;
 };
 
 type Props = {
@@ -16,6 +18,14 @@ type Props = {
   disabled?: boolean;
   className?: string;
   wide?: boolean;
+  /** Stretch the trigger to the root container width. */
+  fullWidth?: boolean;
+  /** Match the open list width to the trigger (not a stretched outer wrapper). */
+  matchMenuWidth?: boolean;
+  /** Expand the open list to fit option labels (at least trigger width). */
+  fitMenuToContent?: boolean;
+  /** Show option labels in full — no ellipsis. */
+  truncateLabels?: boolean;
   "aria-label"?: string;
   id?: string;
 };
@@ -59,6 +69,10 @@ export function AdminSelectMenu({
   disabled = false,
   className,
   wide = false,
+  fullWidth = false,
+  matchMenuWidth = false,
+  fitMenuToContent = false,
+  truncateLabels = true,
   "aria-label": ariaLabel,
   id: idProp,
 }: Props) {
@@ -95,43 +109,69 @@ export function AdminSelectMenu({
   }
 
   return (
-    <div ref={rootRef} className={cn("relative inline-block max-w-full", className)}>
-      <button
-        id={id}
-        type="button"
-        disabled={disabled}
-        aria-label={ariaLabel}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        className={cn(adminFilterSelect, wide && "is-wide", open && "is-open", disabled && "is-disabled")}
-        onClick={() => {
-          if (disabled) return;
-          setOpen((current) => !current);
-        }}
-      >
-        <span className="ds-filter-select__value">{selected?.label ?? "—"}</span>
-        <FilterSelectChevron open={open} />
-      </button>
+    <div ref={rootRef} className={cn("inline-block max-w-full", className)}>
+      <div className={cn("relative", fullWidth && "w-full", matchMenuWidth && "inline-block max-w-full")}>
+        <button
+          id={id}
+          type="button"
+          disabled={disabled}
+          aria-label={ariaLabel}
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          className={cn(
+            adminFilterSelect,
+            wide && "is-wide",
+            fullWidth && "is-full-width",
+            open && "is-open",
+            disabled && "is-disabled",
+          )}
+          onClick={() => {
+            if (disabled) return;
+            setOpen((current) => !current);
+          }}
+        >
+          <span className={cn("ds-filter-select__value inline-flex min-w-0 items-center gap-2", !truncateLabels && "is-full-text")}>
+            {selected?.leading ? (
+              <span className="inline-flex shrink-0 items-center">{selected.leading}</span>
+            ) : null}
+            <span className={cn(truncateLabels && "truncate")}>{selected?.label ?? "—"}</span>
+          </span>
+          <FilterSelectChevron open={open} />
+        </button>
 
-      {open ? (
-        <ul role="listbox" aria-labelledby={id} className={adminListboxMenu}>
-          {options.map((option) => {
-            const active = option.value === value;
-            return (
-              <li key={option.value || "__empty__"} role="option" aria-selected={active}>
-                <button
-                  type="button"
-                  className={cn(adminListboxOption, active && "is-selected")}
-                  onClick={() => pick(option.value)}
-                >
-                  <FilterSelectCheck visible={active} />
-                  <span className="ds-listbox-option__label">{option.label}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      ) : null}
+        {open ? (
+          <ul
+            role="listbox"
+            aria-labelledby={id}
+            className={cn(
+              adminListboxMenu,
+              matchMenuWidth && "is-match-trigger",
+              fitMenuToContent && "is-fit-content",
+            )}
+          >
+            {options.map((option) => {
+              const active = option.value === value;
+              return (
+                <li key={option.value || "__empty__"} role="option" aria-selected={active}>
+                  <button
+                    type="button"
+                    className={cn(adminListboxOption, active && "is-selected")}
+                    onClick={() => pick(option.value)}
+                  >
+                    <FilterSelectCheck visible={active} />
+                    <span className={cn("ds-listbox-option__label inline-flex min-w-0 items-center gap-2", !truncateLabels && "is-full-text")}>
+                      {option.leading ? (
+                        <span className="inline-flex shrink-0 items-center">{option.leading}</span>
+                      ) : null}
+                      <span className={cn(truncateLabels && "truncate")}>{option.label}</span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        ) : null}
+      </div>
     </div>
   );
 }
