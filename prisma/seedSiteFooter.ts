@@ -10,11 +10,13 @@
  */
 import { PrismaClient } from "@prisma/client";
 import { loadSiteFooterSeed } from "./siteFooterSeedData";
+import { ensureOnThisSiteLinksForAllApps } from "./ensureOnThisSiteLinksForAllApps";
 
 export type SiteFooterSeedStats = {
   settingsCreated: boolean;
   linksCreated: number;
   socialCreated: number;
+  onThisSitePerAppCreated: number;
   skipped?: boolean;
 };
 
@@ -31,7 +33,13 @@ export async function seedSiteFooter(
   options?: { force?: boolean },
 ): Promise<SiteFooterSeedStats> {
   if (!siteFooterTablesReady(prisma)) {
-    return { settingsCreated: false, linksCreated: 0, socialCreated: 0, skipped: true };
+    return {
+      settingsCreated: false,
+      linksCreated: 0,
+      socialCreated: 0,
+      onThisSitePerAppCreated: 0,
+      skipped: true,
+    };
   }
 
   const force = options?.force === true;
@@ -42,7 +50,14 @@ export async function seedSiteFooter(
   ]);
 
   if (!force && settingsCount > 0 && linkCount > 0 && socialCount > 0) {
-    return { settingsCreated: false, linksCreated: 0, socialCreated: 0, skipped: true };
+    const onThisSitePerAppCreated = await ensureOnThisSiteLinksForAllApps(prisma);
+    return {
+      settingsCreated: false,
+      linksCreated: 0,
+      socialCreated: 0,
+      onThisSitePerAppCreated,
+      skipped: onThisSitePerAppCreated === 0,
+    };
   }
 
   const seed = loadSiteFooterSeed();
@@ -98,7 +113,9 @@ export async function seedSiteFooter(
     }
   }
 
-  return { settingsCreated, linksCreated, socialCreated };
+  const onThisSitePerAppCreated = await ensureOnThisSiteLinksForAllApps(prisma);
+
+  return { settingsCreated, linksCreated, socialCreated, onThisSitePerAppCreated };
 }
 
 async function main() {

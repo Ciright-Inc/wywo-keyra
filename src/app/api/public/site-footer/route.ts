@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
+import { listDeploymentApps } from "@/lib/deploymentApps";
 import { keyraMarketingOrigin, keyraMarketingPublicOrigin } from "@/lib/keyraAppUrls";
 import { getPublicSiteFooterConfig } from "@/lib/siteFooter/queries";
+import {
+  buildFooterSiteAppOptions,
+  resolveFooterSiteAppIdFromRequest,
+} from "@/lib/siteFooter/siteAppScope";
 import type { SiteFooterConfig } from "@/lib/siteFooter/types";
 
 export const dynamic = "force-dynamic";
@@ -51,23 +56,33 @@ export async function OPTIONS(req: Request) {
   });
 }
 
-/** Published site footer — DB on production; proxies live keyra.ie CMS in local dev. */
+/** Published site footer — DB on production; proxies live keyra.ie CMS when origins differ. */
 export async function GET(req: Request) {
   const isDev = process.env.NODE_ENV === "development";
   const siteOrigin = trimSlash(keyraMarketingOrigin());
   const cmsOrigin = trimSlash(keyraMarketingPublicOrigin());
+  const requestUrl = new URL(req.url);
+  const siteAppIdParam = requestUrl.searchParams.get("siteAppId");
+  const deploymentApps = await listDeploymentApps({ includeInactive: true, includePrivate: true });
+  const footerSiteApps = buildFooterSiteAppOptions(deploymentApps);
+  const siteAppId = resolveFooterSiteAppIdFromRequest(req.url, req.headers, footerSiteApps, siteAppIdParam);
   const responseHeaders = {
     ...corsHeaders(req.headers.get("origin")),
     ...(isDev ? DEV_CACHE_HEADERS : CACHE_HEADERS),
   };
 
-  if (isDev || siteOrigin !== cmsOrigin) {
+  if (!isDev && siteOrigin !== cmsOrigin) {
     try {
-      const res = await fetch(`${cmsOrigin}/api/public/site-footer`, { cache: "no-store" });
+      const proxyUrl = new URL(`${cmsOrigin}/api/public/site-footer`);
+      if (siteAppIdParam) proxyUrl.searchParams.set("siteAppId", siteAppIdParam);
+      const res = await fetch(proxyUrl.toString(), { cache: "no-store" });
       if (res.ok) {
-        const data: unknown = await res.json();
-        if (isSiteFooterConfig(data)) {
-          return NextResponse.json(data, { headers: responseHeaders });
+        const text = await res.text();
+        if (text.trim()) {
+          const data: unknown = JSON.parse(text);
+          if (isSiteFooterConfig(data)) {
+            return NextResponse.json(data, { headers: responseHeaders });
+          }
         }
       }
     } catch {
@@ -75,6 +90,6 @@ export async function GET(req: Request) {
     }
   }
 
-  const footer = await getPublicSiteFooterConfig();
+  const footer = await getPublicSiteFooterConfig(siteAppId);
   return NextResponse.json(footer, { headers: responseHeaders });
 }

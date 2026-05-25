@@ -7,6 +7,8 @@ import { requireSiteFooterWriteAuth } from "@/lib/siteFooter/adminAuth";
 import { revalidateSiteFooterCache } from "@/lib/siteFooter/revalidate";
 import { SITE_SOCIAL_PLATFORMS } from "@/lib/siteFooter/socialIcons";
 
+export const dynamic = "force-dynamic";
+
 type Params = { id: string };
 
 function parsePlatform(raw: unknown): SiteSocialPlatform | null {

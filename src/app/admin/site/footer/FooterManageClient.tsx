@@ -8,6 +8,7 @@ import { AdminDeleteIconButton, AdminEditIconButton } from "@/components/admin/A
 import { AdminFormField } from "@/components/admin/AdminFormField";
 import { AdminFormPanelCloseButton } from "@/components/admin/AdminFormPanelCloseButton";
 import { AdminListEmptyState } from "@/components/admin/AdminListEmptyState";
+import { AdminSelectMenu } from "@/components/admin/AdminSelectMenu";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import { useToast } from "@/components/ui/Toast";
 import { cn } from "@/components/ui/cn";
@@ -27,6 +28,11 @@ import {
   adminToolbarBtnPrimary,
   adminToolbarBtnSecondary,
 } from "@/lib/admin/adminUiClasses";
+import {
+  matchesFooterSiteApp,
+  SITE_FOOTER_MARKETING_APP_ID,
+  type FooterSiteAppOption,
+} from "@/lib/siteFooter/siteAppScope";
 import type {
   SiteFooterConfig,
   SiteFooterLinkSection,
@@ -150,12 +156,14 @@ function FooterLinksSection({
   title,
   section,
   links,
+  siteAppId,
   readOnly,
   onChange,
 }: {
   title: string;
   section: SiteFooterLinkSection;
   links: SiteFooterLinkView[];
+  siteAppId?: string;
   readOnly: boolean;
   onChange: (next: SiteFooterLinkView[]) => void;
 }) {
@@ -177,7 +185,27 @@ function FooterLinksSection({
     };
   }, []);
 
-  const rows = useMemo(() => sortLinks(links), [links]);
+  useEffect(() => {
+    setEditRow(null);
+    setAddOpen(false);
+    setError(null);
+  }, [siteAppId]);
+
+  const scopedLinks = useMemo(() => {
+    if (section !== "ON_THIS_SITE" || !siteAppId) return links;
+    return links.filter((link) => matchesFooterSiteApp(link.siteAppId, siteAppId));
+  }, [links, section, siteAppId]);
+
+  function applyScopedChange(nextScoped: SiteFooterLinkView[]) {
+    if (section !== "ON_THIS_SITE" || !siteAppId) {
+      onChange(nextScoped);
+      return;
+    }
+    const others = links.filter((link) => !matchesFooterSiteApp(link.siteAppId, siteAppId));
+    onChange([...others, ...nextScoped]);
+  }
+
+  const rows = useMemo(() => sortLinks(scopedLinks), [scopedLinks]);
   const publishedCount = useMemo(() => rows.filter((row) => row.isPublished).length, [rows]);
 
   function closeEditPanel() {
@@ -208,6 +236,10 @@ function FooterLinksSection({
       setError("Label and href are required.");
       return;
     }
+    if (section === "ON_THIS_SITE" && !siteAppId) {
+      setError("Select an app site before adding links.");
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
@@ -216,6 +248,7 @@ function FooterLinksSection({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           section,
+          ...(section === "ON_THIS_SITE" && siteAppId ? { siteAppId } : {}),
           label: addDraft.label.trim(),
           href: addDraft.href.trim(),
           description: addDraft.description.trim() || null,
@@ -227,7 +260,7 @@ function FooterLinksSection({
       });
       const data = await readJson<{ link: SiteFooterLinkView }>(res);
       if (!mountedRef.current) return;
-      onChange([...links, data.link]);
+      applyScopedChange([...scopedLinks, { ...data.link, siteAppId: data.link.siteAppId ?? siteAppId ?? null }]);
       setAddDraft(emptyFooterLinkFormValues());
       setAddOpen(false);
       toast.success("Link added");
@@ -245,25 +278,36 @@ function FooterLinksSection({
       setError("Label and href are required.");
       return;
     }
+    if (section === "ON_THIS_SITE" && !siteAppId) {
+      setError("Select an app site before saving links.");
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/site/footer/links/${editRow.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          label: editDraft.label.trim(),
-          href: editDraft.href.trim(),
-          description: editDraft.description.trim() || null,
-          internalPath: editDraft.internalPath.trim() || null,
-          isExternal: editDraft.isExternal,
-          sortOrder: Number.parseInt(editDraft.sortOrder, 10) || 100,
-          isPublished: editDraft.isPublished,
-        }),
-      });
+      const res = await fetch(
+        `/api/admin/site/footer/links?id=${encodeURIComponent(editRow.id)}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...(section === "ON_THIS_SITE" && siteAppId
+              ? { siteAppId, expectedSiteAppId: siteAppId }
+              : {}),
+            label: editDraft.label.trim(),
+            href: editDraft.href.trim(),
+            description: editDraft.description.trim() || null,
+            internalPath: editDraft.internalPath.trim() || null,
+            isExternal: editDraft.isExternal,
+            sortOrder: Number.parseInt(editDraft.sortOrder, 10) || 100,
+            isPublished: editDraft.isPublished,
+          }),
+        },
+      );
       const data = await readJson<{ link: SiteFooterLinkView }>(res);
       if (!mountedRef.current) return;
-      onChange(links.map((link) => (link.id === editRow.id ? { ...link, ...data.link } : link)));
+      const saved = { ...editRow, ...data.link, siteAppId: data.link.siteAppId ?? siteAppId ?? editRow.siteAppId };
+      applyScopedChange(scopedLinks.map((link) => (link.id === editRow.id ? saved : link)));
       closeEditPanel();
       toast.success("Link saved");
     } catch (e) {
@@ -279,11 +323,15 @@ function FooterLinksSection({
     setBusyId(row.id);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/site/footer/links/${row.id}`, { method: "DELETE" });
+      const query = new URLSearchParams({ id: row.id });
+      if (section === "ON_THIS_SITE" && siteAppId) {
+        query.set("siteAppId", siteAppId);
+      }
+      const res = await fetch(`/api/admin/site/footer/links?${query.toString()}`, { method: "DELETE" });
       await readJson<{ ok: boolean }>(res);
       if (!mountedRef.current) return;
       if (editRow?.id === row.id) closeEditPanel();
-      onChange(links.filter((link) => link.id !== row.id));
+      applyScopedChange(scopedLinks.filter((link) => link.id !== row.id));
       toast.success("Link deleted");
     } catch (e) {
       if (!mountedRef.current) return;
@@ -703,15 +751,24 @@ function FooterSocialSection({
 type Props = {
   initialConfig: SiteFooterConfig;
   readOnly: boolean;
+  footerSiteApps: FooterSiteAppOption[];
 };
 
-export function FooterManageClient({ initialConfig, readOnly }: Props) {
+export function FooterManageClient({ initialConfig, readOnly, footerSiteApps }: Props) {
   const toast = useToast();
   const [config, setConfig] = useState(initialConfig);
   const [settingsBusy, setSettingsBusy] = useState(false);
   const [settingsError, setSettingsError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<FooterContentTab>("brand");
+  const [selectedSiteAppId, setSelectedSiteAppId] = useState(
+    () => footerSiteApps[0]?.id ?? SITE_FOOTER_MARKETING_APP_ID,
+  );
   const mountedRef = useRef(false);
+
+  const selectedSiteApp = useMemo(
+    () => footerSiteApps.find((app) => app.id === selectedSiteAppId) ?? footerSiteApps[0] ?? null,
+    [footerSiteApps, selectedSiteAppId],
+  );
 
   useEffect(() => {
     mountedRef.current = true;
@@ -889,13 +946,38 @@ export function FooterManageClient({ initialConfig, readOnly }: Props) {
 
       {activeTab === "on-this-site" ? (
         <div id="footer-section-on-this-site" role="tabpanel" aria-labelledby="footer-tab-on-this-site">
-        <FooterLinksSection
-          title={config.settings.onThisSiteLabel}
-          section="ON_THIS_SITE"
-          links={config.onThisSiteLinks}
-          readOnly={readOnly}
-          onChange={(onThisSiteLinks) => setConfig((prev) => ({ ...prev, onThisSiteLinks }))}
-        />
+          <div className={`${adminPanel} mt-3`}>
+            <AdminFormField label="App site" htmlFor="footer-on-this-site-app">
+              <AdminSelectMenu
+                id="footer-on-this-site-app"
+                className="ds-footer-app-site-select"
+                value={selectedSiteAppId}
+                onChange={setSelectedSiteAppId}
+                options={footerSiteApps.map((app) => ({
+                  value: app.id,
+                  label: app.label,
+                }))}
+                matchMenuWidth
+                aria-label="Select app for On this site links"
+              />
+              {selectedSiteApp ? (
+                <p className={`${adminBody} mt-1.5 font-mono text-xs text-[var(--ds-body)]`}>
+                  {selectedSiteApp.href}
+                </p>
+              ) : null}
+            </AdminFormField>
+            <p className={`${adminBody} mt-3 max-w-xl text-[var(--ds-body)]`}>
+              Manage footer navigation links shown under “{config.settings.onThisSiteLabel}” for the selected app.
+            </p>
+          </div>
+          <FooterLinksSection
+            title={config.settings.onThisSiteLabel}
+            section="ON_THIS_SITE"
+            siteAppId={selectedSiteAppId}
+            links={config.onThisSiteLinks}
+            readOnly={readOnly}
+            onChange={(onThisSiteLinks) => setConfig((prev) => ({ ...prev, onThisSiteLinks }))}
+          />
         </div>
       ) : null}
 

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
 import { readJsonObject } from "@/app/api/keyra/_routeHelpers";
 import { writeAudit } from "@/app/api/admin/deployments/_audit";
@@ -11,6 +12,9 @@ import {
 import { requireDeploymentAuth } from "@/lib/deployments/adminContext";
 import { denyIfComplianceOnlyWriter, denyIfReadOnly } from "@/lib/deployments/adminAuthz";
 import { revalidatePublicDeployments } from "@/lib/deployments/revalidatePublicDeployments";
+
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 type Params = {
   appId: string;
@@ -152,22 +156,28 @@ export async function DELETE(req: Request, { params }: { params: Promise<Params>
   await ensureDeploymentAppsSeeded();
 
   const { appId } = await params;
-  const exists = await prisma.deploymentApp.findFirst({
-    where: { id: appId, isActive: true },
+  const exists = await prisma.deploymentApp.findUnique({
+    where: { id: appId },
     select: { id: true, label: true },
   });
   if (!exists) return NextResponse.json({ error: "App not found." }, { status: 404 });
 
-  await prisma.deploymentApp.update({
-    where: { id: appId },
-    data: { isActive: false },
-  });
+  try {
+    await prisma.deploymentApp.delete({ where: { id: appId } });
+  } catch (err) {
+    console.error("[DeploymentApp DELETE]", err);
+    return NextResponse.json({ error: "Unable to delete app." }, { status: 500 });
+  }
+
   await writeAudit({
     entityType: "DeploymentApp",
     entityId: appId,
     action: "DELETE",
     payload: { label: exists.label },
   });
+
+  revalidatePublicDeployments();
+  revalidatePath("/admin/deployments/apps");
 
   return NextResponse.json({ ok: true });
 }

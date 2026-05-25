@@ -4,6 +4,7 @@ import { join } from "node:path";
 export type SiteFooterSeedLink = {
   id: string;
   section: "ON_THIS_SITE" | "KEYRA_APPS";
+  siteAppId?: string | null;
   label: string;
   href: string;
   description: string | null;
