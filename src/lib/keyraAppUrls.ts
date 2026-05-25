@@ -123,6 +123,13 @@ export function keyraGlobalDeploymentUrl(): string {
   );
 }
 
+/** SOIP — Sovereign Operational Intelligence Platform (soip.keyra.ie). */
+export function keyraSoipUrl(): string {
+  return trimSlash(
+    process.env.NEXT_PUBLIC_SOIP_URL?.trim() || "https://soip.keyra.ie",
+  );
+}
+
 /** Shared list for 9-dot launcher + footer (SimSecure-style subdomain URLs). */
 export type KeyraEcosystemAppLink = {
   id: string;
@@ -225,6 +232,7 @@ export function getKeyraAdminAppLinks(): KeyraEcosystemAppLink[] {
     { id: "esim", label: "ESim", description: "eSIM app", href: "https://esim.keyra.ie" },
     { id: "analytics", label: "Analytics", description: "Analytics workspace", href: "https://analytics.keyra.ie" },
     { id: "drive", label: "Drive", description: "Drive workspace", href: "https://drive.keyra.ie" },
+    { id: "soip", label: "SOIP", description: "Sovereign operational intelligence", href: keyraSoipUrl() },
   ];
 }
 

@@ -33,6 +33,7 @@ const SECTION_BY_ID: Record<string, (typeof DEPLOYMENT_APP_SECTIONS)[number]> = 
   esim: "Operations",
   analytics: "Operations",
   drive: "Operations",
+  soip: "Operations",
 };
 
 export type DeploymentAppInput = {
