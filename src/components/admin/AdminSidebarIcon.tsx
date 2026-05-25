@@ -6,6 +6,8 @@ type IconName =
   | "language"
   | "cell_tower"
   | "apps"
+  | "perm_media"
+  | "folder"
   | "dns"
   | "shield"
   | "inbox"
@@ -81,6 +83,21 @@ function renderIcon(name: IconName) {
           <rect x="14" y="4" width="6" height="6" rx="1.5" />
           <rect x="4" y="14" width="6" height="6" rx="1.5" />
           <rect x="14" y="14" width="6" height="6" rx="1.5" />
+        </>
+      );
+    case "perm_media":
+      return (
+        <>
+          <rect x="4" y="5" width="16" height="14" rx="2" />
+          <circle cx="9" cy="10" r="1.5" fill="currentColor" stroke="none" />
+          <path d="m4 17 5-5 4 4 3-3 4 4" />
+        </>
+      );
+    case "folder":
+      return (
+        <>
+          <path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z" />
+          <path d="M8 12h8M8 15h6" />
         </>
       );
     case "dns":

@@ -83,6 +83,27 @@ function parseConfirmMessage(message: string): ParsedConfirm {
     };
   }
 
+  if (message.toLowerCase().includes("close upload form while uploading")) {
+    return {
+      title: "Close upload form?",
+      description: "The upload in progress will be cancelled.",
+    };
+  }
+
+  if (message.toLowerCase().includes("leave materials while uploading")) {
+    return {
+      title: "Upload in progress",
+      description: "Going back will cancel the upload. Do you want to leave?",
+    };
+  }
+
+  if (message.toLowerCase().includes("leave data rooms while uploading")) {
+    return {
+      title: "Upload in progress",
+      description: "Going back will cancel the upload. Do you want to leave?",
+    };
+  }
+
   return {
     title: message.endsWith("?") ? message : `${message}?`,
     description: "This cannot be undone.",

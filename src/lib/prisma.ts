@@ -3,7 +3,10 @@ import "server-only";
 import { PrismaClient } from "@prisma/client";
 
 /** Bump when Prisma schema changes so dev HMR picks up a new generated client. */
-const PRISMA_CLIENT_SCHEMA_VERSION = "keyra-user-protection-v1";
+const PRISMA_CLIENT_SCHEMA_VERSION = "admin-data-room-v2";
+
+/** Models added in recent migrations — used to detect a stale cached client. */
+const REQUIRED_DELEGATES = ["adminDataRoom"] as const;
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
@@ -11,17 +14,40 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient(): PrismaClient {
-  return new PrismaClient({
+  const client = new PrismaClient({
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
+
+  const missing = REQUIRED_DELEGATES.filter((name) => !(name in client));
+  if (missing.length > 0) {
+    throw new Error(
+      `Prisma client is missing models: ${missing.join(", ")}. ` +
+        "Stop the dev server, run `npx prisma generate`, delete the `.next` folder, then start again.",
+    );
+  }
+
+  return client;
+}
+
+function isStalePrismaClient(client: PrismaClient): boolean {
+  return REQUIRED_DELEGATES.some((name) => !(name in client));
+}
+
+function disconnectPrismaClient(client: PrismaClient): void {
+  void client.$disconnect().catch(() => undefined);
 }
 
 function resolvePrismaClient(): PrismaClient {
-  if (
-    globalForPrisma.prismaClientSchemaVersion === PRISMA_CLIENT_SCHEMA_VERSION &&
-    globalForPrisma.prisma
-  ) {
-    return globalForPrisma.prisma;
+  const cached = globalForPrisma.prisma;
+  const versionMatches =
+    globalForPrisma.prismaClientSchemaVersion === PRISMA_CLIENT_SCHEMA_VERSION;
+
+  if (cached && versionMatches && !isStalePrismaClient(cached)) {
+    return cached;
+  }
+
+  if (cached) {
+    disconnectPrismaClient(cached);
   }
 
   const client = createPrismaClient();

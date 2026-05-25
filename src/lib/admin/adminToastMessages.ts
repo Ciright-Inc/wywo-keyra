@@ -11,7 +11,9 @@ export type AdminToastEntity =
   | "admin-user"
   | "auth-country"
   | "auth-protocol"
-  | "access-request";
+  | "access-request"
+  | "material"
+  | "data-room";
 
 const ENTITY_LABELS: Record<AdminToastEntity, string> = {
   region: "Region",
@@ -25,6 +27,8 @@ const ENTITY_LABELS: Record<AdminToastEntity, string> = {
   "auth-country": "Authentication country",
   "auth-protocol": "SAT protocol",
   "access-request": "Access request",
+  material: "Material",
+  "data-room": "Document",
 };
 
 type ToastPayload = { title: string; message?: string };

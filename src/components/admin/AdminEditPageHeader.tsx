@@ -6,21 +6,41 @@ type Props = {
   subtitle?: string;
   backHref: string;
   backLabel?: string;
+  /** When set, intercepts back navigation (e.g. confirm before leaving during upload). */
+  onBack?: () => void;
 };
 
-export function AdminEditPageHeader({ title, subtitle, backHref, backLabel = "Back to list" }: Props) {
+export function AdminEditPageHeader({
+  title,
+  subtitle,
+  backHref,
+  backLabel = "Back to list",
+  onBack,
+}: Props) {
+  const backContent = (
+    <>
+      <span className="material-symbols-outlined text-[14px] leading-none no-underline" aria-hidden>
+        arrow_back
+      </span>
+      {backLabel}
+    </>
+  );
+
   return (
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div>
         <h1 className={adminPageTitle}>{title}</h1>
         {subtitle ? <p className={`${adminBody} mt-2 text-[var(--ds-body)]`}>{subtitle}</p> : null}
       </div>
-      <Link href={backHref} className={adminEditBackLink}>
-        <span className="material-symbols-outlined text-[14px] leading-none no-underline" aria-hidden>
-          arrow_back
-        </span>
-        {backLabel}
-      </Link>
+      {onBack ? (
+        <button type="button" className={adminEditBackLink} onClick={onBack}>
+          {backContent}
+        </button>
+      ) : (
+        <Link href={backHref} className={adminEditBackLink}>
+          {backContent}
+        </Link>
+      )}
     </div>
   );
 }

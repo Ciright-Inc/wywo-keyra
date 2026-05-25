@@ -275,6 +275,62 @@ model DeploymentAppCategory {
   createdAt DateTime @default(now())
 }
 
+enum MaterialMediaKind {
+  IMAGE
+  VIDEO
+  GIF
+  OTHER
+}
+
+/** Admin-managed media assets (images, videos, GIFs) stored in S3. */
+model AdminMaterial {
+  id            String            @id @default(cuid())
+  title         String
+  description   String?           @db.Text
+  url           String            @db.Text
+  s3Key         String            @db.Text
+  mimeType      String
+  mediaKind     MaterialMediaKind
+  fileName      String
+  fileSizeBytes Int
+  sortOrder     Int               @default(0)
+  isActive      Boolean           @default(true)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([isActive, sortOrder])
+  @@index([mediaKind])
+}
+
+enum DataRoomDocumentKind {
+  PDF
+  TEXT
+  WORD
+  SPREADSHEET
+  PRESENTATION
+  OTHER
+}
+
+/** Admin data room documents (PDF, text, Office, etc.) stored in S3. */
+model AdminDataRoom {
+  id            String              @id @default(cuid())
+  title         String
+  description   String?             @db.Text
+  url           String              @db.Text
+  s3Key         String              @db.Text
+  mimeType      String
+  documentKind  DataRoomDocumentKind
+  fileName      String
+  fileSizeBytes Int
+  sortOrder     Int                 @default(0)
+  isActive      Boolean             @default(true)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@index([isActive, sortOrder])
+  @@index([documentKind])
+}
+
 /** Optional display profile for Keyra marketing / app session (keyed by phone from login). */
 model KeyraSiteUserProfile {
   id          String   @id @default(cuid())

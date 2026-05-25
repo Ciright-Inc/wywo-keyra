@@ -29,6 +29,8 @@ const DEPLOYMENTS_NAV: NavItem[] = [
   { href: "/admin/deployments/countries", label: "Countries", icon: "language" },
   { href: "/admin/deployments/telcos", label: "Telcos", icon: "cell_tower" },
   { href: "/admin/deployments/apps", label: "Apps", icon: "apps" },
+  { href: "/admin/deployments/materials", label: "Materials", icon: "perm_media" },
+  { href: "/admin/deployments/data-rooms", label: "Data rooms", icon: "folder" },
   { href: "/admin/deployments/server-nodes", label: "Server nodes", icon: "dns" },
   { href: "/admin/deployments/access-domain-rules", label: "Access domains", icon: "shield" },
   { href: "/admin/deployments/access-requests", label: "Access requests", icon: "inbox" },
