@@ -1,130 +1,250 @@
 "use client";
 
 /**
- * Subtle architectural diagram — trust network, calendar, video integration.
+ * Architectural diagram — trust network, calendar, video integration.
+ * Contrast tuned for light bands (readable, still restrained).
  */
 export function ConsultationInfrastructureVisual() {
   return (
     <div
-      className="pointer-events-none relative mx-auto max-w-4xl overflow-hidden rounded-2xl border border-keyra-border/15 bg-gradient-to-b from-keyra-surface to-keyra-bg px-6 py-10"
+      className="pointer-events-none relative mx-auto max-w-4xl overflow-hidden rounded-2xl border border-keyra-border/40 bg-gradient-to-b from-keyra-surface-2/80 to-keyra-bg px-6 py-10 sm:px-10"
       aria-hidden
     >
       <svg
-        viewBox="0 0 800 280"
-        className="mx-auto h-auto w-full max-w-3xl opacity-[0.42]"
+        viewBox="0 0 800 300"
+        className="mx-auto h-auto w-full max-w-3xl"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-label="Keyra advisory infrastructure diagram"
       >
         <defs>
           <linearGradient id="consult-mesh" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="currentColor" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="currentColor" stopOpacity="0.02" />
+            <stop offset="0%" stopColor="#171717" stopOpacity="0.06" />
+            <stop offset="100%" stopColor="#171717" stopOpacity="0.02" />
           </linearGradient>
+          <radialGradient id="consult-node-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#171717" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#171717" stopOpacity="0.08" />
+          </radialGradient>
         </defs>
-        <rect width="800" height="280" fill="url(#consult-mesh)" className="text-keyra-primary" />
-        {/* Identity mesh nodes */}
+
+        <rect width="800" height="300" fill="url(#consult-mesh)" rx="12" />
+
+        {/* Identity mesh — backbone */}
+        <path
+          d="M100 72 L188 128 L310 52 L398 108 L518 58 L638 118"
+          stroke="#171717"
+          strokeOpacity="0.22"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M188 128 L268 188 L478 198 L638 118"
+          stroke="#171717"
+          strokeOpacity="0.18"
+          strokeWidth="1.25"
+          strokeLinecap="round"
+        />
+        <path
+          d="M398 108 L478 198 L698 188"
+          stroke="#171717"
+          strokeOpacity="0.14"
+          strokeWidth="1.25"
+          strokeDasharray="5 7"
+          strokeLinecap="round"
+        />
+
+        {/* Nodes */}
         {[
-          [120, 80],
-          [200, 140],
-          [320, 60],
-          [400, 120],
-          [520, 70],
-          [640, 130],
-          [680, 200],
-          [280, 200],
-          [480, 210],
-        ].map(([cx, cy], i) => (
+          [100, 72, 7],
+          [188, 128, 5],
+          [310, 52, 6],
+          [398, 108, 7],
+          [518, 58, 5],
+          [638, 118, 6],
+          [698, 188, 5],
+          [268, 188, 5],
+          [478, 198, 6],
+        ].map(([cx, cy, r], i) => (
           <g key={i}>
             <circle
               cx={cx}
               cy={cy}
-              r={i % 3 === 0 ? 6 : 4}
-              className="fill-keyra-primary/20 stroke-keyra-primary/30"
-              strokeWidth="1"
+              r={Number(r) + 4}
+              fill="url(#consult-node-glow)"
+            />
+            <circle
+              cx={cx}
+              cy={cy}
+              r={r}
+              fill="#ffffff"
+              stroke="#171717"
+              strokeOpacity="0.35"
+              strokeWidth="1.5"
+            />
+            <circle
+              cx={cx}
+              cy={cy}
+              r={2}
+              fill="#171717"
+              fillOpacity="0.5"
             />
           </g>
         ))}
-        {/* Mesh lines */}
+
+        {/* Connectors between service blocks */}
         <path
-          d="M120 80 L200 140 L320 60 L400 120 L520 70 L640 130"
-          className="stroke-keyra-primary/15"
-          strokeWidth="1"
+          d="M200 218 H318 M482 218 H598"
+          stroke="#171717"
+          strokeOpacity="0.2"
+          strokeWidth="1.25"
+          strokeLinecap="round"
         />
-        <path
-          d="M200 140 L280 200 L480 210 L640 130"
-          className="stroke-keyra-primary/12"
-          strokeWidth="1"
+        <polygon
+          points="318,218 312,215 312,221"
+          fill="#171717"
+          fillOpacity="0.25"
         />
-        <path
-          d="M400 120 L480 210 L680 200"
-          className="stroke-keyra-primary/10"
-          strokeWidth="1"
-          strokeDasharray="4 6"
+        <polygon
+          points="598,218 592,215 592,221"
+          fill="#171717"
+          fillOpacity="0.25"
         />
-        {/* SIM trust layer */}
-        <rect
-          x="60"
-          y="180"
-          width="140"
-          height="48"
-          rx="8"
-          className="stroke-keyra-primary/20 fill-keyra-surface"
-        />
-        <text
-          x="130"
-          y="208"
-          textAnchor="middle"
-          className="fill-keyra-muted text-[10px] font-medium"
-          style={{ fontFamily: "system-ui" }}
-        >
-          SIM-bound trust
-        </text>
-        {/* Calendar */}
-        <rect
-          x="330"
-          y="170"
-          width="140"
-          height="58"
-          rx="8"
-          className="stroke-keyra-primary/25 fill-keyra-surface"
-        />
-        <text
-          x="400"
-          y="198"
-          textAnchor="middle"
-          className="fill-keyra-muted text-[10px] font-medium"
-          style={{ fontFamily: "system-ui" }}
-        >
-          Advisory calendar
-        </text>
-        <line x1="350" y1="215" x2="450" y2="215" className="stroke-keyra-primary/15" strokeWidth="1" />
-        {/* Video */}
-        <rect
-          x="600"
-          y="175"
-          width="140"
-          height="52"
-          rx="8"
-          className="stroke-keyra-primary/25 fill-keyra-surface"
-        />
-        <text
-          x="670"
-          y="205"
-          textAnchor="middle"
-          className="fill-keyra-muted text-[10px] font-medium"
-          style={{ fontFamily: "system-ui" }}
-        >
-          Secure video (VE)
-        </text>
-        {/* Connector */}
-        <path
-          d="M200 204 L330 199 M470 199 L600 201"
-          className="stroke-keyra-primary/18"
-          strokeWidth="1"
-          markerEnd="url(#none)"
-        />
+
+        {/* SIM-bound trust */}
+        <g>
+          <rect
+            x="48"
+            y="198"
+            width="152"
+            height="56"
+            rx="10"
+            fill="#ffffff"
+            stroke="#171717"
+            strokeOpacity="0.28"
+            strokeWidth="1.25"
+          />
+          <text
+            x="124"
+            y="224"
+            textAnchor="middle"
+            fill="#171717"
+            fillOpacity="0.72"
+            fontSize="11"
+            fontWeight="600"
+            style={{ fontFamily: "system-ui, sans-serif" }}
+          >
+            SIM-bound trust
+          </text>
+          <line
+            x1="68"
+            y1="236"
+            x2="180"
+            y2="236"
+            stroke="#171717"
+            strokeOpacity="0.12"
+            strokeWidth="1"
+          />
+        </g>
+
+        {/* Advisory calendar */}
+        <g>
+          <rect
+            x="318"
+            y="188"
+            width="164"
+            height="66"
+            rx="10"
+            fill="#ffffff"
+            stroke="#171717"
+            strokeOpacity="0.32"
+            strokeWidth="1.25"
+          />
+          <text
+            x="400"
+            y="216"
+            textAnchor="middle"
+            fill="#171717"
+            fillOpacity="0.72"
+            fontSize="11"
+            fontWeight="600"
+            style={{ fontFamily: "system-ui, sans-serif" }}
+          >
+            Advisory calendar
+          </text>
+          <rect
+            x="338"
+            y="228"
+            width="28"
+            height="8"
+            rx="2"
+            fill="#171717"
+            fillOpacity="0.08"
+          />
+          <rect
+            x="372"
+            y="228"
+            width="56"
+            height="8"
+            rx="2"
+            fill="#171717"
+            fillOpacity="0.14"
+          />
+          <rect
+            x="434"
+            y="228"
+            width="28"
+            height="8"
+            rx="2"
+            fill="#171717"
+            fillOpacity="0.08"
+          />
+        </g>
+
+        {/* Secure video (VE) */}
+        <g>
+          <rect
+            x="600"
+            y="193"
+            width="152"
+            height="56"
+            rx="10"
+            fill="#ffffff"
+            stroke="#171717"
+            strokeOpacity="0.32"
+            strokeWidth="1.25"
+          />
+          <text
+            x="676"
+            y="219"
+            textAnchor="middle"
+            fill="#171717"
+            fillOpacity="0.72"
+            fontSize="11"
+            fontWeight="600"
+            style={{ fontFamily: "system-ui, sans-serif" }}
+          >
+            Secure video (VE)
+          </text>
+          <circle
+            cx="676"
+            cy="236"
+            r="10"
+            stroke="#171717"
+            strokeOpacity="0.2"
+            strokeWidth="1"
+          />
+          <path
+            d="M672 236 L676 232 L680 236 L676 240 Z"
+            fill="#171717"
+            fillOpacity="0.2"
+          />
+        </g>
       </svg>
-      <p className="mt-4 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-keyra-muted/80">
+
+      <p className="mt-5 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-keyra-primary/70">
         Keyra advisory · Ciright infrastructure
       </p>
     </div>
