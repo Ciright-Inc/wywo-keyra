@@ -26,8 +26,9 @@ export default async function KnowledgePacksPage() {
 
       {knowledgePacks.length === 0 ? (
         <AdminListEmptyState
-          title="No knowledge packs"
-          description="Create modular intelligence packs attachable to agent worlds and deployment agents."
+          variant="panel"
+          entityName="knowledge packs"
+          emptyMessage="Create modular intelligence packs attachable to agent worlds and deployment agents."
         />
       ) : (
         <div className={adminTableWrap}>

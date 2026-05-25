@@ -33,8 +33,9 @@ export default async function AgentWorldsPage() {
 
       {worlds.length === 0 ? (
         <AdminListEmptyState
-          title="No agent worlds"
-          description="Customers deploy sovereign agent worlds after subscribing to marketplace agents."
+          variant="panel"
+          entityName="agent worlds"
+          emptyMessage="Customers deploy sovereign agent worlds after subscribing to marketplace agents."
         />
       ) : (
         <div className={adminTableWrap}>

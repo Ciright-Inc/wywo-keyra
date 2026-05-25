@@ -32,8 +32,9 @@ export default async function ParentAgentsPage() {
 
       {parentAgents.length === 0 ? (
         <AdminListEmptyState
-          title="No parent agents"
-          description="Seed the agent world catalog or create parent agent designs in Ciright."
+          variant="panel"
+          entityName="parent agents"
+          emptyMessage="Seed the agent world catalog or create parent agent designs in Ciright."
         />
       ) : (
         <div className={adminTableWrap}>

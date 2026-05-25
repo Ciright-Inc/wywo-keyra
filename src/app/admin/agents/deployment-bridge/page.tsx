@@ -33,8 +33,9 @@ export default async function DeploymentBridgePage() {
 
       {keyraAgents.length === 0 ? (
         <AdminListEmptyState
-          title="No deployment bridge agents"
-          description="Create Keyra deployment agents linked to Ciright parent designs."
+          variant="panel"
+          entityName="deployment bridge agents"
+          emptyMessage="Create Keyra deployment agents linked to Ciright parent designs."
         />
       ) : (
         <div className={adminTableWrap}>

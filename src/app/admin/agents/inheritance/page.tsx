@@ -43,8 +43,9 @@ export default async function InheritancePage() {
 
       {instances.length === 0 ? (
         <AdminListEmptyState
-          title="No tenant instances"
-          description="Tenant Agent Instance IDs are generated when customers activate operational deployments."
+          variant="panel"
+          entityName="tenant instances"
+          emptyMessage="Tenant Agent Instance IDs are generated when customers activate operational deployments."
         />
       ) : (
         <div className={adminTableWrap}>
