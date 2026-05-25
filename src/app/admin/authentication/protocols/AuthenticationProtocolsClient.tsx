@@ -612,6 +612,15 @@ export function AuthenticationProtocolsClient({
           { label: "Rows", value: loading ? "—" : String(dataRows.length) },
           { label: "Active", value: loading ? "—" : String(activeCount) },
         ]}
+        search={
+          <CollapsibleSearchBar
+            mode="client"
+            searchQuery={searchQ}
+            onChange={setSearchQ}
+            placeholder="Name, code, category…"
+            ariaLabel="Search protocols"
+          />
+        }
       />
 
       <div className={adminToolbarStrip}>
@@ -674,13 +683,6 @@ export function AuthenticationProtocolsClient({
         </div>
 
         <div className={`${adminPageToolbar} w-full sm:ml-auto sm:w-auto`}>
-          <CollapsibleSearchBar
-            mode="client"
-            searchQuery={searchQ}
-            onChange={setSearchQ}
-            placeholder="Name, code, category…"
-            ariaLabel="Search protocols"
-          />
           {showEnableButton ? (
             <button
               type="button"

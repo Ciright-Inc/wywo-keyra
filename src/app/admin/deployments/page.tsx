@@ -30,9 +30,6 @@ export default async function AdminDeploymentsHome() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Link href="/global-deployment" className="ds-btn-secondary is-sm">
-              Public explorer
-            </Link>
             <Link href="/admin/deployments/access-requests" className="ds-btn-primary is-sm">
               Review access
             </Link>

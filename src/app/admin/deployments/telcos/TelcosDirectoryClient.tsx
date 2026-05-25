@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { CollapsibleSearchBar } from "@/components/admin/CollapsibleSearchBar";
+import { AdminDirectoryPageHeader } from "@/components/admin/AdminDirectoryPageHeader";
 import { RowActions } from "@/components/admin/RowActions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirmProvider";
 import { deleteTelcoMessage } from "@/lib/admin/adminDeleteMessages";
@@ -22,7 +23,6 @@ import {
   adminEyebrow,
   adminLabel,
   adminLegacyInput,
-  adminPageTitle,
   adminPanel,
   adminSectionTitle,
   adminTable,
@@ -208,44 +208,39 @@ export function TelcosDirectoryClient({
     <div>
       {/* Hero */}
       <div className={adminPanel}>
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className={adminPageTitle}>Telcos</h1>
-              <span className={adminCountBadge}>
-                {totalCount.toLocaleString()} total
-              </span>
-            </div>
-            <p className={`${adminBody} mt-1.5 max-w-xl text-[var(--ds-body)]`}>
-              Full telco catalog — click any column header to sort. Default order is newest first.
-            </p>
-          </div>
-
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+        <AdminDirectoryPageHeader
+          title="Telcos"
+          badge={<span className={adminCountBadge}>{totalCount.toLocaleString()} total</span>}
+          description="Full telco catalog — click any column header to sort. Default order is newest first."
+          search={
             <CollapsibleSearchBar
               searchQuery={searchQuery}
               buildHref={buildSearchHref}
               placeholder="Name, slug, subdomain, country…"
               ariaLabel="Search telcos"
             />
-            <Link
-              href="/api/admin/deployments/telcos/csv"
-              prefetch={false}
-              className="ds-btn-secondary is-sm"
-            >
-              Download CSV
-            </Link>
-            {canUseCreate ? (
-              <button
-                type="button"
-                className={createOpen ? "ds-btn-secondary is-sm" : "ds-btn-primary is-sm"}
-                onClick={() => setCreateOpen((open) => !open)}
+          }
+          actions={
+            <>
+              <Link
+                href="/api/admin/deployments/telcos/csv"
+                prefetch={false}
+                className="ds-btn-secondary is-sm"
               >
-                {createOpen ? "Close create form" : "Create telco"}
-              </button>
-            ) : null}
-          </div>
-        </div>
+                Download CSV
+              </Link>
+              {canUseCreate ? (
+                <button
+                  type="button"
+                  className={createOpen ? "ds-btn-secondary is-sm" : "ds-btn-primary is-sm"}
+                  onClick={() => setCreateOpen((open) => !open)}
+                >
+                  {createOpen ? "Close create form" : "Create telco"}
+                </button>
+              ) : null}
+            </>
+          }
+        />
 
         {/* Expandable create — fields aligned with `/admin/deployments/telcos/[id]` edit form */}
         {canUseCreate && createOpen ? (

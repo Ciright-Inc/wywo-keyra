@@ -38,7 +38,6 @@ function DeploymentsOverviewStaticHeader() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <span className="ds-btn-secondary is-sm pointer-events-none">Public explorer</span>
           <span className="ds-btn-primary is-sm pointer-events-none">Review access</span>
         </div>
       </div>

@@ -229,14 +229,6 @@ export function AdminDashboardShell({ children }: { children: ReactNode }) {
               </div>
             </div>
             <div className="ds-topbar__actions">
-              <AdminTransitionLink
-                href="/global-deployment"
-                prefetch
-                onNavigate={navigate}
-                className="ds-btn-secondary is-sm ds-topbar__explorer-btn"
-              >
-                Public explorer
-              </AdminTransitionLink>
               <AdminSignOutButton />
             </div>
           </header>

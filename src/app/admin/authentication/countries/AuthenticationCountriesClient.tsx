@@ -581,6 +581,15 @@ export function AuthenticationCountriesClient({
           { label: "Rows", value: loading ? "—" : String(dataRows.length) },
           { label: "Weight sum", value: loading ? "—" : activeSum.toFixed(2) },
         ]}
+        search={
+          <CollapsibleSearchBar
+            mode="client"
+            searchQuery={qInput}
+            onChange={setQInput}
+            placeholder="Name, ISO, region…"
+            ariaLabel="Search countries"
+          />
+        }
       />
 
       <div className={adminToolbarStrip}>
@@ -641,13 +650,6 @@ export function AuthenticationCountriesClient({
         </div>
 
         <div className={`${adminPageToolbar} w-full sm:ml-auto sm:w-auto`}>
-          <CollapsibleSearchBar
-            mode="client"
-            searchQuery={qInput}
-            onChange={setQInput}
-            placeholder="Name, ISO, region…"
-            ariaLabel="Search countries"
-          />
           <button
             type="button"
             className={addCountryOpen ? adminToolbarBtnSecondary : adminToolbarBtnPrimary}
