@@ -34,9 +34,11 @@ function run(cmd, { inherit = false, input } = {}) {
 function runSqlFile(relPath) {
   const abs = join(ROOT, relPath);
   const label = basename(relPath);
+  const schemaPath = join(ROOT, "prisma/schema.prisma");
   try {
     console.log(`[wywo-db]   applying ${label}…`);
-    run(`npx prisma db execute --file "${abs}"`, { inherit: true });
+    // `--schema` is required for Prisma to load DATABASE_URL from the datasource block.
+    run(`npx prisma db execute --schema "${schemaPath}" --file "${abs}"`, { inherit: true });
     console.log(`[wywo-db]   ✓ ${label}`);
   } catch (err) {
     const msg = `${err.stdout ?? ""}\n${err.stderr ?? ""}\n${err.message ?? ""}`;
@@ -150,6 +152,9 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error("[wywo-db] FATAL:", err);
-  process.exit(1);
+  // Never block container start on schema setup — the app can still serve
+  // pages that don't touch the failing tables, and we don't want a hot
+  // restart loop on Railway.
+  console.error("[wywo-db] FATAL (non-blocking, continuing to boot):", err);
+  process.exit(0);
 });
