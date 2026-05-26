@@ -3,10 +3,11 @@ import { NextResponse, type NextRequest } from "next/server";
 /**
  * Next.js middleware.
  *
- * WYWO deployment hint:
+ * WYWO deployment lockdown:
  *   When this build runs as the dedicated WYWO service (e.g. wywo.keyra.ie or
- *   the Railway preview `wywo-keyra-production.up.railway.app`), the root URL
- *   should land users on `/wywo` instead of the Keyra marketing homepage.
+ *   the Railway preview `wywo-keyra-production.up.railway.app`), only the WYWO
+ *   surface should be reachable. Every other Keyra route (marketing pages,
+ *   `/login`, `/admin`, etc.) redirects to `/wywo`.
  *
  * Trigger when ANY of:
  *   - env `KEYRA_DEPLOYMENT_MODE=wywo` (recommended, explicit)
@@ -14,10 +15,8 @@ import { NextResponse, type NextRequest } from "next/server";
  *   - hostname starts with `wywo.`    (e.g. wywo.keyra.ie)
  *   - hostname contains `wywo-keyra`  (Railway preview)
  *
- * On the main Keyra site (`keyra.ie`) none of these match → homepage renders normally.
- *
- * Only the bare `/` path is redirected; everything else (assets, APIs, /admin, etc.)
- * is left alone so the rest of the app keeps working.
+ * On the main Keyra site (`keyra.ie`) none of these match → app behaves
+ * exactly as before and every route is reachable.
  */
 function isWywoRootDeployment(req: NextRequest): boolean {
   const mode = process.env.KEYRA_DEPLOYMENT_MODE?.trim().toLowerCase();
@@ -33,17 +32,63 @@ function isWywoRootDeployment(req: NextRequest): boolean {
   return false;
 }
 
-export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  if (pathname === "/" && isWywoRootDeployment(req)) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/wywo";
-    return NextResponse.redirect(url, 308);
+// Path prefixes that are part of WYWO or shared infrastructure WYWO actually
+// needs. Anything else on a WYWO deployment gets redirected to `/wywo`.
+const WYWO_ALLOWED_PREFIXES = [
+  "/wywo",
+  "/api/wywo",
+  "/api/public/site-footer", // shared footer proxy used by WYWO shell
+  "/_next",
+  "/static",
+  "/assets",
+  "/images",
+  "/fonts",
+];
+
+const WYWO_ALLOWED_EXACT = new Set<string>([
+  "/favicon.ico",
+  "/robots.txt",
+  "/sitemap.xml",
+  "/manifest.json",
+  "/manifest.webmanifest",
+]);
+
+function isAllowedOnWywoDeploy(pathname: string): boolean {
+  if (WYWO_ALLOWED_EXACT.has(pathname)) return true;
+  for (const prefix of WYWO_ALLOWED_PREFIXES) {
+    if (pathname === prefix || pathname.startsWith(`${prefix}/`)) return true;
   }
-  return NextResponse.next();
+  // Static files (anything with a real file extension served from /public).
+  if (/\.[a-zA-Z0-9]{1,6}$/.test(pathname)) return true;
+  return false;
+}
+
+export function middleware(req: NextRequest) {
+  const { pathname, search } = req.nextUrl;
+
+  if (!isWywoRootDeployment(req)) {
+    return NextResponse.next();
+  }
+
+  // Already inside the WYWO surface or required shared infrastructure.
+  if (isAllowedOnWywoDeploy(pathname)) {
+    return NextResponse.next();
+  }
+
+  // Everything else on a WYWO deployment lands on the WYWO dashboard.
+  const url = req.nextUrl.clone();
+  url.pathname = "/wywo";
+  url.search = ""; // drop any keyra-marketing query params
+
+  // Use a 307 so the browser doesn't permanently cache the redirect — handy
+  // if we later open up more routes (e.g. /help, /privacy) on this deploy.
+  void search;
+  return NextResponse.redirect(url, 307);
 }
 
 export const config = {
-  // Run only on the exact root path — keep every other route untouched.
-  matcher: ["/"],
+  // Match every request except the ones Next.js already serves as internal
+  // assets. We still re-check inside the function so non-WYWO deployments are
+  // a no-op.
+  matcher: ["/((?!_next/static|_next/image).*)"],
 };
