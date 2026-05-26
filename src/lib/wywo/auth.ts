@@ -26,9 +26,40 @@ async function actorWithAdmin(session: KeyraSessionUser): Promise<WywoActor> {
   return actor;
 }
 
+/**
+ * Standalone WYWO deployment fallback. When the WYWO build runs as its own
+ * service (e.g. wywo.keyra.ie or the Railway preview) and we don't want to
+ * round-trip through `get-started.keyra.ie`, an operator can pin a single
+ * identity via env vars and skip auth entirely. This is the only way to
+ * open WYWO without Keyra cross-domain cookies.
+ *
+ * Required: `WYWO_STANDALONE_PHONE` in E.164 form (`+919...`).
+ * Optional: `WYWO_STANDALONE_NAME`, `WYWO_STANDALONE_EMAIL`.
+ *
+ * The matching `KEYRA_DEPLOYMENT_MODE=wywo` env (or `wywo-keyra`/`wywo.`
+ * hostname) is also required so this only takes effect on the dedicated
+ * WYWO deployment, never on keyra.ie.
+ */
+function wywoStandaloneSessionFromEnv(): KeyraSessionUser | null {
+  const phone = process.env.WYWO_STANDALONE_PHONE?.trim();
+  if (!phone?.startsWith("+")) return null;
+  const mode = process.env.KEYRA_DEPLOYMENT_MODE?.trim().toLowerCase();
+  const asRoot = process.env.WYWO_AS_ROOT === "1";
+  if (mode !== "wywo" && !asRoot) return null;
+  return {
+    phoneE164: phone,
+    displayName: process.env.WYWO_STANDALONE_NAME?.trim() || phone,
+    email: process.env.WYWO_STANDALONE_EMAIL?.trim() || undefined,
+  } as KeyraSessionUser;
+}
+
 export async function resolveWywoActor(): Promise<WywoActor | null> {
   const session = await resolveKeyraSessionFromCookies();
   if (session?.phoneE164) return actorWithAdmin(session);
+
+  // Standalone WYWO deployment (production-safe, env-gated).
+  const standalone = wywoStandaloneSessionFromEnv();
+  if (standalone) return actorWithAdmin(standalone);
 
   // Local dev: Get Started cookies live on get-started.keyra.ie — use KEYRA_DEV_SESSION_PHONE.
   const devPhone = devSessionPhoneFallback();
@@ -72,6 +103,9 @@ export async function resolveWywoActorFromRequest(req: Request): Promise<WywoAct
   const { resolveKeyraSessionFromRequest } = await import("@/lib/keyraSessionServer");
   const session = await resolveKeyraSessionFromRequest(req);
   if (session?.phoneE164) return actorWithAdmin(session);
+
+  const standalone = wywoStandaloneSessionFromEnv();
+  if (standalone) return actorWithAdmin(standalone);
 
   const devPhone = devSessionPhoneFallback();
   if (devPhone) {
