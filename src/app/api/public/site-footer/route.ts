@@ -56,7 +56,9 @@ export async function OPTIONS(req: Request) {
   });
 }
 
-/** Published site footer — DB on production; proxies live keyra.ie CMS when origins differ. */
+/** Published site footer — proxies https://keyra.ie/api/public/site-footer
+ * whenever this deployment is not the upstream itself; falls back to the local
+ * DB / seed if the upstream is unreachable. */
 export async function GET(req: Request) {
   const isDev = process.env.NODE_ENV === "development";
   const siteOrigin = trimSlash(keyraMarketingOrigin());
@@ -71,11 +73,18 @@ export async function GET(req: Request) {
     ...(isDev ? DEV_CACHE_HEADERS : CACHE_HEADERS),
   };
 
-  if (!isDev && siteOrigin !== cmsOrigin) {
+  // Live source of truth is https://keyra.ie/api/public/site-footer.
+  // Proxy to it whenever we are NOT that upstream (dev + non-marketing prod
+  // deployments). Falls through to the local DB if the upstream is unreachable.
+  if (siteOrigin !== cmsOrigin) {
     try {
       const proxyUrl = new URL(`${cmsOrigin}/api/public/site-footer`);
       if (siteAppIdParam) proxyUrl.searchParams.set("siteAppId", siteAppIdParam);
-      const res = await fetch(proxyUrl.toString(), { cache: "no-store" });
+      const res = await fetch(proxyUrl.toString(), {
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+        signal: AbortSignal.timeout(3500),
+      });
       if (res.ok) {
         const text = await res.text();
         if (text.trim()) {

@@ -3,10 +3,10 @@ import "server-only";
 import { PrismaClient } from "@prisma/client";
 
 /** Bump when Prisma schema changes so dev HMR picks up a new generated client. */
-const PRISMA_CLIENT_SCHEMA_VERSION = "admin-data-room-v2";
+const PRISMA_CLIENT_SCHEMA_VERSION = "wywo-enum-align-v1";
 
 /** Models added in recent migrations — used to detect a stale cached client. */
-const REQUIRED_DELEGATES = ["adminDataRoom"] as const;
+const REQUIRED_DELEGATES = ["adminDataRoom", "keyraWywoWorld"] as const;
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;

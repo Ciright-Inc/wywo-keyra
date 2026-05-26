@@ -889,3 +889,224 @@ model AgentDeploymentEvent {
   @@index([domainLayer])
   @@index([createdAt])
 }
+
+/* ==========================================================================
+ * WYWO — While You Were Out (wywo.keyra.ie)
+ * Trusted message layer for verified humans + verified agents.
+ * Indexed against the Ciright identity hierarchy (subscription_id, eid, uid,
+ * world_id, keyra_identity_id) and the Keyra trust graph.
+ * ==========================================================================
+ */
+
+enum WywoTrustStatus {
+  TRUSTED
+  FAMILY_CIRCLE
+  EXECUTIVE_RING
+  REFERRED
+  PENDING_REVIEW
+  UNKNOWN
+  BLOCKED
+  SUPPRESSED
+  EXPIRED
+  REVOKED
+}
+
+enum WywoTrustRing {
+  FAMILY_CIRCLE
+  EXECUTIVE_RING
+  TRUSTED_CONTACTS
+  REFERRED_CONTACTS
+  PENDING_UNKNOWNS
+  BLOCKED_ENTITIES
+}
+
+enum WywoMessageStatus {
+  DRAFT
+  QUEUED
+  DELIVERED
+  READ
+  REPLIED
+  PENDING_TRUST
+  ARCHIVED
+  BLOCKED
+  EXPIRED
+  REVOKED
+}
+
+enum WywoInviteStatus {
+  PENDING
+  SMS_SENT
+  CLICKED
+  VERIFIED
+  EXPIRED
+  REVOKED
+}
+
+enum WywoWorldType {
+  PERSONAL
+  FAMILY
+  ENTERPRISE
+  SUBSCRIPTION
+  AGENT
+}
+
+/** Personal / enterprise WYWO world bound to Ciright subscription identity. */
+model KeyraWywoWorld {
+  id              String   @id @default(cuid())
+  worldId         String   @unique
+  ownerPhoneE164  String   @map("phoneE164")
+  ownerUid        String?  @map("uid")
+  subscriptionId  String?
+  eid             String?
+  keyraIdentityId String?
+  name            String?  @map("displayName")
+  email           String?
+  company         String?
+  role            String?
+  country         String?
+  preferredDevice String?
+  notificationRulesJson Json @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([ownerPhoneE164, worldId])
+  @@index([ownerPhoneE164])
+  @@index([subscriptionId])
+  @@map("keyra_wywo_worlds")
+}
+
+/** Global Keyra WYWO message table — mirrored into Ciright Core. */
+model KeyraWywoMessage {
+  id               String            @id @default(cuid())
+  wywoMessageId    String            @unique @default(cuid())
+  subscriptionId   String?
+  eid              String?
+  uid              String?
+  worldId          String?
+  keyraIdentityId  String?
+  fromWorldId      String?
+  toWorldId        String?
+
+  senderUid        String?
+  senderKeyraId    String?
+  senderName       String?
+  senderPhone      String
+  recipientUid     String?
+  recipientKeyraId String?
+  recipientName    String?
+  recipientPhone   String
+  recipientEmail   String?
+
+  ccRecipientsJson Json              @default("[]")
+  subject          String
+  bodyEncrypted    String            @db.Text
+  bodyCryptoJson     Json?
+  attachmentsJson  Json              @default("[]")
+
+  priority         String            @default("normal")
+  category         String?
+  trustStatus      WywoTrustStatus   @default(UNKNOWN)
+  messageStatus    WywoMessageStatus @default(QUEUED)
+  referralRequired Boolean           @default(false)
+  referralPhoneNumber String?
+  inviteToken      String?
+  inviteStatus     WywoInviteStatus?
+
+  urgent           Boolean           @default(false)
+  readReceiptRequested Boolean         @default(true) @map("readReceipt")
+  replyPermitted   Boolean           @default(true)
+  expiresAt        DateTime?         @map("expirationAt")
+
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  deliveredAt      DateTime?
+  readAt           DateTime?
+  approvedAt       DateTime?
+  blockedAt        DateTime?
+  archivedAt       DateTime?
+
+  invites KeyraWywoInvite[]
+  audits  KeyraWywoAuditLog[]
+
+  @@index([senderPhone])
+  @@index([recipientPhone])
+  @@index([trustStatus])
+  @@index([messageStatus])
+  @@index([worldId])
+  @@index([subscriptionId])
+  @@map("keyra_wywo_messages")
+}
+
+/** Owner ↔ contact trust graph — controls who is allowed to send what. */
+model KeyraWywoContactTrust {
+  id             String          @id @default(cuid())
+  ownerPhoneE164 String          @map("ownerPhone")
+  ownerUid       String          @default("")
+  contactPhone   String
+  contactUid     String?
+  contactName    String?
+  trustStatus    WywoTrustStatus @default(PENDING_REVIEW)
+  trustRing      WywoTrustRing   @default(PENDING_UNKNOWNS)
+  referralUid    String?
+  referralPhone  String?
+  approvedByUid  String?
+  notes          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@unique([ownerPhoneE164, contactPhone])
+  @@index([ownerPhoneE164])
+  @@index([ownerUid])
+  @@index([trustRing])
+  @@index([trustStatus])
+  @@map("keyra_wywo_contact_trust")
+}
+
+/** Onboarding invites — SMS deep-link tokens for unknown recipients. */
+model KeyraWywoInvite {
+  id              String           @id @default(cuid())
+  inviteToken     String           @unique
+  messageId       String
+  senderUid       String?
+  senderPhoneE164 String           @map("senderPhone")
+  recipientPhone  String
+  recipientName   String?
+  worldId         String?
+  subscriptionId  String?
+  status          WywoInviteStatus @default(PENDING)
+  smsSentAt       DateTime?
+  clickedAt       DateTime?
+  verifiedAt      DateTime?
+  expiredAt       DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  message KeyraWywoMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([recipientPhone])
+  @@index([status])
+  @@index([senderPhoneE164])
+  @@map("keyra_wywo_invites")
+}
+
+/** Append-only audit log — every state transition on a WYWO message. */
+model KeyraWywoAuditLog {
+  id           String            @id @default(cuid())
+  messageId    String?
+  actorUid     String?
+  actorPhone   String?
+  action       String
+  oldValueJson String?           @map("oldValue")
+  newValueJson String?           @map("newValue")
+  ipAddress    String?
+  deviceId     String?
+  createdAt    DateTime          @default(now())
+
+  message KeyraWywoMessage? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+
+  @@index([messageId])
+  @@index([actorPhone])
+  @@index([createdAt])
+  @@index([action])
+  @@map("keyra_wywo_audit_log")
+}

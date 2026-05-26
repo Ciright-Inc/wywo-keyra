@@ -1,0 +1,613 @@
+/* ==========================================================================
+ * WYWO — While You Were Out
+ * Sits on top of the Keyra admin-dashboard surface (data-surface="dashboard")
+ * and only adds WYWO-specific accents: brand strip, identity chip, trust badges.
+ * Colors map to the global Keyra design tokens (ds-* / color-*).
+ * ========================================================================== */
+
+/* ==========================================================================
+ * WYWO shell — un-lock the admin-dashboard viewport math.
+ * /admin owns the whole viewport (KeyraAppChrome hides the header for /admin),
+ * but WYWO sits underneath the global Keyra header + footer, so we must:
+ *   1) let the BODY scroll naturally (admin-dashboard.css forces body overflow: hidden)
+ *   2) drop height: 100dvh on the dashboard wrapper / content so they flow with the page
+ *   3) make the sidebar sticky to the visible viewport (offset by the global header)
+ * ========================================================================== */
+
+html:has([data-surface="dashboard"].wywo-surface),
+body:has([data-surface="dashboard"].wywo-surface) {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 100%;
+}
+body:has([data-surface="dashboard"].wywo-surface) main {
+  min-height: auto;
+  overflow: visible !important;
+  flex: 1 0 auto;
+}
+
+[data-surface="dashboard"].wywo-surface,
+[data-surface="dashboard"].wywo-surface.admin-dashboard {
+  height: auto !important;
+  max-height: none !important;
+  min-height: calc(100dvh - var(--keyra-header-offset, 0px));
+  overflow: visible !important;
+}
+[data-surface="dashboard"].wywo-surface .admin-dashboard__main {
+  overflow: visible !important;
+  min-height: 0;
+  height: auto;
+}
+[data-surface="dashboard"].wywo-surface .admin-dashboard__content {
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0;
+  overscroll-behavior: auto !important;
+}
+
+/* Sidebar — sticky to the visible viewport (just below the global header) */
+@media (min-width: 1024px) {
+  [data-surface="dashboard"].wywo-surface .ds-sidebar {
+    position: sticky !important;
+    top: var(--keyra-header-offset, 0px) !important;
+    align-self: flex-start;
+    height: calc(100dvh - var(--keyra-header-offset, 0px)) !important;
+    max-height: calc(100dvh - var(--keyra-header-offset, 0px)) !important;
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
+/* Topbar — also sticky to the visible viewport, sitting under the global header */
+[data-surface="dashboard"].wywo-surface .ds-topbar {
+  position: sticky;
+  top: var(--keyra-header-offset, 0px);
+  z-index: 30;
+}
+
+/* ----- Global Keyra header — left-align the KEYRA logo on WYWO pages -------- *
+ * The site header normally centers its inner row in a `max-w-7xl mx-auto`
+ * container so on wide monitors the logo sits ~300px from the viewport edge.
+ * On WYWO that reads as "logo floats in the middle of the screen". We use
+ * `body:has(...)` to stretch the header's inner container to full width ONLY
+ * when the WYWO surface is mounted — leaves all other pages unchanged.
+ * A small ~20px left padding keeps the logo from crashing into the corner. */
+body:has([data-surface="dashboard"].wywo-surface) .keyra-site-header-shell > div {
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: max(40px, env(safe-area-inset-left, 0px)) !important;
+  padding-right: max(40px, env(safe-area-inset-right, 0px)) !important;
+}
+@media (min-width: 1024px) {
+  body:has([data-surface="dashboard"].wywo-surface) .keyra-site-header-shell > div {
+    padding-left: max(56px, env(safe-area-inset-left, 0px)) !important;
+    padding-right: max(40px, env(safe-area-inset-right, 0px)) !important;
+  }
+}
+
+/* ----- Side panel header — collapse the top whitespace ---------------------- *
+ * The dashboard base ships `.ds-sidebar-brand { padding: 20px 16px 12px; }`
+ * which leaves a visible gap above the brand eyebrow inside the WYWO panel.
+ * We zero out the top padding (and tighten the heading above the first nav
+ * group) so the panel content sits flush with the top of the dark surface.
+ * Scoped strictly to `.wywo-surface` so admin pages keep their original layout. */
+[data-surface="dashboard"].wywo-surface .ds-sidebar-brand {
+  padding-top: 12px !important;
+}
+[data-surface="dashboard"].wywo-surface .ds-sidebar-nav {
+  padding-top: 0 !important;
+}
+[data-surface="dashboard"].wywo-surface .ds-sidebar-nav > .ds-sidebar-heading:first-child {
+  padding-top: 12px;
+}
+/* Mobile/tablet: admin-dashboard.css adds a safe-area inset to the brand —
+ * keep that on iOS (notch) and stack the 12px breathing room on top. */
+@media (max-width: 1023px) {
+  [data-surface="dashboard"].wywo-surface .ds-sidebar-brand {
+    padding-top: calc(12px + env(safe-area-inset-top, 0px)) !important;
+  }
+}
+
+/* ----- Force black accent for every native control inside WYWO ------------ *
+ * Replaces the browser/OS default blue on checkboxes, radios, selects, range
+ * inputs, etc. so the entire app reads as Keyra ink (#171717) and never blue. */
+[data-surface="dashboard"].wywo-surface,
+.wywo-invite-shell {
+  accent-color: var(--ds-ink);
+}
+[data-surface="dashboard"].wywo-surface input[type="checkbox"],
+[data-surface="dashboard"].wywo-surface input[type="radio"],
+[data-surface="dashboard"].wywo-surface input[type="range"],
+[data-surface="dashboard"].wywo-surface select,
+[data-surface="dashboard"].wywo-surface progress,
+.wywo-invite-shell input[type="checkbox"],
+.wywo-invite-shell input[type="radio"],
+.wywo-invite-shell select {
+  accent-color: var(--ds-ink);
+  color-scheme: light;
+}
+
+/* Native <select> options highlight color (Firefox supports this) */
+[data-surface="dashboard"].wywo-surface select option:checked,
+.wywo-invite-shell select option:checked {
+  background: var(--ds-canvas-soft);
+  color: var(--ds-ink);
+}
+
+/* Focus rings on form fields — never blue */
+[data-surface="dashboard"].wywo-surface .ds-text-input:focus,
+[data-surface="dashboard"].wywo-surface .ds-text-input:focus-visible,
+.wywo-invite-shell .ds-text-input:focus {
+  border-color: var(--ds-ink) !important;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Text-link inside WYWO surfaces — black with underline on hover (Keyra ink) */
+[data-surface="dashboard"].wywo-surface .ds-text-link,
+.wywo-invite-shell .ds-text-link {
+  color: var(--ds-ink);
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.25);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 150ms ease;
+}
+[data-surface="dashboard"].wywo-surface .ds-text-link:hover,
+.wywo-invite-shell .ds-text-link:hover {
+  text-decoration-color: var(--ds-ink);
+}
+
+/* ----- Topbar identity chip ----------------------------------------------- */
+[data-surface="dashboard"].wywo-surface .ds-topbar__actions {
+  gap: 8px;
+}
+
+.wywo-topbar-identity {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  padding: 6px 10px;
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-pill);
+  background: var(--ds-canvas);
+  max-width: 220px;
+  min-width: 0;
+}
+.wywo-topbar-identity__name {
+  font: 600 12px/1.3 var(--ds-font-sans);
+  color: var(--ds-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.wywo-topbar-identity__phone {
+  font: 500 11px/1.2 var(--ds-font-accent);
+  color: var(--ds-body);
+  letter-spacing: 0.02em;
+}
+@media (max-width: 639px) {
+  .wywo-topbar-identity {
+    padding: 4px 8px;
+    max-width: 140px;
+  }
+  .wywo-topbar-identity__phone {
+    display: none;
+  }
+}
+
+/* ----- Brand sub-eyebrow on dashboard hero -------------------------------- */
+.wywo-doctrine {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-canvas-soft);
+}
+.wywo-doctrine__dot {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--ds-radius-pill);
+  background: var(--ds-ink);
+  color: var(--ds-on-primary);
+  font: 600 12px/1 var(--ds-font-sans);
+  letter-spacing: 0.05em;
+}
+
+/* ----- Trust badges (Keyra palette, calm) --------------------------------- */
+.wywo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: var(--ds-radius-pill);
+  font: 600 10.5px/1.4 var(--ds-font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--ds-hairline-strong);
+  background: var(--ds-canvas);
+  color: var(--ds-ink);
+  white-space: nowrap;
+}
+.wywo-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.85;
+}
+.wywo-badge.is-trusted {
+  color: #166534;
+  background: #ecfdf5;
+  border-color: #bbf7d0;
+}
+.wywo-badge.is-family {
+  color: #1e40af;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+.wywo-badge.is-executive {
+  color: #92400e;
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+.wywo-badge.is-referred {
+  color: #6b21a8;
+  background: #faf5ff;
+  border-color: #e9d5ff;
+}
+.wywo-badge.is-pending {
+  color: #854d0e;
+  background: #fefce8;
+  border-color: #fde68a;
+}
+.wywo-badge.is-unknown {
+  color: var(--ds-body);
+  background: var(--ds-canvas-soft);
+  border-color: var(--ds-hairline-strong);
+}
+.wywo-badge.is-blocked {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+.wywo-badge.is-muted {
+  color: var(--ds-muted);
+  background: var(--ds-canvas-soft);
+  border-color: var(--ds-hairline-strong);
+}
+.wywo-badge.is-urgent {
+  color: #9a3412;
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+/* ----- Compact identity meta lists on detail pages ------------------------ */
+.wywo-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px 28px;
+}
+.wywo-meta-grid > div > span:first-child {
+  font: 600 11px/1.4 var(--ds-font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ds-body);
+}
+.wywo-meta-grid > div > p {
+  margin-top: 4px;
+  font: 400 14px/1.45 var(--ds-font-sans);
+  color: var(--ds-ink);
+}
+
+/* ----- Country code picker (search + flags) ------------------------------ */
+
+/* Trigger button — matches `.ds-text-input.is-sm` border/colors but with tighter
+ * horizontal padding so the flag + dial fit snugly without wasted whitespace. */
+.wywo-country-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-surface-card);
+  color: var(--ds-ink);
+  font-family: var(--ds-font-sans);
+  font-size: 14px;
+  line-height: 1.4;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+.wywo-country-trigger:hover:not(:disabled) {
+  border-color: var(--ds-input-focus-border, #c4c8cf);
+}
+.wywo-country-trigger:focus-visible {
+  outline: none;
+  border-color: var(--ds-ink);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+.wywo-country-trigger:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.wywo-country-trigger__flag {
+  flex-shrink: 0;
+  font-size: 16px;
+  line-height: 1;
+}
+.wywo-country-trigger__dial {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  color: var(--ds-ink);
+  letter-spacing: 0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wywo-country-trigger__chevron {
+  flex-shrink: 0;
+  color: var(--ds-muted);
+}
+
+.wywo-country-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 80;
+  width: max(280px, 100%);
+  background: var(--ds-surface-card);
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-lg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.wywo-country-pop__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--ds-hairline);
+  background: var(--ds-canvas-soft);
+}
+
+.wywo-country-pop__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  padding: 0;
+  font: 400 13px/1.4 var(--ds-font-sans);
+  color: var(--ds-ink);
+}
+.wywo-country-pop__input::placeholder {
+  color: var(--ds-muted);
+}
+
+.wywo-country-pop__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--ds-radius-pill);
+  background: var(--ds-hairline);
+  color: var(--ds-body);
+  font-size: 14px;
+  line-height: 1;
+  border: 0;
+  cursor: pointer;
+}
+.wywo-country-pop__clear:hover {
+  background: var(--ds-hairline-strong);
+  color: var(--ds-ink);
+}
+
+.wywo-country-pop__list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 4px 0;
+  margin: 0;
+  list-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ds-hairline-strong) transparent;
+}
+.wywo-country-pop__list::-webkit-scrollbar {
+  width: 6px;
+}
+.wywo-country-pop__list::-webkit-scrollbar-thumb {
+  background: var(--ds-hairline-strong);
+  border-radius: 3px;
+}
+
+.wywo-country-pop__row {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+  font: 400 13px/1.4 var(--ds-font-sans);
+  color: var(--ds-ink);
+}
+.wywo-country-pop__row.is-hi {
+  background: var(--ds-canvas-soft);
+}
+.wywo-country-pop__row.is-selected {
+  background: rgba(0, 0, 0, 0.05);
+}
+.wywo-country-pop__row.is-selected.is-hi {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.wywo-country-pop__flag {
+  font-size: 16px;
+  line-height: 1;
+}
+.wywo-country-pop__name {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wywo-country-pop__dial {
+  color: var(--ds-body);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.wywo-country-pop__empty {
+  padding: 16px 12px;
+  text-align: center;
+  font: 400 13px/1.4 var(--ds-font-sans);
+  color: var(--ds-muted);
+}
+
+/* ----- Generic WYWO custom <select> replacement --------------------------- */
+.wywo-select-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px 6px 12px;
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-surface-card);
+  color: var(--ds-ink);
+  font-family: var(--ds-font-sans);
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease;
+}
+.wywo-select-trigger:hover:not(:disabled) {
+  border-color: var(--ds-input-focus-border, #c4c8cf);
+}
+.wywo-select-trigger:focus-visible {
+  outline: none;
+  border-color: var(--ds-ink);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+.wywo-select-trigger:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.wywo-select-trigger__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wywo-select-trigger__label.is-placeholder {
+  color: var(--ds-muted);
+}
+.wywo-select-trigger__hint {
+  color: var(--ds-body);
+  font-size: 12.5px;
+}
+.wywo-select-trigger__chevron {
+  flex-shrink: 0;
+  color: var(--ds-muted);
+}
+
+.wywo-select-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 80;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--ds-surface-card);
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-lg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.04);
+  scrollbar-width: thin;
+  scrollbar-color: var(--ds-hairline-strong) transparent;
+}
+.wywo-select-pop::-webkit-scrollbar {
+  width: 6px;
+}
+.wywo-select-pop::-webkit-scrollbar-thumb {
+  background: var(--ds-hairline-strong);
+  border-radius: 3px;
+}
+
+.wywo-select-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+  font: 400 14px/1.4 var(--ds-font-sans);
+  color: var(--ds-ink);
+}
+.wywo-select-row.is-hi {
+  background: var(--ds-canvas-soft);
+}
+.wywo-select-row.is-selected {
+  background: rgba(0, 0, 0, 0.05);
+}
+.wywo-select-row.is-selected.is-hi {
+  background: rgba(0, 0, 0, 0.08);
+}
+.wywo-select-row__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wywo-select-row__hint {
+  color: var(--ds-body);
+  font-size: 12.5px;
+}
+.wywo-select-row__check {
+  flex-shrink: 0;
+  color: var(--ds-ink);
+}
+
+/* ----- Invite page (outside the dashboard shell) -------------------------- */
+.wywo-invite-shell {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  background: var(--ds-canvas-soft);
+}
+.wywo-invite-card {
+  max-width: 560px;
+  width: 100%;
+  background: var(--ds-surface-card);
+  border: 1px solid var(--ds-hairline-strong);
+  border-radius: var(--ds-radius-xl);
+  padding: 36px clamp(20px, 4vw, 40px);
+  box-shadow: var(--ds-shadow-soft);
+}

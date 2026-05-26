@@ -3,6 +3,10 @@ import "server-only";
 import type { SiteFooterLink, SiteFooterSettings, SiteFooterSocialLink } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import prisma from "@/lib/prisma";
+import {
+  keyraMarketingOrigin,
+  keyraMarketingPublicOrigin,
+} from "@/lib/keyraAppUrls";
 import { SITE_FOOTER_CACHE_TAG } from "./cacheTags";
 import { loadSiteFooterSeed } from "../../../prisma/siteFooterSeedData";
 import { getDefaultSiteFooterConfig, SITE_FOOTER_SETTINGS_ID } from "./defaults";
@@ -20,6 +24,58 @@ import type {
   SiteFooterSettingsView,
   SiteFooterSocialLinkView,
 } from "./types";
+
+function trimSlash(s: string): string {
+  return s.replace(/\/+$/, "");
+}
+
+function isSiteFooterConfig(value: unknown): value is SiteFooterConfig {
+  if (!value || typeof value !== "object") return false;
+  const payload = value as SiteFooterConfig;
+  return (
+    Boolean(payload.settings) &&
+    Array.isArray(payload.onThisSiteLinks) &&
+    Array.isArray(payload.keyraAppLinks) &&
+    Array.isArray(payload.socialLinks)
+  );
+}
+
+/**
+ * Fetch the live site-footer CMS payload from `https://keyra.ie/api/public/site-footer`.
+ *
+ * Returns null and lets the caller fall back to the local DB when:
+ *  - we ARE the upstream (same origin → would loop)
+ *  - the network call fails, times out, or returns invalid JSON
+ *
+ * The result is intentionally NOT cached here — `getCachedPublicSiteFooter`
+ * wraps the whole resolution path with `unstable_cache` so a successful
+ * upstream pull is reused for `revalidate: 60` seconds.
+ */
+export async function fetchUpstreamSiteFooter(
+  siteAppId?: string | null,
+): Promise<SiteFooterConfig | null> {
+  try {
+    const siteOrigin = trimSlash(keyraMarketingOrigin());
+    const cmsOrigin = trimSlash(keyraMarketingPublicOrigin());
+    if (!cmsOrigin || siteOrigin === cmsOrigin) return null;
+
+    const url = new URL(`${cmsOrigin}/api/public/site-footer`);
+    if (siteAppId) url.searchParams.set("siteAppId", siteAppId);
+
+    const res = await fetch(url.toString(), {
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(3500),
+    });
+    if (!res.ok) return null;
+    const text = await res.text();
+    if (!text.trim()) return null;
+    const data: unknown = JSON.parse(text);
+    return isSiteFooterConfig(data) ? data : null;
+  } catch {
+    return null;
+  }
+}
 
 function mapSettings(row: SiteFooterSettings): SiteFooterSettingsView {
   return {
@@ -149,6 +205,14 @@ async function loadSiteFooterConfig(
   publishedOnly: boolean,
   siteAppId?: string | null,
 ): Promise<SiteFooterConfig> {
+  // Source of truth is the live keyra.ie CMS — only the published feed.
+  // Falls back to the local DB / seed below when the upstream is unreachable
+  // (e.g. we ARE keyra.ie, or no network).
+  if (publishedOnly) {
+    const upstream = await fetchUpstreamSiteFooter(siteAppId ?? undefined);
+    if (upstream) return upstream;
+  }
+
   let ready = false;
   try {
     ready = await ensureSiteFooterDefaults();
