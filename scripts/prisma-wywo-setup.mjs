@@ -2,17 +2,18 @@
 /**
  * WYWO database setup for Railway / shared Postgres.
  *
- * Does NOT call `prisma migrate deploy` (P3005 on shared DBs with other apps' tables).
- * Does NOT call `prisma db push` (would try to DROP unrelated tables).
- *
- * 1. If `keyra_wywo_messages` exists → done (fast path, every redeploy).
- * 2. Else → run only the 3 WYWO migration SQL files via `prisma db execute`.
- * 3. Optionally seed deploy catalog when Keyra catalog tables exist.
+ * - Never calls `prisma migrate deploy` (P3005 on shared DBs).
+ * - Never calls `prisma db push` (would DROP unrelated tables).
+ * - Runs SQL via the `pg` driver + DATABASE_URL (no Prisma CLI; works when
+ *   Railway installs with --omit=dev and without --schema/--url CLI quirks).
+ * - Never blocks container start on failure (avoids Railway restart loops).
  */
-import { execSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { basename, join } from "node:path";
+import pg from "pg";
 import { PrismaClient } from "@prisma/client";
 
+const { Client } = pg;
 const ROOT = process.cwd();
 const WYWO_SQL_FILES = [
   "prisma/migrations/20260526120000_wywo_messaging/migration.sql",
@@ -20,34 +21,42 @@ const WYWO_SQL_FILES = [
   "prisma/migrations/20260526150000_wywo_enum_align/migration.sql",
   "prisma/migrations/20260528170000_wywo_prisma_column_align/migration.sql",
 ];
+const ALIGN_SQL = WYWO_SQL_FILES[WYWO_SQL_FILES.length - 1];
 
-function run(cmd, { inherit = false, input } = {}) {
-  const opts = { stdio: inherit ? "inherit" : "pipe", encoding: "utf8", env: process.env };
-  if (input !== undefined) opts.input = input;
-  if (inherit) {
-    execSync(cmd, opts);
-    return "";
-  }
-  return execSync(cmd, opts);
+const BENIGN_SQL =
+  /already exists|duplicate key|duplicate_object|42710|42P07|42P06|42701/i;
+
+function databaseUrl() {
+  const url = process.env.DATABASE_URL?.trim();
+  if (!url) throw new Error("DATABASE_URL is not set");
+  return url;
 }
 
-function runSqlFile(relPath) {
+/** Run a migration file as one Postgres script (supports DO $$ … $$ blocks). */
+async function executeSqlFile(relPath) {
   const abs = join(ROOT, relPath);
   const label = basename(relPath);
-  const schemaPath = join(ROOT, "prisma/schema.prisma");
+  const sql = readFileSync(abs, "utf8");
+  if (!sql.trim()) {
+    console.log(`[wywo-db]   · ${label} (empty, skipped)`);
+    return;
+  }
+
+  console.log(`[wywo-db]   applying ${label}…`);
+  const client = new Client({ connectionString: databaseUrl() });
+  await client.connect();
   try {
-    console.log(`[wywo-db]   applying ${label}…`);
-    // `--schema` is required for Prisma to load DATABASE_URL from the datasource block.
-    run(`npx prisma db execute --schema "${schemaPath}" --file "${abs}"`, { inherit: true });
+    await client.query(sql);
     console.log(`[wywo-db]   ✓ ${label}`);
   } catch (err) {
-    const msg = `${err.stdout ?? ""}\n${err.stderr ?? ""}\n${err.message ?? ""}`;
-    if (/already exists|duplicate key|duplicate_object/i.test(msg)) {
+    const msg = `${err?.message ?? err}`;
+    if (BENIGN_SQL.test(msg)) {
       console.log(`[wywo-db]   · ${label} (already present, continuing)`);
       return;
     }
-    console.error(msg);
     throw err;
+  } finally {
+    await client.end();
   }
 }
 
@@ -61,7 +70,6 @@ async function wywoTablesExist(prisma) {
   return Boolean(rows[0]?.ok);
 }
 
-/** True when worlds table has the column Prisma expects (not old db-push `phoneE164`). */
 async function wywoSchemaAligned(prisma) {
   const rows = await prisma.$queryRaw`
     SELECT EXISTS (
@@ -85,32 +93,35 @@ async function keyraCatalogTablesExist(prisma) {
 }
 
 async function ensureWywoSchema() {
+  databaseUrl();
+
   const prisma = new PrismaClient();
   try {
     const tablesExist = await wywoTablesExist(prisma);
     const aligned = tablesExist ? await wywoSchemaAligned(prisma) : false;
 
     if (tablesExist && aligned) {
-      console.log("[wywo-db] WYWO schema aligned — running column-align SQL only.\n");
-      runSqlFile(WYWO_SQL_FILES[WYWO_SQL_FILES.length - 1]);
-      console.log("");
+      console.log("[wywo-db] WYWO schema OK (ownerPhoneE164 present) — no SQL needed.\n");
       return;
     }
 
     if (tablesExist && !aligned) {
+      console.log("[wywo-db] WYWO columns out of date — applying align migration…\n");
+      await executeSqlFile(ALIGN_SQL);
+      const nowAligned = await wywoSchemaAligned(prisma);
       console.log(
-        "[wywo-db] WYWO tables present but columns out of date — applying align migration…\n",
+        nowAligned
+          ? "[wywo-db] Column align done.\n"
+          : "[wywo-db] WARN: ownerPhoneE164 still missing after align SQL.\n",
       );
-      runSqlFile(WYWO_SQL_FILES[WYWO_SQL_FILES.length - 1]);
-      console.log("\n[wywo-db] WYWO column align done.\n");
       return;
     }
 
-    console.log("[wywo-db] WYWO tables missing — applying WYWO SQL only (shared-DB safe)…\n");
+    console.log("[wywo-db] WYWO tables missing — applying all WYWO SQL…\n");
     for (const file of WYWO_SQL_FILES) {
-      runSqlFile(file);
+      await executeSqlFile(file);
     }
-    console.log("\n[wywo-db] WYWO schema ready.\n");
+    console.log("[wywo-db] WYWO schema ready.\n");
   } finally {
     await prisma.$disconnect();
   }
@@ -126,8 +137,7 @@ async function maybeSeedCatalog() {
   try {
     if (!(await keyraCatalogTablesExist(prisma))) {
       console.log(
-        "[wywo-db] Keyra catalog tables (Region) not in this database — skipping catalog seed.\n" +
-          "         (normal on a WYWO-only / shared Postgres without the full Keyra schema.)\n",
+        "[wywo-db] Keyra catalog tables (Region) not in this database — skipping catalog seed.\n",
       );
       return;
     }
@@ -136,25 +146,27 @@ async function maybeSeedCatalog() {
   }
 
   console.log("[wywo-db] Running deploy catalog seed…\n");
-  run("npm run db:seed:deploy-catalog", { inherit: true });
+  const { execSync } = await import("node:child_process");
+  try {
+    execSync("npm run db:seed:deploy-catalog", {
+      cwd: ROOT,
+      stdio: "inherit",
+      env: process.env,
+    });
+  } catch (err) {
+    console.warn("[wywo-db] Catalog seed failed (non-blocking):", err?.message ?? err);
+  }
   console.log("");
 }
 
 async function main() {
-  if (!process.env.DATABASE_URL?.trim()) {
-    console.error("[wywo-db] DATABASE_URL is not set.");
-    process.exit(1);
-  }
-
-  console.log("[wywo-db] Checking database…\n");
+  console.log("[wywo-db] Checking database (pg driver)…\n");
   await ensureWywoSchema();
   await maybeSeedCatalog();
+  console.log("[wywo-db] Done.\n");
 }
 
 main().catch((err) => {
-  // Never block container start on schema setup — the app can still serve
-  // pages that don't touch the failing tables, and we don't want a hot
-  // restart loop on Railway.
-  console.error("[wywo-db] FATAL (non-blocking, continuing to boot):", err);
+  console.error("[wywo-db] Setup error (non-blocking, app will still start):", err?.message ?? err);
   process.exit(0);
 });
