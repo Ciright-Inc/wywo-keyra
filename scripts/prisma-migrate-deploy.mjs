@@ -2,18 +2,29 @@
 /**
  * Production migration runner for Railway / Docker.
  *
- * Handles Prisma P3005 ("database schema is not empty") which happens when
- * Postgres already has tables (e.g. from an earlier `db push` or manual setup)
- * but no `_prisma_migrations` history. In that case we:
- *   1. `db push` — ensure schema matches prisma/schema.prisma (adds WYWO tables etc.)
- *   2. `migrate resolve --applied` for every migration folder — baseline history
- *   3. `migrate deploy` — apply any migrations still missing from the DB
+ * Normal path: `prisma migrate deploy`
+ *
+ * P3005 ("database schema is not empty") happens when Postgres already has
+ * tables from another service (shared Railway DB) but no _prisma_migrations
+ * history for this app. NEVER use `db push` here — it tries to DROP tables
+ * that belong to other apps (developer, auth, translate, etc.).
+ *
+ * Safe P3005 handling:
+ *   1. Mark every non-WYWO migration as already applied (baseline only).
+ *   2. Run `migrate deploy` — applies only the WYWO migration SQL files.
  */
 import { execSync } from "node:child_process";
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 
 const MIGRATIONS_DIR = join(process.cwd(), "prisma", "migrations");
+
+/** WYWO-only migrations — the only SQL we actually run on a shared database. */
+const WYWO_MIGRATIONS = new Set([
+  "20260526120000_wywo_messaging",
+  "20260526140000_wywo_body_crypto",
+  "20260526150000_wywo_enum_align",
+]);
 
 function run(cmd, { inherit = false } = {}) {
   if (inherit) {
@@ -43,34 +54,39 @@ function tryMigrateDeploy() {
   }
 }
 
-function baselineExistingDatabase() {
-  console.log("\n[prisma] P3005 — database has schema but no migration history.");
-  console.log("[prisma] Syncing schema with db push, then baselining migrations…\n");
+function resolveApplied(name) {
+  try {
+    run(`npx prisma migrate resolve --applied "${name}"`);
+    return "applied";
+  } catch (err) {
+    const msg = String(err.stderr ?? err.stdout ?? err.message ?? "");
+    if (msg.includes("P3008") || msg.includes("already")) return "exists";
+    console.warn(`[prisma]   ! resolve ${name}: ${msg.trim()}`);
+    return "error";
+  }
+}
 
-  run("npx prisma db push --skip-generate", { inherit: true });
+/**
+ * Shared-database baseline: do NOT db push. Only apply WYWO migration files.
+ */
+function baselineSharedDatabase() {
+  console.log("\n[prisma] P3005 — database already has tables (likely a shared Postgres).");
+  console.log("[prisma] NOT running db push (that would drop other apps' tables).");
+  console.log("[prisma] Baselining non-WYWO migrations, then applying WYWO only.\n");
 
   const names = listMigrationNames();
   for (const name of names) {
-    try {
-      run(`npx prisma migrate resolve --applied "${name}"`);
-      console.log(`[prisma]   ✓ baselined ${name}`);
-    } catch (err) {
-      const msg = String(err.stderr ?? err.stdout ?? err.message ?? "");
-      // Already recorded — safe to ignore on redeploy.
-      if (msg.includes("already") || msg.includes("P3008")) {
-        console.log(`[prisma]   · already applied ${name}`);
-      } else {
-        console.warn(`[prisma]   ! resolve ${name}: ${msg.trim()}`);
-      }
-    }
+    if (WYWO_MIGRATIONS.has(name)) continue;
+    const status = resolveApplied(name);
+    console.log(`[prisma]   · baselined (skipped SQL): ${name}${status === "exists" ? " [already]" : ""}`);
   }
 
-  console.log("\n[prisma] Running migrate deploy after baseline…\n");
+  console.log("\n[prisma] Applying WYWO migrations via migrate deploy…\n");
   run("npx prisma migrate deploy", { inherit: true });
 }
 
 console.log("[prisma] migrate deploy…\n");
 if (!tryMigrateDeploy()) {
-  baselineExistingDatabase();
+  baselineSharedDatabase();
 }
 console.log("\n[prisma] migrations OK.\n");
