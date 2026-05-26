@@ -41,6 +41,7 @@
     "node_modules",
     "events-intelligence",
     "global-deployment",
-    "web"
+    "web",
+    "scripts"
   ]
 }

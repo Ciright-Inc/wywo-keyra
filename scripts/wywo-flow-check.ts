@@ -162,7 +162,7 @@ async function main() {
   section("4. Recipient opens message → marks READ");
   const opened = await getWywoMessage(recipient, first.message.id);
   check("message fetched", !!opened);
-  check("body decrypted", opened?.body.startsWith("First message"));
+  check("body decrypted", !!(opened?.body.startsWith("First message")));
   check("messageStatus = READ", opened?.messageStatus === "READ");
   check("readAt populated", !!opened?.readAt);
 
