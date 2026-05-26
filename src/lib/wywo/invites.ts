@@ -44,6 +44,8 @@ export async function createWywoInvite(
   const recipientE = toE164(input.recipientPhone) ?? input.recipientPhone;
   const token = generateInviteToken();
 
+  const expiresAt = new Date(Date.now() + WYWO_INVITE_TTL_MS);
+
   const invite = await prisma.keyraWywoInvite.create({
     data: {
       inviteToken: token,
@@ -55,6 +57,7 @@ export async function createWywoInvite(
       worldId: input.worldId ?? null,
       subscriptionId: input.subscriptionId ?? null,
       status: "PENDING",
+      expiresAt,
     },
   });
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
+import type { DeploymentApp } from "@prisma/client";
 import { listDeploymentApps } from "@/lib/deploymentApps";
-import { keyraMarketingOrigin, keyraMarketingPublicOrigin } from "@/lib/keyraAppUrls";
+import { getKeyraEcosystemAppLinks, keyraMarketingOrigin, keyraMarketingPublicOrigin } from "@/lib/keyraAppUrls";
 import { getPublicSiteFooterConfig } from "@/lib/siteFooter/queries";
 import {
   buildFooterSiteAppOptions,
@@ -59,23 +60,44 @@ export async function OPTIONS(req: Request) {
 /** Published site footer — proxies https://keyra.ie/api/public/site-footer
  * whenever this deployment is not the upstream itself; falls back to the local
  * DB / seed if the upstream is unreachable. */
+async function loadFooterDeploymentApps(): Promise<DeploymentApp[]> {
+  try {
+    return await listDeploymentApps({ includeInactive: true, includePrivate: true });
+  } catch (err) {
+    console.warn(
+      "[api/public/site-footer] DeploymentApp table unavailable — using static app links.",
+      err,
+    );
+    return getKeyraEcosystemAppLinks().map((app) => ({
+      id: app.id,
+      label: app.label,
+      description: app.description,
+      href: app.href,
+      gensparkUrl: null,
+      temporaryUrl: null,
+      section: "KEYRA_APPS",
+      sortOrder: 0,
+      isPrivate: false,
+      isActive: true,
+      createdAt: new Date(0),
+      updatedAt: new Date(0),
+    })) as DeploymentApp[];
+  }
+}
+
 export async function GET(req: Request) {
   const isDev = process.env.NODE_ENV === "development";
   const siteOrigin = trimSlash(keyraMarketingOrigin());
   const cmsOrigin = trimSlash(keyraMarketingPublicOrigin());
   const requestUrl = new URL(req.url);
   const siteAppIdParam = requestUrl.searchParams.get("siteAppId");
-  const deploymentApps = await listDeploymentApps({ includeInactive: true, includePrivate: true });
-  const footerSiteApps = buildFooterSiteAppOptions(deploymentApps);
-  const siteAppId = resolveFooterSiteAppIdFromRequest(req.url, req.headers, footerSiteApps, siteAppIdParam);
   const responseHeaders = {
     ...corsHeaders(req.headers.get("origin")),
     ...(isDev ? DEV_CACHE_HEADERS : CACHE_HEADERS),
   };
 
   // Live source of truth is https://keyra.ie/api/public/site-footer.
-  // Proxy to it whenever we are NOT that upstream (dev + non-marketing prod
-  // deployments). Falls through to the local DB if the upstream is unreachable.
+  // Proxy first on WYWO / non-marketing deploys (no local SiteFooter* tables required).
   if (siteOrigin !== cmsOrigin) {
     try {
       const proxyUrl = new URL(`${cmsOrigin}/api/public/site-footer`);
@@ -99,6 +121,16 @@ export async function GET(req: Request) {
     }
   }
 
-  const footer = await getPublicSiteFooterConfig(siteAppId);
-  return NextResponse.json(footer, { headers: responseHeaders });
+  const deploymentApps = await loadFooterDeploymentApps();
+  const footerSiteApps = buildFooterSiteAppOptions(deploymentApps);
+  const siteAppId = resolveFooterSiteAppIdFromRequest(req.url, req.headers, footerSiteApps, siteAppIdParam);
+
+  try {
+    const footer = await getPublicSiteFooterConfig(siteAppId);
+    return NextResponse.json(footer, { headers: responseHeaders });
+  } catch (err) {
+    console.warn("[api/public/site-footer] Falling back to defaults.", err);
+    const { getDefaultSiteFooterConfig } = await import("@/lib/siteFooter/defaults");
+    return NextResponse.json(getDefaultSiteFooterConfig(), { headers: responseHeaders });
+  }
 }

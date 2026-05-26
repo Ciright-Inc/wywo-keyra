@@ -18,6 +18,7 @@ const WYWO_SQL_FILES = [
   "prisma/migrations/20260526120000_wywo_messaging/migration.sql",
   "prisma/migrations/20260526140000_wywo_body_crypto/migration.sql",
   "prisma/migrations/20260526150000_wywo_enum_align/migration.sql",
+  "prisma/migrations/20260528170000_wywo_prisma_column_align/migration.sql",
 ];
 
 function run(cmd, { inherit = false, input } = {}) {
@@ -58,6 +59,19 @@ async function wywoTablesExist(prisma) {
   return Boolean(rows[0]?.ok);
 }
 
+/** True when worlds table has the column Prisma expects (not old db-push `phoneE164`). */
+async function wywoSchemaAligned(prisma) {
+  const rows = await prisma.$queryRaw`
+    SELECT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'public'
+        AND table_name = 'keyra_wywo_worlds'
+        AND column_name = 'ownerPhoneE164'
+    ) AS ok
+  `;
+  return Boolean(rows[0]?.ok);
+}
+
 async function keyraCatalogTablesExist(prisma) {
   const rows = await prisma.$queryRaw`
     SELECT EXISTS (
@@ -71,8 +85,22 @@ async function keyraCatalogTablesExist(prisma) {
 async function ensureWywoSchema() {
   const prisma = new PrismaClient();
   try {
-    if (await wywoTablesExist(prisma)) {
-      console.log("[wywo-db] WYWO tables already present — skipping SQL.\n");
+    const tablesExist = await wywoTablesExist(prisma);
+    const aligned = tablesExist ? await wywoSchemaAligned(prisma) : false;
+
+    if (tablesExist && aligned) {
+      console.log("[wywo-db] WYWO schema aligned — running column-align SQL only.\n");
+      runSqlFile(WYWO_SQL_FILES[WYWO_SQL_FILES.length - 1]);
+      console.log("");
+      return;
+    }
+
+    if (tablesExist && !aligned) {
+      console.log(
+        "[wywo-db] WYWO tables present but columns out of date — applying align migration…\n",
+      );
+      runSqlFile(WYWO_SQL_FILES[WYWO_SQL_FILES.length - 1]);
+      console.log("\n[wywo-db] WYWO column align done.\n");
       return;
     }
 

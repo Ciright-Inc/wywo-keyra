@@ -143,11 +143,18 @@ function siteFooterDbReady(): boolean {
 export async function ensureSiteFooterDefaults(): Promise<boolean> {
   if (!siteFooterDbReady()) return false;
 
-  const [settingsCount, linkCount, socialCount] = await Promise.all([
-    prisma.siteFooterSettings.count(),
-    prisma.siteFooterLink.count(),
-    prisma.siteFooterSocialLink.count(),
-  ]);
+  let settingsCount = 0;
+  let linkCount = 0;
+  let socialCount = 0;
+  try {
+    [settingsCount, linkCount, socialCount] = await Promise.all([
+      prisma.siteFooterSettings.count(),
+      prisma.siteFooterLink.count(),
+      prisma.siteFooterSocialLink.count(),
+    ]);
+  } catch {
+    return false;
+  }
 
   if (settingsCount > 0 && linkCount > 0 && socialCount > 0) {
     try {

@@ -954,12 +954,12 @@ enum WywoWorldType {
 model KeyraWywoWorld {
   id              String   @id @default(cuid())
   worldId         String   @unique
-  ownerPhoneE164  String   @map("phoneE164")
-  ownerUid        String?  @map("uid")
+  ownerPhoneE164  String
+  ownerUid        String?
   subscriptionId  String?
   eid             String?
   keyraIdentityId String?
-  name            String?  @map("displayName")
+  name            String?
   email           String?
   company         String?
   role            String?
@@ -1013,9 +1013,9 @@ model KeyraWywoMessage {
   inviteStatus     WywoInviteStatus?
 
   urgent           Boolean           @default(false)
-  readReceiptRequested Boolean         @default(true) @map("readReceipt")
+  readReceiptRequested Boolean         @default(false)
   replyPermitted   Boolean           @default(true)
-  expiresAt        DateTime?         @map("expirationAt")
+  expiresAt        DateTime?
 
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
@@ -1040,8 +1040,8 @@ model KeyraWywoMessage {
 /** Owner ↔ contact trust graph — controls who is allowed to send what. */
 model KeyraWywoContactTrust {
   id             String          @id @default(cuid())
-  ownerPhoneE164 String          @map("ownerPhone")
-  ownerUid       String          @default("")
+  ownerPhoneE164 String
+  ownerUid       String?
   contactPhone   String
   contactUid     String?
   contactName    String?
@@ -1068,7 +1068,7 @@ model KeyraWywoInvite {
   inviteToken     String           @unique
   messageId       String
   senderUid       String?
-  senderPhoneE164 String           @map("senderPhone")
+  senderPhoneE164 String
   recipientPhone  String
   recipientName   String?
   worldId         String?
@@ -1078,6 +1078,7 @@ model KeyraWywoInvite {
   clickedAt       DateTime?
   verifiedAt      DateTime?
   expiredAt       DateTime?
+  expiresAt       DateTime
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
@@ -1096,8 +1097,8 @@ model KeyraWywoAuditLog {
   actorUid     String?
   actorPhone   String?
   action       String
-  oldValueJson String?           @map("oldValue")
-  newValueJson String?           @map("newValue")
+  oldValueJson Json?
+  newValueJson Json?
   ipAddress    String?
   deviceId     String?
   createdAt    DateTime          @default(now())

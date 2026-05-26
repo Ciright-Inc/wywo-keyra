@@ -14,9 +14,16 @@ export type AuditInput = {
   deviceId?: string | null;
 };
 
-function auditJson(value: unknown): string | undefined {
+function auditJson(value: unknown): Prisma.InputJsonValue | undefined {
   if (value === undefined || value === null) return undefined;
-  return typeof value === "string" ? value : JSON.stringify(value);
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value) as Prisma.InputJsonValue;
+    } catch {
+      return value;
+    }
+  }
+  return value as Prisma.InputJsonValue;
 }
 
 export async function recordWywoAudit(input: AuditInput): Promise<void> {
