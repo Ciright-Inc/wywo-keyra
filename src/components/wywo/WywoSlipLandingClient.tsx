@@ -29,7 +29,45 @@ export function WywoSlipLandingClient({ initialSignedIn }: Props) {
 
   const signedIn = initialized ? isAuthenticated : sessionReady || initialSignedIn;
 
+  const authBackendUrl = (() => {
+    const raw = process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL?.trim() || "";
+    return raw.replace(/\/+$/, "");
+  })();
+
   const syncSession = useCallback(async () => {
+    // 1) If we can see an existing auth session (from Get Started) on the auth backend,
+    //    establish `keyra_session` on *this* origin so WYWO unlocks on Railway preview domains
+    //    where `.keyra.ie` cookies are not shared.
+    if (authBackendUrl) {
+      try {
+        const res = await fetch(`${authBackendUrl}/auth/session`, {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+          headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+        });
+        if (res.ok) {
+          const payload = (await res.json()) as {
+            authenticated?: boolean;
+            user?: { phone?: string } | null;
+          };
+          const phone = payload?.authenticated && payload.user?.phone ? String(payload.user.phone) : "";
+          const phoneE164 = phone.startsWith("+") ? phone : phone ? `+${phone}` : "";
+          if (phoneE164) {
+            await fetch("/api/keyra/session/login", {
+              method: "POST",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ phoneNumber: phoneE164 }),
+            });
+          }
+        }
+      } catch {
+        // ignore: we'll fall back to cookie-based session checks below
+      }
+    }
+
+    // 2) Existing same-origin session bridge (works on keyra.ie / wywo.keyra.ie).
     try {
       await fetch("/api/keyra/session/sync", {
         method: "POST",
@@ -50,7 +88,7 @@ export function WywoSlipLandingClient({ initialSignedIn }: Props) {
         setSessionReady(true);
       }
     }
-  }, [refresh]);
+  }, [authBackendUrl, refresh]);
 
   useEffect(() => {
     setIsLocal(isLocalDevHost());
