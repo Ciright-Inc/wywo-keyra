@@ -1,5 +1,6 @@
 import { rateLimitResponse } from "@/app/api/keyra/_routeHelpers";
 import { KEYRA_SESSION_COOKIE } from "@/lib/keyraSessionCookie";
+import { keyraSessionCookieBaseOptions } from "@/lib/keyraSessionCookieOptions";
 import { requireKeyraSessionUser } from "@/lib/keyraProtectionSession";
 import { resolveAuthBackendUrl } from "@/lib/resolveAuthBackendUrl";
 import { NextResponse } from "next/server";
@@ -33,10 +34,7 @@ export async function POST(req: Request) {
   res.cookies.set({
     name: KEYRA_SESSION_COOKIE,
     value: "",
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
+    ...keyraSessionCookieBaseOptions(),
     maxAge: 0,
   });
 

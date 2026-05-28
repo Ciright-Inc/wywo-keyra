@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default async function WywoShellLayout({ children }: { children: ReactNode }) {
-  const actor = await assertWywoActor("/wywo");
+  const actor = await assertWywoActor("/wywo/home");
   return (
     <WywoShell
       adminEnabled={!!actor.isAdmin}

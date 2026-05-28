@@ -70,7 +70,8 @@ export function generateLatestAuthBatch(params: {
       pairKeysAdded.push(pairKey);
 
       const hr = balanceHomeRoaming(protocol, random);
-      const ts = new Date(Date.now() - Math.floor(random() * 120_000)).toISOString();
+      // Near–wall-clock time so the feed reads as live, not replayed minutes-old history.
+      const ts = new Date(Date.now() - i * 45 - Math.floor(random() * 650)).toISOString();
       const st = STATUSES[Math.floor(random() * STATUSES.length)]!;
       const x = params.maskingEnabled ? nextMaskedReference(random) : `REF-${pairKey}-${i}`;
 

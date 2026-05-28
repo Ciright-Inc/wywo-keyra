@@ -4,6 +4,7 @@ import type {
   KeyraWywoInvite,
   KeyraWywoMessage,
   KeyraWywoWorld,
+  WywoSourceType,
   WywoTrustStatus,
 } from "@prisma/client";
 
@@ -33,6 +34,20 @@ export type WywoMessageView = {
   subscriptionId: string | null;
   subject: string;
   body: string;
+  /** Normalized communications source (SMS/WhatsApp/voicemail/etc.) */
+  sourceType: WywoSourceType;
+  sourceProvider: string | null;
+  /** Provider message ids used to de-duplicate and to preserve threads across imports. */
+  sourceMessageId: string | null;
+  sourceThreadId: string | null;
+  /** Platform-neutral threading ids for unified timeline rendering. */
+  threadId: string | null;
+  conversationId: string | null;
+  /** AI/processing outputs (e.g. voicemail transcription, summaries). */
+  transcription: string | null;
+  aiSummary: string | null;
+  sentiment: string | null;
+  urgencyScore: number | null;
   senderName: string;
   senderPhone: string;
   senderEmail: string | null;

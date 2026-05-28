@@ -17,8 +17,9 @@ type NavItem = {
 };
 
 const MESSAGES_NAV: NavItem[] = [
-  { href: "/wywo", label: "Dashboard", icon: "dashboard", exact: true },
+  { href: "/wywo/home", label: "Dashboard", icon: "dashboard", exact: true },
   { href: "/wywo/inbox", label: "Inbox", icon: "inbox" },
+  { href: "/wywo/voicemail", label: "Voicemail", icon: "inbox" },
   { href: "/wywo/pending", label: "Pending trust", icon: "pending" },
   { href: "/wywo/sent", label: "Sent", icon: "sent" },
   { href: "/wywo/compose", label: "Compose", icon: "compose" },
@@ -37,6 +38,7 @@ const ADMIN_NAV: NavItem[] = [
   { href: "/wywo/admin", label: "All messages", icon: "admin", exact: true },
   { href: "/wywo/admin/invites", label: "Invites", icon: "invites" },
   { href: "/wywo/admin/audit", label: "Audit log", icon: "audit" },
+  { href: "/wywo/assistant", label: "Executive assistant", icon: "audit" },
 ];
 
 function isActive(pathname: string, item: NavItem): boolean {
@@ -98,6 +100,7 @@ type Props = {
 };
 
 const TOPBAR_TITLES: Array<{ test: (p: string) => boolean; title: string }> = [
+  { test: (p) => p === "/wywo/home", title: "Dashboard" },
   { test: (p) => p.startsWith("/wywo/inbox"), title: "Inbox" },
   { test: (p) => p.startsWith("/wywo/pending"), title: "Pending trust" },
   { test: (p) => p.startsWith("/wywo/sent"), title: "Sent" },
@@ -119,6 +122,7 @@ function resolveTopbarTitle(pathname: string): string {
 export function WywoShell({ children, adminEnabled, displayName, phoneE164 }: Props) {
   const pathname = usePathname() ?? "";
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
   const toggleSidebar = useCallback(() => setSidebarOpen((o) => !o), []);
@@ -154,6 +158,19 @@ export function WywoShell({ children, adminEnabled, displayName, phoneE164 }: Pr
   }, [sidebarOpen]);
 
   const topbarTitle = resolveTopbarTitle(pathname);
+
+  const handleLogout = useCallback(async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      await Promise.all([
+        fetch("/api/auth/logout", { method: "POST", credentials: "include" }),
+        fetch("/api/keyra/session/logout", { method: "POST", credentials: "include" }),
+      ]);
+    } finally {
+      window.location.href = "/wywo";
+    }
+  }, [loggingOut]);
 
   return (
     <div
@@ -230,6 +247,14 @@ export function WywoShell({ children, adminEnabled, displayName, phoneE164 }: Pr
               <span className="wywo-topbar-identity__name">{displayName}</span>
               <span className="wywo-topbar-identity__phone">{phoneE164}</span>
             </span>
+            <button
+              type="button"
+              className="ds-btn-secondary is-sm"
+              onClick={handleLogout}
+              disabled={loggingOut}
+            >
+              {loggingOut ? "Logging out…" : "Logout"}
+            </button>
           </div>
         </header>
 

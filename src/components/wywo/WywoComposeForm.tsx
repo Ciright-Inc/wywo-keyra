@@ -242,7 +242,7 @@ export function WywoComposeForm() {
         <button
           type="button"
           className={adminToolbarBtnSecondary}
-          onClick={() => router.push("/wywo")}
+          onClick={() => router.push("/wywo/home")}
           disabled={submitting}
         >
           Cancel

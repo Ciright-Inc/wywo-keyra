@@ -168,6 +168,40 @@ export function WywoMessageDetailClient({ message }: Props) {
         <div className="border-t border-[var(--ds-hairline)] pt-5">
           <p className="ds-body-md whitespace-pre-wrap text-[var(--ds-ink)]">{message.body}</p>
         </div>
+        {message.transcription ? (
+          <div className="pt-5 border-t border-[var(--ds-hairline)]">
+            <p className="ds-caption-uppercase">Transcription</p>
+            <p className="ds-body-sm whitespace-pre-wrap text-[var(--ds-ink)]">
+              {message.transcription}
+            </p>
+          </div>
+        ) : null}
+        {message.aiSummary ? (
+          <div className="pt-5 border-t border-[var(--ds-hairline)]">
+            <p className="ds-caption-uppercase">AI summary</p>
+            <p className="ds-body-sm whitespace-pre-wrap text-[var(--ds-ink)]">
+              {message.aiSummary}
+            </p>
+          </div>
+        ) : null}
+        {message.urgencyScore !== null || message.sentiment !== null ? (
+          <div className="pt-5 border-t border-[var(--ds-hairline)]">
+            <p className="ds-caption-uppercase">Signals</p>
+            <p className="ds-body-sm">
+              {message.urgencyScore !== null ? (
+                <>
+                  Urgency: <span className="ds-numeric">{message.urgencyScore}</span>
+                  <span className="mx-2">·</span>
+                </>
+              ) : null}
+              {message.sentiment ? (
+                <>
+                  Sentiment: <span className="ds-numeric">{message.sentiment}</span>
+                </>
+              ) : null}
+            </p>
+          </div>
+        ) : null}
         {message.attachments.length ? (
           <div>
             <p className="ds-caption-uppercase">Attachments</p>

@@ -90,7 +90,7 @@ export async function assertWywoActor(returnTo: string): Promise<WywoActor> {
 export async function assertWywoAdminActor(returnTo: string): Promise<WywoActor> {
   const actor = await assertWywoActor(returnTo);
   if (!actor.isAdmin) {
-    redirect("/wywo");
+    redirect("/wywo/home");
   }
   return actor;
 }

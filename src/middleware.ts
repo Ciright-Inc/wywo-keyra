@@ -38,6 +38,13 @@ const WYWO_ALLOWED_PREFIXES = [
   "/wywo",
   "/api/wywo",
   "/api/public/site-footer", // shared footer proxy used by WYWO shell
+  "/api/keyra",
+  "/api/ipification",
+  "/login",
+  "/signup",
+  "/callback",
+  "/hosted-login",
+  "/verify-device",
   "/_next",
   "/static",
   "/assets",
@@ -65,6 +72,15 @@ function isAllowedOnWywoDeploy(pathname: string): boolean {
 
 export function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
+
+  // Guard against accidental duplicated WYWO base path (e.g. /wywo/wywo).
+  // This can happen when composing `next` paths across multiple redirects.
+  if (pathname === "/wywo/wywo" || pathname.startsWith("/wywo/wywo/")) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/wywo";
+    // preserve search params (useful for debug) but drop double base
+    return NextResponse.redirect(url, 307);
+  }
 
   if (!isWywoRootDeployment(req)) {
     return NextResponse.next();

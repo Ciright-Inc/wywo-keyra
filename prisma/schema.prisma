@@ -950,6 +950,21 @@ enum WywoWorldType {
   AGENT
 }
 
+enum WywoSourceType {
+  WYWO_NATIVE
+  SMS
+  WHATSAPP
+  VOICEMAIL
+  IMESSAGE_IMPORT
+  OUTLOOK
+  CALENDAR_ALERT
+  TEAMS
+  CRM
+  SUPPORT_TICKET
+  ENTERPRISE_ALERT
+  AI_AGENT
+}
+
 /** Personal / enterprise WYWO world bound to Ciright subscription identity. */
 model KeyraWywoWorld {
   id              String   @id @default(cuid())
@@ -997,6 +1012,25 @@ model KeyraWywoMessage {
   recipientPhone   String
   recipientEmail   String?
 
+  sourceType         WywoSourceType    @default(WYWO_NATIVE)
+  sourceProvider     String?
+  sourceMessageId    String?
+  sourceThreadId     String?
+  senderEmail        String?
+  senderIdentity     String?
+  recipientIdentity  String?
+  threadId           String?
+  conversationId     String?
+  transcription      String?           @db.Text
+  aiSummary          String?           @db.Text
+  sentiment          String?
+  urgencyScore       Float?
+  deviceTargetsJson  Json              @default("[]")
+  routingPolicyJson  Json              @default("{}")
+  calendarReferenceJson Json?
+  crmReferenceJson   Json?
+  taskReferenceJson  Json?
+
   ccRecipientsJson Json              @default("[]")
   subject          String
   bodyEncrypted    String            @db.Text
@@ -1034,6 +1068,9 @@ model KeyraWywoMessage {
   @@index([messageStatus])
   @@index([worldId])
   @@index([subscriptionId])
+  @@index([sourceType])
+  @@index([threadId])
+  @@index([conversationId])
   @@map("keyra_wywo_messages")
 }
 

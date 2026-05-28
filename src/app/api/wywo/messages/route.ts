@@ -5,6 +5,12 @@ import {
   listWywoMessages,
 } from "@/lib/wywo/messages";
 import { ensurePersonalWywoWorld } from "@/lib/wywo/worlds";
+import {
+  WYWO_SOURCE_TYPE_LABELS,
+  WYWO_TRUST_RING_LABELS,
+  WYWO_TRUST_STATUS_LABELS,
+} from "@/lib/wywo/constants";
+import type { WywoSourceType, WywoTrustRing, WywoTrustStatus } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +24,29 @@ export async function GET(req: Request) {
     const blocked = url.searchParams.get("blocked") === "1";
     const worldId = url.searchParams.get("worldId") || undefined;
     const query = url.searchParams.get("q") || undefined;
+    const trustRingRaw = url.searchParams.get("trustRing") || "";
+    const trustRing: WywoTrustRing | undefined =
+      trustRingRaw && trustRingRaw in WYWO_TRUST_RING_LABELS
+        ? (trustRingRaw as WywoTrustRing)
+        : undefined;
+
+    const sourceTypeRaw = url.searchParams.get("sourceType") || "";
+    const sourceType: WywoSourceType | undefined =
+      sourceTypeRaw && sourceTypeRaw in WYWO_SOURCE_TYPE_LABELS
+        ? (sourceTypeRaw as WywoSourceType)
+        : undefined;
+
+    const subscriptionIdRaw = url.searchParams.get("subscriptionId") || "";
+    const subscriptionId = subscriptionIdRaw ? subscriptionIdRaw : undefined;
+
+    const company = url.searchParams.get("company") || undefined;
+
+    const trustStatusRaw = url.searchParams.get("trustStatus") || "";
+    const trustStatus: WywoTrustStatus | undefined =
+      trustStatusRaw && trustStatusRaw in WYWO_TRUST_STATUS_LABELS
+        ? (trustStatusRaw as WywoTrustStatus)
+        : undefined;
+
     const page = Number(url.searchParams.get("page") || "1") || 1;
     const perPage = Math.min(Number(url.searchParams.get("perPage") || "50") || 50, 200);
     const out = await listWywoMessages(actor, {
@@ -28,6 +57,11 @@ export async function GET(req: Request) {
       query,
       page,
       perPage,
+      trustRing,
+      sourceType,
+      subscriptionId: subscriptionId ?? null,
+      company,
+      trustStatus,
     });
     return out;
   });

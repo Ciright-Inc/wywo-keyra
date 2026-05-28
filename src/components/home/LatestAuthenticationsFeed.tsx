@@ -122,7 +122,7 @@ async function fetchCatalogAuthRows(limit = 8): Promise<LatestAuthRecord[]> {
       const country = pickRandom(countries, random)!;
       const protocol = pickRandom(protocols, random)!;
       rows.push({
-        t: new Date(now - (i + 1) * 15_000).toISOString(),
+        t: new Date(now - i * 900 - Math.floor(random() * 500)).toISOString(),
         c: country.countryName,
         r: (country.subRegion?.trim() || country.region).trim(),
         p: protocol.protocolName,

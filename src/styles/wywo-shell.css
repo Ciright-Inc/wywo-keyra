@@ -6,16 +6,18 @@
  * ========================================================================== */
 
 /* ==========================================================================
- * WYWO shell — un-lock the admin-dashboard viewport math.
- * /admin owns the whole viewport (KeyraAppChrome hides the header for /admin),
- * but WYWO sits underneath the global Keyra header + footer, so we must:
- *   1) let the BODY scroll naturally (admin-dashboard.css forces body overflow: hidden)
- *   2) drop height: 100dvh on the dashboard wrapper / content so they flow with the page
- *   3) make the sidebar sticky to the visible viewport (offset by the global header)
+ * WYWO shell
+ *
+ * WYWO uses the admin dashboard surface but runs with *minimal* marketing chrome
+ * (no global Keyra header/footer). Ensure scroll behaves like the dashboard:
+ * - Desktop: lock shell to viewport and let the content pane scroll.
+ * - Mobile/tablet: allow natural page scroll (admin-dashboard.css already does).
+ * Also: zero out `--keyra-header-offset` so we don't reserve phantom space.
  * ========================================================================== */
 
 html:has([data-surface="dashboard"].wywo-surface),
 body:has([data-surface="dashboard"].wywo-surface) {
+  --keyra-header-offset: 0px;
   overflow: visible !important;
   height: auto !important;
   min-height: 100%;
@@ -30,7 +32,7 @@ body:has([data-surface="dashboard"].wywo-surface) main {
 [data-surface="dashboard"].wywo-surface.admin-dashboard {
   height: auto !important;
   max-height: none !important;
-  min-height: calc(100dvh - var(--keyra-header-offset, 0px));
+  min-height: 100dvh;
   overflow: visible !important;
 }
 [data-surface="dashboard"].wywo-surface .admin-dashboard__main {
@@ -46,23 +48,51 @@ body:has([data-surface="dashboard"].wywo-surface) main {
   overscroll-behavior: auto !important;
 }
 
-/* Sidebar — sticky to the visible viewport (just below the global header) */
+/* Desktop: dashboard-style scrolling (content pane scrolls) */
+@media (min-width: 1024px) {
+  body:has([data-surface="dashboard"].wywo-surface) {
+    overflow: hidden !important;
+  }
+
+  [data-surface="dashboard"].wywo-surface.admin-dashboard {
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  [data-surface="dashboard"].wywo-surface .admin-dashboard__main {
+    overflow: hidden !important;
+    height: 100%;
+  }
+
+  [data-surface="dashboard"].wywo-surface .admin-dashboard__content {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Sidebar — sticky to the visible viewport */
 @media (min-width: 1024px) {
   [data-surface="dashboard"].wywo-surface .ds-sidebar {
     position: sticky !important;
-    top: var(--keyra-header-offset, 0px) !important;
+    top: 0 !important;
     align-self: flex-start;
-    height: calc(100dvh - var(--keyra-header-offset, 0px)) !important;
-    max-height: calc(100dvh - var(--keyra-header-offset, 0px)) !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
     min-height: 0;
     overflow: hidden;
   }
 }
 
-/* Topbar — also sticky to the visible viewport, sitting under the global header */
+/* Topbar — sticky to the visible viewport */
 [data-surface="dashboard"].wywo-surface .ds-topbar {
   position: sticky;
-  top: var(--keyra-header-offset, 0px);
+  top: 0;
   z-index: 30;
 }
 

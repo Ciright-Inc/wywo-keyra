@@ -9,6 +9,7 @@ import type {
   WywoMessageStatus,
   WywoTrustRing,
   WywoTrustStatus,
+  WywoSourceType,
 } from "@prisma/client";
 
 export const WYWO_TRUST_STATUS_LABELS: Record<WywoTrustStatus, string> = {
@@ -90,6 +91,36 @@ export const WYWO_CATEGORY_OPTIONS = [
   { value: "introduction", label: "Introduction" },
   { value: "agent", label: "Verified agent" },
 ] as const;
+
+export const WYWO_SOURCE_TYPE_LABELS: Record<WywoSourceType, string> = {
+  WYWO_NATIVE: "WYWO",
+  SMS: "SMS",
+  WHATSAPP: "WhatsApp",
+  VOICEMAIL: "Voicemail",
+  IMESSAGE_IMPORT: "iMessage import",
+  OUTLOOK: "Outlook",
+  CALENDAR_ALERT: "Calendar",
+  TEAMS: "Teams",
+  CRM: "CRM",
+  SUPPORT_TICKET: "Support ticket",
+  ENTERPRISE_ALERT: "Enterprise alert",
+  AI_AGENT: "Verified agent",
+};
+
+export const WYWO_SOURCE_TYPE_OPTIONS = [
+  "WYWO_NATIVE",
+  "SMS",
+  "WHATSAPP",
+  "VOICEMAIL",
+  "IMESSAGE_IMPORT",
+  "OUTLOOK",
+  "CALENDAR_ALERT",
+  "TEAMS",
+  "CRM",
+  "SUPPORT_TICKET",
+  "ENTERPRISE_ALERT",
+  "AI_AGENT",
+] as const satisfies readonly WywoSourceType[];
 
 /** SMS copy template used when inviting an unknown recipient. */
 export function buildInviteSms(opts: {

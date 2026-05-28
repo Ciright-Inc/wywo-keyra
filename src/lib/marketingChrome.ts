@@ -2,6 +2,7 @@ const MINIMAL_PATH_PREFIXES = ["/verify-device", "/hosted-login", "/callback"];
 
 /** Pages that hide marketing header + footer (auth flows, admin shell). */
 export function isMinimalMarketingChrome(pathname: string): boolean {
+  if (pathname === "/wywo" || pathname.startsWith("/wywo/")) return true;
   if (
     pathname.startsWith("/admin") &&
     pathname !== "/admin/login" &&

@@ -4,6 +4,7 @@ import {
   parseSession,
   type KeyraSessionUser,
 } from "@/lib/keyraSessionCookie";
+import { keyraSessionCookieBaseOptions } from "@/lib/keyraSessionCookieOptions";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -18,10 +19,7 @@ export async function GET() {
     res.cookies.set({
       name: KEYRA_SESSION_COOKIE,
       value: "",
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
+      ...keyraSessionCookieBaseOptions(),
       maxAge: 0,
     });
     return res;

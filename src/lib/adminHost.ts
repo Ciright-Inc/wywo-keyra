@@ -116,6 +116,18 @@ export function resolveKeyraRedirectOrigin(req: Request, nextPath: string): stri
     if (adminOrigin) return adminOrigin;
   }
 
+  // In local development we want redirects to stay on the same origin (e.g. localhost:3030),
+  // even though the Host header is "internal" (localhost/127.0.0.1). Falling back to the
+  // marketing public origin would incorrectly bounce to keyra.ie.
+  if (process.env.NODE_ENV !== "production") {
+    try {
+      const origin = new URL(req.url).origin;
+      if (origin) return origin;
+    } catch {
+      // ignore and continue
+    }
+  }
+
   const host = (req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "")
     .split(",")[0]
     ?.trim() ?? "";

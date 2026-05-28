@@ -15,7 +15,7 @@ import { listTrustContacts } from "@/lib/wywo/trust";
 import { ensurePersonalWywoWorld } from "@/lib/wywo/worlds";
 
 export default async function WywoDashboardPage() {
-  const actor = await assertWywoActor("/wywo");
+  const actor = await assertWywoActor("/wywo/home");
   await ensurePersonalWywoWorld({
     phoneE164: actor.phoneE164,
     displayName: actor.displayName,

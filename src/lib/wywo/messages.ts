@@ -2,7 +2,12 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
-import type { KeyraWywoMessage, WywoTrustStatus } from "@prisma/client";
+import type {
+  KeyraWywoMessage,
+  WywoSourceType,
+  WywoTrustRing,
+  WywoTrustStatus,
+} from "@prisma/client";
 
 import {
   BLOCKED_TRUST_STATUSES,
@@ -15,6 +20,8 @@ import { evaluateTrust, ringForStatus, upsertContactTrust } from "./trust";
 import { createWywoInvite } from "./invites";
 import { toE164 } from "./phone";
 import type { WywoActor, WywoListResult, WywoMessageView } from "./types";
+import { publishWywoEvent } from "./events";
+import { umoFromWywoMessage } from "./umo";
 import { deriveWorldIdForPhone, ensurePersonalWywoWorld } from "./worlds";
 
 type ListOpts = {
@@ -24,8 +31,21 @@ type ListOpts = {
   worldId?: string | null;
   query?: string;
   trustStatus?: WywoTrustStatus;
+  trustRing?: WywoTrustRing;
+  sourceType?: WywoSourceType;
+  subscriptionId?: string | null;
+  company?: string | null;
   page?: number;
   perPage?: number;
+};
+
+const TRUST_STATUSES_BY_RING: Record<WywoTrustRing, WywoTrustStatus[]> = {
+  FAMILY_CIRCLE: ["FAMILY_CIRCLE"],
+  EXECUTIVE_RING: ["EXECUTIVE_RING"],
+  TRUSTED_CONTACTS: ["TRUSTED"],
+  REFERRED_CONTACTS: ["REFERRED"],
+  PENDING_UNKNOWNS: ["PENDING_REVIEW", "UNKNOWN"],
+  BLOCKED_ENTITIES: ["BLOCKED", "SUPPRESSED", "REVOKED"],
 };
 
 function ccRecipientsToJson(value: unknown): WywoMessageView["ccRecipients"] {
@@ -64,9 +84,19 @@ function toView(actor: WywoActor, m: KeyraWywoMessage): WywoMessageView {
     subscriptionId: m.subscriptionId,
     subject: m.subject,
     body: decryptMessageBody(m.bodyEncrypted, m.bodyCryptoJson),
+    sourceType: m.sourceType,
+    sourceProvider: m.sourceProvider,
+    sourceMessageId: m.sourceMessageId,
+    sourceThreadId: m.sourceThreadId,
+    threadId: m.threadId,
+    conversationId: m.conversationId,
+    transcription: m.transcription,
+    aiSummary: m.aiSummary,
+    sentiment: m.sentiment,
+    urgencyScore: m.urgencyScore,
     senderName: m.senderName ?? "Unknown sender",
     senderPhone: m.senderPhone,
-    senderEmail: null,
+    senderEmail: m.senderEmail ?? null,
     senderUid: m.senderUid,
     recipientName: m.recipientName,
     recipientPhone: m.recipientPhone,
@@ -120,11 +150,30 @@ export async function listWywoMessages(
     andClauses.push({ trustStatus: { in: BLOCKED_TRUST_STATUSES } });
   } else if (opts.trustStatus) {
     andClauses.push({ trustStatus: opts.trustStatus });
+  } else if (opts.trustRing) {
+    andClauses.push({ trustStatus: { in: TRUST_STATUSES_BY_RING[opts.trustRing] } });
   } else if (direction === "inbox") {
     andClauses.push({ trustStatus: { in: TRUSTED_INBOX_STATUSES } });
   }
 
   if (opts.worldId) andClauses.push({ worldId: opts.worldId });
+
+  if (opts.subscriptionId !== undefined && opts.subscriptionId !== null) {
+    andClauses.push({ subscriptionId: opts.subscriptionId });
+  }
+
+  if (opts.sourceType) {
+    andClauses.push({ sourceType: opts.sourceType });
+  }
+
+  if (opts.company) {
+    const companyWorlds = await prisma.keyraWywoWorld.findMany({
+      where: { ownerPhoneE164: actor.phoneE164, company: opts.company },
+      select: { worldId: true },
+    });
+    const worldIds = companyWorlds.map((w) => w.worldId);
+    andClauses.push({ worldId: { in: worldIds.length ? worldIds : ["__none__"] } });
+  }
 
   if (opts.query) {
     andClauses.push({
@@ -211,6 +260,27 @@ export type CreateWywoMessageInput = {
   toWorldId?: string | null;
   parentMessageId?: string | null;
   referralPhoneNumber?: string | null;
+  /** UMO: normalized source type (SMS, WhatsApp, voicemail, etc.). */
+  sourceType?: WywoSourceType;
+  /** UMO: provider name (twilio, whatsapp, teams, etc.). */
+  sourceProvider?: string | null;
+  /** UMO: provider-native message threading ids. */
+  sourceMessageId?: string | null;
+  sourceThreadId?: string | null;
+  /** UMO: unified threading ids. */
+  threadId?: string | null;
+  conversationId?: string | null;
+  /** UMO: AI outputs (or provider-provided annotations). */
+  transcription?: string | null;
+  aiSummary?: string | null;
+  sentiment?: string | null;
+  urgencyScore?: number | null;
+  /** UMO: delivery policies + references (opaque JSON). */
+  deviceTargets?: string[];
+  routingPolicy?: Record<string, unknown>;
+  calendarReference?: Record<string, unknown> | null;
+  crmReference?: Record<string, unknown> | null;
+  taskReference?: Record<string, unknown> | null;
   /** When true, recipient must verify identity through an SMS invite first. */
   forceInvite?: boolean;
 };
@@ -304,6 +374,16 @@ export async function createWywoMessage(
       senderKeyraId: actor.keyraIdentityId ?? null,
       senderName: actor.displayName,
       senderPhone: actor.phoneE164,
+      senderEmail: actor.email ?? null,
+      senderIdentity: actor.keyraIdentityId ?? actor.uid ?? actor.phoneE164,
+      recipientIdentity: recipientTrustWithUs.contact?.contactUid ?? recipientPhone,
+      sourceType: input.sourceType ?? "WYWO_NATIVE",
+      sourceProvider:
+        input.sourceProvider ?? (input.sourceType ? String(input.sourceType).toLowerCase() : "wywo"),
+      sourceMessageId: input.sourceMessageId ?? null,
+      sourceThreadId: input.sourceThreadId ?? null,
+      threadId: input.threadId ?? null,
+      conversationId: input.conversationId ?? null,
       recipientUid: recipientTrustWithUs.contact?.contactUid ?? null,
       recipientKeyraId: null,
       recipientName: input.recipientName ?? null,
@@ -323,9 +403,28 @@ export async function createWywoMessage(
       messageStatus,
       referralRequired,
       referralPhoneNumber: referralPhone,
+      transcription: input.transcription ?? null,
+      aiSummary: input.aiSummary ?? null,
+      sentiment: input.sentiment ?? null,
+      urgencyScore: input.urgencyScore ?? null,
+      deviceTargetsJson: (input.deviceTargets ?? []) as unknown as Prisma.InputJsonValue,
+      routingPolicyJson: (input.routingPolicy ?? {}) as unknown as Prisma.InputJsonValue,
+      calendarReferenceJson: input.calendarReference ?? null,
+      crmReferenceJson: input.crmReference ?? null,
+      taskReferenceJson: input.taskReference ?? null,
       deliveredAt: requiresInvite ? null : new Date(),
     },
   });
+
+  void publishWywoEvent(
+    "message.received",
+    { umo: umoFromWywoMessage(created), sourceType: created.sourceType },
+    {
+      subscriptionId: created.subscriptionId,
+      worldId: created.worldId,
+      actorPhone: actor.phoneE164,
+    },
+  ).catch(() => undefined);
 
   // Record the recipient in the sender's CRM contact graph.
   await upsertContactTrust({

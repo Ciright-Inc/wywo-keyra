@@ -10,6 +10,7 @@ import {
   serializeSession,
   type KeyraSessionUser,
 } from "@/lib/keyraSessionCookie";
+import { keyraSessionCookieBaseOptions } from "@/lib/keyraSessionCookieOptions";
 import { isValidEmail } from "@/lib/keyraRegistrationValidation";
 import { persistProfileFields } from "@/lib/keyraSiteUserProfileDb";
 import { isPostgresDatabaseUrlConfigured } from "@/lib/postgresEnv";
@@ -99,10 +100,7 @@ export async function PATCH(req: Request) {
   res.cookies.set({
     name: KEYRA_SESSION_COOKIE,
     value: token,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
+    ...keyraSessionCookieBaseOptions(),
     maxAge: KEYRA_SESSION_MAX_AGE,
   });
   return res;
