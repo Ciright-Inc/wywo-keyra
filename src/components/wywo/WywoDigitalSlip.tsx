@@ -233,7 +233,7 @@ export function WywoDigitalSlip({ signedIn }: Props) {
       const mm = now.getMinutes();
       const ampm = hh >= 12 ? "PM" : "AM";
       const hour12 = ((hh + 11) % 12) + 1;
-      return { hour12, minute: mm, ampm, hour24: hh };
+      return { hour12, minute: mm, ampm: ampm as "AM" | "PM", hour24: hh };
     };
     if (!ISO_TIME.test(draft.time)) return fallbackNow();
     const [hh, mm] = draft.time.split(":").map((x) => Number(x));

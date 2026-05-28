@@ -29,7 +29,10 @@ type ListOpts = {
   pendingTrust?: boolean;
   blocked?: boolean;
   worldId?: string | null;
+  /** Full-text-ish query string (subject/name/phones). */
   query?: string;
+  /** Back-compat alias used by WYWO inbox searchParams. */
+  q?: string;
   trustStatus?: WywoTrustStatus;
   trustRing?: WywoTrustRing;
   sourceType?: WywoSourceType;
@@ -133,6 +136,7 @@ export async function listWywoMessages(
 ): Promise<WywoListResult> {
   const direction = opts.direction ?? "inbox";
   const andClauses: Prisma.KeyraWywoMessageWhereInput[] = [];
+  const query = (opts.query ?? opts.q)?.trim() || undefined;
 
   if (direction === "inbox") andClauses.push({ recipientPhone: actor.phoneE164 });
   else if (direction === "sent") andClauses.push({ senderPhone: actor.phoneE164 });
@@ -175,13 +179,13 @@ export async function listWywoMessages(
     andClauses.push({ worldId: { in: worldIds.length ? worldIds : ["__none__"] } });
   }
 
-  if (opts.query) {
+  if (query) {
     andClauses.push({
       OR: [
-        { subject: { contains: opts.query, mode: "insensitive" } },
-        { senderName: { contains: opts.query, mode: "insensitive" } },
-        { senderPhone: { contains: opts.query } },
-        { recipientPhone: { contains: opts.query } },
+        { subject: { contains: query, mode: "insensitive" } },
+        { senderName: { contains: query, mode: "insensitive" } },
+        { senderPhone: { contains: query } },
+        { recipientPhone: { contains: query } },
       ],
     });
   }
@@ -409,9 +413,9 @@ export async function createWywoMessage(
       urgencyScore: input.urgencyScore ?? null,
       deviceTargetsJson: (input.deviceTargets ?? []) as unknown as Prisma.InputJsonValue,
       routingPolicyJson: (input.routingPolicy ?? {}) as unknown as Prisma.InputJsonValue,
-      calendarReferenceJson: input.calendarReference ?? null,
-      crmReferenceJson: input.crmReference ?? null,
-      taskReferenceJson: input.taskReference ?? null,
+      calendarReferenceJson: (input.calendarReference ?? Prisma.JsonNull) as unknown as Prisma.InputJsonValue,
+      crmReferenceJson: (input.crmReference ?? Prisma.JsonNull) as unknown as Prisma.InputJsonValue,
+      taskReferenceJson: (input.taskReference ?? Prisma.JsonNull) as unknown as Prisma.InputJsonValue,
       deliveredAt: requiresInvite ? null : new Date(),
     },
   });
