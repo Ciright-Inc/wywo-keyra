@@ -329,9 +329,28 @@ export async function listDeploymentApps(
   });
 }
 
-/** 9-dot launcher — active, non-private apps only (same rules as `includePrivate: false`). */
+const deploymentLauncherOrderBy = [
+  { section: "asc" as const },
+  { sortOrder: "asc" as const },
+  { label: "asc" as const },
+];
+
+/** 9-dot launcher — active, non-private apps only. */
 export async function listDeploymentLauncherApps(): Promise<DeploymentApp[]> {
-  return listDeploymentApps({ includePrivate: false });
+  await ensureDeploymentAppsSeeded();
+  return prisma.deploymentApp.findMany({
+    where: { isActive: true, isPrivate: false },
+    orderBy: deploymentLauncherOrderBy,
+  });
+}
+
+/** Admin 9-dot launcher — active private apps (signed-in deployment admins only). */
+export async function listDeploymentLauncherPrivateApps(): Promise<DeploymentApp[]> {
+  await ensureDeploymentAppsSeeded();
+  return prisma.deploymentApp.findMany({
+    where: { isActive: true, isPrivate: true },
+    orderBy: deploymentLauncherOrderBy,
+  });
 }
 
 export type DeploymentAppEditNeighbor = {

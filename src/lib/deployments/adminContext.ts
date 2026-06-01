@@ -8,9 +8,38 @@ import { normalizePhoneE164 } from "@/lib/adminUserPhone";
 import type { DeploymentAuth } from "@/lib/deployments/adminAuthz";
 import { parseScope } from "@/lib/deployments/adminAuthz";
 import {
+  ADMIN_JWT_COOKIE,
+  getTokenFromRequest,
+  verifyAdminJwt,
+} from "@/lib/adminJwt";
+import {
   resolveKeyraSessionFromCookies,
   resolveKeyraSessionFromRequest,
 } from "@/lib/keyraSessionServer";
+
+function readCookieFromHeader(cookieHeader: string, name: string): string | null {
+  for (const part of cookieHeader.split(";")) {
+    const trimmed = part.trim();
+    if (trimmed.startsWith(`${name}=`)) {
+      return decodeURIComponent(trimmed.slice(name.length + 1));
+    }
+  }
+  return null;
+}
+
+async function resolveDeploymentAuthFromJwtToken(token: string | null): Promise<DeploymentAuth | null> {
+  if (!token) return null;
+  const claims = await verifyAdminJwt(token);
+  if (!claims) return null;
+
+  if (claims.svc || claims.sub === "legacy-service" || claims.sub.startsWith("ciright:")) {
+    return { kind: "legacy_super" };
+  }
+
+  const user = await prisma.adminUser.findUnique({ where: { id: claims.sub } });
+  if (!user?.isActive) return null;
+  return { kind: "user", user };
+}
 
 export type AdminAccessState =
   | { status: "authorized"; auth: DeploymentAuth }
@@ -30,14 +59,28 @@ export const resolveAdminAuthForPhone = cache(async (phoneE164: string): Promise
 
 export async function resolveDeploymentAuth(req: Request): Promise<DeploymentAuth | null> {
   const session = await resolveKeyraSessionFromRequest(req);
-  if (!session?.phoneE164) return null;
-  return resolveAdminAuthForPhone(session.phoneE164);
+  if (session?.phoneE164) {
+    const fromPhone = await resolveAdminAuthForPhone(session.phoneE164);
+    if (fromPhone) return fromPhone;
+  }
+
+  const cookieHeader = req.headers.get("cookie") ?? "";
+  const cookieJwt = readCookieFromHeader(cookieHeader, ADMIN_JWT_COOKIE);
+  const token = getTokenFromRequest(req, cookieJwt);
+  return resolveDeploymentAuthFromJwtToken(token);
 }
 
 export const resolveDeploymentAuthFromCookies = cache(async (): Promise<DeploymentAuth | null> => {
   const session = await resolveKeyraSessionFromCookies();
-  if (!session?.phoneE164) return null;
-  return resolveAdminAuthForPhone(session.phoneE164);
+  if (session?.phoneE164) {
+    const fromPhone = await resolveAdminAuthForPhone(session.phoneE164);
+    if (fromPhone) return fromPhone;
+  }
+
+  const { cookies } = await import("next/headers");
+  const jar = await cookies();
+  const token = jar.get(ADMIN_JWT_COOKIE)?.value?.trim() || null;
+  return resolveDeploymentAuthFromJwtToken(token);
 });
 
 export const resolveAdminAccessState = cache(async (): Promise<AdminAccessState> => {

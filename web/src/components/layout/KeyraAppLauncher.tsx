@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/components/ui/cn";
-import { getKeyraEcosystemAppLinks } from "@/lib/keyraAppUrls";
+import {
+  getKeyraEcosystemAppLinks,
+  keyraLauncherAppsApiUrl,
+  type KeyraEcosystemAppLink,
+} from "@/lib/keyraAppUrls";
 
 function NineDotTriggerIcon({ className }: { className?: string }) {
   return (
@@ -28,10 +32,69 @@ function NineDotTriggerIcon({ className }: { className?: string }) {
   );
 }
 
+function AppLauncherTile({
+  item,
+  onNavigate,
+}: {
+  item: KeyraEcosystemAppLink;
+  onNavigate: () => void;
+}) {
+  return (
+    <li className="min-w-0">
+      <a
+        role="menuitem"
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={`${item.label} — ${item.description}`}
+        className="flex min-h-[4.25rem] flex-col items-center justify-center gap-1 rounded-lg border border-transparent px-1 py-2 text-center transition hover:border-black/12 hover:bg-keyra-surface"
+        onClick={onNavigate}
+      >
+        <span className="flex size-9 items-center justify-center rounded-md border border-black/[0.08] bg-keyra-surface text-[10px] font-semibold leading-tight text-keyra-accent">
+          {item.label.slice(0, 2)}
+        </span>
+        <span className="line-clamp-2 w-full text-[10px] font-medium leading-tight text-keyra-primary">
+          {item.label}
+        </span>
+      </a>
+    </li>
+  );
+}
+
 export function KeyraAppLauncher() {
   const [open, setOpen] = useState(false);
+  const [apps, setApps] = useState<KeyraEcosystemAppLink[]>(() => getKeyraEcosystemAppLinks());
+  const [privateApps, setPrivateApps] = useState<KeyraEcosystemAppLink[]>([]);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const tiles = useMemo(() => getKeyraEcosystemAppLinks(), []);
+  const tiles = useMemo(() => apps, [apps]);
+  const privateTiles = useMemo(() => privateApps, [privateApps]);
+  const showPrivateSection = privateTiles.length > 0;
+  const launcherApi = keyraLauncherAppsApiUrl();
+
+  const refresh = useCallback(async () => {
+    const fallback = getKeyraEcosystemAppLinks();
+    try {
+      const res = await fetch(`${launcherApi}?t=${Date.now()}`, {
+        cache: "no-store",
+        credentials: "include",
+      });
+      if (!res.ok) return;
+      const data = (await res.json()) as {
+        apps?: KeyraEcosystemAppLink[];
+        privateApps?: KeyraEcosystemAppLink[];
+      };
+      if (Array.isArray(data?.apps) && data.apps.length > 0) setApps(data.apps);
+      else setApps(fallback);
+      setPrivateApps(Array.isArray(data?.privateApps) ? data.privateApps : []);
+    } catch {
+      setApps(fallback);
+      setPrivateApps([]);
+    }
+  }, [launcherApi]);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -43,12 +106,13 @@ export function KeyraAppLauncher() {
 
   useEffect(() => {
     if (!open) return;
+    void refresh();
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [open, refresh]);
 
   return (
     <div className="relative shrink-0" ref={wrapRef}>
@@ -80,24 +144,22 @@ export function KeyraAppLauncher() {
           </p>
           <ul className="grid grid-cols-3 gap-2">
             {tiles.map((item) => (
-              <li key={item.id} className="min-w-0">
-                <a
-                  role="menuitem"
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={`${item.label} — ${item.description}`}
-                  className="flex min-h-[4.25rem] flex-col items-center justify-center gap-1 rounded-lg border border-transparent px-1 py-2 text-center transition hover:border-black/12 hover:bg-keyra-surface"
-                  onClick={() => setOpen(false)}
-                >
-                  <span className="flex size-9 items-center justify-center rounded-md border border-black/[0.08] bg-keyra-surface text-[10px] font-semibold leading-tight text-keyra-accent">
-                    {item.label.slice(0, 2)}
-                  </span>
-                  <span className="line-clamp-2 w-full text-[10px] font-medium leading-tight text-keyra-primary">
-                    {item.label}
-                  </span>
-                </a>
-              </li>
+              <AppLauncherTile key={item.id} item={item} onNavigate={() => setOpen(false)} />
+            ))}
+            {showPrivateSection ? (
+              <>
+                <li className="col-span-3 list-none py-1" role="separator" aria-hidden>
+                  <div className="h-px bg-black/10" />
+                </li>
+                <li className="col-span-3 list-none px-1 pt-0.5">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-keyra-text-2">
+                    Private apps
+                  </p>
+                </li>
+              </>
+            ) : null}
+            {privateTiles.map((item) => (
+              <AppLauncherTile key={`private-${item.id}`} item={item} onNavigate={() => setOpen(false)} />
             ))}
           </ul>
         </div>

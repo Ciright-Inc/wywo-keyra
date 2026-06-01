@@ -78,6 +78,13 @@ export function keyraMarketingPath(path: string): string {
   return `${base}${p}`;
 }
 
+/** Canonical 9-dot launcher API (keyra.ie or same-origin when co-deployed). */
+export function keyraLauncherAppsApiUrl(): string {
+  const explicit = process.env.NEXT_PUBLIC_KEYRA_LAUNCHER_APPS_URL?.trim();
+  if (explicit) return explicit.replace(/\/+$/, "");
+  return `${keyraMarketingPublicOrigin()}/api/deployments/apps/launcher`;
+}
+
 /** Global deployment map — governments.keyra.ie (live deployment explorer). */
 export function keyraGlobalDeploymentUrl(): string {
   return keyraGovernmentsUrl();

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/components/ui/cn";
+import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { getKeyraAdminAppLinks } from "@/lib/keyraAppUrls";
 
 type LauncherApp = {
@@ -77,32 +78,70 @@ function AppLauncherSkeleton({ count = 9 }: { count?: number }) {
   );
 }
 
+function AppLauncherTile({ item, onNavigate }: { item: LauncherApp; onNavigate: () => void }) {
+  return (
+    <li className="min-w-0">
+      <a
+        role="menuitem"
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={`${item.label} — ${item.description}`}
+        className="flex min-h-[4.25rem] flex-col items-center justify-center gap-1 rounded-xl border border-transparent px-1 py-2 text-center transition hover:border-black/12 hover:bg-keyra-surface focus:outline-none focus-visible:border-black/30 focus-visible:ring-2 focus-visible:ring-black/20"
+        onClick={onNavigate}
+      >
+        <AppTileIcon label={item.label} />
+        <span className="line-clamp-2 w-full text-[10px] font-medium leading-tight text-keyra-primary">
+          {item.label}
+        </span>
+      </a>
+    </li>
+  );
+}
+
 export function KeyraAppLauncher() {
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith("/admin");
+  const { isAuthenticated } = useKeyraSession();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [apps, setApps] = useState<LauncherApp[]>(() => (isAdminRoute ? [] : getKeyraAdminAppLinks()));
+  const [privateApps, setPrivateApps] = useState<LauncherApp[]>([]);
   const wrapRef = useRef<HTMLDivElement>(null);
   const tiles = useMemo(() => apps, [apps]);
-  const showSkeleton = loading && tiles.length === 0;
+  const privateTiles = useMemo(() => privateApps, [privateApps]);
+  const showSkeleton = loading && tiles.length === 0 && privateTiles.length === 0;
+  const showPrivateSection = privateTiles.length > 0;
+
+  function applyLauncherPayload(data: { apps?: LauncherApp[]; privateApps?: LauncherApp[] } | null) {
+    if (Array.isArray(data?.apps)) {
+      setApps(data.apps);
+    } else if (!isAdminRoute) {
+      setApps(getKeyraAdminAppLinks());
+    }
+    setPrivateApps(Array.isArray(data?.privateApps) ? data.privateApps : []);
+  }
 
   function refreshLauncherApps(options?: { clearFirst?: boolean }) {
     setLoading(true);
-    if (isAdminRoute && options?.clearFirst !== false) setApps([]);
+    if (isAdminRoute && options?.clearFirst !== false) {
+      setApps([]);
+      setPrivateApps([]);
+    }
+
     fetch(`/api/deployments/apps/launcher?t=${Date.now()}`, {
       cache: "no-store",
+      credentials: "include",
     })
       .then((res) => (res.ok ? res.json() : null))
-      .then((data: { apps?: LauncherApp[] } | null) => {
-        if (Array.isArray(data?.apps)) {
-          setApps(data.apps);
-          return;
-        }
-        if (!isAdminRoute) setApps(getKeyraAdminAppLinks());
+      .then((data) => {
+        applyLauncherPayload(data);
       })
       .catch(() => {
-        if (!isAdminRoute) setApps(getKeyraAdminAppLinks());
+        if (!isAdminRoute) {
+          setApps(getKeyraAdminAppLinks());
+          setPrivateApps([]);
+        }
       })
       .finally(() => {
         setLoading(false);
@@ -114,7 +153,7 @@ export function KeyraAppLauncher() {
     return () => {
       // Keep the hook shape stable for Fast Refresh.
     };
-  }, [isAdminRoute]);
+  }, [isAdminRoute, isAuthenticated]);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -171,24 +210,26 @@ export function KeyraAppLauncher() {
             {showSkeleton ? (
               <AppLauncherSkeleton count={9} />
             ) : (
-              tiles.map((item) => (
-              <li key={item.id} className="min-w-0">
-                <a
-                  role="menuitem"
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={`${item.label} — ${item.description}`}
-                  className="flex min-h-[4.25rem] flex-col items-center justify-center gap-1 rounded-xl border border-transparent px-1 py-2 text-center transition hover:border-black/12 hover:bg-keyra-surface focus:outline-none focus-visible:border-black/30 focus-visible:ring-2 focus-visible:ring-black/20"
-                  onClick={() => setOpen(false)}
-                >
-                  <AppTileIcon label={item.label} />
-                  <span className="line-clamp-2 w-full text-[10px] font-medium leading-tight text-keyra-primary">
-                    {item.label}
-                  </span>
-                </a>
-              </li>
-            ))
+              <>
+                {tiles.map((item) => (
+                  <AppLauncherTile key={item.id} item={item} onNavigate={() => setOpen(false)} />
+                ))}
+                {showPrivateSection ? (
+                  <>
+                    <li className="col-span-3 list-none py-1" role="separator" aria-hidden>
+                      <div className="h-px bg-black/10" />
+                    </li>
+                    <li className="col-span-3 list-none px-1 pt-0.5">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-keyra-text-2">
+                        Private apps
+                      </p>
+                    </li>
+                  </>
+                ) : null}
+                {privateTiles.map((item) => (
+                  <AppLauncherTile key={`private-${item.id}`} item={item} onNavigate={() => setOpen(false)} />
+                ))}
+              </>
             )}
             </ul>
           </div>
