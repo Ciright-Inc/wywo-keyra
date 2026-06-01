@@ -50,11 +50,67 @@ export function buildGetStartedAccessUrl(returnToAbsoluteUrl: string): string {
   return `${gs}/?return=${encodeURIComponent(u)}`;
 }
 
+/** WYWO app origin — wywo.keyra.ie or local dev (NEXT_PUBLIC_WYWO_URL / site URL). */
+export function keyraWywoUrl(): string {
+  return trimSlash(
+    process.env.NEXT_PUBLIC_WYWO_URL?.trim() ||
+      process.env.NEXT_PUBLIC_KEYRA_SITE_URL?.trim() ||
+      "https://wywo.keyra.ie",
+  );
+}
+
 /** After Get Started / hosted login — sync auth into keyra_session, then open `nextPath`. */
-export function buildKeyraSessionContinueUrl(nextPath: string): string {
-  const base = keyraMarketingOrigin();
+export function buildKeyraSessionContinueUrl(nextPath: string, siteOrigin?: string): string {
+  const base = trimSlash(siteOrigin || keyraMarketingOrigin());
   const path = nextPath.startsWith("/") ? nextPath : `/${nextPath}`;
-  return `${trimSlash(base)}/api/keyra/session/continue?next=${encodeURIComponent(path)}`;
+  return `${base}/api/keyra/session/continue?next=${encodeURIComponent(path)}`;
+}
+
+/** Absolute session-bridge URL on a given origin (used for cross-app return after Get Started). */
+export function buildKeyraSessionContinueAbsoluteUrl(siteOrigin: string, nextPath: string): string {
+  const relative = buildKeyraSessionContinueUrl(nextPath, siteOrigin);
+  if (relative.startsWith("http://") || relative.startsWith("https://")) {
+    return relative;
+  }
+  return `${trimSlash(siteOrigin)}${relative.startsWith("/") ? relative : `/${relative}`}`;
+}
+
+/** True when auth cookies may be shared via the `.keyra.ie` parent domain. */
+export function isKeyraCookieFamilyOrigin(originOrHostname: string): boolean {
+  try {
+    const hostname = originOrHostname.includes("://")
+      ? new URL(originOrHostname).hostname
+      : originOrHostname;
+    const h = hostname.toLowerCase();
+    return h === "keyra.ie" || h.endsWith(".keyra.ie");
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Where Get Started sends the user after phone verify.
+ * — *.keyra.ie (e.g. wywo.keyra.ie): same pattern as keyra.ie Access — return to /wywo;
+ *   WywoSlipLandingClient syncs the global auth cookie into keyra_session.
+ * — Railway / localhost: session bridge mints keyra_session on that origin (phone param).
+ */
+export function buildWywoPostAuthReturnUrl(siteOrigin: string, nextPath = "/wywo"): string {
+  const path = nextPath.startsWith("/") ? nextPath : `/${nextPath}`;
+  const origin = trimSlash(siteOrigin);
+  if (isKeyraCookieFamilyOrigin(origin)) {
+    return `${origin}${path === "/" ? "" : path}`;
+  }
+  return buildKeyraSessionContinueAbsoluteUrl(origin, path);
+}
+
+/** Get Started sign-in for WYWO — return URL matches deployment (keyra.ie pattern or session bridge). */
+export function buildWywoGetStartedSignInUrl(siteOrigin: string, nextPath = "/wywo"): string {
+  return buildGetStartedAccessUrl(buildWywoPostAuthReturnUrl(siteOrigin, nextPath));
+}
+
+export function isWywoRootDeployEnv(): boolean {
+  const mode = process.env.KEYRA_DEPLOYMENT_MODE?.trim().toLowerCase();
+  return mode === "wywo" || process.env.WYWO_AS_ROOT === "1";
 }
 
 /** Admin "Login on Keyra" — return via session bridge so cookies sync on same origin. */

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildGetStartedAccessUrl,
   buildKeyraSessionContinueUrl,
+  buildWywoPostAuthReturnUrl,
   keyraGlobalDeploymentUrl,
   normalizeKeyraReturnUrl,
 } from "@/lib/keyraAppUrls";
@@ -35,6 +36,23 @@ describe("buildKeyraSessionContinueUrl", () => {
     const url = buildKeyraSessionContinueUrl("/admin/deployments");
     expect(url).toBe(
       "http://localhost:3030/api/keyra/session/continue?next=%2Fadmin%2Fdeployments",
+    );
+  });
+});
+
+describe("buildWywoPostAuthReturnUrl", () => {
+  it("returns direct /wywo on *.keyra.ie (keyra.ie Access pattern)", () => {
+    expect(buildWywoPostAuthReturnUrl("https://wywo.keyra.ie", "/wywo")).toBe(
+      "https://wywo.keyra.ie/wywo",
+    );
+  });
+
+  it("uses session bridge on Railway / localhost", () => {
+    expect(buildWywoPostAuthReturnUrl("http://localhost:3031", "/wywo")).toBe(
+      "http://localhost:3031/api/keyra/session/continue?next=%2Fwywo",
+    );
+    expect(buildWywoPostAuthReturnUrl("https://wywo-keyra-production.up.railway.app", "/wywo")).toBe(
+      "https://wywo-keyra-production.up.railway.app/api/keyra/session/continue?next=%2Fwywo",
     );
   });
 });

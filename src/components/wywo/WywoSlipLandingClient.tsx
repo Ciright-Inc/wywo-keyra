@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useKeyraSession } from "@/contexts/KeyraSessionContext";
 import { WywoDigitalSlip } from "./WywoDigitalSlip";
 import { WywoSlipLandingActions } from "./WywoSlipLandingActions";
@@ -11,43 +10,31 @@ type Props = {
   initialSignedIn: boolean;
 };
 
-function isLocalDevHost(): boolean {
-  if (typeof window === "undefined") return false;
-  const h = window.location.hostname;
-  return h === "localhost" || h === "127.0.0.1";
-}
-
 /**
- * Client shell for /wywo — syncs Keyra session after login,
- * shows dashboard link + submit only when authenticated.
+ * Client shell for /wywo — mirrors keyra.ie post–Get Started session sync:
+ * after verify, global auth is synced into keyra_session; signed-in UI unlocks.
  */
 export function WywoSlipLandingClient({ initialSignedIn }: Props) {
-  const router = useRouter();
   const { isAuthenticated, initialized, refresh } = useKeyraSession();
   const [sessionReady, setSessionReady] = useState(initialSignedIn);
-  const [isLocal, setIsLocal] = useState(false);
+  const syncInFlightRef = useRef(false);
 
-  const signedIn = initialized ? isAuthenticated : sessionReady || initialSignedIn;
-
-  const authBackendUrl = (() => {
-    const raw = process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL?.trim() || "";
-    return raw.replace(/\/+$/, "");
-  })();
+  const signedIn = initialized ? isAuthenticated || sessionReady : sessionReady || initialSignedIn;
 
   const syncSession = useCallback(async () => {
-    // 1) If we can see an existing auth session (from Get Started) on the auth backend,
-    //    establish `keyra_session` on *this* origin so WYWO unlocks on Railway preview domains
-    //    where `.keyra.ie` cookies are not shared.
-    if (authBackendUrl) {
+    if (syncInFlightRef.current) return;
+    syncInFlightRef.current = true;
+    try {
+      // 1) Same-origin proxy to auth backend (works on *.keyra.ie after Get Started).
       try {
-        const res = await fetch(`${authBackendUrl}/auth/session`, {
+        const authRes = await fetch("/api/auth/session", {
           method: "GET",
           credentials: "include",
           cache: "no-store",
           headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
         });
-        if (res.ok) {
-          const payload = (await res.json()) as {
+        if (authRes.ok) {
+          const payload = (await authRes.json()) as {
             authenticated?: boolean;
             user?: { phone?: string } | null;
           };
@@ -63,54 +50,92 @@ export function WywoSlipLandingClient({ initialSignedIn }: Props) {
           }
         }
       } catch {
-        // ignore: we'll fall back to cookie-based session checks below
+        /* ignore */
       }
-    }
 
-    // 2) Existing same-origin session bridge (works on keyra.ie / wywo.keyra.ie).
-    try {
-      await fetch("/api/keyra/session/sync", {
-        method: "POST",
+      // 2) Mint/refresh keyra_session from the SimSecure auth cookie when present.
+      try {
+        await fetch("/api/keyra/session/sync", {
+          method: "POST",
+          credentials: "include",
+          cache: "no-store",
+        });
+      } catch {
+        /* ignore */
+      }
+
+      await refresh();
+
+      const me = await fetch("/api/keyra/session/me", {
         credentials: "include",
         cache: "no-store",
       });
-    } catch {
-      /* ignore */
-    }
-    await refresh();
-    const me = await fetch("/api/keyra/session/me", {
-      credentials: "include",
-      cache: "no-store",
-    });
-    if (me.ok) {
-      const json = (await me.json()) as { user?: { phoneE164?: string } | null };
-      if (json.user?.phoneE164) {
-        setSessionReady(true);
+      if (me.ok) {
+        const json = (await me.json()) as { user?: { phoneE164?: string } | null };
+        if (json.user?.phoneE164) {
+          setSessionReady(true);
+          return;
+        }
       }
+      if (initialized && !isAuthenticated) {
+        setSessionReady(false);
+      }
+    } finally {
+      syncInFlightRef.current = false;
     }
-  }, [authBackendUrl, refresh]);
+  }, [initialized, isAuthenticated, refresh]);
+
+  // Cross-domain return (Railway / localhost): Get Started appends ?phone= — mint session server-side.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const phone = params.get("phone")?.trim();
+    if (!phone?.startsWith("+")) return;
+
+    const nextRaw = params.get("next")?.trim() || "/wywo";
+    const next = nextRaw.startsWith("/") ? nextRaw : "/wywo";
+    const continueUrl = `/api/keyra/session/continue?next=${encodeURIComponent(next)}&phone=${encodeURIComponent(phone)}`;
+    window.location.replace(continueUrl);
+  }, []);
 
   useEffect(() => {
-    setIsLocal(isLocalDevHost());
     void syncSession();
   }, [syncSession]);
 
-  // If the user logs out (or the session expires) while staying on /wywo, ensure
-  // we immediately hide dashboard + submit actions.
+  // Returning from Get Started in another tab or via bfcache — re-sync like keyra admin login.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const onFocus = () => {
+      void syncSession();
+    };
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        syncInFlightRef.current = false;
+      }
+      void syncSession();
+    };
+
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("pageshow", onPageShow);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        void syncSession();
+      }
+    });
+
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("pageshow", onPageShow);
+    };
+  }, [syncSession]);
+
   useEffect(() => {
     if (!initialized) return;
-    if (!isAuthenticated) {
-      setSessionReady(false);
+    if (isAuthenticated) {
+      setSessionReady(true);
     }
   }, [initialized, isAuthenticated]);
-
-  const handleLoginSuccess = useCallback(() => {
-    setSessionReady(true);
-    void (async () => {
-      await syncSession();
-      router.refresh();
-    })();
-  }, [router, syncSession]);
 
   return (
     <div className="wywo-slip-landing__stage">
@@ -135,7 +160,7 @@ export function WywoSlipLandingClient({ initialSignedIn }: Props) {
 
       <WywoDigitalSlip signedIn={signedIn} />
 
-      <WywoSlipLandingActions signedIn={signedIn} isLocal={isLocal} />
+      <WywoSlipLandingActions signedIn={signedIn} />
     </div>
   );
 }

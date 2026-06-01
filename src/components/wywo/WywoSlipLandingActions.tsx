@@ -1,18 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { buildGetStartedAccessUrl, buildKeyraSessionContinueUrl } from "@/lib/keyraAppUrls";
-
-const WYWO_SLIP = "/wywo";
+import { useWywoGetStartedSignInHref } from "@/lib/useWywoGetStartedSignInHref";
 
 type Props = {
   signedIn: boolean;
-  isLocal: boolean;
 };
 
-export function WywoSlipLandingActions({ signedIn, isLocal }: Props) {
-  void isLocal;
-  const signInHref = buildGetStartedAccessUrl(buildKeyraSessionContinueUrl(WYWO_SLIP));
+export function WywoSlipLandingActions({ signedIn }: Props) {
+  const signInHref = useWywoGetStartedSignInHref();
 
   if (signedIn) {
     return (

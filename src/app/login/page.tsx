@@ -1,6 +1,11 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { buildGetStartedAccessUrl, keyraMarketingOrigin, normalizeKeyraReturnUrl } from "@/lib/keyraAppUrls";
+import {
+  buildGetStartedAccessUrl,
+  buildWywoPostAuthReturnUrl,
+  keyraMarketingOrigin,
+  normalizeKeyraReturnUrl,
+} from "@/lib/keyraAppUrls";
 import { devSessionPhoneFallback } from "@/lib/keyraSessionEstablish";
 
 type Props = {
@@ -31,8 +36,8 @@ export default async function LoginPage({ searchParams }: Props) {
       : keyraMarketingOrigin().startsWith("https")
         ? "https"
         : "http";
-  const returnUrl = normalizeKeyraReturnUrl(
-    host.length > 0 ? `${proto}://${host}${path}` : `${keyraMarketingOrigin()}${path === "/" ? "" : path}`,
-  );
+  const origin = host.length > 0 ? `${proto}://${host}` : keyraMarketingOrigin();
+  const returnTarget = buildWywoPostAuthReturnUrl(origin, path);
+  const returnUrl = normalizeKeyraReturnUrl(returnTarget);
   redirect(buildGetStartedAccessUrl(returnUrl));
 }
