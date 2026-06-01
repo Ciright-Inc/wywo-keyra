@@ -10,6 +10,72 @@ type Props = {
   initialSignedIn: boolean;
 };
 
+type AuthSessionPayload = {
+  authenticated?: boolean;
+  user?: {
+    phone?: string;
+    displayName?: string | null;
+    fullName?: string | null;
+    name?: string | null;
+    email?: string | null;
+  } | null;
+};
+
+function userHintFromAuthPayload(payload: AuthSessionPayload | null): {
+  phoneE164: string;
+  displayName?: string;
+  email?: string;
+} | null {
+  if (!payload?.authenticated || !payload.user?.phone) return null;
+  const phone = String(payload.user.phone).trim();
+  const phoneE164 = phone.startsWith("+") ? phone : phone ? `+${phone}` : "";
+  if (!phoneE164.startsWith("+")) return null;
+  const displayName =
+    String(payload.user.displayName ?? payload.user.fullName ?? payload.user.name ?? "").trim() ||
+    undefined;
+  const email =
+    typeof payload.user.email === "string" ? payload.user.email.trim() || undefined : undefined;
+  return { phoneE164, displayName, email };
+}
+
+async function fetchAuthSessionForWywo(signal?: AbortSignal): Promise<AuthSessionPayload | null> {
+  try {
+    const res = await fetch("/api/auth/session", {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+      signal,
+    });
+    if (res.ok) {
+      return (await res.json()) as AuthSessionPayload;
+    }
+  } catch {
+    // continue to direct auth backend (cross-origin Railway / localhost)
+  }
+
+  const authBackendUrl =
+    typeof process !== "undefined" ? process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL?.trim() : "";
+  if (!authBackendUrl) return null;
+
+  try {
+    const base = authBackendUrl.replace(/\/+$/, "");
+    const res = await fetch(`${base}/auth/session`, {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+      signal,
+    });
+    if (res.ok) {
+      return (await res.json()) as AuthSessionPayload;
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
 /**
  * Client shell for /wywo — mirrors keyra.ie post–Get Started session sync:
  * after verify, global auth is synced into keyra_session; signed-in UI unlocks.
@@ -25,51 +91,21 @@ export function WywoSlipLandingClient({ initialSignedIn }: Props) {
     if (syncInFlightRef.current) return;
     syncInFlightRef.current = true;
     try {
-      // 1) Same-origin proxy to auth backend (works on *.keyra.ie after Get Started).
-      try {
-        const authRes = await fetch("/api/auth/session", {
-          method: "GET",
-          credentials: "include",
-          cache: "no-store",
-          headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
-        });
-        if (authRes.ok) {
-          const payload = (await authRes.json()) as {
-            authenticated?: boolean;
-            user?: {
-              phone?: string;
-              displayName?: string | null;
-              fullName?: string | null;
-              name?: string | null;
-            } | null;
-          };
-          const phone = payload?.authenticated && payload.user?.phone ? String(payload.user.phone) : "";
-          const phoneE164 = phone.startsWith("+") ? phone : phone ? `+${phone}` : "";
-          if (phoneE164) {
-            const displayName =
-              String(payload.user?.displayName ?? payload.user?.fullName ?? payload.user?.name ?? "").trim() ||
-              undefined;
-            await fetch("/api/keyra/session/login", {
-              method: "POST",
-              credentials: "include",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ phoneNumber: phoneE164, displayName }),
-            });
-          }
+      // Mint/refresh keyra_session from SimSecure auth (proxy on *.keyra.ie, or direct
+      // auth backend on Railway when already signed in on app / Get Started).
+      const authHint = userHintFromAuthPayload(await fetchAuthSessionForWywo());
+      if (authHint) {
+        try {
+          await fetch("/api/keyra/session/sync", {
+            method: "POST",
+            credentials: "include",
+            cache: "no-store",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(authHint),
+          });
+        } catch {
+          /* ignore */
         }
-      } catch {
-        /* ignore */
-      }
-
-      // 2) Mint/refresh keyra_session from the SimSecure auth cookie when present.
-      try {
-        await fetch("/api/keyra/session/sync", {
-          method: "POST",
-          credentials: "include",
-          cache: "no-store",
-        });
-      } catch {
-        /* ignore */
       }
 
       await refresh();

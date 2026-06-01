@@ -39,6 +39,11 @@ async function readBodyHint(req: Request): Promise<SyncBodyHint | null> {
 /**
  * Creates or refreshes keyra_session from the active SimSecure auth session cookie,
  * or from a verified phone (+ profile) in the JSON body on cross-origin hosts.
+ *
+ * On Railway / hosts that do not share the auth cookie domain with simsecure-auth,
+ * the browser cannot forward auth cookies to this route — the client must call
+ * the auth backend directly, then POST the derived identity here (same trust model
+ * as `/api/keyra/session/continue?phone=...`).
  */
 export async function POST(req: Request) {
   const limited = rateLimitResponse(req, "session-sync");

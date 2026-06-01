@@ -31,9 +31,12 @@ export function WywoSlipPhoneLogin({ onSuccess }: Props) {
       if (!res.ok || !json.ok) {
         throw new Error(json.error || `Sign in failed (${res.status})`);
       }
+      const phoneE164 = phone.trim().startsWith("+") ? phone.trim() : `+${phone.trim()}`;
       await fetch("/api/keyra/session/sync", {
         method: "POST",
         credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneE164 }),
       });
       onSuccess();
     } catch (err) {

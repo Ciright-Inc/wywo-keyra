@@ -96,13 +96,24 @@ async function fetchKeyraCookieUser(signal?: AbortSignal): Promise<KeyraSessionU
   }
 }
 
-async function syncKeyraSessionFromAuth(signal?: AbortSignal): Promise<KeyraSessionUser | null> {
+async function syncKeyraSessionFromAuth(
+  hint?: KeyraSessionUser | null,
+  signal?: AbortSignal,
+): Promise<KeyraSessionUser | null> {
   try {
     const res = await fetch("/api/keyra/session/sync", {
       method: "POST",
       credentials: "include",
       cache: "no-store",
       signal,
+      headers: { "Content-Type": "application/json" },
+      body: hint?.phoneE164
+        ? JSON.stringify({
+            phoneE164: hint.phoneE164,
+            displayName: hint.displayName,
+            email: hint.email,
+          })
+        : "{}",
     });
     if (!res.ok) return null;
     const json = (await res.json()) as { user?: KeyraSessionUser };
@@ -204,12 +215,12 @@ async function fetchSessionUser(signal?: AbortSignal): Promise<KeyraSessionUser 
     payload?.authenticated && payload?.user?.phone ? userFromAuthPayload(payload) : null;
 
   if (cookieUser && authUser && cookieUser.phoneE164 !== authUser.phoneE164) {
-    const synced = await syncKeyraSessionFromAuth(signal);
+    const synced = await syncKeyraSessionFromAuth(authUser, signal);
     return synced ?? authUser;
   }
 
   if (!cookieUser && authUser) {
-    const synced = await syncKeyraSessionFromAuth(signal);
+    const synced = await syncKeyraSessionFromAuth(authUser, signal);
     return synced ?? authUser;
   }
 
@@ -220,7 +231,7 @@ async function fetchSessionUser(signal?: AbortSignal): Promise<KeyraSessionUser 
       authUser.displayName?.trim() &&
       merged.displayName !== cookieUser.displayName?.trim()
     ) {
-      void syncKeyraSessionFromAuth(signal).catch(() => {
+      void syncKeyraSessionFromAuth(authUser, signal).catch(() => {
         // Best-effort: persist auth name into keyra_session cookie.
       });
     }
