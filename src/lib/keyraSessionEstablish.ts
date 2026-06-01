@@ -1,9 +1,16 @@
 import "server-only";
 
+import {
+  fetchAuthProfileHintByPhone,
+  nameLooksLikePhone,
+  pickDisplayNameFromSearchParams,
+} from "@/lib/authProfileHint";
 import type { KeyraSessionUser } from "@/lib/keyraSessionCookie";
 import { isValidMobileE164 } from "@/lib/keyraRegistrationValidation";
 import { buildKeyraSessionUser } from "@/lib/keyraSessionResponse";
 import { fetchAuthSessionSnapshot } from "@/lib/keyraProtection";
+
+export { pickDisplayNameFromSearchParams } from "@/lib/authProfileHint";
 
 export async function resolveKeyraSessionUserFromAuth(
   req: Request,
@@ -15,10 +22,28 @@ export async function resolveKeyraSessionUserFromAuth(
 
 export async function resolveKeyraSessionUserFromPhone(
   phone: string,
+  hints?: { displayName?: string | null; email?: string | null },
+  req?: Request,
 ): Promise<KeyraSessionUser | null> {
   const trimmed = phone.trim();
   if (!isValidMobileE164(trimmed)) return null;
-  return buildKeyraSessionUser(trimmed);
+
+  let displayName = hints?.displayName?.trim() || undefined;
+  let email = hints?.email?.trim() || undefined;
+
+  if (!displayName || nameLooksLikePhone(displayName, trimmed)) {
+    const profile = await fetchAuthProfileHintByPhone(trimmed, req);
+    if (profile?.displayName) {
+      displayName = profile.displayName;
+      if (!email && profile.email) email = profile.email;
+    }
+  }
+
+  return buildKeyraSessionUser(trimmed, {
+    displayName,
+    fullName: displayName,
+    email,
+  });
 }
 
 export function pickPhoneFromSearchParams(

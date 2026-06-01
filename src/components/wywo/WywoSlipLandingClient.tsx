@@ -36,16 +36,24 @@ export function WywoSlipLandingClient({ initialSignedIn }: Props) {
         if (authRes.ok) {
           const payload = (await authRes.json()) as {
             authenticated?: boolean;
-            user?: { phone?: string } | null;
+            user?: {
+              phone?: string;
+              displayName?: string | null;
+              fullName?: string | null;
+              name?: string | null;
+            } | null;
           };
           const phone = payload?.authenticated && payload.user?.phone ? String(payload.user.phone) : "";
           const phoneE164 = phone.startsWith("+") ? phone : phone ? `+${phone}` : "";
           if (phoneE164) {
+            const displayName =
+              String(payload.user?.displayName ?? payload.user?.fullName ?? payload.user?.name ?? "").trim() ||
+              undefined;
             await fetch("/api/keyra/session/login", {
               method: "POST",
               credentials: "include",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ phoneNumber: phoneE164 }),
+              body: JSON.stringify({ phoneNumber: phoneE164, displayName }),
             });
           }
         }
@@ -94,8 +102,19 @@ export function WywoSlipLandingClient({ initialSignedIn }: Props) {
 
     const nextRaw = params.get("next")?.trim() || "/wywo";
     const next = nextRaw.startsWith("/") ? nextRaw : "/wywo";
-    const continueUrl = `/api/keyra/session/continue?next=${encodeURIComponent(next)}&phone=${encodeURIComponent(phone)}`;
-    window.location.replace(continueUrl);
+    const continueParams = new URLSearchParams({
+      next,
+      phone,
+    });
+    const displayName =
+      params.get("displayName")?.trim() ||
+      params.get("fullName")?.trim() ||
+      params.get("name")?.trim() ||
+      "";
+    if (displayName && displayName.length >= 2 && !displayName.startsWith("+")) {
+      continueParams.set("displayName", displayName);
+    }
+    window.location.replace(`/api/keyra/session/continue?${continueParams.toString()}`);
   }, []);
 
   useEffect(() => {

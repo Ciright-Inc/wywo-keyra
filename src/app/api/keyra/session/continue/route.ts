@@ -1,6 +1,7 @@
 import { resolveKeyraRedirectOrigin } from "@/lib/adminHost";
 import {
   devSessionPhoneFallback,
+  pickDisplayNameFromSearchParams,
   pickPhoneFromSearchParams,
   resolveKeyraSessionUserFromAuth,
   resolveKeyraSessionUserFromPhone,
@@ -27,8 +28,9 @@ export async function GET(req: Request) {
   }
 
   const phone = pickPhoneFromSearchParams(url.searchParams) ?? devSessionPhoneFallback();
+  const displayName = pickDisplayNameFromSearchParams(url.searchParams);
   if (phone) {
-    const fromPhone = await resolveKeyraSessionUserFromPhone(phone);
+    const fromPhone = await resolveKeyraSessionUserFromPhone(phone, { displayName }, req);
     if (fromPhone) {
       const res = redirectWithKeyraSession(fromPhone, nextPath, origin);
       if (res) return res;

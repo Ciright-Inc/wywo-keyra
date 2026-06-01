@@ -4,7 +4,8 @@ import {
   readJsonObject,
 } from "@/app/api/keyra/_routeHelpers";
 import { isValidMobileE164 } from "@/lib/keyraRegistrationValidation";
-import { buildKeyraSessionUser, jsonWithKeyraSession } from "@/lib/keyraSessionResponse";
+import { resolveKeyraSessionUserFromPhone } from "@/lib/keyraSessionEstablish";
+import { jsonWithKeyraSession } from "@/lib/keyraSessionResponse";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -25,7 +26,19 @@ export async function POST(req: Request) {
     );
   }
 
-  const user = await buildKeyraSessionUser(phone);
+  const displayName =
+    typeof body.displayName === "string"
+      ? body.displayName.trim()
+      : typeof body.fullName === "string"
+        ? body.fullName.trim()
+        : undefined;
+  const user = await resolveKeyraSessionUserFromPhone(phone, { displayName }, req);
+  if (!user) {
+    return NextResponse.json(
+      { error: "Enter a valid international mobile number (include + and country code)." },
+      { status: 400 },
+    );
+  }
   const res = jsonWithKeyraSession(user);
   if (!res) {
     return NextResponse.json(
