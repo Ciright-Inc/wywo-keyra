@@ -1,6 +1,11 @@
 "use client";
 
 import type { KeyraSessionUser } from "@/lib/keyraSessionTypes";
+import {
+  fetchBrowserAuthSession,
+  hasDirectAuthBackendInBrowser,
+  type AuthSessionPayload,
+} from "@/lib/keyraAuthSessionClient";
 import { formatPhoneDisplay } from "@/lib/keyraSessionDisplay";
 import {
   createContext,
@@ -18,17 +23,6 @@ const SESSION_TIMEOUT_MS = 4000;
 
 const defaultUser: KeyraSessionUser = {
   phoneE164: "",
-};
-
-type AuthSessionPayload = {
-  authenticated: boolean;
-  user?: {
-    phone?: string;
-    username?: string | null;
-    fullName?: string | null;
-    displayName?: string | null;
-    email?: string | null;
-  } | null;
 };
 
 function authSessionDisplayName(
@@ -124,41 +118,7 @@ async function syncKeyraSessionFromAuth(
 }
 
 async function fetchAuthSessionPayload(signal?: AbortSignal): Promise<AuthSessionPayload | null> {
-  try {
-    const res = await fetch("/api/auth/session", {
-      method: "GET",
-      credentials: "include",
-      cache: "no-store",
-      headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
-      signal,
-    });
-    if (res.ok) {
-      return (await res.json()) as AuthSessionPayload;
-    }
-  } catch {
-    // continue to fallback
-  }
-
-  const authBackendUrl =
-    typeof process !== "undefined" ? process.env.NEXT_PUBLIC_SIMSECURE_AUTH_BACKEND_URL : "";
-  if (!authBackendUrl?.trim()) return null;
-
-  try {
-    const base = authBackendUrl.replace(/\/+$/, "");
-    const res2 = await fetch(`${base}/auth/session`, {
-      method: "GET",
-      credentials: "include",
-      cache: "no-store",
-      headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
-      signal,
-    });
-    if (res2.ok) {
-      return (await res2.json()) as AuthSessionPayload;
-    }
-  } catch {
-    // ignore
-  }
-  return null;
+  return fetchBrowserAuthSession(signal);
 }
 
 function userFromAuthPayload(payload: AuthSessionPayload): KeyraSessionUser | null {
@@ -205,10 +165,15 @@ async function fetchSessionUser(signal?: AbortSignal): Promise<KeyraSessionUser 
   ]);
 
   if (payload?.authenticated === false) {
-    if (cookieUser) {
-      void clearKeyraCookieSession();
+    // Same-origin proxy often cannot see auth cookies on Railway; only clear when
+    // the browser confirmed sign-out via the direct auth backend.
+    if (hasDirectAuthBackendInBrowser()) {
+      if (cookieUser) {
+        void clearKeyraCookieSession();
+      }
+      return null;
     }
-    return null;
+    return cookieUser;
   }
 
   const authUser =

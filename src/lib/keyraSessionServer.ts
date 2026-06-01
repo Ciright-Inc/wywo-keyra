@@ -91,7 +91,8 @@ async function resolveKeyraSessionFromCookieHeader(
     }
     const payload = (await res.json()) as AuthSessionPayload;
     if (payload.authenticated === false) {
-      return null;
+      // Server cannot see auth.keyra.ie cookies on Railway — keep keyra_session.
+      return cookieUser;
     }
     const authUser = userFromAuthPayload(payload);
     if (!authUser) {

@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useWywoGetStartedSignInHref } from "@/lib/useWywoGetStartedSignInHref";
+import { WywoSlipPhoneLogin } from "./WywoSlipPhoneLogin";
 
 type Props = {
   signedIn: boolean;
+  onSignedIn?: () => void;
 };
 
-export function WywoSlipLandingActions({ signedIn }: Props) {
+export function WywoSlipLandingActions({ signedIn, onSignedIn }: Props) {
   const signInHref = useWywoGetStartedSignInHref();
 
   if (signedIn) {
@@ -21,12 +23,13 @@ export function WywoSlipLandingActions({ signedIn }: Props) {
   return (
     <div className="wywo-slip-actions">
       <Link href={signInHref} className="ds-btn-primary">
-        Sign in
+        Sign in with Get Started
       </Link>
       <p className="wywo-slip-actions__hint">
-        Sign in via Get Started. No anonymous communication — every sender is attributable through
-        Keyra identity.
+        Verified phone sign-in via Get Started. No anonymous communication — every sender is
+        attributable through Keyra identity.
       </p>
+      <WywoSlipPhoneLogin onSuccess={() => onSignedIn?.()} />
     </div>
   );
 }
