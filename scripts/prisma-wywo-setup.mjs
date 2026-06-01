@@ -19,8 +19,10 @@ const WYWO_SQL_FILES = [
   "prisma/migrations/20260526120000_wywo_messaging/migration.sql",
   "prisma/migrations/20260526140000_wywo_body_crypto/migration.sql",
   "prisma/migrations/20260526150000_wywo_enum_align/migration.sql",
+  "prisma/migrations/20260527120000_wywo_umo_fields/migration.sql",
   "prisma/migrations/20260528170000_wywo_prisma_column_align/migration.sql",
 ];
+const UMO_SQL = "prisma/migrations/20260527120000_wywo_umo_fields/migration.sql";
 const ALIGN_SQL = WYWO_SQL_FILES[WYWO_SQL_FILES.length - 1];
 
 const BENIGN_SQL =
@@ -82,6 +84,18 @@ async function wywoSchemaAligned(prisma) {
   return Boolean(rows[0]?.ok);
 }
 
+async function wywoUmoColumnsExist(prisma) {
+  const rows = await prisma.$queryRaw`
+    SELECT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'public'
+        AND table_name = 'keyra_wywo_messages'
+        AND column_name = 'sourceType'
+    ) AS ok
+  `;
+  return Boolean(rows[0]?.ok);
+}
+
 async function keyraCatalogTablesExist(prisma) {
   const rows = await prisma.$queryRaw`
     SELECT EXISTS (
@@ -99,20 +113,28 @@ async function ensureWywoSchema() {
   try {
     const tablesExist = await wywoTablesExist(prisma);
     const aligned = tablesExist ? await wywoSchemaAligned(prisma) : false;
+    const umoReady = tablesExist ? await wywoUmoColumnsExist(prisma) : false;
 
-    if (tablesExist && aligned) {
-      console.log("[wywo-db] WYWO schema OK (ownerPhoneE164 present) — no SQL needed.\n");
+    if (tablesExist && aligned && umoReady) {
+      console.log("[wywo-db] WYWO schema OK — no SQL needed.\n");
       return;
     }
 
-    if (tablesExist && !aligned) {
-      console.log("[wywo-db] WYWO columns out of date — applying align migration…\n");
-      await executeSqlFile(ALIGN_SQL);
+    if (tablesExist) {
+      if (!umoReady) {
+        console.log("[wywo-db] WYWO UMO columns missing — applying UMO migration…\n");
+        await executeSqlFile(UMO_SQL);
+      }
+      if (!aligned) {
+        console.log("[wywo-db] WYWO columns out of date — applying align migration…\n");
+        await executeSqlFile(ALIGN_SQL);
+      }
       const nowAligned = await wywoSchemaAligned(prisma);
+      const nowUmo = await wywoUmoColumnsExist(prisma);
       console.log(
-        nowAligned
-          ? "[wywo-db] Column align done.\n"
-          : "[wywo-db] WARN: ownerPhoneE164 still missing after align SQL.\n",
+        nowAligned && nowUmo
+          ? "[wywo-db] WYWO schema updated.\n"
+          : `[wywo-db] WARN: schema still incomplete (aligned=${nowAligned}, umo=${nowUmo}).\n`,
       );
       return;
     }

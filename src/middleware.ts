@@ -73,6 +73,13 @@ function isAllowedOnWywoDeploy(pathname: string): boolean {
 export function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
+  // Browsers request /favicon.ico by default; metadata uses /favicon.png.
+  if (pathname === "/favicon.ico") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/favicon.png";
+    return NextResponse.redirect(url, 307);
+  }
+
   // Guard against accidental duplicated WYWO base path (e.g. /wywo/wywo).
   // This can happen when composing `next` paths across multiple redirects.
   if (pathname === "/wywo/wywo" || pathname.startsWith("/wywo/wywo/")) {

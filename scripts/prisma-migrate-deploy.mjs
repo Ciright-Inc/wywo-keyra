@@ -24,6 +24,8 @@ const WYWO_MIGRATIONS = new Set([
   "20260526120000_wywo_messaging",
   "20260526140000_wywo_body_crypto",
   "20260526150000_wywo_enum_align",
+  "20260527120000_wywo_umo_fields",
+  "20260528170000_wywo_prisma_column_align",
 ]);
 
 function run(cmd, { inherit = false } = {}) {
