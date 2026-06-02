@@ -659,20 +659,14 @@ body {
   .keyra-site-footer__link-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.25rem 2rem;
-    grid-auto-flow: column;
-  }
-
-  .keyra-site-footer__link-grid--site {
-    grid-template-rows: repeat(4, auto);
-  }
-
-  .keyra-site-footer__link-grid--apps {
-    grid-template-rows: repeat(5, auto);
+    grid-auto-flow: row;
+    align-content: start;
   }
 
   .keyra-site-footer__link-grid .keyra-site-footer__link {
     font-size: 14px;
     text-align: left;
+    overflow-wrap: anywhere;
   }
 }
 

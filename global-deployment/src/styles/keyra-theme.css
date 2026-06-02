@@ -557,6 +557,7 @@
   display: block;
   font-size: 14px;
   line-height: 1.4;
+  overflow-wrap: anywhere;
   color: rgba(255, 255, 255, 0.65) !important;
   text-decoration: none !important;
   transition: color 0.2s ease;
